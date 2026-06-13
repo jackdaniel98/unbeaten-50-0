@@ -113,8 +113,19 @@ h2{font-size:1.04rem;color:var(--gold);margin-bottom:12px;padding-bottom:6px;bor
   <div class="metric"><span>Build Identity:</span><strong id="hof-identity">Balanced Fighter</strong></div>
   <div class="metric"><span>Game Mode:</span><strong id="hof-mode">Mode</strong></div>
   <button class="btn blue" onclick="showHistory()">View Full Fight History</button>
-  <button class="btn blue" onclick="shareCareer()">Share Career</button>
-  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+
+<a 
+  href="https://
+        coffee.com/unbeaten50" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  class="btn gold"
+  style="display:block; text-align:center; text-decoration:none;"
+>
+  Support UNBEATEN ☕
+</a>
+
+<button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 <section id="history-screen" class="screen"><h2>Full Fight History</h2><p class="subtle">Every recorded result from this career, newest first.</p><div id="full-history" class="history-panel" style="min-height:280px"></div><button class="btn blue" onclick="backToHof()">Back To HOF Screen</button></section>
 <div id="sim-overlay" class="hidden"><div class="sim-card"><h2>Career Simulation</h2><p class="subtle" id="sim-subtitle">Running bouts...</p><div id="sim-list" class="sim-list"></div><div class="two-col"><button id="sim-speed-btn" class="btn ghost" onclick="toggleFast()">Skip Delays</button><button id="sim-close-btn" class="btn gold hidden" onclick="closeOverlay()">Return To Hub</button></div></div></div>
