@@ -292,6 +292,8 @@ h2::before{
 }
 .name-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(230,194,71,.15)}
 .name-input::placeholder{color:var(--muted)}
+.validation-msg{min-height:20px;margin-top:8px;text-align:center;color:#ff9b9b;font-size:.78rem;font-weight:800;line-height:1.35}
+.validation-msg.ok{color:var(--green)}
 .draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .draft-btn{
   background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
@@ -512,6 +514,22 @@ h2::before{
 }
 .metric > span{color:var(--text-dim);font-weight:500}
 .metric strong{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px}
+.tab-btn{min-height:40px;margin-bottom:0;padding:9px 6px;font-size:.7rem;border-radius:8px}
+.tab-btn.active{border-color:var(--gold) !important;color:var(--gold) !important;background:rgba(230,194,71,.08) !important}
+.leaderboard-list{display:flex;flex-direction:column;gap:10px}
+.leaderboard-card{
+  background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
+  border:1px solid var(--line);border-left:4px solid var(--gold);
+  border-radius:10px;padding:12px;box-shadow:var(--shadow-card)
+}
+.leaderboard-card .rank{font-family:'Bebas Neue',Impact,sans-serif;color:var(--gold);font-size:1.5rem;letter-spacing:1px;line-height:1}
+.leaderboard-card .name{font-weight:900;color:#fff;font-size:1rem;overflow-wrap:anywhere}
+.leaderboard-card .sub{font-size:.82rem;color:var(--text-dim);margin-top:5px;line-height:1.45}
+.leaderboard-card .score{color:var(--gold);font-weight:900}
+.empty-state{color:var(--text-dim);text-align:center;padding:22px 10px;font-size:.86rem}
+.breakdown-panel{display:none}
+.breakdown-panel.active{display:block}
 #sim-overlay{
   position:absolute;inset:0;background:rgba(0,0,0,.94);
   z-index:999;display:flex;flex-direction:column;padding:12px;
@@ -654,6 +672,7 @@ h2::before{
   <div style="margin-top:auto;padding-top:16px">
     <button id="continue-btn" class="btn blue hidden" onclick="continueCareer()">Continue Career</button>
     <button class="btn gold" onclick="startNewCareer()">Draft New Boxer</button>
+    <button class="btn blue" onclick="openHallOfFame()">Hall Of Fame</button>
     <button id="delete-save-btn" class="btn red hidden" onclick="deleteSave()">Delete Current Save</button>
   </div>
 </section>
@@ -679,7 +698,10 @@ h2::before{
   <h2>Hidden Synergies</h2>
   <div id="synergy-panel" class="panel"><div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div></div>
   <div class="panel"><div class="row"><span>Suggested Archetype:</span><span id="draft-archetype">Undetermined</span></div></div>
-  <div style="margin-bottom:14px"><input id="fighter-name-input" class="name-input" type="text" maxlength="25" placeholder="Enter Fighter Name" /></div>
+  <div style="margin-bottom:14px">
+    <input id="fighter-name-input" class="name-input" type="text" maxlength="20" placeholder="Enter Fighter Name" oninput="handleNameInput()" />
+    <div id="fighter-name-error" class="validation-msg"></div>
+  </div>
   <button id="advance-btn" class="btn gold" onclick="goToHub()">Advance To Career Hub</button>
   <button class="btn red" onclick="restartDraft()">Restart Draft</button>
 </section>
@@ -788,8 +810,34 @@ h2::before{
   </div>
   
   <button id="share-btn" class="btn share" onclick="shareCareer()">📤 Share Career</button>
+  <button class="btn ghost" onclick="toggleLegacyBreakdown()">How Was This Calculated?</button>
+  <div id="legacy-breakdown" class="panel breakdown-panel"></div>
   <button class="btn blue" onclick="showHistory()">View Full Fight History</button>
   <a href="https://buymeacoffee.com/unbeaten50" target="_blank" rel="noopener noreferrer" class="btn ghost" style="display:block; text-align:center; text-decoration:none;">Support UNBEATEN ☕</a>
+  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+</section>
+
+<section id="global-hof-screen" class="screen">
+  <h2>Top 30 Greatest Careers Of All Time</h2>
+  <div class="tabs">
+    <button id="tab-permanent" class="btn ghost tab-btn active" onclick="showHofTab('permanent')">Permanent</button>
+    <button id="tab-seasonal" class="btn ghost tab-btn" onclick="showHofTab('seasonal')">Seasonal</button>
+    <button id="tab-history" class="btn ghost tab-btn" onclick="showHofTab('history')">History</button>
+  </div>
+  <div id="permanent-hof-tab">
+    <div id="permanent-hof-list" class="leaderboard-list"><div class="empty-state">Loading Hall Of Fame...</div></div>
+  </div>
+  <div id="seasonal-hof-tab" class="hidden">
+    <div class="panel">
+      <div class="row"><span>Current Season Ends In:</span><span id="season-countdown">Loading...</span></div>
+    </div>
+    <h2>Seasonal Hall Of Fame</h2>
+    <div id="seasonal-hof-list" class="leaderboard-list"><div class="empty-state">Loading season...</div></div>
+  </div>
+  <div id="history-hof-tab" class="hidden">
+    <h2>Season History</h2>
+    <div id="season-history-list" class="leaderboard-list"><div class="empty-state">Loading history...</div></div>
+  </div>
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
@@ -894,6 +942,56 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const SEASON_MS = 3 * 24 * 60 * 60 * 1000;
+let currentSeason = null;
+let seasonTimer = null;
+const NAME_RULE_MESSAGE = "Fighter name must be 3-20 characters, letters and spaces only. No numbers, emojis, or special characters.";
+const BANNED_NAME_TERMS = [
+  "fuck","fucker","fucking","shit","bitch","bastard","cunt","twat","wanker","dick","cock","pussy","asshole","arsehole",
+  "slut","whore","rape","rapist","pedo","paedo","pedophile","porn","sex","cum","jizz","nazi","hitler","kkk","terrorist",
+  "nigger","nigga","coon","spic","chink","gook","kike","paki","raghead","wetback","faggot","fag","tranny","retard"
+];
+
+function cleanName(name){ return (name||'').trim().replace(/\s+/g,' '); }
+function normaliseNameForFilter(name){ return cleanName(name).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,''); }
+function validateFighterName(name){
+  const n=cleanName(name);
+  if(!n) return {ok:false,msg:NAME_RULE_MESSAGE};
+  if(n.length<3||n.length>20) return {ok:false,msg:NAME_RULE_MESSAGE};
+  if(!/^[A-Za-z ]+$/.test(n)) return {ok:false,msg:NAME_RULE_MESSAGE};
+  const normalized=normaliseNameForFilter(n);
+  const collapsed=normalized.replace(/\s+/g,'');
+  const blocked=BANNED_NAME_TERMS.some(term=>{
+    const escaped=term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const compactTerm=term.replace(/\s+/g,'');
+    return new RegExp('(^|\\s)'+escaped+'(\\s|$)','i').test(normalized)||(compactTerm.length>=4&&collapsed.includes(compactTerm));
+  });
+  if(blocked) return {ok:false,msg:"This fighter name is not allowed."};
+  return {ok:true,msg:""};
+}
+function handleNameInput(){
+  const input=$('fighter-name-input'), err=$('fighter-name-error');
+  if(!input||!err) return;
+  const value=cleanName(input.value);
+  if(!value){ err.innerText=''; err.classList.remove('ok'); return; }
+  const result=validateFighterName(value);
+  err.innerText=result.msg;
+  err.classList.toggle('ok', result.ok);
+}
+function makeId(prefix){ return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10); }
+function localSubmittedIds(){
+  try{return JSON.parse(localStorage.getItem('unbeaten_submitted_careers_v1')||'[]');}catch{return [];}
+}
+function rememberSubmittedId(id){
+  const ids=localSubmittedIds();
+  if(!ids.includes(id)) ids.push(id);
+  localStorage.setItem('unbeaten_submitted_careers_v1', JSON.stringify(ids.slice(-150)));
+}
+function incrementFightersCreated(){
+  return db.collection("global_stats").doc("main").set({
+    fightersCreated: firebase.firestore.FieldValue.increment(1)
+  }, {merge:true}).then(loadGlobalStats).catch(e => console.error("Firebase error updating fightersCreated:", e));
+}
 
 function loadGlobalStats() {
   db.collection("global_stats").doc("main").get().then(doc => {
@@ -937,7 +1035,7 @@ function refreshMenu(){ const r=getRecords(); $('rec-streak').innerText=r.bestRe
 function selectMode(id){ S.mode=id; document.querySelectorAll('.mode-card').forEach(el=>el.classList.remove('selected')); $('mode-card-'+id).classList.add('selected'); }
 function valCls(v){ if(v==null)return'stat-tier-bad'; if(v>=99)return'stat-tier-ultra'; if(v>=95)return'stat-tier-legendary'; if(v>=90)return'stat-tier-mythic'; if(v>=85)return'stat-tier-epic'; if(v>=80)return'stat-tier-rare'; if(v>=75)return'stat-tier-uncommon'; if(v>=70)return'stat-tier-common'; if(v>=65)return'stat-tier-low'; if(v>=60)return'stat-tier-poor'; return'stat-tier-bad'; }
 function modeCfg(){ return MODE[S.career?.mode || S.mode || 'normal']; }
-function fresh(){ S.player={Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}; STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={mode:S.mode,currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:MODE[S.mode].rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0, firebaseCreatedCounted: false, firebaseCounted: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
+function fresh(){ S.player={Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}; STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:S.mode,currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:MODE[S.mode].rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0, firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
 function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?'('+(S.player.StatSources[st]||'Unknown')+')'+(S.player.PerfectSpinStats[st]?' • Perfect Spin':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
 function updateDraftTop(){ const cfg=modeCfg(); $('draft-mode-label').innerText=cfg.name; $('draft-rerolls-left').innerText=S.career.draftRerolls; $('reroll-btn').innerText='Use Re-Roll ('+S.career.draftRerolls+')'; $('reroll-btn').disabled=!S.awaiting || S.career.draftRerolls<=0; }
 function avgLegend(l){ return STATS.reduce((s,st)=>s+l[st],0)/STATS.length; }
@@ -964,15 +1062,22 @@ function archetype(s){ if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number
 function getBuildIdentity(stats){ if(!stats) return 'Balanced Fighter'; if(stats.Power>92 && stats.Heart>90) return 'Explosive Slugger'; if(stats.Defence>90 && stats['Ring IQ']>90 && stats.Accuracy>88) return 'Precision Technician'; if(stats.Chin>90 && stats.Recovery>90) return 'Durable Ironman'; if(stats.Speed>90 && stats.Footwork>90) return 'Elusive Outboxer'; if(hasTrait('body_snatcher')) return 'Body Attack Specialist'; if(hasTrait('counter_puncher')) return 'Counter Fighting Operator'; if((S.player.HiddenBonuses||[]).length>=2) return 'Synergy Monster'; return 'Balanced Fighter'; }
 function getWealthInfo(m){ if(m>=200000000) return ['All-Time Cash King','Top 0.1%']; if(m>=175000000) return ['Global Superstar','Top 0.25%']; if(m>=150000000) return ['PPV Mega Icon','Top 0.4%']; if(m>=125000000) return ['PPV Megastar','Top 0.5%']; if(m>=100000000) return ['Elite Earner','Top 1%']; if(m>=75000000) return ['World Attraction','Top 2%']; if(m>=50000000) return ['Main Event Star','Top 5%']; if(m>=25000000) return ['Top Contender Payday','Top 10%']; return ['Professional Fighter','Rising Tier']; }
 function goToHub(){ 
-  const nm=$('fighter-name-input').value.trim(); 
-  S.player.Name=nm?nm:S.player.Nickname; 
+  const input=$('fighter-name-input'), err=$('fighter-name-error');
+  const nm=cleanName(input.value); 
+  const nameCheck=validateFighterName(nm);
+  if(!nameCheck.ok){
+    err.innerText=nameCheck.msg;
+    err.classList.remove('ok');
+    input.focus();
+    return;
+  }
+  S.player.Name=nm; 
   if(S.traitsRolled<2){ alert('Spin both traits first.'); return; } 
   if(STATS.some(st=>S.player.Stats[st]==null)){ alert('Complete the draft first.'); return; } 
+  if(!S.career.id) S.career.id=makeId('career');
   if (!S.career.firebaseCreatedCounted) {
     S.career.firebaseCreatedCounted = true; 
-    db.collection("global_stats").doc("main").update({
-      fightersCreated: firebase.firestore.FieldValue.increment(1)
-    }).catch(e => console.error("Firebase error updating fightersCreated:", e));
+    incrementFightersCreated();
   }
   recalcRank(); 
   generateOpponent(); 
@@ -1014,16 +1119,175 @@ function disableHub(dis){ $('enter-ring-btn').disabled=dis; document.querySelect
 async function simMany(count){ if(S.career.currentFight>50||S.batch) return; S.batch=true; S.pendingHof=false; openOverlay('Simulating '+count+' bout'+(count>1?'s':'')+'...'); disableHub(true); let shown=0; try{ for(let i=0;i<count;i++){ if(S.career.currentFight>50) break; const r=simResult(); addSimCard(r); shown++; const delay=S.fast?80:(r.outcome.includes('KO')||r.outcome.includes('TKO')||r.outcome.includes('RTD'))?600:350; await sleep(delay); } }catch(e){ console.error(e); $('sim-subtitle').innerText='Simulation error: '+e.message; } $('sim-subtitle').innerText='Simulation complete • '+shown+' result'+(shown!==1?'s':'')+' shown'; showNextTease(); $('sim-close-btn').classList.remove('hidden'); $('sim-close-btn').innerText=S.pendingHof?'View Hall of Fame':'Return To Hub'; disableHub(false); S.batch=false; }
 async function simAll(){ if(S.career.currentFight>50||S.batch) return; await simMany(51-S.career.currentFight); }
 function leg(){ const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?(S.career.kos/total):0; let score=0; score+=S.career.wins*7; score-=S.career.losses*22; score-=S.career.draws*6; score+=S.career.kos*5; score+=S.career.belts.length*30; score+=Math.max(0,calculateOverall()-50)*2.5; score+=Math.floor(S.career.earnings/1000000)*0.9; score+=S.career.bestWinStreak*1.0; score+=(61-(S.career.bestWorldRank||60))*1.8; score+=Math.floor(koPct*55); score+=S.career.titleDef*8; if(S.career.losses===0&&S.career.wins>=30)score+=18; if(S.career.losses===0&&S.career.wins>=45)score+=28; if(S.career.wins===50&&S.career.losses===0&&S.career.draws===0)score+=52; if(S.career.belts.length===4)score+=24; if(S.career.bestWorldRank===1)score+=10; score=Math.max(0,Math.round(score)); if(S.career.wins===50&&S.career.losses===0&&S.career.draws===0&&S.career.belts.length===4) return {score,t:'GOAT (50-0 UNDISPUTED)',p:.2}; const x=HOF.find(h=>score>=h.min)||HOF[HOF.length-1]; return {score,t:x.t,p:x.p}; }
+function legacyBreakdownRows(){
+  const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?(S.career.kos/total):0, ovr=calculateOverall();
+  const rows=[
+    ['Wins', S.career.wins+' x 7', S.career.wins*7],
+    ['Losses', S.career.losses+' x -22', S.career.losses*-22],
+    ['Draws', S.career.draws+' x -6', S.career.draws*-6],
+    ['KO Wins', S.career.kos+' x 5', S.career.kos*5],
+    ['Belts', S.career.belts.length+' x 30', S.career.belts.length*30],
+    ['Overall Rating Bonus', 'Max(0, '+ovr+' - 50) x 2.5', Math.max(0,ovr-50)*2.5],
+    ['Lifetime Earnings', 'Millions x 0.9', Math.floor(S.career.earnings/1000000)*0.9],
+    ['Best Win Streak', (S.career.bestWinStreak||0)+' x 1', S.career.bestWinStreak*1.0],
+    ['Peak World Rank', '61 - '+(S.career.bestWorldRank||60)+' x 1.8', (61-(S.career.bestWorldRank||60))*1.8],
+    ['KO Percentage', Math.floor(koPct*100)+'%', Math.floor(koPct*55)],
+    ['Title Defenses', (S.career.titleDef||0)+' x 8', S.career.titleDef*8],
+    ['Unbeaten 30+ Wins Bonus', S.career.losses===0&&S.career.wins>=30?'Applied':'Not applied', S.career.losses===0&&S.career.wins>=30?18:0],
+    ['Unbeaten 45+ Wins Bonus', S.career.losses===0&&S.career.wins>=45?'Applied':'Not applied', S.career.losses===0&&S.career.wins>=45?28:0],
+    ['Perfect 50-0 Bonus', S.career.wins===50&&S.career.losses===0&&S.career.draws===0?'Applied':'Not applied', S.career.wins===50&&S.career.losses===0&&S.career.draws===0?52:0],
+    ['Undisputed Bonus', S.career.belts.length===4?'Applied':'Not applied', S.career.belts.length===4?24:0],
+    ['World Rank #1 Bonus', S.career.bestWorldRank===1?'Applied':'Not applied', S.career.bestWorldRank===1?10:0]
+  ];
+  return rows;
+}
+function toggleLegacyBreakdown(){
+  const panel=$('legacy-breakdown');
+  panel.classList.toggle('active');
+  if(!panel.classList.contains('active')) return;
+  const l=leg();
+  panel.innerHTML=legacyBreakdownRows().map(r=>'<div class="metric"><span>'+r[0]+': '+r[1]+'</span><strong>'+Math.round(r[2])+'</strong></div>').join('')+
+    '<div class="metric" style="border-bottom:none"><span>Final Career Legacy Score</span><strong>'+l.score+'</strong></div>';
+}
+function careerSnapshot(){
+  const l=leg(), stats=getPerm(), ovr=calculateOverall(), name=cleanName(S.player.Name), nameCheck=validateFighterName(name);
+  if(!nameCheck.ok) return null;
+  const record=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:'');
+  return {
+    fighterName:name,
+    fighterNameLower:name.toLowerCase(),
+    careerLegacyScore:l.score,
+    legacyTier:l.t,
+    wins:S.career.wins,
+    losses:S.career.losses,
+    draws:S.career.draws||0,
+    record,
+    koWins:S.career.kos,
+    finalRating:S.career.rating,
+    overallRating:ovr,
+    peakWorldRank:S.career.bestWorldRank||60,
+    beltsUnified:(S.career.belts||[]).length,
+    titleDefenses:S.career.titleDef||0,
+    lifetimeEarnings:S.career.earnings||0,
+    careerArchetype:archetype(stats).name,
+    buildIdentity:getBuildIdentity(stats),
+    gameMode:modeCfg().name,
+    gameModeId:S.career.mode||S.mode,
+    careerEndDate:new Date().toISOString(),
+    submittedAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+}
+async function ensureCurrentSeason(){
+  const ref=db.collection('seasons').doc('current');
+  const snap=await ref.get();
+  const now=Date.now();
+  if(!snap.exists){
+    currentSeason={id:'season_1',seasonNumber:1,startAtMillis:now,endAtMillis:now+SEASON_MS};
+    await ref.set(currentSeason);
+    return currentSeason;
+  }
+  currentSeason=snap.data();
+  if(now<currentSeason.endAtMillis) return currentSeason;
+  const ending=currentSeason;
+  const topSnap=await db.collection('seasonal_hall_of_fame').where('seasonId','==',ending.id).get();
+  const top10=topSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.careerLegacyScore||0)-(a.careerLegacyScore||0)).slice(0,10).map((entry,i)=>({...entry,rank:i+1}));
+  await db.collection('season_history').doc(ending.id).set({
+    seasonId:ending.id,
+    seasonNumber:ending.seasonNumber,
+    winner:top10[0]||null,
+    top10,
+    endedAt:new Date().toISOString(),
+    archivedAt:firebase.firestore.FieldValue.serverTimestamp()
+  }, {merge:true});
+  currentSeason={id:'season_'+(Number(ending.seasonNumber||1)+1),seasonNumber:Number(ending.seasonNumber||1)+1,startAtMillis:now,endAtMillis:now+SEASON_MS};
+  await ref.set(currentSeason);
+  return currentSeason;
+}
+async function submitCareerToHallOfFame(){
+  if(!S.career||S.career.wins<10||S.career.hofSubmitted) return;
+  const data=careerSnapshot();
+  if(!data){ console.warn("Hall Of Fame submission blocked by fighter name validation."); return; }
+  const id=S.career.hofSubmissionId || S.career.id || makeId('career');
+  S.career.hofSubmissionId=id;
+  if(localSubmittedIds().includes(id)){ S.career.hofSubmitted=true; return; }
+  const season=await ensureCurrentSeason();
+  await db.collection('completed_careers').doc(id).set({...data, careerId:id}, {merge:true});
+  await db.collection('seasonal_hall_of_fame').doc(id).set({...data, careerId:id, seasonId:season.id, seasonNumber:season.seasonNumber}, {merge:true});
+  S.career.hofSubmitted=true;
+  rememberSubmittedId(id);
+}
+function hofCard(entry, rank, showSeason=false){
+  const record=entry.record || ((entry.wins||0)+'-'+(entry.losses||0)+(entry.draws>0?'-'+entry.draws:''));
+  return '<div class="leaderboard-card"><div class="rank">#'+rank+'</div><div class="name">'+(entry.fighterName||'Unknown Fighter')+'</div><div class="sub"><span class="score">Legacy Score: '+(entry.careerLegacyScore||0)+'</span><br>Record: '+record+'<br>KO Wins: '+(entry.koWins||0)+(showSeason?'<br>Season '+(entry.seasonNumber||''):'')+'</div></div>';
+}
+async function loadPermanentHallOfFame(){
+  const box=$('permanent-hof-list');
+  box.innerHTML='<div class="empty-state">Loading Hall Of Fame...</div>';
+  try{
+    const snap=await db.collection('completed_careers').orderBy('careerLegacyScore','desc').limit(30).get();
+    box.innerHTML=snap.empty?'<div class="empty-state">No completed careers yet.</div>':snap.docs.map((d,i)=>hofCard(d.data(),i+1)).join('');
+  }catch(e){ box.innerHTML='<div class="empty-state">Unable to load Hall Of Fame.</div>'; console.error(e); }
+}
+async function loadSeasonalHallOfFame(){
+  const box=$('seasonal-hof-list');
+  box.innerHTML='<div class="empty-state">Loading season...</div>';
+  try{
+    const season=await ensureCurrentSeason();
+    startSeasonCountdown(season);
+    const snap=await db.collection('seasonal_hall_of_fame').where('seasonId','==',season.id).get();
+    const rows=snap.docs.map(d=>d.data()).sort((a,b)=>(b.careerLegacyScore||0)-(a.careerLegacyScore||0)).slice(0,30);
+    box.innerHTML=!rows.length?'<div class="empty-state">No seasonal careers yet.</div>':rows.map((entry,i)=>hofCard(entry,i+1)).join('');
+  }catch(e){ box.innerHTML='<div class="empty-state">Unable to load seasonal leaderboard.</div>'; console.error(e); }
+}
+async function loadSeasonHistory(){
+  const box=$('season-history-list');
+  box.innerHTML='<div class="empty-state">Loading history...</div>';
+  try{
+    const snap=await db.collection('season_history').orderBy('seasonNumber','desc').limit(20).get();
+    box.innerHTML=snap.empty?'<div class="empty-state">No completed seasons yet.</div>':snap.docs.map(d=>{
+      const s=d.data(), w=s.winner||{};
+      return '<div class="leaderboard-card"><div class="rank">Season '+(s.seasonNumber||'')+' Winner</div><div class="name">'+(w.fighterName||'No winner')+'</div><div class="sub"><span class="score">Legacy Score '+(w.careerLegacyScore||0)+'</span></div></div>';
+    }).join('');
+  }catch(e){ box.innerHTML='<div class="empty-state">Unable to load season history.</div>'; console.error(e); }
+}
+function startSeasonCountdown(season){
+  clearInterval(seasonTimer);
+  const tick=()=>{
+    const left=Math.max(0,season.endAtMillis-Date.now()), d=Math.floor(left/86400000), h=Math.floor((left%86400000)/3600000), m=Math.floor((left%3600000)/60000);
+    if($('season-countdown')) $('season-countdown').innerText=d+' Days '+h+' Hours '+m+' Minutes';
+    if(left<=0){ clearInterval(seasonTimer); loadSeasonalHallOfFame(); loadSeasonHistory(); }
+  };
+  tick();
+  seasonTimer=setInterval(tick,60000);
+}
+function showHofTab(tab){
+  ['permanent','seasonal','history'].forEach(t=>{
+    $('tab-'+t).classList.toggle('active',t===tab);
+    $(t+'-hof-tab').classList.toggle('hidden',t!==tab);
+  });
+  if(tab==='permanent') loadPermanentHallOfFame();
+  if(tab==='seasonal') loadSeasonalHallOfFame();
+  if(tab==='history') loadSeasonHistory();
+}
+function openHallOfFame(){
+  screen('global-hof-screen');
+  showHofTab('permanent');
+  loadSeasonalHallOfFame();
+  loadSeasonHistory();
+}
 function better(cand,rec){ const parse=r=>{ const p=(r||'0-0').split('-').map(n=>parseInt(n,10)||0); return {w:p[0]||0,l:p[1]||0,d:p[2]||0}; }; const b=parse(rec), c={w:cand.wins,l:cand.losses,d:cand.draws}; if(rec==='0-0'&&c.w>0) return true; if(c.l<b.l) return true; if(c.l>b.l) return false; if(c.w>b.w) return true; if(c.w<b.w) return false; return c.d<b.d; }
 function triggerHof(){ 
   screen('hof-screen'); 
+  const breakdown=$('legacy-breakdown');
+  if(breakdown){ breakdown.classList.remove('active'); breakdown.innerHTML=''; }
   if (S.career.wins === 50 && S.career.losses === 0 && S.career.draws === 0 && !S.career.firebaseCounted) {
     S.career.firebaseCounted = true; 
-    db.collection("global_stats").doc("main").update({
+    db.collection("global_stats").doc("main").set({
       total50And0s: firebase.firestore.FieldValue.increment(1),
       weekly50And0s: firebase.firestore.FieldValue.increment(1)
-    }).catch(e => console.error("Firebase error updating 50-0 stats:", e));
+    }, {merge:true}).catch(e => console.error("Firebase error updating 50-0 stats:", e));
   }
+  submitCareerToHallOfFame().catch(e => console.error("Hall Of Fame submission failed:", e));
   const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?Math.floor((S.career.kos/total)*100):0, a=archetype(getPerm()).name, l=leg(), ovr=calculateOverall(), wealth=getWealthInfo(S.career.earnings), identity=getBuildIdentity(getPerm()); $('hof-tier').innerText=l.t; $('hof-pct').innerText='Top '+l.p+'% Career'; $('hof-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hof-kos').innerText=S.career.kos+' KO'; $('hof-kopct').innerText=koPct+'%'; $('hof-earnings').innerText=cash(S.career.earnings); $('hof-wealth').innerText=wealth[0]+' ('+wealth[1]+' Earners)'; $('hof-best-purse').innerText=cash(S.career.bestPurse||0); $('hof-belts').innerText=S.career.belts.length+' / 4 Belts'; $('hof-title-def').innerText=S.career.titleDef||0; $('hof-rating').innerText=''+S.career.rating; $('hof-ovr').innerText=''+ovr; $('hof-best-rank').innerText='#'+S.career.bestWorldRank; $('hof-score').innerText=''+l.score; $('hof-arch').innerText=a; $('hof-identity').innerText=identity; $('hof-mode').innerText=modeCfg().name; const r=getRecords(), finalRec=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); if(better(S.career,r.bestRecord)) r.bestRecord=finalRec; if(S.career.earnings>r.mostMoney) r.mostMoney=S.career.earnings; if(S.career.kos>r.mostKOs) r.mostKOs=S.career.kos; const prior={'None':0,'GOAT (50-0 UNDISPUTED)':1000}; HOF.slice().reverse().forEach((h,i)=>prior[h.t]=i+1); if((prior[l.t]||0)>(prior[r.bestTier]||0)) r.bestTier=l.t; saveRecords(r); refreshMenu(); 
 }
 function showHistory(){ const p=$('full-history'); p.innerHTML=''; if(!S.career.fullHistory.length) p.innerHTML='<div style="color:var(--muted);text-align:center">No fight history recorded.</div>'; else S.career.fullHistory.forEach(line=>{ const d=document.createElement('div'); d.innerText=line; p.appendChild(d); }); screen('history-screen'); }
