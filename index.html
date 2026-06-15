@@ -2,68 +2,636 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>UNBEATEN: 50-0 | Final Release v1.1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0a" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>UNBEATEN: 50-0 | Premium Edition</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
-:root{--bg:#0f0f10;--panel:#181818;--panel2:#202020;--text:#f5f5f5;--muted:#9a9a9a;--gold:#d4af37;--green:#2ecc71;--blue:#3498db;--red:#e74c3c;--purple:#9b59b6;--pink:#ec4899;--teal:#14b8a6;--orange:#e67e22;--crimson:#be123c;--platinum:#dfe8ff;--money:#0f9d58;}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Roboto,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:radial-gradient(circle at top,#1b1b1b 0,#090909 65%);color:var(--text);display:flex;justify-content:center;align-items:center;min-height:100vh;padding:6px}
-.app{width:100%;max-width:500px;min-height:860px;background:linear-gradient(180deg,#141414,#0f0f0f);border:2px solid #2b2b2b;border-radius:18px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.85);position:relative}
-header{padding:14px 16px;text-align:center;background:#050505;border-bottom:2px solid var(--gold)}header h1{font-size:1.58rem;color:var(--gold);letter-spacing:1.5px}header p{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.version{font-size:.72rem;color:var(--muted);margin-top:4px}
-.screen{display:none;flex-direction:column;padding:12px;min-height:calc(860px - 78px);overflow-y:auto}.screen.active{display:flex}.hidden{display:none!important}
-h2{font-size:1.04rem;color:var(--gold);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #2a2a2a;text-transform:uppercase;letter-spacing:1px}.subtle{font-size:.82rem;color:var(--muted);line-height:1.45;margin-bottom:12px}
-.panel,.mode-card,.opponent-card,.history-panel,.spin-card,.trait-spin-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid #303030;border-radius:12px;padding:12px;margin-bottom:14px}.spin-card,.trait-spin-card{background:#000;border:2px dashed #444;text-align:center}
-.mode-grid,.draft-grid,.two-col,.quad{display:grid;gap:8px}.mode-grid{grid-template-columns:1fr}.draft-grid{grid-template-columns:1fr 1fr}.two-col,.quad{grid-template-columns:1fr 1fr}.mode-card{cursor:pointer}.mode-card.selected{border-color:var(--gold);box-shadow:0 0 0 1px rgba(212,175,55,.22),0 0 14px rgba(212,175,55,.08)}.mode-title{font-size:.95rem;font-weight:900;color:#fff;margin-bottom:4px}.mode-sub{font-size:.78rem;color:var(--muted);line-height:1.4}
-.row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px;font-size:.88rem}.row:last-child{margin-bottom:0}.row span:last-child{color:var(--gold);font-weight:900;text-align:right}
-.btn{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #444;background:linear-gradient(135deg,#232323,#111);color:#fff;font-size:.88rem;font-weight:900;text-transform:uppercase;letter-spacing:.8px;cursor:pointer;margin-bottom:10px}.btn:hover{filter:brightness(1.05)}.btn:active{transform:scale(.985)}.btn:disabled{opacity:.45;cursor:not-allowed;filter:none;transform:none}.gold{background:linear-gradient(135deg,var(--gold),#aa841c)!important;border:none!important;color:#000!important}.blue{background:linear-gradient(135deg,#2b6cb0,#194574)!important;border:none!important}.red{background:linear-gradient(135deg,#8b1f1f,#5a1010)!important;border:none!important}.ghost{background:rgba(255,255,255,.05)!important;border:1px solid rgba(255,255,255,.12)!important}.share{background:linear-gradient(135deg,#25D366,#128C7E)!important;border:none!important}
-.hero{text-align:center;font-size:4.6rem;margin:16px 0}.tag-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}.tag{font-size:.66rem;padding:4px 7px;border-radius:999px;border:1px solid #333;background:#222;font-weight:900;text-transform:uppercase;color:#ccc}.tag.gold{background:rgba(212,175,55,.14);color:var(--gold);border-color:rgba(212,175,55,.35)}.tag.green{background:rgba(46,204,113,.12);color:var(--green);border-color:rgba(46,204,113,.35)}.tag.blue{background:rgba(52,152,219,.12);color:var(--blue);border-color:rgba(52,152,219,.35)}.tag.purple{background:rgba(155,89,182,.14);color:#d5a6ff;border-color:rgba(155,89,182,.35)}.tag.orange{background:rgba(230,126,34,.14);color:var(--orange);border-color:rgba(230,126,34,.35)}
-.slot{height:110px;display:flex;flex-direction:column;justify-content:center;gap:5px}.slot-item{font-size:1rem;color:var(--muted);opacity:.4}.slot-item.win{font-size:1.46rem;color:#fff;opacity:1;font-weight:900}.legend-pill{display:inline-block;margin-top:8px;padding:5px 8px;border-radius:999px;border:1px solid #333;font-size:.66rem;font-weight:900;text-transform:uppercase}.legend-pill.standard{color:var(--gold);background:rgba(212,175,55,.12)}.legend-pill.cult{color:var(--orange);background:rgba(230,126,34,.12)}.legend-pill.crossover{color:var(--pink);background:rgba(236,72,153,.12)}.legend-pill.prospect{color:var(--blue);background:rgba(52,152,219,.14)}.legend-pill.gatekeeper{color:#d6d6d6;background:rgba(255,255,255,.06)}.legend-pill.low{color:#ff9ab5;background:rgba(190,18,60,.12)}.legend-pill.spoiler{color:var(--teal);background:rgba(20,184,166,.12)}.perfect{font-size:.72rem;min-height:18px;margin-top:10px;font-weight:900;color:var(--gold);text-transform:uppercase}.perfect.active{color:var(--platinum);text-shadow:0 0 8px rgba(255,255,255,.5)}
-.draft-btn{background:var(--panel2);border:1px solid #333;border-radius:8px;padding:9px 10px;display:flex;flex-direction:column;gap:4px;text-align:left;min-height:76px;color:#fff}.draft-btn .top{display:flex;justify-content:space-between;gap:8px}.draft-btn.locked{border-color:#2ecc71;background:rgba(46,204,113,.08)}.draft-btn.choice{border-color:var(--blue);box-shadow:0 0 0 1px rgba(52,152,219,.25),0 0 14px rgba(52,152,219,.12)}.draft-src{font-size:.65rem;color:var(--muted);line-height:1.15;min-height:14px}.draft-src.perfect{color:var(--platinum)}
-.name-input{width:100%;padding:12px;border-radius:8px;border:1px solid #444;background:#111;color:#fff;text-align:center;font-size:1rem;outline:none}.name-input:focus{border-color:var(--gold)}
-.record-badge{font-size:1.84rem;font-weight:900;margin:4px 0}.record-badge.unbeaten{color:var(--gold)}.record-badge.flawed{color:#fff}.money-dark{color:var(--money)!important;font-weight:900}.belt-row{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin-top:8px}.belt{font-size:.64rem;background:#222;color:#666;padding:3px 7px;border-radius:4px;border:1px solid #333;font-weight:900}.belt.on{background:linear-gradient(135deg,#aa841c,var(--gold));color:#000;border-color:#fff}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}.stat-card{background:rgba(255,255,255,.03);border:1px solid #2b2b2b;border-radius:8px;padding:7px 8px;display:flex;flex-direction:column;gap:3px;min-height:56px}.stat-head{display:flex;justify-content:space-between;gap:8px}.stat-source{font-size:.64rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chip-wrap{display:flex;gap:6px;flex-wrap:wrap}.chip{font-size:.64rem;padding:6px 8px;border-radius:999px;border:1px solid #333;background:rgba(255,255,255,.03);font-weight:900;text-transform:uppercase;position:relative}.chip.common{color:#ddd}.chip.uncommon{color:var(--green);background:rgba(46,204,113,.08);border-color:rgba(46,204,113,.3)}.chip.rare{color:var(--blue);background:rgba(52,152,219,.08);border-color:rgba(52,152,219,.3)}.chip.epic{color:#d5a6ff;background:rgba(155,89,182,.10);border-color:rgba(155,89,182,.3)}.chip.legendary{color:var(--gold);background:rgba(212,175,55,.10);border-color:rgba(212,175,55,.3)}.chip.cursed{color:#ff9bb7;background:rgba(190,18,60,.10);border-color:rgba(190,18,60,.3)}.chip.secret{color:var(--teal);background:rgba(20,184,166,.08);border-color:rgba(20,184,166,.3)}
-.trait-pill{background:var(--panel2);border-left:4px solid var(--gold);padding:10px;border-radius:8px;margin-bottom:8px}.trait-pill.negative{border-left-color:var(--red)}.trait-pill.uncommon{border-left-color:var(--green)}.trait-pill.rare{border-left-color:var(--blue)}.trait-pill.epic{border-left-color:var(--purple)}.trait-pill.legendary{border-left-color:var(--gold)}.trait-pill.cursed{border-left-color:var(--crimson)}.trait-pill.secret{border-left-color:var(--teal)}.trait-title{font-weight:900;color:#fff;margin-bottom:3px}.trait-chip{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:999px;font-size:.62rem;font-weight:900;text-transform:uppercase;border:1px solid rgba(255,255,255,.12)}.trait-chip.common{color:#ddd}.trait-chip.uncommon{color:var(--green);background:rgba(46,204,113,.12)}.trait-chip.rare{color:var(--blue);background:rgba(52,152,219,.12)}.trait-chip.epic{color:#d5a6ff;background:rgba(155,89,182,.15)}.trait-chip.legendary{color:var(--gold);background:rgba(212,175,55,.15)}.trait-chip.cursed{color:#ff9ab5;background:rgba(190,18,60,.16)}.trait-chip.secret{color:var(--teal);background:rgba(20,184,166,.14)}
-.bar-label{font-size:.64rem;color:var(--muted);text-transform:uppercase;margin-top:6px;margin-bottom:3px}.bar{background:#333;height:7px;border-radius:4px;overflow:hidden}.fill{height:100%;background:var(--green);width:100%;transition:width .2s ease}.fill.blue{background:var(--blue)}.arena-top{display:flex;justify-content:space-between;gap:10px;background:#000;padding:12px;border-radius:10px;margin-bottom:14px}.corner{width:42%;text-align:center}.corner h3{font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vs{width:16%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:900}.log{background:#050505;border:1px solid #222;border-radius:10px;flex:1;min-height:300px;max-height:300px;overflow-y:auto;padding:12px;margin-bottom:14px;font-family:Consolas,monospace;font-size:.78rem}.line{margin-bottom:6px;border-left:2px solid #444;padding-left:6px}.line.system{color:var(--gold);font-weight:900}.line.kd{color:var(--red);font-weight:900;background:rgba(231,76,60,.08);padding:4px;border-radius:4px}.line.crit{color:#8bd3ff;font-weight:900;border-left-color:var(--blue)}.line.cut{color:#ffbeb8;font-weight:900;border-left-color:#ff8373}.line.info{color:#bdbdbd;border-left-color:#666}
-.hof-box{background:#000;border:2px solid var(--gold);border-radius:15px;padding:20px;text-align:center;margin:15px 0}.hof-tier{font-size:1.72rem;font-weight:900;color:var(--gold);line-height:1.16}.hof-pct{margin-top:10px;color:var(--platinum);font-size:1rem;font-weight:900}.metric{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #222;font-size:.93rem}.metric strong{text-align:right}
-.overall-banner{display:flex;justify-content:space-between;align-items:center;background:#0c0c0c;border:1px solid #2f2f2f;border-radius:10px;padding:10px 12px;margin-bottom:14px}.overall-banner .label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}.overall-banner .value{font-size:1.2rem;font-weight:900;color:var(--gold)}
-#sim-overlay{position:absolute;inset:0;background:rgba(0,0,0,.92);z-index:999;display:flex;flex-direction:column;padding:12px}
-.sim-card{width:100%;height:100%;display:flex;flex-direction:column;background:linear-gradient(180deg,#111,#090909);border:2px solid var(--gold);border-radius:16px;overflow:hidden}
-.sim-header{padding:14px 16px;border-bottom:1px solid #333;flex-shrink:0}
-.sim-header h2{margin-bottom:6px}
-.sim-body{flex:1;overflow-y:auto;padding:12px 16px}
+/* ============================================================
+   UNBEATEN: 50-0 — Premium Mobile UI
+   Design tokens, fluid type, safe-area aware, touch-first
+============================================================ */
+:root{
+  --bg:#08090b;
+  --bg-2:#0e1014;
+  --panel:#15171c;
+  --panel-2:#1c1f26;
+  --panel-3:#22262f;
+  --line:#2a2e38;
+  --line-2:#363b47;
+  --text:#f3f4f6;
+  --text-dim:#aab0bd;
+  --muted:#7a818f;
+  --gold:#e6c247;
+  --gold-2:#b9912a;
+  --gold-glow:rgba(230,194,71,.35);
+  --green:#2ecc71;
+  --blue:#3b9bff;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --pink:#ec4899;
+  --teal:#14b8a6;
+  --orange:#f59e0b;
+  --crimson:#dc2626;
+  --platinum:#e7eeff;
+  --money:#16a34a;
+  --shadow-lg: 0 24px 60px -12px rgba(0,0,0,.85), 0 8px 24px -8px rgba(0,0,0,.6);
+  --shadow-card: 0 6px 18px -8px rgba(0,0,0,.7);
+  --shadow-inset: inset 0 1px 0 rgba(255,255,255,.04);
+  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+  --tap: 44px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{height:100%;overscroll-behavior-y:none}
+body{
+  font-family:'Inter','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #1a1d24 0, transparent 60%),
+    radial-gradient(800px 400px at 50% 110%, #14171c 0, transparent 60%),
+    linear-gradient(180deg, #07080a 0%, #050608 100%);
+  color:var(--text);
+  display:flex;justify-content:center;align-items:flex-start;
+  min-height:100vh;min-height:100dvh;
+  padding:max(8px, var(--safe-top)) 8px max(8px, var(--safe-bottom));
+  font-size:15px;line-height:1.5;
+  letter-spacing:-0.01em;
+}
+.app{
+  width:100%;max-width:520px;min-height:calc(100dvh - 16px);
+  background:linear-gradient(180deg,#121418 0%, #0b0c0f 100%);
+  border:1px solid var(--line);
+  border-radius:var(--radius-xl);
+  overflow:hidden;
+  box-shadow:var(--shadow-lg), var(--shadow-inset);
+  position:relative;
+  display:flex;flex-direction:column;
+}
+header{
+  padding:18px 18px 16px;
+  text-align:center;
+  background:linear-gradient(180deg,#0a0b0e 0%,#070809 100%);
+  border-bottom:1px solid rgba(230,194,71,.25);
+  position:relative;
+  flex-shrink:0;
+}
+header::after{
+  content:'';position:absolute;left:50%;bottom:-1px;width:60%;height:2px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent 0%,var(--gold) 50%,transparent 100%);
+  filter:blur(.5px);
+}
+header h1{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:clamp(1.8rem, 5.5vw, 2.3rem);
+  color:var(--gold);
+  letter-spacing:3px;
+  line-height:1;
+  text-shadow:0 2px 12px rgba(230,194,71,.25);
+  font-weight:400;
+}
+header p{
+  font-size:.72rem;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:2px;
+  margin-top:6px;font-weight:600;
+}
+.version{font-size:.65rem;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+.sound-toggle{
+  position:absolute;top:14px;right:14px;
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+  color:var(--text-dim);
+  font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s ease;
+  z-index:10;
+}
+.sound-toggle:hover{background:rgba(255,255,255,.08);color:var(--gold);border-color:var(--gold)}
+.sound-toggle:active{transform:scale(.92)}
+.screen{
+  display:none;flex-direction:column;
+  padding:16px 16px 24px;
+  flex:1;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  animation:fadeIn .25s ease;
+}
+.screen.active{display:flex}
+.hidden{display:none !important}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+h2{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:1rem;color:var(--gold);
+  margin:18px 0 12px;padding-bottom:8px;
+  border-bottom:1px solid var(--line);
+  text-transform:uppercase;letter-spacing:2.5px;
+  font-weight:400;
+  position:relative;
+}
+h2:first-child{margin-top:4px}
+h2::before{
+  content:'';position:absolute;left:0;bottom:-1px;width:32px;height:2px;
+  background:var(--gold);
+}
+.subtle{font-size:.83rem;color:var(--text-dim);line-height:1.55;margin-bottom:14px}
+.panel,.mode-card,.opponent-card,.history-panel,.spin-card,.trait-spin-card{
+  background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow-card), var(--shadow-inset);
+}
+.spin-card,.trait-spin-card{
+  background:linear-gradient(180deg,#050608 0%,#020203 100%);
+  border:1px dashed var(--line-2);
+  text-align:center;
+  padding:18px 14px;
+}
+.hero{
+  text-align:center;font-size:clamp(3.5rem, 12vw, 4.6rem);
+  margin:8px 0 4px;
+  filter:drop-shadow(0 4px 16px rgba(230,194,71,.2));
+  animation:bob 4s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.global-stats{
+  background:linear-gradient(135deg,#1a1d24 0%,#101216 100%);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:4px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow-card);
+  position:relative;
+  overflow:hidden;
+}
+.global-stats::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(400px 100px at 50% 0%, rgba(230,194,71,.08), transparent 70%);
+  pointer-events:none;
+}
+.stat-pill{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 14px;
+  border-radius:10px;
+  font-size:.88rem;
+  position:relative;
+}
+.stat-pill + .stat-pill{border-top:1px solid rgba(255,255,255,.04)}
+.stat-pill .label{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-weight:500}
+.stat-pill .label .ico{font-size:1.15rem;width:24px;text-align:center}
+.stat-pill .value{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:1.3rem;color:var(--gold);font-weight:400;letter-spacing:1px;
+  text-shadow:0 0 14px rgba(230,194,71,.25);
+}
+.stat-pill .value.loading{color:var(--muted);font-size:.85rem;font-family:'Inter',sans-serif;letter-spacing:0;text-shadow:none}
+.row{
+  display:flex;justify-content:space-between;gap:14px;align-items:center;
+  margin-bottom:10px;font-size:.88rem;
+}
+.row:last-child{margin-bottom:0}
+.row > span:first-child{color:var(--text-dim);font-weight:500}
+.row > span:last-child{color:var(--gold);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.btn{
+  width:100%;min-height:var(--tap);
+  padding:13px 14px;
+  border-radius:12px;
+  border:1px solid var(--line-2);
+  background:linear-gradient(180deg,#2a2e38 0%,#1a1d24 100%);
+  color:#fff;
+  font-family:'Inter',sans-serif;
+  font-size:.92rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:1.2px;
+  cursor:pointer;
+  margin-bottom:10px;
+  transition:transform .08s ease, filter .15s ease, box-shadow .15s ease;
+  box-shadow:0 2px 0 rgba(0,0,0,.4), var(--shadow-inset);
+  position:relative;
+  overflow:hidden;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,.4)}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.5);transform:none}
+.btn.gold{
+  background:linear-gradient(180deg,#f0d05a 0%,#c69a25 100%) !important;
+  border:1px solid #d4a82a !important;
+  color:#0a0a0a !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.2);
+  box-shadow:0 2px 0 #8a6816, 0 0 24px rgba(230,194,71,.18);
+}
+.btn.gold:hover{box-shadow:0 2px 0 #8a6816, 0 0 32px rgba(230,194,71,.28)}
+.btn.blue{
+  background:linear-gradient(180deg,#3b9bff 0%,#1c5fbf 100%) !important;
+  border:1px solid #2773d4 !important;
+  box-shadow:0 2px 0 #143d80, 0 0 18px rgba(59,155,255,.18);
+}
+.btn.red{
+  background:linear-gradient(180deg,#ef4444 0%,#a91d1d 100%) !important;
+  border:1px solid #c22828 !important;
+  box-shadow:0 2px 0 #6b1414;
+}
+.btn.ghost{
+  background:rgba(255,255,255,.03) !important;
+  border:1px solid var(--line) !important;
+  color:var(--text-dim) !important;
+  box-shadow:none;
+}
+.btn.share{
+  background:linear-gradient(180deg,#25D366 0%,#0f6e4e 100%) !important;
+  border:1px solid #128C7E !important;
+  box-shadow:0 2px 0 #0a4f38;
+}
+.mode-grid{display:flex;flex-direction:column;gap:10px}
+.mode-card{
+  cursor:pointer;margin-bottom:0;
+  padding:14px;
+  transition:border-color .2s ease, transform .08s ease, box-shadow .2s ease;
+  position:relative;
+}
+.mode-card:active{transform:scale(.99)}
+.mode-card.selected{
+  border-color:var(--gold);
+  background:linear-gradient(180deg,rgba(230,194,71,.08) 0%, rgba(230,194,71,.02) 100%);
+  box-shadow:0 0 0 1px var(--gold-glow), 0 0 24px rgba(230,194,71,.1);
+}
+.mode-card.selected::after{
+  content:'✓';position:absolute;top:12px;right:14px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--gold);color:#0a0a0a;
+  font-size:.75rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+}
+.mode-title{font-size:1rem;font-weight:900;color:#fff;margin-bottom:4px;letter-spacing:.2px}
+.mode-sub{font-size:.78rem;color:var(--text-dim);line-height:1.5}
+.name-input{
+  width:100%;min-height:var(--tap);
+  padding:14px;
+  border-radius:12px;
+  border:1px solid var(--line-2);
+  background:#0a0b0e;
+  color:#fff;text-align:center;
+  font-size:1rem;font-weight:600;
+  font-family:'Inter',sans-serif;
+  outline:none;
+  transition:border-color .2s ease, box-shadow .2s ease;
+  letter-spacing:.5px;
+}
+.name-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(230,194,71,.15)}
+.name-input::placeholder{color:var(--muted)}
+.draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.draft-btn{
+  background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:11px;
+  display:flex;flex-direction:column;gap:4px;
+  text-align:left;min-height:78px;
+  color:#fff;
+  font-family:'Inter',sans-serif;
+  cursor:pointer;
+  transition:all .15s ease;
+  box-shadow:var(--shadow-card);
+}
+.draft-btn:active:not(:disabled){transform:scale(.98)}
+.draft-btn .top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.draft-btn .top span{font-size:.78rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
+.draft-btn .top strong{font-size:1.4rem;font-weight:900;font-variant-numeric:tabular-nums;font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:1px}
+.draft-btn.locked{
+  border-color:rgba(46,204,113,.5);
+  background:linear-gradient(180deg,rgba(46,204,113,.10) 0%, rgba(46,204,113,.02) 100%);
+}
+.draft-btn.choice{
+  border-color:var(--blue);
+  box-shadow:0 0 0 1px rgba(59,155,255,.3), 0 0 18px rgba(59,155,255,.15);
+  animation:choicePulse 1.4s ease-in-out infinite;
+}
+@keyframes choicePulse{
+  0%,100%{box-shadow:0 0 0 1px rgba(59,155,255,.3), 0 0 18px rgba(59,155,255,.15)}
+  50%{box-shadow:0 0 0 1px rgba(59,155,255,.5), 0 0 24px rgba(59,155,255,.3)}
+}
+.draft-src{font-size:.66rem;color:var(--muted);line-height:1.3;min-height:15px;font-weight:500}
+.draft-src.perfect{color:var(--platinum);text-shadow:0 0 6px rgba(231,238,255,.4)}
+.tag-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.tag{
+  font-size:.66rem;padding:4px 9px;border-radius:999px;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);
+  font-weight:800;text-transform:uppercase;color:#c4c8d2;
+  letter-spacing:.5px;
+}
+.tag.gold{background:rgba(230,194,71,.12);color:var(--gold);border-color:rgba(230,194,71,.4)}
+.tag.green{background:rgba(46,204,113,.12);color:var(--green);border-color:rgba(46,204,113,.4)}
+.tag.blue{background:rgba(59,155,255,.12);color:var(--blue);border-color:rgba(59,155,255,.4)}
+.tag.purple{background:rgba(168,85,247,.14);color:#d5a6ff;border-color:rgba(168,85,247,.4)}
+.tag.orange{background:rgba(245,158,11,.14);color:var(--orange);border-color:rgba(245,158,11,.4)}
+.slot{height:120px;display:flex;flex-direction:column;justify-content:center;gap:4px;position:relative}
+.slot::before,.slot::after{
+  content:'';position:absolute;left:0;right:0;height:30px;pointer-events:none;
+}
+.slot::before{top:0;background:linear-gradient(180deg,#020203 0%, transparent 100%)}
+.slot::after{bottom:0;background:linear-gradient(0deg,#020203 0%, transparent 100%)}
+.slot-item{font-size:.95rem;color:var(--muted);opacity:.5;transition:all .2s ease;font-weight:600}
+.slot-item.win{
+  font-size:1.5rem;color:#fff;opacity:1;font-weight:900;
+  font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:1.5px;
+  text-shadow:0 0 16px rgba(255,255,255,.2);
+}
+.legend-pill{
+  display:inline-block;margin-top:10px;padding:6px 12px;border-radius:999px;
+  border:1px solid var(--line);font-size:.68rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;
+}
+.legend-pill.standard{color:var(--gold);background:rgba(230,194,71,.12);border-color:rgba(230,194,71,.4)}
+.legend-pill.cult{color:var(--orange);background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.4)}
+.legend-pill.crossover{color:var(--pink);background:rgba(236,72,153,.12);border-color:rgba(236,72,153,.4)}
+.legend-pill.prospect{color:var(--blue);background:rgba(59,155,255,.14);border-color:rgba(59,155,255,.4)}
+.legend-pill.gatekeeper{color:#d6d6d6;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15)}
+.legend-pill.low{color:#ff9ab5;background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.4)}
+.legend-pill.spoiler{color:var(--teal);background:rgba(20,184,166,.12);border-color:rgba(20,184,166,.4)}
+.perfect{font-size:.75rem;min-height:20px;margin-top:12px;font-weight:900;color:var(--gold);text-transform:uppercase;letter-spacing:.8px}
+.perfect.active{
+  color:var(--platinum);
+  text-shadow:0 0 12px rgba(231,238,255,.7), 0 0 24px rgba(231,238,255,.3);
+  animation:heavenPulse 1.6s ease-in-out infinite;
+}
+@keyframes heavenPulse{0%,100%{opacity:1}50%{opacity:.75}}
+.trait-pill{
+  background:linear-gradient(90deg,var(--panel-2) 0%, var(--panel) 100%);
+  border-left:4px solid var(--gold);
+  border-top:1px solid var(--line);
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:12px 14px;border-radius:10px;margin-bottom:8px;
+  box-shadow:var(--shadow-card);
+}
+.trait-pill.negative{border-left-color:var(--red)}
+.trait-pill.uncommon{border-left-color:var(--green)}
+.trait-pill.rare{border-left-color:var(--blue)}
+.trait-pill.epic{border-left-color:var(--purple)}
+.trait-pill.legendary{border-left-color:var(--gold);box-shadow:var(--shadow-card), 0 0 18px rgba(230,194,71,.12)}
+.trait-pill.cursed{border-left-color:var(--crimson)}
+.trait-pill.secret{border-left-color:var(--teal)}
+.trait-title{font-weight:900;color:#fff;margin-bottom:4px;font-size:.95rem}
+.trait-pill > div:nth-child(2){font-size:.82rem;color:var(--text-dim);line-height:1.45}
+.trait-chip{display:inline-block;margin-top:7px;padding:4px 9px;border-radius:999px;font-size:.62rem;font-weight:900;text-transform:uppercase;border:1px solid rgba(255,255,255,.12);letter-spacing:.5px}
+.trait-chip.common{color:#ddd}
+.trait-chip.uncommon{color:var(--green);background:rgba(46,204,113,.12)}
+.trait-chip.rare{color:var(--blue);background:rgba(59,155,255,.12)}
+.trait-chip.epic{color:#d5a6ff;background:rgba(168,85,247,.15)}
+.trait-chip.legendary{color:var(--gold);background:rgba(230,194,71,.15)}
+.trait-chip.cursed{color:#ff9ab5;background:rgba(220,38,38,.16)}
+.trait-chip.secret{color:var(--teal);background:rgba(20,184,166,.14)}
+.chip-wrap{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:.66rem;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.chip.common{color:#ddd}
+.chip.uncommon{color:var(--green);background:rgba(46,204,113,.08);border-color:rgba(46,204,113,.3)}
+.chip.rare{color:var(--blue);background:rgba(59,155,255,.08);border-color:rgba(59,155,255,.3)}
+.chip.epic{color:#d5a6ff;background:rgba(168,85,247,.10);border-color:rgba(168,85,247,.3)}
+.chip.legendary{color:var(--gold);background:rgba(230,194,71,.10);border-color:rgba(230,194,71,.3)}
+.chip.cursed{color:#ff9bb7;background:rgba(220,38,38,.10);border-color:rgba(220,38,38,.3)}
+.chip.secret{color:var(--teal);background:rgba(20,184,166,.08);border-color:rgba(20,184,166,.3)}
+.trait-reel{
+  min-height:48px;display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;font-weight:900;color:var(--gold);text-align:center;
+  font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:1.5px;
+  text-shadow:0 0 14px rgba(230,194,71,.2);
+}
+.record-badge{
+  font-size:clamp(2rem, 7vw, 2.4rem);font-weight:900;margin:6px 0;
+  font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:3px;
+}
+.record-badge.unbeaten{color:var(--gold);text-shadow:0 0 20px rgba(230,194,71,.4)}
+.record-badge.flawed{color:#fff}
+.money-dark{color:var(--money) !important;font-weight:900;font-variant-numeric:tabular-nums}
+.belt-row{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:10px}
+.belt{
+  font-size:.65rem;background:#1a1d24;color:#5a6072;
+  padding:4px 9px;border-radius:5px;border:1px solid var(--line);
+  font-weight:900;letter-spacing:1px;
+}
+.belt.on{
+  background:linear-gradient(135deg,#d4a82a 0%, var(--gold) 100%);
+  color:#0a0a0a;border-color:var(--gold);
+  box-shadow:0 0 12px rgba(230,194,71,.4);
+}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 100%);
+  border:1px solid var(--line);border-radius:10px;padding:9px 10px;
+  display:flex;flex-direction:column;gap:3px;min-height:60px;
+  box-shadow:var(--shadow-inset);
+}
+.stat-head{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.stat-head > span{font-size:.74rem;color:var(--text-dim);font-weight:600;letter-spacing:.3px}
+.stat-head > strong{font-size:1.25rem;font-weight:900;font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:.8px;font-variant-numeric:tabular-nums}
+.stat-source{font-size:.64rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.overall-banner{
+  display:flex;justify-content:space-between;align-items:center;
+  background:linear-gradient(135deg,#0a0b0e 0%, #14171c 100%);
+  border:1px solid var(--line);
+  border-radius:12px;padding:12px 16px;margin-bottom:14px;
+  box-shadow:var(--shadow-card), var(--shadow-inset);
+  position:relative;overflow:hidden;
+}
+.overall-banner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(300px 60px at 50% 50%, rgba(230,194,71,.06), transparent 70%);
+  pointer-events:none;
+}
+.overall-banner .label{font-size:.74rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
+.overall-banner .value{
+  font-size:1.6rem;font-weight:900;color:var(--gold);
+  font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:1px;
+  text-shadow:0 0 14px rgba(230,194,71,.3);
+}
+.arena-top{
+  display:flex;justify-content:space-between;gap:10px;
+  background:linear-gradient(180deg,#020203 0%, #0a0b0e 100%);
+  padding:14px;border-radius:12px;margin-bottom:14px;
+  border:1px solid var(--line);
+}
+.corner{width:42%;text-align:center}
+.corner h3{font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800;margin-bottom:6px}
+.vs{
+  width:16%;display:flex;align-items:center;justify-content:center;
+  color:var(--gold);font-weight:900;font-size:1.1rem;
+  font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:2px;
+}
+.bar-label{font-size:.62rem;color:var(--muted);text-transform:uppercase;margin-top:6px;margin-bottom:3px;font-weight:700;letter-spacing:.8px}
+.bar{background:#1a1d24;height:8px;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;background:linear-gradient(90deg,#16a34a 0%, #2ecc71 100%);width:100%;transition:width .3s ease}
+.fill.blue{background:linear-gradient(90deg,#1c5fbf 0%, #3b9bff 100%)}
+.log{
+  background:#020203;border:1px solid var(--line);border-radius:12px;
+  flex:1;min-height:280px;max-height:320px;overflow-y:auto;
+  padding:12px;margin-bottom:14px;
+  font-family:'SF Mono','Consolas',monospace;font-size:.78rem;line-height:1.5;
+}
+.line{margin-bottom:6px;border-left:2px solid var(--line);padding-left:8px}
+.line.system{color:var(--gold);font-weight:900;border-left-color:var(--gold)}
+.line.kd{color:var(--red);font-weight:900;background:rgba(239,68,68,.08);padding:5px 8px;border-radius:4px;border-left-color:var(--red)}
+.line.crit{color:#8bd3ff;font-weight:900;border-left-color:var(--blue)}
+.line.cut{color:#ffbeb8;font-weight:900;border-left-color:#ff8373}
+.line.info{color:#bdbdbd;border-left-color:#4a4f5a}
+.hof-box{
+  background:linear-gradient(180deg,#0a0b0e 0%, #020203 100%);
+  border:2px solid var(--gold);border-radius:18px;
+  padding:24px 20px;text-align:center;margin:16px 0;
+  box-shadow:0 0 40px rgba(230,194,71,.2), inset 0 0 40px rgba(230,194,71,.05);
+  position:relative;overflow:hidden;
+}
+.hof-box::before{
+  content:'';position:absolute;inset:-2px;
+  background:radial-gradient(circle at 50% 0%, rgba(230,194,71,.3), transparent 50%);
+  pointer-events:none;
+}
+.hof-tier{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:clamp(1.6rem, 6vw, 2rem);
+  font-weight:400;color:var(--gold);line-height:1.15;
+  letter-spacing:2px;
+  text-shadow:0 0 20px rgba(230,194,71,.5);
+  margin-top:8px;
+}
+.hof-pct{margin-top:12px;color:var(--platinum);font-size:1rem;font-weight:800}
+.metric{
+  display:flex;justify-content:space-between;gap:14px;
+  padding:11px 0;border-bottom:1px solid var(--line);font-size:.92rem;
+}
+.metric > span{color:var(--text-dim);font-weight:500}
+.metric strong{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+#sim-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.94);
+  z-index:999;display:flex;flex-direction:column;padding:12px;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.sim-card{
+  width:100%;height:100%;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#15171c 0%, #08090b 100%);
+  border:1px solid var(--gold);border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:0 0 50px rgba(230,194,71,.2);
+}
+.sim-header{padding:16px 18px;border-bottom:1px solid var(--line);flex-shrink:0}
+.sim-header h2{margin:0 0 6px 0;border:none;padding:0}
+.sim-header h2::before{display:none}
+.sim-body{flex:1;overflow-y:auto;padding:14px 16px;-webkit-overflow-scrolling:touch}
 .sim-list{display:flex;flex-direction:column;gap:10px}
-.sim-footer{padding:12px 16px;border-top:1px solid #333;flex-shrink:0;background:#0a0a0a}
-.sim-next-tease{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.25);border-radius:8px;padding:10px;margin-bottom:10px;text-align:center;font-size:.82rem;color:var(--gold)}
-.sim-item{background:var(--panel2);border:1px solid #333;border-left:5px solid #444;border-radius:12px;padding:12px;opacity:0;transform:translateY(12px);animation:in .35s ease forwards}.sim-item.win{border-left-color:var(--green)}.sim-item.loss{border-left-color:var(--red)}.sim-item.draw{border-left-color:var(--blue)}.sim-item.title{box-shadow:0 0 0 1px rgba(212,175,55,.15),0 0 16px rgba(212,175,55,.08)}.sim-item.milestone{box-shadow:0 0 0 2px rgba(212,175,55,.3),0 0 20px rgba(212,175,55,.15)}
-.sim-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:5px}.sim-bout{font-size:.72rem;color:var(--muted);text-transform:uppercase;font-weight:900}.sim-outcome{font-size:.78rem;font-weight:900}.sim-outcome.win{color:var(--green)}.sim-outcome.loss{color:var(--red)}.sim-outcome.draw{color:var(--blue)}.sim-main{font-size:.95rem;color:#fff;font-weight:800;margin-bottom:4px}.sim-method{font-size:.76rem;color:var(--gold);font-weight:900;text-transform:uppercase;margin-bottom:4px}.sim-sub,.sim-insight{font-size:.79rem;color:var(--muted);line-height:1.38}.sim-insight{margin-top:6px;border-top:1px solid rgba(255,255,255,.06);padding-top:6px;color:#d7d7d7}
-.sim-milestone-badge{display:inline-block;background:var(--gold);color:#000;font-size:.65rem;font-weight:900;padding:2px 6px;border-radius:4px;margin-left:6px;text-transform:uppercase}
+.sim-footer{padding:14px 16px;border-top:1px solid var(--line);flex-shrink:0;background:#050608}
+.sim-next-tease{
+  background:rgba(230,194,71,.08);border:1px solid rgba(230,194,71,.3);
+  border-radius:10px;padding:11px;margin-bottom:10px;
+  text-align:center;font-size:.85rem;color:var(--gold);font-weight:700;
+}
+.sim-item{
+  background:linear-gradient(180deg,var(--panel-2) 0%, var(--panel) 100%);
+  border:1px solid var(--line);border-left:5px solid var(--line);
+  border-radius:12px;padding:13px;
+  opacity:0;transform:translateY(12px);animation:in .35s ease forwards;
+  box-shadow:var(--shadow-card);
+}
+.sim-item.win{border-left-color:var(--green)}
+.sim-item.loss{border-left-color:var(--red)}
+.sim-item.draw{border-left-color:var(--blue)}
+.sim-item.title{box-shadow:0 0 0 1px rgba(230,194,71,.2), 0 0 20px rgba(230,194,71,.1)}
+.sim-item.milestone{box-shadow:0 0 0 2px rgba(230,194,71,.4), 0 0 24px rgba(230,194,71,.2)}
+.sim-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;align-items:center}
+.sim-bout{font-size:.72rem;color:var(--text-dim);text-transform:uppercase;font-weight:800;letter-spacing:.8px}
+.sim-outcome{font-size:.78rem;font-weight:900;letter-spacing:.5px}
+.sim-outcome.win{color:var(--green)}
+.sim-outcome.loss{color:var(--red)}
+.sim-outcome.draw{color:var(--blue)}
+.sim-main{font-size:.97rem;color:#fff;font-weight:800;margin-bottom:4px}
+.sim-method{font-size:.76rem;color:var(--gold);font-weight:900;text-transform:uppercase;margin-bottom:4px;letter-spacing:.5px}
+.sim-sub,.sim-insight{font-size:.8rem;color:var(--text-dim);line-height:1.45}
+.sim-insight{margin-top:7px;border-top:1px solid rgba(255,255,255,.06);padding-top:7px;color:#d0d3da}
+.sim-milestone-badge{
+  display:inline-block;background:var(--gold);color:#0a0a0a;
+  font-size:.62rem;font-weight:900;padding:2px 7px;border-radius:4px;
+  margin-left:6px;text-transform:uppercase;letter-spacing:.5px;
+}
 @keyframes in{to{opacity:1;transform:translateY(0)}}
-.stat-tier-ultra{color:var(--platinum);text-shadow:0 0 10px rgba(223,232,255,.9),0 0 16px rgba(255,255,255,.4)}.stat-tier-legendary{color:var(--gold);text-shadow:0 0 8px rgba(212,175,55,.7)}.stat-tier-mythic{color:#ff9f43}.stat-tier-epic{color:#b277ff}.stat-tier-rare{color:#4aa3ff}.stat-tier-uncommon{color:#57d46d}.stat-tier-common{color:#c2c6cc}.stat-tier-low{color:#b08d57}.stat-tier-poor{color:#d3625c}.stat-tier-bad{color:#8c8c8c}.trait-reel{min-height:44px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:900;color:var(--gold);text-align:center}
+.stat-tier-ultra{color:var(--platinum);text-shadow:0 0 12px rgba(231,238,255,.9), 0 0 20px rgba(255,255,255,.5)}
+.stat-tier-legendary{color:var(--gold);text-shadow:0 0 10px rgba(230,194,71,.7)}
+.stat-tier-mythic{color:#ff9f43}
+.stat-tier-epic{color:#b277ff}
+.stat-tier-rare{color:#4aa3ff}
+.stat-tier-uncommon{color:#57d46d}
+.stat-tier-common{color:#c2c6cc}
+.stat-tier-low{color:#b08d57}
+.stat-tier-poor{color:#d3625c}
+.stat-tier-bad{color:#8c8c8c}
 .streak-bonus{font-size:.7rem;color:var(--green);margin-left:4px}
-.title-def-badge{font-size:.64rem;background:rgba(212,175,55,.15);color:var(--gold);padding:3px 6px;border-radius:4px;margin-left:4px}
-@media(max-width:520px){.app{border-radius:14px;min-height:100vh}.screen{padding:11px}.btn{font-size:.86rem}}
+.title-def-badge{font-size:.64rem;background:rgba(230,194,71,.15);color:var(--gold);padding:3px 6px;border-radius:4px;margin-left:4px}
+.two-col,.quad{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+.heaven-flash{
+  position:fixed;inset:0;pointer-events:none;z-index:9998;
+  background:radial-gradient(circle at center, rgba(255,255,255,.4) 0%, rgba(231,238,255,.2) 30%, transparent 70%);
+  opacity:0;
+  animation:heavenFlash 1.4s ease-out forwards;
+}
+@keyframes heavenFlash{
+  0%{opacity:0}
+  15%{opacity:1}
+  100%{opacity:0}
+}
+@media(max-width:380px){
+  .app{border-radius:var(--radius-lg)}
+  header h1{letter-spacing:2px}
+  .stats-grid{grid-template-columns:1fr}
+  .draft-grid{grid-template-columns:1fr}
+  .quad{grid-template-columns:1fr 1fr}
+}
+@media(min-width:521px){
+  body{padding:24px 12px}
+  .app{margin:auto 0;min-height:auto;max-height:calc(100dvh - 48px)}
+}
+@supports (-webkit-touch-callout: none){
+  input,select,textarea{font-size:16px !important}
+  .name-input{font-size:16px !important}
+}
+.screen::-webkit-scrollbar,.log::-webkit-scrollbar,.sim-body::-webkit-scrollbar{width:6px}
+.screen::-webkit-scrollbar-thumb,.log::-webkit-scrollbar-thumb,.sim-body::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
+.screen::-webkit-scrollbar-track,.log::-webkit-scrollbar-track,.sim-body::-webkit-scrollbar-track{background:transparent}
 </style>
 </head>
-
 <body>
 <div class="app">
-<header><h1>UNBEATEN: 50-0</h1><p>Heavyweight Management Loop</p><div class="version">Final Release v1.1</div></header>
+<header>
+  <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()" aria-label="Toggle sound">🔊</button>
+  <h1>UNBEATEN: 50-0</h1>
+  <p>Heavyweight Management Loop</p>
+  <div class="version">Final Release v1.1</div>
+</header>
+
 <section id="menu-screen" class="screen active">
   <div class="hero">🥊</div>
-  
   <h2>Worldwide Stats</h2>
-  <div class="panel">
-    <div class="row"><span>🥊 Fighters Created Worldwide:</span><span id="global-fighters">Loading...</span></div>
-    <div class="row"><span>🏆 50-0 Careers This Week:</span><span id="global-weekly-50">Loading...</span></div>
-    <div class="row"><span>🏅 Total 50-0 Careers Ever:</span><span id="global-total-50">Loading...</span></div>
+  <div class="global-stats">
+    <div class="stat-pill">
+      <div class="label"><span class="ico">🥊</span><span>Fighters Created Worldwide</span></div>
+      <div class="value loading" id="global-fighters">Loading...</div>
+    </div>
+    <div class="stat-pill">
+      <div class="label"><span class="ico">🏆</span><span>50-0 Careers This Week</span></div>
+      <div class="value loading" id="global-weekly-50">Loading...</div>
+    </div>
+    <div class="stat-pill">
+      <div class="label"><span class="ico">🏅</span><span>Total 50-0 Careers Ever</span></div>
+      <div class="value loading" id="global-total-50">Loading...</div>
+    </div>
   </div>
-  
   <h2>Choose Game Mode</h2>
   <div class="mode-grid">
     <div class="mode-card selected" id="mode-card-easy" onclick="selectMode('easy')"><div class="mode-title">Four-Rounder</div><div class="mode-sub">Easy • 2 draft re-rolls • softer opponents • better legend odds • slightly better purses</div></div>
@@ -71,11 +639,25 @@ h2{font-size:1.04rem;color:var(--gold);margin-bottom:12px;padding-bottom:6px;bor
     <div class="mode-card" id="mode-card-hard" onclick="selectMode('hard')"><div class="mode-title">Championship Gauntlet</div><div class="mode-sub">Hard • no draft re-rolls • elite legends rarer • tougher opponents • slightly lower purses</div></div>
   </div>
   <h2>All-Time Personal Records</h2>
-  <div class="panel"><div class="row"><span>Best Record Streak:</span><span id="rec-streak">0-0</span></div><div class="row"><span>Most Career Earnings:</span><span id="rec-money">$0</span></div><div class="row"><span>Most Total Knockouts:</span><span id="rec-kos">0 KO</span></div><div class="row"><span>Highest HOF Tier:</span><span id="rec-tier">None</span></div></div>
+  <div class="panel">
+    <div class="row"><span>Best Record Streak:</span><span id="rec-streak">0-0</span></div>
+    <div class="row"><span>Most Career Earnings:</span><span id="rec-money">$0</span></div>
+    <div class="row"><span>Most Total Knockouts:</span><span id="rec-kos">0 KO</span></div>
+    <div class="row"><span>Highest HOF Tier:</span><span id="rec-tier">None</span></div>
+  </div>
   <h2>Current Save</h2>
-  <div class="panel"><div class="row"><span>Status:</span><span id="save-status">No active career</span></div><div class="row"><span>Fighter:</span><span id="save-fighter">-</span></div><div class="row"><span>Progress:</span><span id="save-progress">-</span></div></div>
-  <div style="margin-top:auto"><button id="continue-btn" class="btn blue hidden" onclick="continueCareer()">Continue Career</button><button class="btn gold" onclick="startNewCareer()">Draft New Boxer</button><button id="delete-save-btn" class="btn red hidden" onclick="deleteSave()">Delete Current Save</button></div>
+  <div class="panel">
+    <div class="row"><span>Status:</span><span id="save-status">No active career</span></div>
+    <div class="row"><span>Fighter:</span><span id="save-fighter">-</span></div>
+    <div class="row"><span>Progress:</span><span id="save-progress">-</span></div>
+  </div>
+  <div style="margin-top:auto;padding-top:16px">
+    <button id="continue-btn" class="btn blue hidden" onclick="continueCareer()">Continue Career</button>
+    <button class="btn gold" onclick="startNewCareer()">Draft New Boxer</button>
+    <button id="delete-save-btn" class="btn red hidden" onclick="deleteSave()">Delete Current Save</button>
+  </div>
 </section>
+
 <section id="draft-screen" class="screen">
   <h2>Fighter Generation</h2>
   <p class="subtle">Spin the legend wheel. Good sources still appear most of the time, but bad-roll fighters, spoilers and prospects can now shake up drafts.</p>
@@ -86,6 +668,7 @@ h2{font-size:1.04rem;color:var(--gold);margin-bottom:12px;padding-bottom:6px;bor
   <div id="draft-grid" class="draft-grid"></div>
   <button class="btn red" onclick="restartDraft()">Restart Draft</button>
 </section>
+
 <section id="trait-screen" class="screen">
   <h2>Personality &amp; Perks Draft</h2>
   <p class="subtle">Spin for <strong>2 traits</strong>. Hover or tap trait chips to see what they do and whether they are positive or negative.</p>
@@ -100,49 +683,128 @@ h2{font-size:1.04rem;color:var(--gold);margin-bottom:12px;padding-bottom:6px;bor
   <button id="advance-btn" class="btn gold" onclick="goToHub()">Advance To Career Hub</button>
   <button class="btn red" onclick="restartDraft()">Restart Draft</button>
 </section>
+
 <section id="hub-screen" class="screen">
-  <div class="panel" style="text-align:center;background:#000"><div style="font-size:.78rem;color:var(--muted);text-transform:uppercase">Current Legacy Record</div><div id="hub-fighter-name" style="font-size:1.34rem;font-weight:900;margin:8px 0;color:#fff">Custom Contender</div><div id="hub-record" class="record-badge unbeaten">0-0</div><div id="hub-money" class="money-dark" style="font-weight:900;font-size:1.04rem">$0</div><div class="tag-row"><span class="tag gold" id="hub-arch">Archetype</span><span class="tag blue" id="hub-rating">Rating 50</span><span class="tag green" id="hub-rank">Rank #60</span><span class="tag" id="hub-streak">Streak 0</span><span class="tag purple" id="hub-mode">Mode</span><span class="tag orange" id="hub-title-def" style="display:none">0 Defenses</span></div><div class="belt-row"><span class="belt" id="belt-WBC">WBC</span><span class="belt" id="belt-WBA">WBA</span><span class="belt" id="belt-IBF">IBF</span><span class="belt" id="belt-WBO">WBO</span></div></div>
-  <div class="panel"><div class="row"><span>Current World Ranking:</span><span id="hub-rank-line">#60</span></div><div class="row"><span>Best World Ranking:</span><span id="hub-best-rank-line">#60</span></div><div class="row"><span>Overall Rating:</span><span id="overall-rating-hub">50</span></div><div class="row"><span>Title Defenses:</span><span id="hub-title-def-line">0</span></div></div>
-  <h2>Your Fighter Attributes</h2><div id="stats-grid" class="stats-grid"></div>
-  <h2>Traits &amp; Synergies</h2><div id="hub-traits" class="panel"></div>
-  <h2>Next Fight Schedule</h2><div class="opponent-card"><div class="row"><span id="opp-bout">BOUT 1/50</span><span id="opp-tier" style="font-size:.74rem;color:var(--gold);font-weight:900;text-transform:uppercase">Journeyman</span></div><div id="opp-name" style="font-size:1.15rem;font-weight:900;margin-bottom:6px">Razor Evans</div><div id="opp-details" class="subtle" style="margin-bottom:8px">Record: 12-14 | Power: 70 | Chin: 68 | Speed: 72</div><div id="opp-tags" class="tag-row"></div></div>
-  <h2>Recent Results</h2><div id="recent-history" class="history-panel"><div style="color:var(--muted);text-align:center">No fight data recorded yet.</div></div>
-  <div style="margin-top:auto"><button id="enter-ring-btn" class="btn gold" onclick="startFight(false)">Enter the Ring</button><div class="quad"><button class="btn sim-btn" onclick="startFight(true)">Instant Sim</button><button class="btn sim-btn" onclick="simMany(5)">Sim 5</button><button class="btn sim-btn" onclick="simMany(10)">Sim 10</button><button class="btn sim-btn blue" onclick="simAll()">Sim Entire 50</button></div><button class="btn blue" onclick="backToMenu()">Return To Main Menu</button></div>
+  <div class="panel" style="text-align:center;background:linear-gradient(180deg,#0a0b0e 0%,#050608 100%);">
+    <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Current Legacy Record</div>
+    <div id="hub-fighter-name" style="font-size:1.34rem;font-weight:900;margin:8px 0;color:#fff;letter-spacing:1px">Custom Contender</div>
+    <div id="hub-record" class="record-badge unbeaten">0-0</div>
+    <div id="hub-money" class="money-dark" style="font-weight:900;font-size:1.1rem;margin-bottom:6px">$0</div>
+    <div class="tag-row">
+      <span class="tag gold" id="hub-arch">Archetype</span>
+      <span class="tag blue" id="hub-rating">Rating 50</span>
+      <span class="tag green" id="hub-rank">Rank #60</span>
+      <span class="tag" id="hub-streak">Streak 0</span>
+      <span class="tag purple" id="hub-mode">Mode</span>
+      <span class="tag orange" id="hub-title-def" style="display:none">0 Defenses</span>
+    </div>
+    <div class="belt-row">
+      <span class="belt" id="belt-WBC">WBC</span>
+      <span class="belt" id="belt-WBA">WBA</span>
+      <span class="belt" id="belt-IBF">IBF</span>
+      <span class="belt" id="belt-WBO">WBO</span>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="row"><span>Current World Ranking:</span><span id="hub-rank-line">#60</span></div>
+    <div class="row"><span>Best World Ranking:</span><span id="hub-best-rank-line">#60</span></div>
+    <div class="row"><span>Overall Rating:</span><span id="overall-rating-hub">50</span></div>
+    <div class="row"><span>Title Defenses:</span><span id="hub-title-def-line">0</span></div>
+  </div>
+  <h2>Your Fighter Attributes</h2>
+  <div id="stats-grid" class="stats-grid"></div>
+  <h2>Traits &amp; Synergies</h2>
+  <div id="hub-traits" class="panel"></div>
+  <h2>Next Fight Schedule</h2>
+  <div class="opponent-card">
+    <div class="row"><span id="opp-bout">BOUT 1/50</span><span id="opp-tier" style="font-size:.74rem;color:var(--gold);font-weight:900;text-transform:uppercase;letter-spacing:1px">Journeyman</span></div>
+    <div id="opp-name" style="font-size:1.15rem;font-weight:900;margin-bottom:6px;color:#fff">Razor Evans</div>
+    <div id="opp-details" class="subtle" style="margin-bottom:8px">Record: 12-14 | Power: 70 | Chin: 68 | Speed: 72</div>
+    <div id="opp-tags" class="tag-row"></div>
+  </div>
+  <h2>Recent Results</h2>
+  <div id="recent-history" class="history-panel"><div style="color:var(--muted);text-align:center">No fight data recorded yet.</div></div>
+  <div style="margin-top:auto">
+    <button id="enter-ring-btn" class="btn gold" onclick="startFight(false)">Enter the Ring</button>
+    <div class="quad">
+      <button class="btn sim-btn ghost" onclick="startFight(true)">Instant Sim</button>
+      <button class="btn sim-btn ghost" onclick="simMany(5)">Sim 5</button>
+      <button class="btn sim-btn ghost" onclick="simMany(10)">Sim 10</button>
+      <button class="btn sim-btn blue" onclick="simAll()">Sim All 50</button>
+    </div>
+    <button class="btn blue" onclick="backToMenu()">Return To Main Menu</button>
+  </div>
 </section>
-<section id="fight-screen" class="screen"><h2 id="fight-title" style="text-align:center;font-size:.9rem">BOUT #1 - 12 ROUNDS</h2><div class="arena-top"><div class="corner"><h3 id="c1-name">Fighter</h3><div class="bar-label">Health</div><div class="bar"><div id="c1-hp" class="fill"></div></div><div class="bar-label">Stamina</div><div class="bar"><div id="c1-sta" class="fill blue"></div></div></div><div class="vs">VS</div><div class="corner"><h3 id="c2-name">Opponent</h3><div class="bar-label">Health</div><div class="bar"><div id="c2-hp" class="fill"></div></div><div class="bar-label">Stamina</div><div class="bar"><div id="c2-sta" class="fill blue"></div></div></div></div><div id="fight-log" class="log"></div><div style="margin-top:auto"><div id="round-display" style="text-align:center;color:var(--gold);font-weight:900;margin-bottom:10px">ROUND 1</div><button id="fight-btn" class="btn gold" onclick="stepRound()">Simulate Round</button></div></section>
+
+<section id="fight-screen" class="screen">
+  <h2 id="fight-title" style="text-align:center;font-size:.9rem;letter-spacing:2px">BOUT #1 - 12 ROUNDS</h2>
+  <div class="arena-top">
+    <div class="corner">
+      <h3 id="c1-name">Fighter</h3>
+      <div class="bar-label">Health</div>
+      <div class="bar"><div id="c1-hp" class="fill"></div></div>
+      <div class="bar-label">Stamina</div>
+      <div class="bar"><div id="c1-sta" class="fill blue"></div></div>
+    </div>
+    <div class="vs">VS</div>
+    <div class="corner">
+      <h3 id="c2-name">Opponent</h3>
+      <div class="bar-label">Health</div>
+      <div class="bar"><div id="c2-hp" class="fill"></div></div>
+      <div class="bar-label">Stamina</div>
+      <div class="bar"><div id="c2-sta" class="fill blue"></div></div>
+    </div>
+  </div>
+  <div id="fight-log" class="log"></div>
+  <div style="margin-top:auto">
+    <div id="round-display" style="text-align:center;color:var(--gold);font-weight:900;margin-bottom:10px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;font-size:1.1rem">ROUND 1</div>
+    <button id="fight-btn" class="btn gold" onclick="stepRound()">Simulate Round</button>
+  </div>
+</section>
+
 <section id="hof-screen" class="screen">
   <h2>Career Legacy Evaluation</h2>
-  <div class="hof-box"><div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Final Hall of Fame Standing</div><div id="hof-tier" class="hof-tier">GOAT</div><div id="hof-pct" class="hof-pct">Top 0.2% Career</div></div>
-  <div class="metric"><span>Final Official Record:</span><strong id="hof-record">50-0</strong></div>
-  <div class="metric"><span>Total Knockouts:</span><strong id="hof-kos">0 KO</strong></div>
-  <div class="metric"><span>KO Percentage:</span><strong id="hof-kopct">0%</strong></div>
-  <div class="metric"><span>Lifetime Earnings:</span><strong id="hof-earnings" class="money-dark">$0</strong></div>
-  <div class="metric"><span>Wealth Tier:</span><strong id="hof-wealth">-</strong></div>
-  <div class="metric"><span>Biggest Fight Purse:</span><strong id="hof-best-purse">$0</strong></div>
-  <div class="metric"><span>Belts Unified:</span><strong id="hof-belts">0 / 4 Belts</strong></div>
-  <div class="metric"><span>Title Defenses:</span><strong id="hof-title-def">0</strong></div>
-  <div class="metric"><span>Final Rating:</span><strong id="hof-rating">50</strong></div>
-  <div class="metric"><span>Overall Rating:</span><strong id="hof-ovr">50</strong></div>
-  <div class="metric"><span>Peak World Rank:</span><strong id="hof-best-rank">#60</strong></div>
-  <div class="metric"><span>Career Legacy Score:</span><strong id="hof-score">0</strong></div>
-  <div class="metric"><span>Career Archetype:</span><strong id="hof-arch">Balanced</strong></div>
-  <div class="metric"><span>Build Identity:</span><strong id="hof-identity">Balanced Fighter</strong></div>
-  <div class="metric"><span>Game Mode:</span><strong id="hof-mode">Mode</strong></div>
+  <div class="hof-box">
+    <div style="font-size:.78rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px">Final Hall of Fame Standing</div>
+    <div id="hof-tier" class="hof-tier">GOAT</div>
+    <div id="hof-pct" class="hof-pct">Top 0.2% Career</div>
+  </div>
+  <div class="panel">
+    <div class="metric"><span>Final Official Record:</span><strong id="hof-record">50-0</strong></div>
+    <div class="metric"><span>Total Knockouts:</span><strong id="hof-kos">0 KO</strong></div>
+    <div class="metric"><span>KO Percentage:</span><strong id="hof-kopct">0%</strong></div>
+    <div class="metric"><span>Lifetime Earnings:</span><strong id="hof-earnings" class="money-dark">$0</strong></div>
+    <div class="metric"><span>Wealth Tier:</span><strong id="hof-wealth">-</strong></div>
+    <div class="metric"><span>Biggest Fight Purse:</span><strong id="hof-best-purse">$0</strong></div>
+    <div class="metric"><span>Belts Unified:</span><strong id="hof-belts">0 / 4 Belts</strong></div>
+    <div class="metric"><span>Title Defenses:</span><strong id="hof-title-def">0</strong></div>
+    <div class="metric"><span>Final Rating:</span><strong id="hof-rating">50</strong></div>
+    <div class="metric"><span>Overall Rating:</span><strong id="hof-ovr">50</strong></div>
+    <div class="metric"><span>Peak World Rank:</span><strong id="hof-best-rank">#60</strong></div>
+    <div class="metric"><span>Career Legacy Score:</span><strong id="hof-score">0</strong></div>
+    <div class="metric"><span>Career Archetype:</span><strong id="hof-arch">Balanced</strong></div>
+    <div class="metric"><span>Build Identity:</span><strong id="hof-identity">Balanced Fighter</strong></div>
+    <div class="metric" style="border-bottom:none"><span>Game Mode:</span><strong id="hof-mode">Mode</strong></div>
+  </div>
   
   <button id="share-btn" class="btn share" onclick="shareCareer()">📤 Share Career</button>
-  
   <button class="btn blue" onclick="showHistory()">View Full Fight History</button>
-
-  <a href="https://buymeacoffee.com/unbeaten50" target="_blank" rel="noopener noreferrer" class="btn gold" style="display:block; text-align:center; text-decoration:none;">Support UNBEATEN ☕</a>
-
+  <a href="https://buymeacoffee.com/unbeaten50" target="_blank" rel="noopener noreferrer" class="btn ghost" style="display:block; text-align:center; text-decoration:none;">Support UNBEATEN ☕</a>
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
-<section id="history-screen" class="screen"><h2>Full Fight History</h2><p class="subtle">Every recorded result from this career, newest first.</p><div id="full-history" class="history-panel" style="min-height:280px"></div><button class="btn blue" onclick="backToHof()">Back To HOF Screen</button></section>
+
+<section id="history-screen" class="screen">
+  <h2>Full Fight History</h2>
+  <p class="subtle">Every recorded result from this career, newest first.</p>
+  <div id="full-history" class="history-panel" style="min-height:280px; overflow-y:auto; max-height:400px; -webkit-overflow-scrolling:touch"></div>
+  <button class="btn blue" onclick="backToHof()">Back To HOF Screen</button>
+</section>
+
 <div id="sim-overlay" class="hidden">
   <div class="sim-card">
     <div class="sim-header">
       <h2>Career Simulation</h2>
-      <p class="subtle" id="sim-subtitle">Running bouts...</p>
+      <p class="subtle" id="sim-subtitle" style="margin-bottom:0">Running bouts...</p>
     </div>
     <div class="sim-body">
       <div id="sim-list" class="sim-list"></div>
@@ -150,16 +812,77 @@ h2{font-size:1.04rem;color:var(--gold);margin-bottom:12px;padding-bottom:6px;bor
     <div class="sim-footer">
       <div id="sim-next-tease" class="sim-next-tease hidden"></div>
       <div class="two-col">
-        <button id="sim-speed-btn" class="btn ghost" onclick="toggleFast()">Skip Delays</button>
-        <button id="sim-close-btn" class="btn gold hidden" onclick="closeOverlay()">Return To Hub</button>
+        <button id="sim-speed-btn" class="btn ghost" style="margin-bottom:0" onclick="toggleFast()">Skip Delays</button>
+        <button id="sim-close-btn" class="btn gold hidden" style="margin-bottom:0" onclick="closeOverlay()">Return To Hub</button>
       </div>
     </div>
   </div>
 </div>
+
 </div>
+
 <script>
+// ==========================================================
+// --- FULL WEB AUDIO SYSTEM (Synthesized Sounds) ---
+// ==========================================================
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+let isMuted = false;
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new AudioContext();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+function toggleSound() {
+  initAudio();
+  isMuted = !isMuted;
+  const btn = document.getElementById('sound-toggle');
+  if(btn) btn.innerText = isMuted ? '🔇' : '🔊';
+}
+
+function playTone(freq, type, duration, vol) {
+  if (isMuted || !audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+
+function playTick() { 
+  initAudio();
+  playTone(800, 'sine', 0.05, 0.05); 
+}
+
+function playLock() { 
+  initAudio();
+  playTone(200, 'square', 0.15, 0.1); 
+  setTimeout(() => playTone(150, 'square', 0.2, 0.1), 50);
+}
+
+function playHeavenlyChord() {
+  initAudio();
+  if (isMuted) return;
+  // Play a heavenly major 9th chord
+  const freqs = [261.63, 329.63, 392.00, 493.88, 587.33]; 
+  freqs.forEach((f, i) => {
+    setTimeout(() => playTone(f, 'sine', 3.0, 0.1), i * 150);
+    setTimeout(() => playTone(f * 2, 'triangle', 2.0, 0.05), i * 150);
+  });
+}
+// ==========================================================
+
 // --- FIREBASE CONFIGURATION & INITIALIZATION ---
-// This uses the Firebase Compat SDK allowing it to drop into your vanilla JS safely
 const firebaseConfig = {
   apiKey: "AIzaSyBrNkp6o4SoSs9C-PlDVzw4NrKq1mkE-_4",
   authDomain: "unbeaten-50-0.firebaseapp.com",
@@ -169,30 +892,24 @@ const firebaseConfig = {
   appId: "1:1075639735805:web:7225e6a7570d400882f594",
   measurementId: "G-S1LXFD3RVT"
 };
-
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Function to fetch and display global stats
 function loadGlobalStats() {
   db.collection("global_stats").doc("main").get().then(doc => {
     if(doc.exists) {
       const data = doc.data();
       const gf = document.getElementById("global-fighters");
-      if (gf) gf.innerText = (data.fightersCreated || 0).toLocaleString();
+      if (gf) { gf.innerText = (data.fightersCreated || 0).toLocaleString(); gf.classList.remove('loading'); }
       const gw = document.getElementById("global-weekly-50");
-      if (gw) gw.innerText = (data.weekly50And0s || 0).toLocaleString();
+      if (gw) { gw.innerText = (data.weekly50And0s || 0).toLocaleString(); gw.classList.remove('loading'); }
       const gt = document.getElementById("global-total-50");
-      if (gt) gt.innerText = (data.total50And0s || 0).toLocaleString();
+      if (gt) { gt.innerText = (data.total50And0s || 0).toLocaleString(); gt.classList.remove('loading'); }
     }
   }).catch(e => console.error("Firebase fetch error:", e));
 }
-
-// Load the stats immediately on boot, and set up a 2 minute polling interval (120,000 ms)
 loadGlobalStats();
 setInterval(loadGlobalStats, 120000);
-// --- END FIREBASE ---
 
 const LEGENDS = [{"Name": "Muhammad Ali", "Power": 90, "Chin": 95, "Speed": 98, "Footwork": 99, "Ring IQ": 99, "Heart": 98, "Defence": 95, "Stamina": 97, "Accuracy": 96, "Recovery": 95, "Pool": "standard"}, {"Name": "Mike Tyson", "Power": 97, "Chin": 92, "Speed": 99, "Footwork": 90, "Ring IQ": 90, "Heart": 95, "Defence": 88, "Stamina": 92, "Accuracy": 90, "Recovery": 93, "Pool": "standard"}, {"Name": "Tyson Fury", "Power": 88, "Chin": 98, "Speed": 86, "Footwork": 92, "Ring IQ": 97, "Heart": 95, "Defence": 96, "Stamina": 96, "Accuracy": 92, "Recovery": 97, "Pool": "standard"}, {"Name": "Oleksandr Usyk", "Power": 88, "Chin": 94, "Speed": 96, "Footwork": 98, "Ring IQ": 99, "Heart": 95, "Defence": 97, "Stamina": 98, "Accuracy": 95, "Recovery": 95, "Pool": "standard"}, {"Name": "Lennox Lewis", "Power": 94, "Chin": 94, "Speed": 88, "Footwork": 90, "Ring IQ": 99, "Heart": 94, "Defence": 96, "Stamina": 95, "Accuracy": 95, "Recovery": 94, "Pool": "standard"}, {"Name": "Evander Holyfield", "Power": 90, "Chin": 95, "Speed": 92, "Footwork": 91, "Ring IQ": 95, "Heart": 99, "Defence": 92, "Stamina": 96, "Accuracy": 93, "Recovery": 94, "Pool": "standard"}, {"Name": "George Foreman", "Power": 98, "Chin": 94, "Speed": 75, "Footwork": 78, "Ring IQ": 88, "Heart": 92, "Defence": 88, "Stamina": 94, "Accuracy": 85, "Recovery": 90, "Pool": "standard"}, {"Name": "Joe Frazier", "Power": 92, "Chin": 93, "Speed": 95, "Footwork": 94, "Ring IQ": 90, "Heart": 99, "Defence": 89, "Stamina": 98, "Accuracy": 90, "Recovery": 92, "Pool": "standard"}, {"Name": "Larry Holmes", "Power": 88, "Chin": 94, "Speed": 92, "Footwork": 95, "Ring IQ": 98, "Heart": 95, "Defence": 95, "Stamina": 97, "Accuracy": 96, "Recovery": 94, "Pool": "standard"}, {"Name": "Vitali Klitschko", "Power": 93, "Chin": 98, "Speed": 82, "Footwork": 84, "Ring IQ": 94, "Heart": 95, "Defence": 95, "Stamina": 97, "Accuracy": 90, "Recovery": 96, "Pool": "standard"}, {"Name": "Riddick Bowe", "Power": 93, "Chin": 92, "Speed": 84, "Footwork": 84, "Ring IQ": 92, "Heart": 92, "Defence": 87, "Stamina": 90, "Accuracy": 88, "Recovery": 89, "Pool": "standard"}, {"Name": "David Tua", "Power": 96, "Chin": 89, "Speed": 77, "Footwork": 72, "Ring IQ": 80, "Heart": 91, "Defence": 78, "Stamina": 83, "Accuracy": 84, "Recovery": 82, "Pool": "standard"}, {"Name": "Ken Norton", "Power": 89, "Chin": 90, "Speed": 84, "Footwork": 86, "Ring IQ": 88, "Heart": 93, "Defence": 86, "Stamina": 90, "Accuracy": 85, "Recovery": 88, "Pool": "standard"}, {"Name": "Earnie Shavers", "Power": 99, "Chin": 74, "Speed": 76, "Footwork": 68, "Ring IQ": 70, "Heart": 80, "Defence": 62, "Stamina": 71, "Accuracy": 74, "Recovery": 69, "Pool": "standard"}, {"Name": "Shannon Briggs", "Power": 95, "Chin": 83, "Speed": 77, "Footwork": 70, "Ring IQ": 74, "Heart": 86, "Defence": 71, "Stamina": 69, "Accuracy": 76, "Recovery": 79, "Pool": "cult"}, {"Name": "Butterbean", "Power": 94, "Chin": 84, "Speed": 46, "Footwork": 38, "Ring IQ": 58, "Heart": 82, "Defence": 48, "Stamina": 64, "Accuracy": 61, "Recovery": 76, "Pool": "cult"}, {"Name": "Jake Paul", "Power": 80, "Chin": 73, "Speed": 76, "Footwork": 72, "Ring IQ": 71, "Heart": 70, "Defence": 69, "Stamina": 74, "Accuracy": 85, "Recovery": 75, "Pool": "crossover"}, {"Name": "Eddie Hall", "Power": 99, "Chin": 86, "Speed": 46, "Footwork": 38, "Ring IQ": 52, "Heart": 87, "Defence": 42, "Stamina": 58, "Accuracy": 54, "Recovery": 78, "Pool": "crossover"}, {"Name": "Hafthor Bjornsson", "Power": 98, "Chin": 88, "Speed": 50, "Footwork": 43, "Ring IQ": 56, "Heart": 85, "Defence": 46, "Stamina": 61, "Accuracy": 57, "Recovery": 80, "Pool": "crossover"}, {"Name": "Francis Ngannou", "Power": 99, "Chin": 88, "Speed": 78, "Footwork": 68, "Ring IQ": 72, "Heart": 90, "Defence": 60, "Stamina": 70, "Accuracy": 75, "Recovery": 82, "Pool": "crossover"}, {"Name": "Moses Itauma", "Power": 88, "Chin": 85, "Speed": 90, "Footwork": 88, "Ring IQ": 82, "Heart": 84, "Defence": 86, "Stamina": 87, "Accuracy": 85, "Recovery": 86, "Pool": "prospect"}, {"Name": "Leo Atang", "Power": 86, "Chin": 84, "Speed": 88, "Footwork": 87, "Ring IQ": 80, "Heart": 83, "Defence": 85, "Stamina": 86, "Accuracy": 84, "Recovery": 85, "Pool": "prospect"}, {"Name": "Jared Anderson", "Power": 87, "Chin": 84, "Speed": 86, "Footwork": 84, "Ring IQ": 81, "Heart": 83, "Defence": 82, "Stamina": 84, "Accuracy": 83, "Recovery": 84, "Pool": "prospect"}, {"Name": "Justis Huni", "Power": 84, "Chin": 84, "Speed": 87, "Footwork": 88, "Ring IQ": 84, "Heart": 84, "Defence": 86, "Stamina": 88, "Accuracy": 85, "Recovery": 86, "Pool": "prospect"}, {"Name": "Filip Hrgovic", "Power": 88, "Chin": 85, "Speed": 80, "Footwork": 79, "Ring IQ": 82, "Heart": 84, "Defence": 81, "Stamina": 84, "Accuracy": 82, "Recovery": 83, "Pool": "prospect"}, {"Name": "Frank Sanchez", "Power": 84, "Chin": 84, "Speed": 88, "Footwork": 89, "Ring IQ": 85, "Heart": 82, "Defence": 86, "Stamina": 86, "Accuracy": 84, "Recovery": 85, "Pool": "prospect"}, {"Name": "Arslanbek Makhmudov", "Power": 90, "Chin": 82, "Speed": 74, "Footwork": 72, "Ring IQ": 78, "Heart": 84, "Defence": 74, "Stamina": 80, "Accuracy": 78, "Recovery": 81, "Pool": "prospect"}, {"Name": "Zhilei Zhang", "Power": 89, "Chin": 84, "Speed": 72, "Footwork": 70, "Ring IQ": 82, "Heart": 84, "Defence": 79, "Stamina": 77, "Accuracy": 82, "Recovery": 82, "Pool": "prospect"}, {"Name": "Dereck Chisora", "Power": 85, "Chin": 88, "Speed": 72, "Footwork": 70, "Ring IQ": 74, "Heart": 92, "Defence": 68, "Stamina": 80, "Accuracy": 72, "Recovery": 78, "Pool": "gatekeeper"}, {"Name": "Dillian Whyte", "Power": 90, "Chin": 78, "Speed": 74, "Footwork": 70, "Ring IQ": 73, "Heart": 85, "Defence": 67, "Stamina": 76, "Accuracy": 75, "Recovery": 72, "Pool": "gatekeeper"}, {"Name": "Joseph Parker", "Power": 82, "Chin": 84, "Speed": 82, "Footwork": 80, "Ring IQ": 83, "Heart": 82, "Defence": 80, "Stamina": 85, "Accuracy": 80, "Recovery": 84, "Pool": "gatekeeper"}, {"Name": "Andy Ruiz Jr.", "Power": 88, "Chin": 85, "Speed": 86, "Footwork": 72, "Ring IQ": 76, "Heart": 82, "Defence": 72, "Stamina": 78, "Accuracy": 84, "Recovery": 80, "Pool": "gatekeeper"}, {"Name": "Carlos Takam", "Power": 83, "Chin": 86, "Speed": 70, "Footwork": 68, "Ring IQ": 75, "Heart": 88, "Defence": 72, "Stamina": 82, "Accuracy": 70, "Recovery": 76, "Pool": "gatekeeper"}, {"Name": "Otto Wallin", "Power": 78, "Chin": 82, "Speed": 78, "Footwork": 79, "Ring IQ": 80, "Heart": 84, "Defence": 78, "Stamina": 83, "Accuracy": 77, "Recovery": 79, "Pool": "gatekeeper"}, {"Name": "Michael Hunter", "Power": 80, "Chin": 80, "Speed": 84, "Footwork": 84, "Ring IQ": 82, "Heart": 80, "Defence": 81, "Stamina": 84, "Accuracy": 81, "Recovery": 82, "Pool": "gatekeeper"}, {"Name": "Kubrat Pulev", "Power": 82, "Chin": 84, "Speed": 70, "Footwork": 72, "Ring IQ": 83, "Heart": 80, "Defence": 79, "Stamina": 83, "Accuracy": 79, "Recovery": 80, "Pool": "gatekeeper"}, {"Name": "Hughie Fury", "Power": 72, "Chin": 82, "Speed": 82, "Footwork": 87, "Ring IQ": 84, "Heart": 78, "Defence": 86, "Stamina": 86, "Accuracy": 73, "Recovery": 81, "Pool": "spoiler"}, {"Name": "Chris Byrd", "Power": 68, "Chin": 80, "Speed": 88, "Footwork": 90, "Ring IQ": 91, "Heart": 84, "Defence": 90, "Stamina": 89, "Accuracy": 80, "Recovery": 86, "Pool": "spoiler"}, {"Name": "Tony Thompson", "Power": 80, "Chin": 83, "Speed": 68, "Footwork": 70, "Ring IQ": 82, "Heart": 84, "Defence": 80, "Stamina": 82, "Accuracy": 78, "Recovery": 80, "Pool": "spoiler"}, {"Name": "John Ruiz", "Power": 70, "Chin": 85, "Speed": 62, "Footwork": 66, "Ring IQ": 80, "Heart": 84, "Defence": 82, "Stamina": 80, "Accuracy": 68, "Recovery": 79, "Pool": "spoiler"}, {"Name": "Kevin Johnson", "Power": 65, "Chin": 88, "Speed": 70, "Footwork": 78, "Ring IQ": 85, "Heart": 78, "Defence": 85, "Stamina": 90, "Accuracy": 68, "Recovery": 80, "Pool": "spoiler"}, {"Name": "Audley Harrison", "Power": 82, "Chin": 75, "Speed": 78, "Footwork": 80, "Ring IQ": 70, "Heart": 60, "Defence": 72, "Stamina": 78, "Accuracy": 68, "Recovery": 72, "Pool": "low"}, {"Name": "Nikolai Valuev", "Power": 85, "Chin": 90, "Speed": 45, "Footwork": 40, "Ring IQ": 70, "Heart": 78, "Defence": 60, "Stamina": 72, "Accuracy": 65, "Recovery": 75, "Pool": "low"}, {"Name": "David Price", "Power": 96, "Chin": 60, "Speed": 72, "Footwork": 68, "Ring IQ": 65, "Heart": 55, "Defence": 60, "Stamina": 65, "Accuracy": 75, "Recovery": 62, "Pool": "low"}, {"Name": "Lucas Browne", "Power": 92, "Chin": 72, "Speed": 60, "Footwork": 55, "Ring IQ": 62, "Heart": 70, "Defence": 55, "Stamina": 60, "Accuracy": 65, "Recovery": 68, "Pool": "low"}, {"Name": "Amir Mansour", "Power": 88, "Chin": 78, "Speed": 75, "Footwork": 70, "Ring IQ": 68, "Heart": 82, "Defence": 65, "Stamina": 72, "Accuracy": 70, "Recovery": 74, "Pool": "low"}, {"Name": "Gerald Washington", "Power": 80, "Chin": 75, "Speed": 78, "Footwork": 75, "Ring IQ": 72, "Heart": 74, "Defence": 70, "Stamina": 76, "Accuracy": 72, "Recovery": 74, "Pool": "low"}, {"Name": "Dave Allen", "Power": 78, "Chin": 90, "Speed": 65, "Footwork": 62, "Ring IQ": 70, "Heart": 95, "Defence": 65, "Stamina": 82, "Accuracy": 72, "Recovery": 88, "Pool": "low"}];
 const TRAITS = [{"id": "ko_artist", "name": "Knockout Artist", "type": "positive", "rarity": "uncommon", "desc": "+15% damage when opponent falls below 50% health."}, {"id": "iron_chin", "name": "Iron Chin", "type": "positive", "rarity": "uncommon", "desc": "+4 Chin and +5 Recovery to permanent stats."}, {"id": "fast_starter", "name": "Fast Starter", "type": "positive", "rarity": "common", "desc": "+8 Speed and +8 Accuracy during Rounds 1–3."}, {"id": "late_finisher", "name": "Late Finisher", "type": "positive", "rarity": "common", "desc": "+8 Power and +8 Heart during Rounds 9–12."}, {"id": "counter_puncher", "name": "Counter Puncher", "type": "positive", "rarity": "rare", "desc": "+6 Defence and +6 Ring IQ to permanent stats."}, {"id": "fan_favourite", "name": "Fan Favourite", "type": "positive", "rarity": "common", "desc": "+25% entertainment and broadcast purse bonus."}, {"id": "second_wind", "name": "Second Wind", "type": "positive", "rarity": "common", "desc": "Recover extra stamina from Round 7 onward."}, {"id": "ring_general", "name": "Ring General", "type": "positive", "rarity": "rare", "desc": "+4 Ring IQ, +3 Accuracy, better in close scorecards."}, {"id": "volume_puncher", "name": "Volume Puncher", "type": "positive", "rarity": "uncommon", "desc": "Higher work rate, better round scoring, more opponent stamina drain."}, {"id": "glass_cannon", "name": "Glass Cannon", "type": "negative", "rarity": "cursed", "desc": "+8 Power permanently, but -10 Chin."}, {"id": "gas_out", "name": "Gas Out", "type": "negative", "rarity": "common", "desc": "From Round 6 onward, stamina drains 50% faster."}, {"id": "slow_starter", "name": "Slow Starter", "type": "negative", "rarity": "common", "desc": "-10 Speed and -10 Accuracy during Rounds 1–3."}, {"id": "low_iq", "name": "Low Ring IQ", "type": "negative", "rarity": "common", "desc": "Drops close rounds more often on the cards."}, {"id": "brittle_hands", "name": "Brittle Hands", "type": "negative", "rarity": "uncommon", "desc": "Power drops after Round 6 or after scoring a knockdown."}, {"id": "quit_risk", "name": "Quit Risk", "type": "negative", "rarity": "cursed", "desc": "If knocked down, Heart and Recovery collapse for the rest of the fight."}, {"id": "generational_talent", "name": "Generational Talent", "type": "positive", "rarity": "legendary", "desc": "+3 to every permanent stat. Extremely rare."}, {"id": "southpaw_enigma", "name": "Southpaw Enigma", "type": "positive", "rarity": "rare", "desc": "Opponents suffer a small accuracy penalty every round."}, {"id": "body_snatcher", "name": "Body Snatcher", "type": "positive", "rarity": "epic", "desc": "Improves body-shot stoppage odds and drains opponent stamina faster."}, {"id": "ice_in_veins", "name": "Ice In The Veins", "type": "positive", "rarity": "epic", "desc": "Judges favour your clean work in razor-close rounds."}, {"id": "supertank", "name": "Supertank", "type": "positive", "rarity": "legendary", "desc": "+7 Chin, +5 Heart and +5 Recovery to permanent stats."}, {"id": "fragile_cutman", "name": "Fragile Cutman", "type": "negative", "rarity": "cursed", "desc": "You are more vulnerable to swelling and cut stoppages."}];
@@ -233,13 +950,13 @@ function startNewCareer(){ fresh(); $('trait-list').innerHTML=''; $('trait-resul
 function continueCareer(){ const d=loadCareer(); if(!d){ refreshMenu(); return; } S.mode=d.mode||d.career.mode||'normal'; S.player=d.player; S.career=d.career; S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; S.awaiting=false; S.perfect=false; selectMode(S.mode); if(!S.opponent&&S.career.currentFight<=50) generateOpponent(); updateSynergyPanel(); updateHub(); screen('hub-screen'); }
 function deleteSave(){ clearCareer(); }
 function restartDraft(){ if(confirm('Restart this boxer draft and roll again from scratch?')) startNewCareer(); }
-function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=a.Name; $('slot-mid').innerText=b.Name; $('slot-bottom').innerText=c.Name; ticks++; if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=S.legend.Name; $('slot-bottom').innerText=LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' • '+S.legend.Pool; if(S.perfect) txt+=' • Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
+function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=a.Name; $('slot-mid').innerText=b.Name; $('slot-bottom').innerText=c.Name; ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=S.legend.Name; $('slot-bottom').innerText=LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' • '+S.legend.Pool; if(S.perfect) txt+=' • Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
 function useReroll(){ if(!S.awaiting||S.career.draftRerolls<=0) return; S.career.draftRerolls--; saveCareer(); spinWheel(true,true); }
 function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} • ${t.rarity.toUpperCase()}\n\n${t.desc}`; }
 function checkSynergy(){ const unlocked=[]; SYNERGY.forEach(sy=>{ const ok=Object.entries(sy.requirements).every(([st,name])=>S.player.StatSources[st]===name); if(ok) unlocked.push(sy); }); S.player.HiddenBonuses=unlocked; updateOverallDisplays(); }
 function updateSynergyPanel(){ const p=$('synergy-panel'); if(!(S.player.HiddenBonuses||[]).length){ p.innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; return; } p.innerHTML=''; S.player.HiddenBonuses.forEach(b=>{ const div=document.createElement('div'); div.className='trait-pill secret'; div.title=b.desc; div.innerHTML='<div class="trait-title">'+b.name+'</div><div>'+b.desc+'</div><span class="trait-chip secret">Secret</span>'; p.appendChild(div); }); }
-function lockStat(stat){ if(!S.legend||S.player.Stats[stat]!=null||!S.awaiting) return; let v=S.legend[stat]; if(S.perfect){ v=clamp(v+1,1,99); S.player.PerfectSpinStats[stat]=true; } S.player.Stats[stat]=v; S.player.StatSources[stat]=S.legend.Name; S.awaiting=false; checkSynergy(); buildDraft(); updateSynergyPanel(); $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('perfect-banner').classList.remove('active'); S.perfect=false; const filled=STATS.filter(st=>S.player.Stats[st]!=null).length; if(filled===10){ $('spin-btn').disabled=true; $('reroll-btn').disabled=true; $('draft-archetype').innerText=archetype(getPerm()).name; saveCareer(); setTimeout(()=>screen('trait-screen'),300); } else { $('spin-btn').disabled=false; updateDraftTop(); saveCareer(); } updateOverallDisplays(); }
-function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTraitBusy=true; const btn=$('trait-spin-btn'), reel=$('trait-result'); btn.disabled=true; const available=TRAITS.filter(t=>!(S.player.Traits||[]).some(x=>x.id===t.id)); let i=0; const loop=()=>{ if(i<12){ const tease=choice(available); reel.innerText=tease.name+' • '+tease.rarity.toUpperCase(); reel.className='trait-reel '+tease.rarity; i++; setTimeout(loop,60+i*5); } else { const pick=weightedPick(available,t=>{ let w=TRAIT_W[t.rarity]||8; if(t.type==='positive') w*=1.12; return w; }); S.player.Traits.push(pick); S.traitsRolled++; reel.innerText=pick.name+' • '+pick.rarity.toUpperCase(); reel.className='trait-reel '+pick.rarity; const box=document.createElement('div'); box.className='trait-pill '+(pick.type==='negative'?'negative ':'')+pick.rarity; box.title=traitTooltip(pick); box.innerHTML='<div class="trait-title">'+pick.name+' ('+pick.type.toUpperCase()+' • '+pick.rarity.toUpperCase()+')</div><div>'+pick.desc+'</div><span class="trait-chip '+pick.rarity+'">'+pick.rarity+'</span>'; $('trait-list').appendChild(box); $('draft-archetype').innerText=archetype(getPerm()).name; if(S.traitsRolled===1){ btn.innerText='Spin Trait #2'; btn.disabled=false; } else { btn.innerText='Draft Complete'; btn.disabled=true; } saveCareer(); updateOverallDisplays(); S.spinTraitBusy=false; } }; loop(); }
+function lockStat(stat){ if(!S.legend||S.player.Stats[stat]!=null||!S.awaiting) return; let v=S.legend[stat]; if(S.perfect){ v=clamp(v+1,1,99); S.player.PerfectSpinStats[stat]=true; } S.player.Stats[stat]=v; S.player.StatSources[stat]=S.legend.Name; S.awaiting=false; checkSynergy(); buildDraft(); updateSynergyPanel(); if (v >= 98 || S.perfect) { playHeavenlyChord(); } else { playLock(); } $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('perfect-banner').classList.remove('active'); S.perfect=false; const filled=STATS.filter(st=>S.player.Stats[st]!=null).length; if(filled===10){ $('spin-btn').disabled=true; $('reroll-btn').disabled=true; $('draft-archetype').innerText=archetype(getPerm()).name; saveCareer(); setTimeout(()=>screen('trait-screen'),300); } else { $('spin-btn').disabled=false; updateDraftTop(); saveCareer(); } updateOverallDisplays(); }
+function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTraitBusy=true; const btn=$('trait-spin-btn'), reel=$('trait-result'); btn.disabled=true; const available=TRAITS.filter(t=>!(S.player.Traits||[]).some(x=>x.id===t.id)); let i=0; const loop=()=>{ if(i<12){ playTick(); const tease=choice(available); reel.innerText=tease.name+' • '+tease.rarity.toUpperCase(); reel.className='trait-reel '+tease.rarity; i++; setTimeout(loop,60+i*5); } else { playLock(); const pick=weightedPick(available,t=>{ let w=TRAIT_W[t.rarity]||8; if(t.type==='positive') w*=1.12; return w; }); S.player.Traits.push(pick); S.traitsRolled++; reel.innerText=pick.name+' • '+pick.rarity.toUpperCase(); reel.className='trait-reel '+pick.rarity; const box=document.createElement('div'); box.className='trait-pill '+(pick.type==='negative'?'negative ':'')+pick.rarity; box.title=traitTooltip(pick); box.innerHTML='<div class="trait-title">'+pick.name+' ('+pick.type.toUpperCase()+' • '+pick.rarity.toUpperCase()+')</div><div>'+pick.desc+'</div><span class="trait-chip '+pick.rarity+'">'+pick.rarity+'</span>'; $('trait-list').appendChild(box); $('draft-archetype').innerText=archetype(getPerm()).name; if(S.traitsRolled===1){ btn.innerText='Spin Trait #2'; btn.disabled=false; } else { btn.innerText='Draft Complete'; btn.disabled=true; } saveCareer(); updateOverallDisplays(); S.spinTraitBusy=false; } }; loop(); }
 function getPerm(){ const s=deep(S.player.Stats); if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number')) return s; if(hasTrait('iron_chin')){s.Chin+=4; s.Recovery+=5;} if(hasTrait('glass_cannon')){s.Power+=8; s.Chin-=10;} if(hasTrait('counter_puncher')){s.Defence+=6; s['Ring IQ']+=6;} if(hasTrait('ring_general')){s['Ring IQ']+=4; s.Accuracy+=3;} if(hasTrait('volume_puncher')){s.Accuracy+=2; s.Stamina+=1;} if(hasTrait('generational_talent')) STATS.forEach(st=>s[st]+=3); if(hasTrait('supertank')){s.Chin+=7; s.Heart+=5; s.Recovery+=5;} (S.player.HiddenBonuses||[]).forEach(b=>Object.entries(b.bonuses).forEach(([st,amt])=>s[st]+=amt)); STATS.forEach(st=>s[st]=clamp(Math.round(s[st]),1,99)); return s; }
 function calculateOverall(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null && typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(()=>overall+=2); return clamp(Math.round(overall), 40, 99); }
 function updateOverallDisplays(){ const ovr=calculateOverall(); if($('overall-rating-draft')) $('overall-rating-draft').innerText=ovr; if($('overall-rating-trait')) $('overall-rating-trait').innerText=ovr; if($('overall-rating-hub')) $('overall-rating-hub').innerText=ovr; if($('hub-rating')) $('hub-rating').innerText='Rating '+ovr; }
@@ -251,15 +968,12 @@ function goToHub(){
   S.player.Name=nm?nm:S.player.Nickname; 
   if(S.traitsRolled<2){ alert('Spin both traits first.'); return; } 
   if(STATS.some(st=>S.player.Stats[st]==null)){ alert('Complete the draft first.'); return; } 
-  
-  // Firebase: Trigger new fighter created stat
   if (!S.career.firebaseCreatedCounted) {
-    S.career.firebaseCreatedCounted = true; // Flage prevents duplicate API calls
+    S.career.firebaseCreatedCounted = true; 
     db.collection("global_stats").doc("main").update({
       fightersCreated: firebase.firestore.FieldValue.increment(1)
     }).catch(e => console.error("Firebase error updating fightersCreated:", e));
   }
-
   recalcRank(); 
   generateOpponent(); 
   updateHub(); 
@@ -290,7 +1004,7 @@ function sourceText(){ const src=S.player.StatSources||{}, stats=getPerm(), arr=
 function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) extra.push('The cleaner work and control dominated the rounds.'); if(S.fight.p1Dmg>S.fight.p2Dmg+35) extra.push('The damage output was clearly tilting the fight.'); if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.28) extra.push('The opponent faded badly as stamina drained.'); if(S.fight.method==='KO'&&String(S.fight.detail||'').includes('Flash KO')) extra.push('One perfect shot ended it instantly.'); if(['TKO','RTD'].includes(S.fight.method)) extra.push('Sustained punishment forced the stoppage.'); const dom=choice(extra.length?extra:['The style edge kept stacking up over the rounds.']); if(kind==='win') return sourceText()+'. '+weakText().charAt(0).toUpperCase()+weakText().slice(1)+' was exposed. '+dom; if(kind==='loss') return S.opponent.Name+' exploited clear openings and your fighter never fully solved the pressure.'; return 'Neither fighter truly separated from the other over 12 rounds.'; }
 function histLine(bout,opp,icon,res,purseAmt,rank,arrow){ let line='Bout '+bout+': '+icon+' '+res+' vs '+opp; if(S.fight.method) line+=' ('+S.fight.method+(S.fight.detail?' • '+S.fight.detail:'')+')'; line+=' +'+cash(purseAmt)+' • World Rank #'+rank+' '+arrow; return line; }
 function finishBout(batch=false){ const isWin=S.fight.winner==='p1', isDraw=S.fight.winner==='draw', purseAmt=purse(), prev=S.career.worldRank, bout=S.career.currentFight, opp=S.opponent.Name, title=S.opponent.TitleOnLine; S.career.bestPurse=Math.max(S.career.bestPurse||0, purseAmt); if(isWin){ S.career.wins++; S.career.winStreak++; S.career.bestWinStreak=Math.max(S.career.bestWinStreak,S.career.winStreak); if(['KO','TKO','RTD'].includes(S.fight.method)) S.career.kos++; S.career.earnings+=purseAmt; if(title&&!S.career.belts.includes(title)) S.career.belts.push(title); if(title&&S.career.belts.includes(title)) S.career.titleDef++; S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-3); } else if(isDraw){ S.career.draws++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.45); S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-2); } else { S.career.losses++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.18); if(S.career.belts.length>0&&title) S.career.belts.pop(); S.career.recentLossPenalty+=2; if(S.career.worldRank===1) S.career.recentLossPenalty+=2; } S.career.currentFight++; recalcRank(); if(prev===1&&!isWin) S.career.worldRank=Math.max(2,Math.min(6,S.career.worldRank+rand(1,2))); const arrow=S.career.worldRank<prev?'⬆️':S.career.worldRank>prev?'⬇️':'➡️'; let line=''; if(isWin){ line=histLine(bout,opp,'✅','W',purseAmt,S.career.worldRank,arrow); if(title) line+=' 👑 '+title; } else if(isDraw) line=histLine(bout,opp,'🤝','D',Math.floor(purseAmt*.45),S.career.worldRank,arrow); else line=histLine(bout,opp,'❌','L',Math.floor(purseAmt*.18),S.career.worldRank,arrow); S.career.history.unshift(line); if(S.career.history.length>6) S.career.history.pop(); S.career.fullHistory.unshift(line); if(S.career.fullHistory.length>200) S.career.fullHistory=S.career.fullHistory.slice(0,200); if(S.career.currentFight>50){ clearCareer(); S.opponent=null; updateHub(); if(batch) S.pendingHof=true; else triggerHof(); } else { generateOpponent(); updateHub(); saveCareer(); if(!batch) screen('hub-screen'); } }
-function simResult(){ if(!S.opponent) generateOpponent(); const bout=S.career.currentFight, opp=S.opponent.Name, tier=S.opponent.Tier, title=S.opponent.TitleOnLine; S.fight=makeFight(); while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); const p=purse(), method=S.fight.method, detail=S.fight.detail||(method==='Draw'?'Even After 12':'Official Result'), pre=S.career.worldRank, kind=S.fight.winner==='p1'?'win':S.fight.winner==='p2'?'loss':'draw', ins=fightInsight(kind); const isMilestone = MILESTONES.includes(bout); finishBout(true); const post=S.career.worldRank, rankText='World Rank #'+post+' '+(post<pre?'⬆️':post>pre?'⬇️':'➡️'); if(kind==='win') return {bout,type:'win',outcome:(['KO','TKO','RTD'].includes(method)?'WIN • '+method:'WIN • DEC'),main:S.player.Name+' beat '+opp,method:method+(detail?' • '+detail:''),sub:tier+(title?' • Won '+title:'')+' • '+cash(p)+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; if(kind==='loss') return {bout,type:'loss',outcome:(['KO','TKO','RTD'].includes(method)?'LOSS • '+method:'LOSS • DEC'),main:S.player.Name+' lost to '+opp,method:method+(detail?' • '+detail:''),sub:tier+(title?' • '+title+' slipped away':'')+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; return {bout,type:'draw',outcome:'DRAW',main:S.player.Name+' drew with '+opp,method:method+(detail?' • '+detail:''),sub:tier+' • Tough, close fight • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; }
+function simResult(){ if(!S.opponent) generateOpponent(); const bout=S.career.currentFight, opp=S.opponent.Name, tier=S.opponent.Tier, title=S.opponent.TitleOnLine; S.fight=makeFight(); while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); const p=purse(), method=S.fight.method, detail=S.fight.detail||(method==='Draw'?'Even After 12':'Official Result'), pre=S.career.worldRank, kind=S.fight.winner==='p1'?'win':S.fight.winner==='p2'?'loss':'draw', ins=fightInsight(kind); const isMilestone = MILESTONES.includes(bout); finishBout(true); const post=S.career.worldRank, rankText='World Rank #'+post+' '+(post<pre?'⬆️':post>pre?'⬇️':'➡️'); if(kind==='win') return {bout,type:'win',outcome:(['KO','TKO','RTD'].includes(method)?'WIN • '+method:'WIN • DEC'),main:S.player.Name+' beat '+opp,method:method+(detail?' '+detail:''),sub:tier+(title?' • Won '+title:'')+' • '+cash(p)+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; if(kind==='loss') return {bout,type:'loss',outcome:(['KO','TKO','RTD'].includes(method)?'LOSS • '+method:'LOSS • DEC'),main:S.player.Name+' lost to '+opp,method:method+(detail?' • '+detail:''),sub:tier+(title?' • '+title+' slipped away':'')+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; return {bout,type:'draw',outcome:'DRAW',main:S.player.Name+' drew with '+opp,method:method+(detail?' • '+detail:''),sub:tier+' • Tough, close fight • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; }
 function openOverlay(title){ $('sim-overlay').classList.remove('hidden'); $('sim-list').innerHTML=''; $('sim-subtitle').innerText=title||'Running bouts...'; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; $('sim-close-btn').classList.add('hidden'); $('sim-next-tease').classList.add('hidden'); }
 function closeOverlay(){ $('sim-overlay').classList.add('hidden'); if(S.pendingHof){ S.pendingHof=false; triggerHof(); } else { updateHub(); screen('hub-screen'); } }
 function toggleFast(){ S.fast=!S.fast; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; }
@@ -303,46 +1017,24 @@ function leg(){ const total=S.career.wins+S.career.losses+S.career.draws, koPct=
 function better(cand,rec){ const parse=r=>{ const p=(r||'0-0').split('-').map(n=>parseInt(n,10)||0); return {w:p[0]||0,l:p[1]||0,d:p[2]||0}; }; const b=parse(rec), c={w:cand.wins,l:cand.losses,d:cand.draws}; if(rec==='0-0'&&c.w>0) return true; if(c.l<b.l) return true; if(c.l>b.l) return false; if(c.w>b.w) return true; if(c.w<b.w) return false; return c.d<b.d; }
 function triggerHof(){ 
   screen('hof-screen'); 
-  
-  // Firebase: Trigger 50-0 global stat achievement
   if (S.career.wins === 50 && S.career.losses === 0 && S.career.draws === 0 && !S.career.firebaseCounted) {
-    S.career.firebaseCounted = true; // Flag prevents duplicate API calls on page refresh
+    S.career.firebaseCounted = true; 
     db.collection("global_stats").doc("main").update({
       total50And0s: firebase.firestore.FieldValue.increment(1),
       weekly50And0s: firebase.firestore.FieldValue.increment(1)
     }).catch(e => console.error("Firebase error updating 50-0 stats:", e));
   }
-
   const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?Math.floor((S.career.kos/total)*100):0, a=archetype(getPerm()).name, l=leg(), ovr=calculateOverall(), wealth=getWealthInfo(S.career.earnings), identity=getBuildIdentity(getPerm()); $('hof-tier').innerText=l.t; $('hof-pct').innerText='Top '+l.p+'% Career'; $('hof-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hof-kos').innerText=S.career.kos+' KO'; $('hof-kopct').innerText=koPct+'%'; $('hof-earnings').innerText=cash(S.career.earnings); $('hof-wealth').innerText=wealth[0]+' ('+wealth[1]+' Earners)'; $('hof-best-purse').innerText=cash(S.career.bestPurse||0); $('hof-belts').innerText=S.career.belts.length+' / 4 Belts'; $('hof-title-def').innerText=S.career.titleDef||0; $('hof-rating').innerText=''+S.career.rating; $('hof-ovr').innerText=''+ovr; $('hof-best-rank').innerText='#'+S.career.bestWorldRank; $('hof-score').innerText=''+l.score; $('hof-arch').innerText=a; $('hof-identity').innerText=identity; $('hof-mode').innerText=modeCfg().name; const r=getRecords(), finalRec=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); if(better(S.career,r.bestRecord)) r.bestRecord=finalRec; if(S.career.earnings>r.mostMoney) r.mostMoney=S.career.earnings; if(S.career.kos>r.mostKOs) r.mostKOs=S.career.kos; const prior={'None':0,'GOAT (50-0 UNDISPUTED)':1000}; HOF.slice().reverse().forEach((h,i)=>prior[h.t]=i+1); if((prior[l.t]||0)>(prior[r.bestTier]||0)) r.bestTier=l.t; saveRecords(r); refreshMenu(); 
 }
 function showHistory(){ const p=$('full-history'); p.innerHTML=''; if(!S.career.fullHistory.length) p.innerHTML='<div style="color:var(--muted);text-align:center">No fight history recorded.</div>'; else S.career.fullHistory.forEach(line=>{ const d=document.createElement('div'); d.innerText=line; p.appendChild(d); }); screen('history-screen'); }
 function backToHof(){ screen('hof-screen'); }
-function shareCareer(){ const l = leg(); const wealth = getWealthInfo(S.career.earnings); const record = S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); const txt = `🥊 UNBEATEN: 50-0
-
-📊 Record: ${record}
-💥 KOs: ${S.career.kos}
-🏆 HOF: ${l.t}
-💰 Earnings: ${cash(S.career.earnings)}
-🎖️ Wealth: ${wealth[0]}
-🏅 Belts: ${S.career.belts.length}/4
-
-Can you go 50-0? Play now!`;
-  
+function shareCareer(){ const l = leg(); const wealth = getWealthInfo(S.career.earnings); const record = S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); const txt = `🥊 UNBEATEN: 50-0\n\n📊 Record: ${record}\n💥 KOs: ${S.career.kos}\n🏆 HOF: ${l.t}\n💰 Earnings: ${cash(S.career.earnings)}\n🎖️ Wealth: ${wealth[0]}\n🏅 Belts: ${S.career.belts.length}/4\n\nCan you go 50-0? Play now!`;
   const url = window.location.href;
-  
   if(navigator.share){
-    navigator.share({
-      title: 'UNBEATEN: 50-0 - My Career',
-      text: txt,
-      url: url
-    }).catch(()=>{});
+    navigator.share({title: 'UNBEATEN: 50-0 - My Career', text: txt, url: url}).catch(()=>{});
   } else {
     const fullText = txt + '\n' + url;
-    navigator.clipboard.writeText(fullText).then(()=>{
-      alert('Career stats copied to clipboard! Paste to share.');
-    }).catch(()=>{
-      prompt('Copy this to share:', fullText);
-    });
+    navigator.clipboard.writeText(fullText).then(()=>{ alert('Career stats copied to clipboard! Paste to share.'); }).catch(()=>{ prompt('Copy this to share:', fullText); });
   }
 }
 function backToMenu(fromHof=false){ if(!fromHof&&S.career&&S.player&&S.player.Name&&S.career.currentFight<=50) saveCareer(); refreshMenu(); screen('menu-screen'); }
