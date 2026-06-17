@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
@@ -80,7 +81,7 @@ body{
   display:flex;flex-direction:column;
 }
 header{
-  padding:12px 18px 10px;
+  padding:18px 18px 16px;
   text-align:center;
   background:linear-gradient(180deg,#0a0b0e 0%,#070809 100%);
   border-bottom:1px solid rgba(230,194,71,.25);
@@ -134,14 +135,14 @@ header p{
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 h2{
   font-family:'Bebas Neue',Impact,sans-serif;
-  font-size:.95rem;color:var(--gold);
-  margin:12px 0 8px;padding-bottom:6px;
+  font-size:1rem;color:var(--gold);
+  margin:18px 0 12px;padding-bottom:8px;
   border-bottom:1px solid var(--line);
   text-transform:uppercase;letter-spacing:2.5px;
   font-weight:400;
   position:relative;
 }
-h2:first-child{margin-top:2px}
+h2:first-child{margin-top:4px}
 h2::before{
   content:'';position:absolute;left:0;bottom:-1px;width:32px;height:2px;
   background:var(--gold);
@@ -151,8 +152,8 @@ h2::before{
   background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
   border:1px solid var(--line);
   border-radius:var(--radius);
-  padding:10px 12px;
-  margin-bottom:10px;
+  padding:14px;
+  margin-bottom:14px;
   box-shadow:var(--shadow-card), var(--shadow-inset);
 }
 .spin-card,.trait-spin-card{
@@ -201,7 +202,7 @@ h2::before{
 .stat-pill .value.loading{color:var(--muted);font-size:.85rem;font-family:'Inter',sans-serif;letter-spacing:0;text-shadow:none}
 .row{
   display:flex;justify-content:space-between;gap:14px;align-items:center;
-  margin-bottom:7px;font-size:.84rem;
+  margin-bottom:10px;font-size:.88rem;
 }
 .row:last-child{margin-bottom:0}
 .row > span:first-child{color:var(--text-dim);font-weight:500}
@@ -294,14 +295,14 @@ h2::before{
 .name-input::placeholder{color:var(--muted)}
 .validation-msg{min-height:20px;margin-top:8px;text-align:center;color:#ff9b9b;font-size:.78rem;font-weight:800;line-height:1.35}
 .validation-msg.ok{color:var(--green)}
-.draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .draft-btn{
   background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
   border:1px solid var(--line);
-  border-radius:10px;
-  padding:7px 9px;
-  display:flex;flex-direction:column;gap:2px;
-  text-align:left;min-height:54px;
+  border-radius:12px;
+  padding:11px;
+  display:flex;flex-direction:column;gap:4px;
+  text-align:left;min-height:78px;
   color:#fff;
   font-family:'Inter',sans-serif;
   cursor:pointer;
@@ -339,7 +340,7 @@ h2::before{
 .tag.blue{background:rgba(59,155,255,.12);color:var(--blue);border-color:rgba(59,155,255,.4)}
 .tag.purple{background:rgba(168,85,247,.14);color:#d5a6ff;border-color:rgba(168,85,247,.4)}
 .tag.orange{background:rgba(245,158,11,.14);color:var(--orange);border-color:rgba(245,158,11,.4)}
-.slot{height:72px;display:flex;flex-direction:column;justify-content:center;gap:4px;position:relative}
+.slot{height:120px;display:flex;flex-direction:column;justify-content:center;gap:4px;position:relative}
 .slot::before,.slot::after{
   content:'';position:absolute;left:0;right:0;height:30px;pointer-events:none;
 }
@@ -428,18 +429,17 @@ h2::before{
   color:#0a0a0a;border-color:var(--gold);
   box-shadow:0 0 12px rgba(230,194,71,.4);
 }
-.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:10px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .stat-card{
   background:linear-gradient(180deg,rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 100%);
-  border:1px solid var(--line);border-radius:8px;padding:6px 8px;
-  display:flex;flex-direction:column;gap:2px;min-height:46px;
+  border:1px solid var(--line);border-radius:10px;padding:9px 10px;
+  display:flex;flex-direction:column;gap:3px;min-height:60px;
   box-shadow:var(--shadow-inset);
 }
 .stat-head{display:flex;justify-content:space-between;gap:8px;align-items:center}
-.stat-head > span{font-size:.58rem;color:var(--text-dim);font-weight:600;letter-spacing:.2px}
-.stat-head > strong{font-size:1.1rem;font-weight:900;font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:.5px;font-variant-numeric:tabular-nums}
-.stat-head > span{font-size:.58rem;color:var(--text-dim);font-weight:600;letter-spacing:.2px}
-.stat-head > strong{font-size:1.1rem;font-weight:900;font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:.5px;font-variant-num.stat-source{display:none}eric:tabular-nums}
+.stat-head > span{font-size:.74rem;color:var(--text-dim);font-weight:600;letter-spacing:.3px}
+.stat-head > strong{font-size:1.25rem;font-weight:900;font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:.8px;font-variant-numeric:tabular-nums}
+.stat-source{font-size:.64rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 .overall-banner{
   display:flex;justify-content:space-between;align-items:center;
   background:linear-gradient(135deg,#0a0b0e 0%, #14171c 100%);
@@ -490,8 +490,8 @@ h2::before{
 .line.info{color:#bdbdbd;border-left-color:#4a4f5a}
 .hof-box{
   background:linear-gradient(180deg,#0a0b0e 0%, #020203 100%);
-  border:2px solid var(--gold);border-radius:14px;
-  padding:14px 16px;text-align:center;margin:8px 0;
+  border:2px solid var(--gold);border-radius:18px;
+  padding:24px 20px;text-align:center;margin:16px 0;
   box-shadow:0 0 40px rgba(230,194,71,.2), inset 0 0 40px rgba(230,194,71,.05);
   position:relative;overflow:hidden;
 }
@@ -511,7 +511,7 @@ h2::before{
 .hof-pct{margin-top:12px;color:var(--platinum);font-size:1rem;font-weight:800}
 .metric{
   display:flex;justify-content:space-between;gap:14px;
-  padding:7px 0;border-bottom:1px solid var(--line);font-size:.82rem;
+  padding:11px 0;border-bottom:1px solid var(--line);font-size:.92rem;
 }
 .metric > span{color:var(--text-dim);font-weight:500}
 .metric strong{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
@@ -531,6 +531,154 @@ h2::before{
 .empty-state{color:var(--text-dim);text-align:center;padding:22px 10px;font-size:.86rem}
 .breakdown-panel{display:none}
 .breakdown-panel.active{display:block}
+.creator-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:14px}
+.field label{display:block;color:var(--text-dim);font-size:.72rem;text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:6px}
+.field input,.field select{
+  width:100%;min-height:var(--tap);padding:12px;border-radius:10px;
+  border:1px solid var(--line-2);background:#0a0b0e;color:#fff;
+  font-family:'Inter',sans-serif;font-size:.92rem;font-weight:700;outline:none;
+}
+.field input:focus,.field select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(230,194,71,.13)}
+.field select option{background:#111318;color:#fff}
+.avatar-stage{
+  background:linear-gradient(180deg,#08090b 0%,#020203 100%);
+  border:1px solid var(--line);border-radius:14px;padding:14px;
+  display:flex;justify-content:center;align-items:center;min-height:230px;
+  position:relative;overflow:hidden;margin-bottom:14px;
+}
+.avatar-card-mini{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.avatar-card-mini .avatar-stage{width:110px;min-width:110px;height:132px;min-height:132px;margin:0;padding:8px}
+.avatar-name-block{min-width:0}
+.avatar-name-block .name{font-weight:900;color:#fff;font-size:1.05rem;overflow-wrap:anywhere}
+.avatar-name-block .sub{color:var(--text-dim);font-size:.78rem;margin-top:3px}
+.boxer-avatar{width:150px;height:190px;position:relative;--skin:#b8794f;--hair:#17110d;--gloves:#b91c1c;--shorts:#1d4ed8;--boots:#111827}
+.avatar-card-mini .boxer-avatar{transform:scale(.62);transform-origin:center}
+.boxer-avatar .head{position:absolute;left:54px;top:14px;width:42px;height:48px;border-radius:45% 45% 48% 48%;background:var(--skin);border:2px solid rgba(0,0,0,.35);z-index:4}
+.boxer-avatar .hair{position:absolute;left:52px;top:8px;width:46px;height:24px;background:var(--hair);border-radius:20px 20px 8px 8px;z-index:5}
+.boxer-avatar.hair-buzz .hair{height:13px;top:10px;border-radius:18px 18px 5px 5px}
+.boxer-avatar.hair-afro .hair{left:46px;top:0;width:58px;height:38px;border-radius:50%}
+.boxer-avatar.hair-crop .hair{height:20px;top:7px;border-radius:22px 18px 7px 7px}
+.boxer-avatar.hair-bald .hair{display:none}
+.boxer-avatar .beard{position:absolute;left:59px;top:45px;width:32px;height:18px;background:var(--hair);border-radius:0 0 18px 18px;z-index:6;display:none}
+.boxer-avatar.facial-stubble .beard{display:block;opacity:.42;height:10px;top:50px}
+.boxer-avatar.facial-beard .beard{display:block}
+.boxer-avatar.facial-goatee .beard{display:block;left:67px;width:16px;height:16px}
+.boxer-avatar .eye{position:absolute;top:32px;width:4px;height:4px;background:#09090b;border-radius:50%;z-index:7}
+.boxer-avatar .eye.l{left:65px}.boxer-avatar .eye.r{right:65px}
+.boxer-avatar .neck{position:absolute;left:65px;top:58px;width:20px;height:18px;background:var(--skin);z-index:2}
+.boxer-avatar .torso{position:absolute;left:43px;top:70px;width:64px;height:60px;background:var(--skin);border-radius:20px 20px 10px 10px;border:2px solid rgba(0,0,0,.28);z-index:2}
+.boxer-avatar .shorts{position:absolute;left:42px;top:122px;width:66px;height:32px;background:var(--shorts);border-radius:8px 8px 12px 12px;z-index:5;border:2px solid rgba(255,255,255,.12)}
+.boxer-avatar .arm{position:absolute;top:76px;width:24px;height:58px;background:var(--skin);border-radius:14px;z-index:1}
+.boxer-avatar .arm.l{left:24px;transform:rotate(18deg)}.boxer-avatar .arm.r{right:24px;transform:rotate(-18deg)}
+.boxer-avatar .glove{position:absolute;top:119px;width:30px;height:26px;background:var(--gloves);border-radius:16px 16px 12px 12px;z-index:7;border:2px solid rgba(0,0,0,.3)}
+.boxer-avatar .glove.l{left:15px}.boxer-avatar .glove.r{right:15px}
+.boxer-avatar .leg{position:absolute;top:148px;width:22px;height:31px;background:var(--skin);z-index:1;border-radius:0 0 10px 10px}
+.boxer-avatar .leg.l{left:50px}.boxer-avatar .leg.r{right:50px}
+.boxer-avatar .boot{position:absolute;top:174px;width:30px;height:14px;background:var(--boots);border-radius:8px 8px 4px 4px;z-index:6}
+.boxer-avatar .boot.l{left:42px}.boxer-avatar .boot.r{right:42px}
+.boxer-avatar .badge{position:absolute;left:68px;top:127px;color:var(--gold);font-weight:900;font-size:.75rem;z-index:8}
+.boxer-avatar .torso::after{content:'';position:absolute;left:50%;top:18px;transform:translateX(-50%);font-weight:1000;color:#2b160d;text-shadow:0 1px 0 rgba(255,255,255,.18)}
+.boxer-avatar.cos-tattoo_title .torso::after{content:'T'}
+.boxer-avatar.cos-tattoo_power .torso::after{content:'KO'}
+.boxer-avatar.cos-tattoo_50 .torso::after{content:'50'}
+.boxer-avatar.cos-robe_undisputed .torso{box-shadow:0 0 0 3px rgba(212,175,55,.42),0 0 22px rgba(212,175,55,.24)}
+.boxer-avatar.cos-badge_50 .badge{font-size:.82rem;color:#f7e7a1;text-shadow:0 0 8px rgba(212,175,55,.55)}
+.fighter-card{
+  position:relative;overflow:hidden;border-radius:18px;padding:14px 12px 12px;
+  border:2px solid rgba(255,255,255,.16);box-shadow:0 18px 40px -18px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.16);
+  background:linear-gradient(145deg,#7a5125 0%,#c08a3a 48%,#5a3519 100%);
+  color:#14100a;margin-bottom:14px;
+}
+.fighter-card::before{
+  content:'';position:absolute;inset:8px;border:1px solid rgba(255,255,255,.22);
+  border-radius:14px;pointer-events:none;
+}
+.fighter-card::after{
+  content:'';position:absolute;inset:0;background:radial-gradient(180px 130px at 50% 0%,rgba(255,255,255,.26),transparent 70%);
+  pointer-events:none;
+}
+.fighter-card.silver{background:linear-gradient(145deg,#6f7681 0%,#d7dde5 48%,#555c66 100%)}
+.fighter-card.gold{background:linear-gradient(145deg,#9b6b13 0%,#f1cd62 48%,#7a4d0d 100%)}
+.fighter-card.champion{background:linear-gradient(145deg,#0f3b5b 0%,#2e9bd1 42%,#d7b84d 100%);color:#071019}
+.fighter-card.immortal{background:linear-gradient(145deg,#050506 0%,#1b1b1d 44%,#c9a227 100%);color:#f7e7a1;border-color:#d4af37;box-shadow:0 0 34px rgba(212,175,55,.26), inset 0 1px 0 rgba(255,255,255,.14)}
+.fighter-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:relative;z-index:2}
+.fighter-card-ovr{text-align:left}
+.fighter-card-ovr strong{display:block;font-family:'Bebas Neue',Impact,sans-serif;font-size:2.35rem;line-height:.9;letter-spacing:1px}
+.fighter-card-ovr span,.fighter-card-tier{font-size:.64rem;text-transform:uppercase;font-weight:900;letter-spacing:1px}
+.fighter-card-tier{text-align:right;max-width:110px}
+.fighter-card-avatar{height:154px;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;margin-top:-4px}
+.fighter-card-avatar .boxer-avatar{transform:scale(.72);transform-origin:center}
+.fighter-card-name{position:relative;z-index:2;text-align:center;font-weight:1000;text-transform:uppercase;letter-spacing:1px;font-size:1.08rem;line-height:1.1;overflow-wrap:anywhere}
+.fighter-card-nick{position:relative;z-index:2;text-align:center;font-size:.74rem;font-weight:900;opacity:.82;margin-top:4px;overflow-wrap:anywhere}
+.fighter-card-country{position:relative;z-index:2;text-align:center;font-size:.68rem;font-weight:900;text-transform:uppercase;letter-spacing:1.2px;margin-top:4px}
+.fighter-card-stats{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:12px}
+.fighter-card-stat{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:7px 5px;text-align:center}
+.fighter-card-stat span{display:block;font-size:.58rem;text-transform:uppercase;font-weight:900;letter-spacing:.8px;opacity:.75}
+.fighter-card-stat strong{display:block;margin-top:2px;font-size:.76rem;font-weight:1000;font-variant-numeric:tabular-nums;color:inherit}
+.fighter-card-slots{position:relative;z-index:2;display:flex;gap:6px;margin-top:10px;justify-content:center;flex-wrap:wrap}
+.fighter-slot{font-size:.56rem;text-transform:uppercase;font-weight:900;letter-spacing:.7px;border:1px dashed rgba(0,0,0,.28);border-radius:999px;padding:4px 7px;background:rgba(255,255,255,.14)}
+.fighter-card.immortal .fighter-card-stat{background:rgba(255,255,255,.08);border-color:rgba(212,175,55,.34)}
+.fighter-card.immortal .fighter-slot{border-color:rgba(212,175,55,.5);background:rgba(212,175,55,.12)}
+.collection-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.collection-summary .mini-stat{background:#0a0b0e;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.collection-summary .mini-stat strong{display:block;color:var(--gold);font-family:'Bebas Neue',Impact,sans-serif;font-size:1.6rem;line-height:1}
+.collection-list{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:16px}
+.achievement-card,.cosmetic-card{background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:10px;padding:12px;box-shadow:var(--shadow-card)}
+.achievement-card.unlocked,.cosmetic-card.unlocked{border-color:rgba(230,194,71,.42);box-shadow:0 0 22px rgba(230,194,71,.08)}
+.achievement-card.locked,.cosmetic-card.locked{opacity:.68}
+.collection-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.collection-title strong{color:#fff;font-size:.95rem;overflow-wrap:anywhere}
+.collection-status{font-size:.62rem;text-transform:uppercase;letter-spacing:.8px;font-weight:1000;border-radius:999px;padding:4px 7px;background:rgba(255,255,255,.08);white-space:nowrap}
+.collection-status.on{background:rgba(35,167,107,.18);color:#7ee0ad}
+.collection-status.reward{background:rgba(230,194,71,.14);color:var(--gold)}
+.collection-desc{color:var(--text-dim);font-size:.78rem;line-height:1.45}
+.cosmetic-swatch{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.18);background:var(--swatch,#444);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.cosmetic-row{display:flex;align-items:center;gap:10px}
+.cosmetic-card .btn{margin-top:10px;min-height:38px;font-size:.72rem}
+.wallet-strip{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+.wallet-pill{background:linear-gradient(180deg,#101218 0%,#07080a 100%);border:1px solid var(--line);border-radius:10px;padding:10px}
+.wallet-pill span{display:block;color:var(--text-dim);font-size:.65rem;text-transform:uppercase;font-weight:900;letter-spacing:.8px}
+.wallet-pill strong{display:block;color:var(--gold);font-size:1rem;margin-top:3px;font-variant-numeric:tabular-nums}
+.store-card{background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:10px;padding:12px;box-shadow:var(--shadow-card)}
+.store-card.owned{border-color:rgba(35,167,107,.45)}
+.store-card.affordable{border-color:rgba(230,194,71,.36)}
+.store-card.locked,.store-card.unaffordable{opacity:.72}
+.store-price{font-weight:1000;color:var(--gold);white-space:nowrap}
+.store-req{color:var(--text-dim);font-size:.74rem;line-height:1.4;margin-top:6px}
+.store-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.retired-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:14px}
+.retired-card{background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:var(--shadow-card)}
+.retired-fut{max-width:240px;margin:0 auto 10px;transform:scale(.94);transform-origin:top center}
+.retired-card .btn{min-height:40px;font-size:.75rem}
+.retired-meta{color:var(--text-dim);font-size:.8rem;line-height:1.5;text-align:center;margin-bottom:10px}
+.retired-detail-avatar{max-width:270px;margin:0 auto 12px}
+.retired-detail-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.retired-chip-row{display:flex;gap:6px;flex-wrap:wrap}
+.retired-chip{border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:.66rem;font-weight:900;text-transform:uppercase;color:var(--text-dim);background:#0a0b0e}
+.account-panel{background:linear-gradient(180deg,#111318 0%,#08090b 100%);border:1px solid rgba(230,194,71,.22);border-radius:12px;padding:12px;margin-bottom:14px}
+.account-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.account-row strong{color:#fff;font-size:.9rem;overflow-wrap:anywhere}
+.account-row span{color:var(--text-dim);font-size:.72rem}
+.account-actions{display:grid;grid-template-columns:1fr;gap:8px}
+.cloud-search{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+.cloud-profile-card{background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:var(--shadow-card)}
+.cloud-profile-head{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.cloud-mini-avatar{width:72px;height:92px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px;background:#08090b;border:1px solid var(--line);flex-shrink:0}
+.cloud-mini-avatar .boxer-avatar{transform:scale(.42);transform-origin:center}
+.leaderboard-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.leaderboard-tabs .btn{min-height:38px;font-size:.68rem}
+.conflict-choice{display:grid;grid-template-columns:1fr;gap:10px}
+.boxer-avatar.cos-aura_champion::before,.boxer-avatar.cos-aura_diamond::before,.boxer-avatar.cos-aura_immortal::before,.boxer-avatar.cos-aura_crown::before{content:'';position:absolute;inset:4px;border-radius:50%;z-index:0;filter:blur(10px);opacity:.65}
+.boxer-avatar.cos-aura_champion::before{background:rgba(212,175,55,.34)}
+.boxer-avatar.cos-aura_diamond::before{background:rgba(125,211,252,.34)}
+.boxer-avatar.cos-aura_immortal::before{background:rgba(212,175,55,.5)}
+.boxer-avatar.cos-aura_crown::before{background:linear-gradient(90deg,rgba(212,175,55,.56),rgba(125,211,252,.38))}
+#toast-stack{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:1500;width:min(92vw,420px);display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:linear-gradient(180deg,#191b20 0%,#08090b 100%);border:1px solid rgba(230,194,71,.48);border-left:5px solid var(--gold);border-radius:12px;padding:11px 12px;box-shadow:0 12px 32px rgba(0,0,0,.45);animation:toastIn .25s ease-out;color:#fff}
+.toast strong{display:block;color:var(--gold);font-size:.8rem;text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.toast span{font-size:.8rem;color:var(--text)}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(min-width:430px){.creator-grid{grid-template-columns:1fr 1fr}.field.wide{grid-column:1 / -1}.wallet-strip{grid-template-columns:1fr 1fr 1fr}}
 #sim-overlay{
   position:absolute;inset:0;background:rgba(0,0,0,.94);
   z-index:999;display:flex;flex-direction:column;padding:12px;
@@ -608,8 +756,8 @@ h2::before{
 @media(max-width:380px){
   .app{border-radius:var(--radius-lg)}
   header h1{letter-spacing:2px}
-  .stats-grid{grid-template-columns:repeat(5,1fr)}
-  .draft-grid{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:1fr}
+  .draft-grid{grid-template-columns:1fr}
   .quad{grid-template-columns:1fr 1fr}
 }
 @media(min-width:521px){
@@ -623,15 +771,6 @@ h2::before{
 .screen::-webkit-scrollbar,.log::-webkit-scrollbar,.sim-body::-webkit-scrollbar{width:6px}
 .screen::-webkit-scrollbar-thumb,.log::-webkit-scrollbar-thumb,.sim-body::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 .screen::-webkit-scrollbar-track,.log::-webkit-scrollbar-track,.sim-body::-webkit-scrollbar-track{background:transparent}
-.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px;vertical-align:middle;animation:livepulse 2s ease-in-out infinite;box-shadow:0 0 6px var(--green)}
-@keyframes livepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-.social-bar{display:flex;gap:8px;justify-content:center;padding:10px 0 4px}
-.social-link{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);text-decoration:none;font-size:.72rem;font-weight:800;color:var(--text-dim);flex:1;justify-content:center;letter-spacing:.4px;text-transform:uppercase;transition:border-color .15s,color .15s}
-.social-link:active{transform:scale(.96)}
-.social-link.ig{border-color:rgba(193,53,132,.5);color:#e1306c}
-.social-link.tt{border-color:rgba(255,255,255,.2);color:var(--text)}
-.social-link.tw{border-color:rgba(29,155,240,.5);color:#1d9bf0}
-.social-icon{font-size:1rem}
 </style>
 </head>
 <body>
@@ -644,8 +783,16 @@ h2::before{
 </header>
 
 <section id="menu-screen" class="screen active">
+  <div class="account-panel">
+    <div class="account-row"><strong id="auth-status">Guest Mode</strong><span id="sync-status">Local backup active</span></div>
+    <div class="account-actions">
+      <button id="sign-in-btn" class="btn blue" onclick="signInWithGoogle()">Sign In With Google</button>
+      <button id="sign-out-btn" class="btn ghost hidden" onclick="signOutCloud()">Sign Out</button>
+      <button id="sync-now-btn" class="btn ghost" onclick="syncNow(true)">Update Profile Now</button>
+    </div>
+  </div>
   <div class="hero">🥊</div>
-  <h2><span class="live-dot"></span>Worldwide Stats</h2>
+  <h2>Worldwide Stats</h2>
   <div class="global-stats">
     <div class="stat-pill">
       <div class="label"><span class="ico">🥊</span><span>Fighters Created Worldwide</span></div>
@@ -667,6 +814,11 @@ h2::before{
     <div class="mode-card" id="mode-card-hard" onclick="selectMode('hard')"><div class="mode-title">Championship Gauntlet</div><div class="mode-sub">Hard • no draft re-rolls • elite legends rarer • tougher opponents • slightly lower purses</div></div>
   </div>
   <h2>All-Time Personal Records</h2>
+  <div class="wallet-strip">
+    <div class="wallet-pill"><span>Wallet Balance</span><strong id="menu-wallet">$0</strong></div>
+    <div class="wallet-pill"><span>Lifetime Earnings</span><strong id="menu-lifetime">$0</strong></div>
+    <div class="wallet-pill"><span>Current Career Earnings</span><strong id="menu-career-earnings">$0</strong></div>
+  </div>
   <div class="panel">
     <div class="row"><span>Best Record Streak:</span><span id="rec-streak">0-0</span></div>
     <div class="row"><span>Most Career Earnings:</span><span id="rec-money">$0</span></div>
@@ -682,35 +834,47 @@ h2::before{
   <div style="margin-top:auto;padding-top:16px">
     <button id="continue-btn" class="btn blue hidden" onclick="continueCareer()">Continue Career</button>
     <button class="btn gold" onclick="startNewCareer()">Draft New Boxer</button>
+    <button class="btn blue" onclick="openStore('menu-screen')">Cosmetic Store</button>
+    <button class="btn ghost" onclick="openCollection('menu-screen')">Achievements &amp; Collection</button>
+    <button class="btn ghost" onclick="openRetiredCareers('menu-screen')">Retired Careers</button>
+    <button class="btn ghost" onclick="openPublicProfiles()">Public Profiles</button>
+    <button class="btn ghost" onclick="openCloudLeaderboards()">Cloud Leaderboards</button>
     <button class="btn blue" onclick="openHallOfFame()">Hall Of Fame</button>
     <button id="delete-save-btn" class="btn red hidden" onclick="deleteSave()">Delete Current Save</button>
-  <div class="social-bar">
-    <a class="social-link ig" href="https://instagram.com/500boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">📸</span>500boxing</a>
-    <a class="social-link tt" href="https://tiktok.com/@500boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">🎵</span>@500boxing</a>
-    <a class="social-link tw" href="https://x.com/@50_0boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">𝕏</span>@50_0boxing</a>
-  </div>
   </div>
 </section>
 
-<section id="draft-screen" class="screen" style="padding:10px 14px 14px">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-    <h2 style="margin:0;border:none;padding:0">Fighter Generation</h2>
-    <span id="draft-meta" style="font-size:.72rem;color:var(--text-dim);font-weight:700"></span>
+<section id="boxer-creator-screen" class="screen">
+  <h2>Boxer Creator</h2>
+  <div class="avatar-stage"><div id="creator-avatar-preview"></div></div>
+  <div class="creator-grid">
+    <div class="field wide"><label for="creator-username">Username</label><input id="creator-username" type="text" maxlength="20" placeholder="Iron Jack" oninput="handleCreatorInput()" /></div>
+    <div class="field"><label for="creator-first-name">First Name</label><input id="creator-first-name" type="text" maxlength="20" placeholder="Jack" oninput="handleCreatorInput()" /></div>
+    <div class="field"><label for="creator-last-name">Last Name</label><input id="creator-last-name" type="text" maxlength="20" placeholder="Steel" oninput="handleCreatorInput()" /></div>
+    <div class="field"><label for="creator-nickname">Nickname</label><input id="creator-nickname" type="text" maxlength="20" placeholder="The Anvil" oninput="handleCreatorInput()" /></div>
+    <div class="field"><label for="creator-country">Country</label><select id="creator-country" onchange="handleCreatorInput()"></select></div>
+    <div class="field"><label for="creator-skin-tone">Skin Tone</label><select id="creator-skin-tone" onchange="handleCreatorInput()"></select></div>
+    <div class="field"><label for="creator-hair-style">Hair Style</label><select id="creator-hair-style" onchange="handleCreatorInput()"></select></div>
+    <div class="field"><label for="creator-hair-colour">Hair Colour</label><select id="creator-hair-colour" onchange="handleCreatorInput()"></select></div>
+    <div class="field"><label for="creator-facial-hair">Facial Hair</label><select id="creator-facial-hair" onchange="handleCreatorInput()"></select></div>
+    <div class="field"><label for="creator-gloves">Gloves</label><select id="creator-gloves" onchange="handleCreatorInput()"></select></div>
+    <div class="field"><label for="creator-shorts">Shorts</label><select id="creator-shorts" onchange="handleCreatorInput()"></select></div>
+    <div class="field"><label for="creator-boots">Boots</label><select id="creator-boots" onchange="handleCreatorInput()"></select></div>
   </div>
-  <div style="display:flex;gap:6px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:.78rem">
-    <span style="color:var(--text-dim)">Mode:</span><span id="draft-mode-label" style="color:var(--gold);font-weight:800">-</span>
-    <span style="color:var(--line-2);margin:0 4px">•</span>
-    <span style="color:var(--text-dim)">Re-Rolls:</span><span id="draft-rerolls-left" style="color:var(--gold);font-weight:800">-</span>
-    <span style="color:var(--line-2);margin:0 4px">•</span>
-    <span style="color:var(--text-dim)">OVR:</span><span id="overall-rating-draft" style="color:var(--gold);font-weight:900;font-family:'Bebas Neue',sans-serif;font-size:1rem">50</span>
-  </div>
-  <div class="spin-card" style="padding:10px 14px"><div class="slot"><div class="slot-item" id="slot-top">Mike Tyson</div><div class="slot-item win" id="slot-mid">???</div><div class="slot-item" id="slot-bottom">Muhammad Ali</div></div><div id="legend-pill-wrap"></div><div id="perfect-banner" class="perfect"></div></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">
-    <button id="spin-btn" class="btn gold" style="margin:0;padding:10px 6px;font-size:.78rem" onclick="spinWheel()">Spin</button>
-    <button id="reroll-btn" class="btn blue" style="margin:0;padding:10px 6px;font-size:.78rem" onclick="useReroll()" disabled>Re-Roll</button>
-    <button class="btn red" style="margin:0;padding:10px 6px;font-size:.78rem" onclick="restartDraft()">Restart</button>
-  </div>
+  <div id="creator-error" class="validation-msg"></div>
+  <button class="btn gold" onclick="saveBoxerCreator()">Save Boxer</button>
+  <button id="creator-cancel-btn" class="btn ghost hidden" onclick="cancelBoxerCreator()">Cancel</button>
+</section>
+
+<section id="draft-screen" class="screen">
+  <h2>Fighter Generation</h2>
+  <p class="subtle">Spin the legend wheel. Good sources still appear most of the time, but bad-roll fighters, spoilers and prospects can now shake up drafts.</p>
+  <div class="panel"><div class="row"><span>Mode:</span><span id="draft-mode-label">Title Distance</span></div><div class="row"><span>Draft Re-Rolls Left:</span><span id="draft-rerolls-left">1</span></div></div>
+  <div class="overall-banner"><div class="label">Live Overall Rating</div><div id="overall-rating-draft" class="value">50</div></div>
+  <div class="spin-card"><div class="slot"><div class="slot-item" id="slot-top">Mike Tyson</div><div class="slot-item win" id="slot-mid">???</div><div class="slot-item" id="slot-bottom">Muhammad Ali</div></div><div id="legend-pill-wrap"></div><div id="perfect-banner" class="perfect"></div></div>
+  <div class="two-col"><button id="spin-btn" class="btn gold" onclick="spinWheel()">Spin Wheel</button><button id="reroll-btn" class="btn blue" onclick="useReroll()" disabled>Use Re-Roll</button></div>
   <div id="draft-grid" class="draft-grid"></div>
+  <button class="btn red" onclick="restartDraft()">Restart Draft</button>
 </section>
 
 <section id="trait-screen" class="screen">
@@ -719,7 +883,7 @@ h2::before{
   <div class="overall-banner"><div class="label">Live Overall Rating</div><div id="overall-rating-trait" class="value">50</div></div>
   <div class="trait-spin-card"><div id="trait-result" class="trait-reel">???</div></div>
   <button id="trait-spin-btn" class="btn gold" onclick="spinTrait()">Spin Trait #1</button>
-  <div id="trait-list" style="max-height:160px;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>
+  <div id="trait-list"></div>
   <h2>Hidden Synergies</h2>
   <div id="synergy-panel" class="panel"><div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div></div>
   <div class="panel"><div class="row"><span>Suggested Archetype:</span><span id="draft-archetype">Undetermined</span></div></div>
@@ -733,6 +897,29 @@ h2::before{
 
 <section id="hub-screen" class="screen">
   <div class="panel" style="text-align:center;background:linear-gradient(180deg,#0a0b0e 0%,#050608 100%);">
+    <div id="fighter-card" class="fighter-card bronze">
+      <div class="fighter-card-top">
+        <div class="fighter-card-ovr"><strong id="fighter-card-ovr">50</strong><span>OVR</span></div>
+        <div class="fighter-card-tier" id="fighter-card-tier">Bronze</div>
+      </div>
+      <div class="fighter-card-avatar" id="fighter-card-avatar"></div>
+      <div class="fighter-card-name" id="fighter-card-name">Custom Contender</div>
+      <div class="fighter-card-nick" id="fighter-card-nickname">The Contender</div>
+      <div class="fighter-card-country" id="fighter-card-country">Local Contender</div>
+      <div class="fighter-card-stats">
+        <div class="fighter-card-stat"><span>Record</span><strong id="fighter-card-record">0-0</strong></div>
+        <div class="fighter-card-stat"><span>Earnings</span><strong id="fighter-card-earnings">$0</strong></div>
+        <div class="fighter-card-stat"><span>Belts</span><strong id="fighter-card-belts">0/4</strong></div>
+        <div class="fighter-card-stat"><span>KOs</span><strong id="fighter-card-kos">0</strong></div>
+        <div class="fighter-card-stat"><span>Mode</span><strong id="fighter-card-mode">Mode</strong></div>
+        <div class="fighter-card-stat"><span>Rank</span><strong id="fighter-card-rank">#60</strong></div>
+      </div>
+      <div class="fighter-card-slots">
+        <span class="fighter-slot">Cosmetic</span>
+        <span class="fighter-slot">Achievement</span>
+        <span class="fighter-slot">Badge</span>
+      </div>
+    </div>
     <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Current Legacy Record</div>
     <div id="hub-fighter-name" style="font-size:1.34rem;font-weight:900;margin:8px 0;color:#fff;letter-spacing:1px">Custom Contender</div>
     <div id="hub-record" class="record-badge unbeaten">0-0</div>
@@ -752,25 +939,40 @@ h2::before{
       <span class="belt" id="belt-WBO">WBO</span>
     </div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;font-size:.78rem">
-    <div style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px"><div style="color:var(--text-dim)">Rank</div><div style="color:var(--gold);font-weight:800;font-family:'Bebas Neue',sans-serif;font-size:1.1rem" id="hub-rank-line">#60</div></div>
-    <div style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px"><div style="color:var(--text-dim)">Best Rank</div><div style="color:var(--gold);font-weight:800;font-family:'Bebas Neue',sans-serif;font-size:1.1rem" id="hub-best-rank-line">#60</div></div>
-    <div style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px"><div style="color:var(--text-dim)">Overall</div><div style="color:var(--gold);font-weight:800;font-family:'Bebas Neue',sans-serif;font-size:1.1rem" id="overall-rating-hub">50</div></div>
-    <div style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px"><div style="color:var(--text-dim)">Title Defs</div><div style="color:var(--gold);font-weight:800;font-family:'Bebas Neue',sans-serif;font-size:1.1rem" id="hub-title-def-line">0</div></div>
+  <div class="panel">
+    <div class="row"><span>Wallet Balance:</span><span id="hub-wallet">$0</span></div>
+    <div class="row"><span>Lifetime Earnings:</span><span id="hub-lifetime">$0</span></div>
+    <div class="row"><span>Career Earnings:</span><span id="hub-career-earnings">$0</span></div>
+    <div class="row"><span>Current World Ranking:</span><span id="hub-rank-line">#60</span></div>
+    <div class="row"><span>Best World Ranking:</span><span id="hub-best-rank-line">#60</span></div>
+    <div class="row"><span>Overall Rating:</span><span id="overall-rating-hub">50</span></div>
+    <div class="row"><span>Title Defenses:</span><span id="hub-title-def-line">0</span></div>
   </div>
   <h2>Your Fighter Attributes</h2>
   <div id="stats-grid" class="stats-grid"></div>
   <h2>Traits &amp; Synergies</h2>
   <div id="hub-traits" class="panel"></div>
+  <h2>Profile Foundation</h2>
+  <div class="panel">
+    <div class="row"><span>Username:</span><span id="profile-username">-</span></div>
+    <div class="row"><span>Player ID:</span><span id="profile-player-id">-</span></div>
+    <div class="row"><span>Avatar Style:</span><span id="profile-avatar-style">Classic</span></div>
+    <div class="row"><span>Cosmetics:</span><span id="profile-cosmetics">0 unlocked</span></div>
+    <div class="row"><span>Achievements:</span><span id="profile-achievements">0 unlocked</span></div>
+    <div class="row"><span>50-0 Careers:</span><span id="profile-50-count">0</span></div>
+  </div>
+  <button class="btn ghost" onclick="openBoxerCreator('hub-screen')">Edit Boxer</button>
+  <button class="btn blue" onclick="openStore('hub-screen')">Cosmetic Store</button>
+  <button class="btn ghost" onclick="openCollection('hub-screen')">Achievements &amp; Collection</button>
   <h2>Next Fight Schedule</h2>
   <div class="opponent-card">
     <div class="row"><span id="opp-bout">BOUT 1/50</span><span id="opp-tier" style="font-size:.74rem;color:var(--gold);font-weight:900;text-transform:uppercase;letter-spacing:1px">Journeyman</span></div>
     <div id="opp-name" style="font-size:1.15rem;font-weight:900;margin-bottom:6px;color:#fff">Razor Evans</div>
-    <div id="opp-details" style="font-size:.78rem;color:var(--text-dim);margin-bottom:8px">Record: 12-14 | Power: 70 | Chin: 68 | Speed: 72</div>
+    <div id="opp-details" class="subtle" style="margin-bottom:8px">Record: 12-14 | Power: 70 | Chin: 68 | Speed: 72</div>
     <div id="opp-tags" class="tag-row"></div>
   </div>
   <h2>Recent Results</h2>
-  <div id="recent-history" class="history-panel" style="font-size:.72rem;padding:8px 10px;margin-bottom:8px"><div style="color:var(--muted);text-align:center">No fight data recorded yet.</div></div>
+  <div id="recent-history" class="history-panel"><div style="color:var(--muted);text-align:center">No fight data recorded yet.</div></div>
   <div style="margin-top:auto">
     <button id="enter-ring-btn" class="btn gold" onclick="startFight(false)">Enter the Ring</button>
     <div class="quad">
@@ -821,11 +1023,14 @@ h2::before{
     <div class="metric"><span>Total Knockouts:</span><strong id="hof-kos">0 KO</strong></div>
     <div class="metric"><span>KO Percentage:</span><strong id="hof-kopct">0%</strong></div>
     <div class="metric"><span>Lifetime Earnings:</span><strong id="hof-earnings" class="money-dark">$0</strong></div>
+    <div class="metric"><span>Wallet Reward:</span><strong id="hof-wallet-reward">$0</strong></div>
+    <div class="metric"><span>Wallet Balance:</span><strong id="hof-wallet-balance">$0</strong></div>
     <div class="metric"><span>Wealth Tier:</span><strong id="hof-wealth">-</strong></div>
     <div class="metric"><span>Biggest Fight Purse:</span><strong id="hof-best-purse">$0</strong></div>
     <div class="metric"><span>Belts Unified:</span><strong id="hof-belts">0 / 4 Belts</strong></div>
     <div class="metric"><span>Title Defenses:</span><strong id="hof-title-def">0</strong></div>
-    <div class="metric"><span>Final Overall Rating:</span><strong id="hof-rating">50</strong><strong id="hof-ovr" style="display:none">50</strong></div>
+    <div class="metric"><span>Final Rating:</span><strong id="hof-rating">50</strong></div>
+    <div class="metric"><span>Overall Rating:</span><strong id="hof-ovr">50</strong></div>
     <div class="metric"><span>Peak World Rank:</span><strong id="hof-best-rank">#60</strong></div>
     <div class="metric"><span>Career Legacy Score:</span><strong id="hof-score">0</strong></div>
     <div class="metric"><span>Career Archetype:</span><strong id="hof-arch">Balanced</strong></div>
@@ -837,12 +1042,87 @@ h2::before{
   <button class="btn ghost" onclick="toggleLegacyBreakdown()">How Was This Calculated?</button>
   <div id="legacy-breakdown" class="panel breakdown-panel"></div>
   <button class="btn blue" onclick="showHistory()">View Full Fight History</button>
-  <a href="https://buymeacoffee.com/unbeaten50" target="_blank" rel="noopener noreferrer" class="btn ghost" style="text-align:center;text-decoration:none">Support UNBEATEN ☕</a>
-<button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
-  <div class="social-bar">
-    <a class="social-link ig" href="https://instagram.com/500boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">📸</span>500boxing</a>
-    <a class="social-link tt" href="https://tiktok.com/@500boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">🎵</span>@500boxing</a>
-    <a class="social-link tw" href="https://x.com/@50_0boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">𝕏</span>@50_0boxing</a>
+  <a href="https://buymeacoffee.com/unbeaten50" target="_blank" rel="noopener noreferrer" class="btn ghost" style="display:block; text-align:center; text-decoration:none;">Support UNBEATEN ☕</a>
+  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+</section>
+
+<section id="collection-screen" class="screen">
+  <h2>Achievements &amp; Collection</h2>
+  <div class="avatar-stage"><div id="collection-avatar-preview"></div></div>
+  <div class="collection-summary">
+    <div class="mini-stat"><strong id="collection-achievement-count">0/0</strong><span>Achievements</span></div>
+    <div class="mini-stat"><strong id="collection-cosmetic-count">0/0</strong><span>Cosmetics</span></div>
+  </div>
+  <h2>Achievements</h2>
+  <div id="achievement-list" class="collection-list"></div>
+  <h2>Cosmetics</h2>
+  <div id="cosmetic-list" class="collection-list"></div>
+  <button id="collection-back-btn" class="btn gold" onclick="closeCollection()">Back</button>
+</section>
+
+<section id="store-screen" class="screen">
+  <h2>Cosmetic Store</h2>
+  <div class="wallet-strip">
+    <div class="wallet-pill"><span>Wallet Balance</span><strong id="store-wallet">$0</strong></div>
+    <div class="wallet-pill"><span>Lifetime Earnings</span><strong id="store-lifetime">$0</strong></div>
+    <div class="wallet-pill"><span>50-0 Careers</span><strong id="store-50-count">0</strong></div>
+  </div>
+  <div class="avatar-stage"><div id="store-avatar-preview"></div></div>
+  <div id="store-list" class="collection-list"></div>
+  <button id="store-back-btn" class="btn gold" onclick="closeStore()">Back</button>
+</section>
+
+<section id="retired-careers-screen" class="screen">
+  <h2>Retired Careers</h2>
+  <p class="subtle">Local career profiles saved at retirement, including the final boxer card, cosmetics and wallet reward.</p>
+  <div id="retired-career-list" class="retired-grid"></div>
+  <button class="btn gold" onclick="closeRetiredCareers()">Back</button>
+</section>
+
+<section id="retired-career-detail-screen" class="screen">
+  <h2 id="retired-detail-title">Retired Career</h2>
+  <div id="retired-detail-card" class="retired-detail-avatar"></div>
+  <div id="retired-detail-stats" class="panel retired-detail-grid"></div>
+  <h2>Career Unlocks</h2>
+  <div id="retired-detail-achievements" class="panel"></div>
+  <button class="btn blue" onclick="openRetiredCareers(retiredReturnScreen)">Back To Retired Careers</button>
+</section>
+
+<section id="public-profiles-screen" class="screen">
+  <h2>Public Profiles</h2>
+  <div class="cloud-search">
+    <div class="field"><label for="profile-search-input">Search Username</label><input id="profile-search-input" type="text" maxlength="20" placeholder="Iron Jack" /></div>
+    <button class="btn blue" onclick="searchPublicProfiles()">Search</button>
+  </div>
+  <div id="profile-search-results" class="collection-list"><div class="empty-state">Search for a signed-in player profile.</div></div>
+  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+</section>
+
+<section id="public-profile-detail-screen" class="screen">
+  <h2 id="public-profile-title">Player Profile</h2>
+  <div id="public-profile-content"></div>
+  <button class="btn blue" onclick="openPublicProfiles()">Back To Search</button>
+</section>
+
+<section id="cloud-leaderboards-screen" class="screen">
+  <h2>Cloud Leaderboards</h2>
+  <div class="leaderboard-tabs">
+    <button class="btn ghost" onclick="loadCloudLeaderboard('walletBalance')">Richest</button>
+    <button class="btn ghost" onclick="loadCloudLeaderboard('completed50And0Careers')">Most 50-0</button>
+    <button class="btn ghost" onclick="loadCloudLeaderboard('highestLegacyScore')">Legacy Score</button>
+    <button class="btn ghost" onclick="loadCloudLeaderboard('achievementCount')">Achievements</button>
+    <button class="btn ghost" onclick="loadCloudLeaderboard('cosmeticCount')">Cosmetics</button>
+  </div>
+  <div id="cloud-leaderboard-list" class="leaderboard-list"><div class="empty-state">Choose a leaderboard.</div></div>
+  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+</section>
+
+<section id="cloud-conflict-screen" class="screen">
+  <h2>Choose Save</h2>
+  <p class="subtle">A cloud save and local backup were both found. Pick which progress to keep.</p>
+  <div class="conflict-choice">
+    <div class="panel"><h2>Local Save</h2><div id="local-save-summary"></div><button class="btn gold" onclick="resolveCloudConflict('local')">Keep Local</button></div>
+    <div class="panel"><h2>Cloud Save</h2><div id="cloud-save-summary"></div><button class="btn blue" onclick="resolveCloudConflict('cloud')">Use Cloud</button></div>
   </div>
 </section>
 
@@ -891,9 +1171,10 @@ h2::before{
       <div class="two-col">
         <button id="sim-speed-btn" class="btn ghost" style="margin-bottom:0" onclick="toggleFast()">Skip Delays</button>
         <button id="sim-close-btn" class="btn gold hidden" style="margin-bottom:0" onclick="closeOverlay()">Return To Hub</button>
-      </div>
-    </div>
   </div>
+</div>
+<div id="toast-stack"></div>
+</div>
 </div>
 
 </div>
@@ -971,9 +1252,16 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
 const SEASON_MS = 3 * 24 * 60 * 60 * 1000;
 let currentSeason = null;
 let seasonTimer = null;
+let currentUser = null;
+let syncTimer = null;
+let pendingCloudSync = null;
+let conflictCloudData = null;
+let conflictLocalData = null;
+let restoringCloud = false;
 const NAME_RULE_MESSAGE = "Fighter name must be 3-20 characters, letters and spaces only. No numbers, emojis, or special characters.";
 const BANNED_NAME_TERMS = [
   "fuck","fucker","fucking","shit","bitch","bastard","cunt","twat","wanker","dick","cock","pussy","asshole","arsehole",
@@ -1008,6 +1296,11 @@ function handleNameInput(){
   err.classList.toggle('ok', result.ok);
 }
 function makeId(prefix){ return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10); }
+function markLocalUpdated(){
+  if(restoringCloud) return;
+  localStorage.setItem(KEYS.cloudStamp, String(Date.now()));
+}
+function localUpdatedAtMillis(){ return Number(localStorage.getItem(KEYS.cloudStamp)||0)||Date.now(); }
 function localSubmittedIds(){
   try{return JSON.parse(localStorage.getItem('unbeaten_submitted_careers_v1')||'[]');}catch{return [];}
 }
@@ -1102,22 +1395,568 @@ const OPPL = ['Evans','Miller','Johnson','Slater','Grimes','Alvarez','Fury','Kli
 const OPPSTYLE = [{id:'slugger',name:'Slugger',power:5,speed:-2,defence:-1,chin:2},{id:'outboxer',name:'Outboxer',power:-2,speed:4,defence:4,footwork:4},{id:'pressure',name:'Pressure Fighter',power:2,stamina:4,heart:4,defence:-2},{id:'technician',name:'Technician',ringIQ:5,accuracy:4,defence:3,power:-1},{id:'tank',name:'Tank',chin:5,heart:5,speed:-4,footwork:-3}];
 const HOF = [{min:900,t:'Untouchable Legend',p:.4},{min:850,t:'Immortal Champion',p:.8},{min:800,t:'Transcendent Great',p:1.2},{min:760,t:'All-Time Ring Legend',p:2.0},{min:720,t:'Undisputed Great',p:2.8},{min:680,t:'Hall of Fame Icon',p:4.0},{min:640,t:'First Ballot Hall of Famer',p:6.0},{min:590,t:'Elite Champion',p:9.0},{min:540,t:'Multi-Belt Champion',p:12.0},{min:490,t:'World Champion Class',p:16.0},{min:440,t:'Championship Contender',p:22.0},{min:390,t:'Top Ranked Contender',p:30.0},{min:330,t:'Veteran Gatekeeper',p:42.0},{min:270,t:'Durable Veteran',p:55.0},{min:210,t:'Journeyman Pro',p:68.0},{min:150,t:'Fading Fighter',p:81.0},{min:100,t:'Lost Prospect',p:90.0},{min:0,t:'Forgotten Fighter',p:97.0}];
 const MILESTONES = [10, 25, 35, 50];
-const KEYS = {records:'unbeaten_final_records_v10',career:'unbeaten_final_career_v10'};
+const PROFILE_MODEL_VERSION = 1;
+const AVATAR_DEFAULT = {base:'classic',skinTone:'medium',hairStyle:'crop',hairColour:'black',facialHair:'none',gloves:'red',shorts:'blue',boots:'black',robe:'default',stance:'orthodox',badge:null};
+const COUNTRY_OPTIONS = ['United Kingdom','United States','Mexico','Canada','Ireland','Nigeria','Ghana','Jamaica','Brazil','Cuba','Ukraine','New Zealand','Australia','Japan','Philippines'];
+const AVATAR_OPTIONS = {
+  skinTone:[['light','Light'],['medium','Medium'],['tan','Tan'],['brown','Brown'],['dark','Dark']],
+  hairStyle:[['crop','Crop'],['buzz','Buzz'],['afro','Afro'],['bald','Bald']],
+  hairColour:[['black','Black'],['brown','Brown'],['blonde','Blonde'],['red','Red']],
+  facialHair:[['none','None'],['stubble','Stubble'],['goatee','Goatee'],['beard','Beard']],
+  gloves:[['red','Red'],['blue','Blue'],['gold','Gold'],['black','Black'],['white','White']],
+  shorts:[['blue','Blue'],['black','Black'],['red','Red'],['white','White'],['gold','Gold']],
+  boots:[['black','Black'],['white','White'],['red','Red'],['blue','Blue'],['gold','Gold']]
+};
+const AVATAR_COLOURS = {
+  skinTone:{light:'#f1c6a8',medium:'#b8794f',tan:'#9f633f',brown:'#6f422b',dark:'#3f251b'},
+  hairColour:{black:'#17110d',brown:'#4b2c1a',blonde:'#d6b45c',red:'#8f2d18'},
+  gloves:{red:'#b91c1c',blue:'#1d4ed8',gold:'#d4a82a',black:'#111827',white:'#e5e7eb',bronze:'#b77932',ko:'#7f1d1d',diamond:'#7dd3fc',immortal:'#f7e7a1'},
+  shorts:{red:'#b91c1c',blue:'#1d4ed8',gold:'#d4a82a',black:'#111827',white:'#e5e7eb',silver:'#cbd5e1',millionaire:'#0f766e',diamond:'#7dd3fc'},
+  boots:{red:'#7f1d1d',blue:'#1e3a8a',gold:'#a16207',black:'#09090b',white:'#d1d5db',champion:'#d4a82a',diamond:'#7dd3fc'}
+};
+const COSMETIC_SLOTS = ['robe','gloves','shorts','boots','tattoo','aura','entrance','badge'];
+const COSMETIC_DEFINITIONS = {
+  robe_default:{id:'robe_default',slot:'robe',name:'Classic Robe',rarity:'common',desc:'The standard walkout robe.',swatch:'#2d2f36'},
+  gloves_default:{id:'gloves_default',slot:'gloves',name:'Classic Gloves',rarity:'common',desc:'Standard academy gloves.',swatch:'#b91c1c',visual:{gloves:'red'}},
+  shorts_default:{id:'shorts_default',slot:'shorts',name:'Classic Trunks',rarity:'common',desc:'Standard fight trunks.',swatch:'#1d4ed8',visual:{shorts:'blue'}},
+  boots_default:{id:'boots_default',slot:'boots',name:'Classic Boots',rarity:'common',desc:'Standard ring boots.',swatch:'#09090b',visual:{boots:'black'}},
+  tattoo_default:{id:'tattoo_default',slot:'tattoo',name:'No Tattoo',rarity:'common',desc:'Clean chest presentation.',swatch:'#3f251b'},
+  aura_default:{id:'aura_default',slot:'aura',name:'No Aura',rarity:'common',desc:'No aura equipped.',swatch:'#111827'},
+  entrance_default:{id:'entrance_default',slot:'entrance',name:'Standard Walkout',rarity:'common',desc:'Default entrance presentation.',swatch:'#555'},
+  badge_default:{id:'badge_default',slot:'badge',name:'No Badge',rarity:'common',desc:'No card badge equipped.',swatch:'#333'},
+  gloves_red_reward:{id:'gloves_red_reward',slot:'gloves',name:'Red Gloves',rarity:'uncommon',desc:'Unlocked by First Win.',swatch:'#dc2626',visual:{gloves:'red'}},
+  gloves_bronze:{id:'gloves_bronze',slot:'gloves',name:'Bronze Gloves',rarity:'rare',desc:'Unlocked by 10-0 Prospect.',swatch:'#b77932',visual:{gloves:'bronze'}},
+  shorts_silver:{id:'shorts_silver',slot:'shorts',name:'Silver Shorts',rarity:'rare',desc:'Unlocked by 25-0 Contender.',swatch:'#cbd5e1',visual:{shorts:'silver'}},
+  boots_champion:{id:'boots_champion',slot:'boots',name:'Champion Boots',rarity:'epic',desc:'Unlocked by 40-0 Champion.',swatch:'#d4a82a',visual:{boots:'champion'}},
+  tattoo_title:{id:'tattoo_title',slot:'tattoo',name:'Title Tattoo',rarity:'rare',desc:'Unlocked by First Title.',swatch:'#8b5cf6',visual:{className:'cos-tattoo_title'}},
+  robe_undisputed:{id:'robe_undisputed',slot:'robe',name:'Undisputed Robe',rarity:'legendary',desc:'Unlocked by becoming undisputed.',swatch:'#d4a82a',visual:{className:'cos-robe_undisputed'}},
+  gloves_ko:{id:'gloves_ko',slot:'gloves',name:'KO Gloves',rarity:'epic',desc:'Unlocked by 10 KO Wins.',swatch:'#7f1d1d',visual:{gloves:'ko'}},
+  tattoo_power:{id:'tattoo_power',slot:'tattoo',name:'Power Tattoo',rarity:'epic',desc:'Unlocked by 25 KO Wins.',swatch:'#ef4444',visual:{className:'cos-tattoo_power'}},
+  shorts_millionaire:{id:'shorts_millionaire',slot:'shorts',name:'Millionaire Shorts',rarity:'epic',desc:'Unlocked by earning $1M.',swatch:'#0f766e',visual:{shorts:'millionaire'}},
+  tattoo_50:{id:'tattoo_50',slot:'tattoo',name:'50-0 Chest Tattoo',rarity:'legendary',desc:'Unlocked by reaching 50-0.',swatch:'#f7e7a1',visual:{className:'cos-tattoo_50'}},
+  badge_50:{id:'badge_50',slot:'badge',name:'50-0 Badge',rarity:'legendary',desc:'A card badge for a perfect career.',swatch:'#111827',source:'achievement',visual:{className:'cos-badge_50',badgeText:'50'}},
+  store_gloves_black:{id:'store_gloves_black',slot:'gloves',name:'Black Gloves',rarity:'common',desc:'Clean black store gloves.',swatch:'#111827',source:'store',price:0,visual:{gloves:'black'}},
+  store_gloves_red_pro:{id:'store_gloves_red_pro',slot:'gloves',name:'Red Pro Gloves',rarity:'uncommon',desc:'A sharper pro red glove set.',swatch:'#dc2626',source:'store',price:5000000,visual:{gloves:'red'}},
+  store_gloves_gold:{id:'store_gloves_gold',slot:'gloves',name:'Gold Gloves',rarity:'epic',desc:'Gold gloves for proven names.',swatch:'#d4a82a',source:'store',price:50000000,visual:{gloves:'gold'}},
+  store_gloves_diamond:{id:'store_gloves_diamond',slot:'gloves',name:'Diamond Gloves',rarity:'legendary',desc:'Diamond-blue gloves for elite grinders.',swatch:'#7dd3fc',source:'store',price:250000000,visual:{gloves:'diamond'}},
+  store_gloves_immortal:{id:'store_gloves_immortal',slot:'gloves',name:'Immortal Gloves',rarity:'mythic',desc:'Black and gold immortal gloves.',swatch:'#f7e7a1',source:'store',price:1000000000,visual:{gloves:'immortal'}},
+  store_shorts_black:{id:'store_shorts_black',slot:'shorts',name:'Black Shorts',rarity:'common',desc:'Simple black fight shorts.',swatch:'#111827',source:'store',price:0,visual:{shorts:'black'}},
+  store_shorts_gold_trim:{id:'store_shorts_gold_trim',slot:'shorts',name:'Gold Trim Shorts',rarity:'rare',desc:'Black trunks with a premium gold look.',swatch:'#d4a82a',source:'store',price:25000000,visual:{shorts:'gold'}},
+  store_shorts_champion:{id:'store_shorts_champion',slot:'shorts',name:'Champion Shorts',rarity:'epic',desc:'Champion-grade gold shorts.',swatch:'#d4a82a',source:'store',price:100000000,visual:{shorts:'gold'}},
+  store_shorts_diamond:{id:'store_shorts_diamond',slot:'shorts',name:'Diamond Shorts',rarity:'legendary',desc:'Diamond shorts for repeated perfect careers.',swatch:'#7dd3fc',source:'store',price:500000000,visual:{shorts:'diamond'}},
+  store_boots_classic:{id:'store_boots_classic',slot:'boots',name:'Classic Boots',rarity:'common',desc:'Classic black store boots.',swatch:'#09090b',source:'store',price:0,visual:{boots:'black'}},
+  store_boots_gold:{id:'store_boots_gold',slot:'boots',name:'Gold Boots',rarity:'rare',desc:'Gold boots for headline nights.',swatch:'#d4a82a',source:'store',price:50000000,visual:{boots:'gold'}},
+  store_boots_champion:{id:'store_boots_champion',slot:'boots',name:'Champion Boots',rarity:'epic',desc:'Premium champion boots.',swatch:'#d4a82a',source:'store',price:250000000,visual:{boots:'champion'}},
+  store_boots_diamond:{id:'store_boots_diamond',slot:'boots',name:'Diamond Boots',rarity:'legendary',desc:'Diamond boots for career lifers.',swatch:'#7dd3fc',source:'store',price:1000000000,visual:{boots:'diamond'}},
+  store_tattoo_basic:{id:'store_tattoo_basic',slot:'tattoo',name:'Basic Tattoo',rarity:'uncommon',desc:'A basic chest mark.',swatch:'#8b5cf6',source:'store',price:10000000,visual:{className:'cos-tattoo_title'}},
+  store_tattoo_sleeve:{id:'store_tattoo_sleeve',slot:'tattoo',name:'Sleeve Tattoo',rarity:'rare',desc:'A bigger statement piece.',swatch:'#ef4444',source:'store',price:100000000,visual:{className:'cos-tattoo_power'}},
+  store_tattoo_champion:{id:'store_tattoo_champion',slot:'tattoo',name:'Champion Tattoo',rarity:'legendary',desc:'A champion-only chest mark.',swatch:'#f7e7a1',source:'store',price:500000000,visual:{className:'cos-tattoo_50'}},
+  store_robe_champion:{id:'store_robe_champion',slot:'robe',name:'Champion Robe',rarity:'legendary',desc:'A bright champion robe effect.',swatch:'#d4a82a',source:'store',price:500000000,visual:{className:'cos-robe_undisputed'}},
+  store_robe_legend:{id:'store_robe_legend',slot:'robe',name:'Legend Robe',rarity:'mythic',desc:'A robe for repeated 50-0 greatness.',swatch:'#f7e7a1',source:'store',price:2000000000,visual:{className:'cos-robe_undisputed'}},
+  store_aura_champion:{id:'store_aura_champion',slot:'aura',name:'Champion Aura',rarity:'legendary',desc:'A warm champion glow.',swatch:'#d4a82a',source:'store',price:500000000,visual:{className:'cos-aura_champion'}},
+  store_aura_diamond:{id:'store_aura_diamond',slot:'aura',name:'Diamond Aura',rarity:'mythic',desc:'A diamond glow for long-term grinders.',swatch:'#7dd3fc',source:'store',price:2000000000,visual:{className:'cos-aura_diamond'}},
+  store_aura_immortal:{id:'store_aura_immortal',slot:'aura',name:'Immortal Aura',rarity:'mythic',desc:'Requires 10 completed 50-0 careers.',swatch:'#f7e7a1',source:'store',price:5000000000,requires50:10,visual:{className:'cos-aura_immortal'}},
+  store_robe_mythic_champion:{id:'store_robe_mythic_champion',slot:'robe',name:'Mythic Champion Robe',rarity:'mythic',desc:'Requires 25 completed 50-0 careers.',swatch:'#f7e7a1',source:'store',price:10000000000,requires50:25,visual:{className:'cos-robe_undisputed'}},
+  store_aura_legend_crown:{id:'store_aura_legend_crown',slot:'aura',name:'Legend Crown Aura',rarity:'mythic',desc:'Requires 50 completed 50-0 careers.',swatch:'#f7e7a1',source:'store',price:25000000000,requires50:50,visual:{className:'cos-aura_crown'}}
+};
+const DEFAULT_UNLOCKED_COSMETICS = ['robe_default','gloves_default','shorts_default','boots_default','tattoo_default','aura_default','entrance_default','badge_default'];
+const DEFAULT_EQUIPPED_COSMETICS = {robe:'robe_default',gloves:'gloves_default',shorts:'shorts_default',boots:'boots_default',tattoo:'tattoo_default',aura:'aura_default',entrance:'entrance_default',badge:'badge_default'};
+const ACHIEVEMENT_DEFINITIONS = {
+  first_win:{id:'first_win',name:'First Win',desc:'Win your first professional bout.',reward:'gloves_red_reward',check:c=>c.wins>=1},
+  prospect_10_0:{id:'prospect_10_0',name:'10-0 Prospect',desc:'Reach 10 wins with no losses or draws.',reward:'gloves_bronze',check:c=>c.wins>=10&&c.losses===0&&c.draws===0},
+  contender_25_0:{id:'contender_25_0',name:'25-0 Contender',desc:'Reach 25 wins with no losses or draws.',reward:'shorts_silver',check:c=>c.wins>=25&&c.losses===0&&c.draws===0},
+  champion_40_0:{id:'champion_40_0',name:'40-0 Champion',desc:'Reach 40 wins with no losses or draws.',reward:'boots_champion',check:c=>c.wins>=40&&c.losses===0&&c.draws===0},
+  first_title:{id:'first_title',name:'First Title',desc:'Win your first world title.',reward:'tattoo_title',check:c=>(c.belts||[]).length>=1},
+  undisputed:{id:'undisputed',name:'Undisputed Champion',desc:'Hold all four major belts at once.',reward:'robe_undisputed',check:c=>(c.belts||[]).length>=4},
+  ko_10:{id:'ko_10',name:'10 KO Wins',desc:'Score 10 knockout, TKO or RTD wins.',reward:'gloves_ko',check:c=>c.kos>=10},
+  ko_25:{id:'ko_25',name:'25 KO Wins',desc:'Score 25 knockout, TKO or RTD wins.',reward:'tattoo_power',check:c=>c.kos>=25},
+  earn_1m:{id:'earn_1m',name:'Earn $1M',desc:'Earn at least $1,000,000 in career purses.',reward:'shorts_millionaire',check:c=>c.earnings>=1000000},
+  reach_50_0:{id:'reach_50_0',name:'Reach 50-0',desc:'Complete a perfect 50-0 career.',reward:'tattoo_50',bonusReward:'badge_50',check:c=>c.wins>=50&&c.losses===0&&c.draws===0}
+};
+const KEYS = {records:'unbeaten_final_records_v10',career:'unbeaten_final_career_v10',profile:'unbeaten_profile_foundation_v1',retired:'unbeaten_retired_careers_v1',cloudStamp:'unbeaten_cloud_stamp_v1'};
 const NIL = {bestRecord:'0-0',mostMoney:0,mostKOs:0,bestTier:'None'};
 const S = {mode:'easy',player:null,career:null,opponent:null,legend:null,fight:null,traitsRolled:0,awaiting:false,perfect:false,batch:false,pendingHof:false,fast:false,spinTraitBusy:false};
 const $ = id => document.getElementById(id), rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, choice=arr=>arr[Math.floor(Math.random()*arr.length)], clamp=(n,a,b)=>Math.max(a,Math.min(b,n)), cash=v=>'$'+Math.floor(v).toLocaleString(), deep=o=>JSON.parse(JSON.stringify(o)), sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function hasTrait(id){ return (S.player?.Traits || []).some(t=>t.id===id); }
+function createAchievementState(existing={}){
+  return {unlocked:{...(existing.unlocked||{})}, progress:{...(existing.progress||{})}, lastCheckedAt:existing.lastCheckedAt||null};
+}
+function createAvatarConfig(existing={}){
+  return {...AVATAR_DEFAULT, ...(existing||{})};
+}
+function createCosmeticUnlocks(existing=[]){
+  return Array.from(new Set([...DEFAULT_UNLOCKED_COSMETICS, ...((Array.isArray(existing)?existing:[]))]));
+}
+function createEquippedCosmetics(existing={}){
+  return {...DEFAULT_EQUIPPED_COSMETICS, ...(existing||{})};
+}
+function safeMoney(value){ return Number.isFinite(value)?Math.max(0,Math.floor(value)):0; }
+function getCosmeticDefinition(id){ return COSMETIC_DEFINITIONS[id]||null; }
+function unlockCosmetic(player, cosmeticId){
+  ensurePlayerFoundation(player);
+  if(!getCosmeticDefinition(cosmeticId)) return false;
+  if(player.unlockedCosmetics.includes(cosmeticId)) return false;
+  player.unlockedCosmetics.push(cosmeticId);
+  return true;
+}
+function equipCosmetic(player, slot, cosmeticId){
+  ensurePlayerFoundation(player);
+  const cosmetic=getCosmeticDefinition(cosmeticId);
+  if(!cosmetic||cosmetic.slot!==slot||!player.unlockedCosmetics.includes(cosmeticId)) return false;
+  player.equippedCosmetics[slot]=cosmeticId;
+  return true;
+}
+function equippedCosmetic(playerOrProfile, slot){
+  const equipped=playerOrProfile?.equippedCosmetics||DEFAULT_EQUIPPED_COSMETICS;
+  return getCosmeticDefinition(equipped[slot])||getCosmeticDefinition(DEFAULT_EQUIPPED_COSMETICS[slot]);
+}
+function avatarWithEquippedCosmetics(avatar, equipped={}){
+  const next=createAvatarConfig(avatar);
+  ['gloves','shorts','boots'].forEach(slot=>{
+    const cosmetic=getCosmeticDefinition(equipped[slot]);
+    if(cosmetic?.visual?.[slot]) next[slot]=cosmetic.visual[slot];
+  });
+  return next;
+}
+function cosmeticAvatarClasses(equipped={}){
+  return COSMETIC_SLOTS.map(slot=>getCosmeticDefinition(equipped[slot])?.visual?.className).filter(Boolean).join(' ');
+}
+function cosmeticBadgeText(equipped={}){
+  return getCosmeticDefinition(equipped.badge)?.visual?.badgeText||'';
+}
+function showToast(title, message){
+  const stack=$('toast-stack');
+  if(!stack) return;
+  const toast=document.createElement('div');
+  toast.className='toast';
+  toast.innerHTML='<strong>'+title+'</strong><span>'+message+'</span>';
+  stack.appendChild(toast);
+  setTimeout(()=>toast.remove(), 4200);
+}
+function unlockAchievement(player, achievementId){
+  ensurePlayerFoundation(player);
+  if(!ACHIEVEMENT_DEFINITIONS[achievementId]) return false;
+  if(player.achievements.unlocked[achievementId]) return false;
+  player.achievements.unlocked[achievementId]={unlockedAt:new Date().toISOString()};
+  player.achievements.lastCheckedAt=new Date().toISOString();
+  return true;
+}
+function checkAchievements(showNotifications=true){
+  if(!S.player||!S.career) return [];
+  ensurePlayerFoundation(S.player);
+  const unlocked=[];
+  Object.values(ACHIEVEMENT_DEFINITIONS).forEach(achievement=>{
+    if(!achievement.check(S.career)) return;
+    if(!unlockAchievement(S.player, achievement.id)) return;
+    unlocked.push(achievement);
+    const rewardIds=[achievement.reward, achievement.bonusReward].filter(Boolean);
+    rewardIds.forEach(id=>{
+      const cosmetic=getCosmeticDefinition(id);
+      if(unlockCosmetic(S.player, id)&&showNotifications&&cosmetic) showToast('Cosmetic Unlocked', cosmetic.name);
+    });
+    if(showNotifications) showToast('Achievement Unlocked', achievement.name);
+  });
+  if(unlocked.length){
+    saveProfileFromPlayer(S.player);
+    if($('collection-screen')?.classList.contains('active')) renderCollectionScreen();
+  }
+  return unlocked;
+}
+function isPerfectCareer(career=S.career){ return !!career&&career.wins===50&&career.losses===0&&career.draws===0; }
+function careerWalletReward(career=S.career){
+  const earnings=safeMoney(career?.earnings||0);
+  return Math.floor(earnings*(isPerfectCareer(career)?0.08:0.02));
+}
+const MULTI_50_REWARDS = [
+  {count:1, cosmetic:'tattoo_50'},
+  {count:2, cosmetic:'store_gloves_gold'},
+  {count:3, cosmetic:'store_tattoo_champion'},
+  {count:5, cosmetic:'store_shorts_diamond'},
+  {count:10, cosmetic:'store_aura_immortal'},
+  {count:25, cosmetic:'store_robe_legend'},
+  {count:50, cosmetic:'store_aura_legend_crown'}
+];
+function grantMulti50Rewards(player, showNotifications=true){
+  ensurePlayerFoundation(player);
+  const count=player.completed50And0Careers||0;
+  MULTI_50_REWARDS.forEach(reward=>{
+    if(count<reward.count) return;
+    const cosmetic=getCosmeticDefinition(reward.cosmetic);
+    if(unlockCosmetic(player, reward.cosmetic)&&showNotifications&&cosmetic) showToast('50-0 Reward Unlocked', cosmetic.name);
+  });
+}
+function awardCareerCompletionEconomy(showNotifications=true){
+  if(!S.player||!S.career||S.career.economyRewarded) return {reward:0, already:true};
+  ensurePlayerFoundation(S.player);
+  const earnings=safeMoney(S.career.earnings||0);
+  const reward=careerWalletReward(S.career);
+  S.career.economyRewarded=true;
+  S.player.careerEarnings=earnings;
+  S.player.lifetimeEarnings=safeMoney(S.player.lifetimeEarnings)+earnings;
+  S.player.walletBalance=safeMoney(S.player.walletBalance)+reward;
+  if(isPerfectCareer(S.career)&&!S.career.profile50Counted){
+    S.career.profile50Counted=true;
+    S.player.completed50And0Careers=(S.player.completed50And0Careers||0)+1;
+  }
+  grantMulti50Rewards(S.player, showNotifications);
+  saveProfileFromPlayer(S.player);
+  if(showNotifications) showToast('Wallet Reward', '+'+cash(reward)+' cosmetic wallet');
+  return {reward, already:false};
+}
+function ensurePlayerFoundation(player){
+  if(!player) return player;
+  const id=player.playerId||makeId('player');
+  const fullName=cleanName([player.boxerFirstName, player.boxerLastName].filter(Boolean).join(' '));
+  player.profileModelVersion=PROFILE_MODEL_VERSION;
+  player.playerId=id;
+  player.username=cleanName(player.username||player.Name||'Custom Contender');
+  player.boxerFirstName=cleanName(player.boxerFirstName||String(player.Name||'Custom').split(' ')[0]||'Custom');
+  player.boxerLastName=cleanName(player.boxerLastName||String(player.Name||'Contender').split(' ').slice(1).join(' ')||'Contender');
+  player.Nickname=cleanName(player.Nickname||'The Contender');
+  player.country=player.country||'United Kingdom';
+  player.avatar=createAvatarConfig(player.avatar);
+  player.unlockedCosmetics=createCosmeticUnlocks(player.unlockedCosmetics);
+  player.equippedCosmetics=createEquippedCosmetics(player.equippedCosmetics);
+  player.achievements=createAchievementState(player.achievements);
+  player.completed50And0Careers=Number.isFinite(player.completed50And0Careers)?player.completed50And0Careers:0;
+  player.careerEarnings=safeMoney(player.careerEarnings);
+  player.lifetimeEarnings=safeMoney(player.lifetimeEarnings);
+  player.walletBalance=safeMoney(player.walletBalance);
+  player.profileSetupComplete=!!player.profileSetupComplete||!!fullName;
+  return player;
+}
+function migrateCareerSave(data){
+  if(!data) return null;
+  if(data.player){
+    const needsFoundation=!data.player.playerId||!data.player.avatar||!data.player.unlockedCosmetics||!data.player.equippedCosmetics||!data.player.achievements;
+    if(needsFoundation){
+      const profile=loadProfileFoundation();
+      applyProfileFoundation(data.player, profile.profileSetupComplete?profile:createProfileFoundation(data.player));
+    }
+    ensurePlayerFoundation(data.player);
+    saveProfileFromPlayer(data.player);
+  }
+  if(data.career&&!data.career.id) data.career.id=makeId('career');
+  return data;
+}
+function createProfileFoundation(existing={}){
+  const nameParts=cleanName(existing.Name||'').split(' ').filter(Boolean);
+  const profile={
+    profileModelVersion:PROFILE_MODEL_VERSION,
+    playerId:existing.playerId||makeId('player'),
+    username:cleanName(existing.username||existing.Name||'Custom Contender'),
+    boxerFirstName:cleanName(existing.boxerFirstName||nameParts[0]||'Custom'),
+    boxerLastName:cleanName(existing.boxerLastName||nameParts.slice(1).join(' ')||'Contender'),
+    nickname:cleanName(existing.nickname||existing.Nickname||'The Contender'),
+    country:existing.country||'United Kingdom',
+    avatar:createAvatarConfig(existing.avatar),
+    unlockedCosmetics:createCosmeticUnlocks(existing.unlockedCosmetics),
+    equippedCosmetics:createEquippedCosmetics(existing.equippedCosmetics),
+    achievements:createAchievementState(existing.achievements),
+    completed50And0Careers:Number.isFinite(existing.completed50And0Careers)?existing.completed50And0Careers:0,
+    careerEarnings:safeMoney(existing.careerEarnings),
+    lifetimeEarnings:safeMoney(existing.lifetimeEarnings),
+    walletBalance:safeMoney(existing.walletBalance),
+    profileSetupComplete:!!existing.profileSetupComplete
+  };
+  return profile;
+}
+function loadProfileFoundation(){
+  try{ return createProfileFoundation(JSON.parse(localStorage.getItem(KEYS.profile)||'{}')); }catch{ return createProfileFoundation(); }
+}
+function saveProfileFoundation(profile){
+  const clean=createProfileFoundation(profile||{});
+  localStorage.setItem(KEYS.profile, JSON.stringify(clean));
+  markLocalUpdated();
+  requestCloudSync();
+  return clean;
+}
+function applyProfileFoundation(player, profile=loadProfileFoundation()){
+  if(!player) return player;
+  player.playerId=profile.playerId;
+  player.username=profile.username;
+  player.boxerFirstName=profile.boxerFirstName;
+  player.boxerLastName=profile.boxerLastName;
+  player.Nickname=profile.nickname;
+  player.country=profile.country;
+  player.avatar=createAvatarConfig(profile.avatar);
+  player.unlockedCosmetics=createCosmeticUnlocks(profile.unlockedCosmetics);
+  player.equippedCosmetics=createEquippedCosmetics(profile.equippedCosmetics);
+  player.achievements=createAchievementState(profile.achievements);
+  player.completed50And0Careers=profile.completed50And0Careers||0;
+  player.careerEarnings=safeMoney(profile.careerEarnings);
+  player.lifetimeEarnings=safeMoney(profile.lifetimeEarnings);
+  player.walletBalance=safeMoney(profile.walletBalance);
+  player.profileModelVersion=PROFILE_MODEL_VERSION;
+  return player;
+}
+function saveProfileFromPlayer(player){
+  if(!player) return loadProfileFoundation();
+  return saveProfileFoundation({
+    playerId:player.playerId,
+    username:player.username,
+    boxerFirstName:player.boxerFirstName,
+    boxerLastName:player.boxerLastName,
+    nickname:player.Nickname,
+    country:player.country,
+    avatar:player.avatar,
+    unlockedCosmetics:player.unlockedCosmetics,
+    equippedCosmetics:player.equippedCosmetics,
+    achievements:player.achievements,
+    completed50And0Careers:player.completed50And0Careers,
+    careerEarnings:safeMoney(S.career?.earnings||player.careerEarnings),
+    lifetimeEarnings:player.lifetimeEarnings,
+    walletBalance:player.walletBalance,
+    profileSetupComplete:player.profileSetupComplete
+  });
+}
+let boxerCreatorReturnScreen = 'menu-screen';
+let boxerCreatorAfterSave = null;
+function optionHTML(options, selected){
+  return options.map(([value,label])=>'<option value="'+value+'"'+(value===selected?' selected':'')+'>'+label+'</option>').join('');
+}
+function validateIdentityText(value, label, min=2, max=20, allowNumbers=false){
+  const text=cleanName(value);
+  const pattern=allowNumbers?/^[A-Za-z0-9 ]+$/:/^[A-Za-z ]+$/;
+  if(text.length<min||text.length>max||!pattern.test(text)) return {ok:false,msg:label+' must be '+min+'-'+max+' characters, '+(allowNumbers?'letters, numbers and spaces only.':'letters and spaces only.')};
+  const banned=validateFighterName(text);
+  if(!banned.ok&&banned.msg==="This fighter name is not allowed.") return banned;
+  return {ok:true,msg:''};
+}
+function boxerDisplayName(profile){
+  return cleanName([profile.boxerFirstName, profile.boxerLastName].filter(Boolean).join(' '))||'Custom Contender';
+}
+function avatarStyleVars(avatar){
+  const a=createAvatarConfig(avatar);
+  return '--skin:'+AVATAR_COLOURS.skinTone[a.skinTone]+';--hair:'+AVATAR_COLOURS.hairColour[a.hairColour]+';--gloves:'+AVATAR_COLOURS.gloves[a.gloves]+';--shorts:'+AVATAR_COLOURS.shorts[a.shorts]+';--boots:'+AVATAR_COLOURS.boots[a.boots]+';';
+}
+function avatarMarkup(avatar, equipped={}){
+  const a=avatarWithEquippedCosmetics(avatar, equipped);
+  const classes=['boxer-avatar','hair-'+a.hairStyle,'facial-'+a.facialHair,cosmeticAvatarClasses(equipped)].filter(Boolean).join(' ');
+  return '<div class="'+classes+'" style="'+avatarStyleVars(a)+'"><div class="hair"></div><div class="head"></div><div class="eye l"></div><div class="eye r"></div><div class="beard"></div><div class="neck"></div><div class="torso"></div><div class="arm l"></div><div class="arm r"></div><div class="glove l"></div><div class="glove r"></div><div class="shorts"></div><div class="leg l"></div><div class="leg r"></div><div class="boot l"></div><div class="boot r"></div><div class="badge">'+(cosmeticBadgeText(equipped)||'')+'</div></div>';
+}
+function readCreatorProfile(){
+  const current=loadProfileFoundation();
+  return createProfileFoundation({
+    ...current,
+    username:cleanName($('creator-username').value),
+    boxerFirstName:cleanName($('creator-first-name').value),
+    boxerLastName:cleanName($('creator-last-name').value),
+    nickname:cleanName($('creator-nickname').value),
+    country:$('creator-country').value,
+    avatar:{
+      ...current.avatar,
+      skinTone:$('creator-skin-tone').value,
+      hairStyle:$('creator-hair-style').value,
+      hairColour:$('creator-hair-colour').value,
+      facialHair:$('creator-facial-hair').value,
+      gloves:$('creator-gloves').value,
+      shorts:$('creator-shorts').value,
+      boots:$('creator-boots').value
+    },
+    profileSetupComplete:true
+  });
+}
+function validateCreatorProfile(profile){
+  const checks=[
+    validateIdentityText(profile.username,'Username',3,20,true),
+    validateIdentityText(profile.boxerFirstName,'First name',2,20,false),
+    validateIdentityText(profile.boxerLastName,'Last name',2,20,false),
+    validateIdentityText(profile.nickname,'Nickname',2,20,false)
+  ];
+  return checks.find(c=>!c.ok)||{ok:true,msg:''};
+}
+function renderCreatorAvatar(){
+  const box=$('creator-avatar-preview');
+  if(!box) return;
+  box.innerHTML=avatarMarkup(readCreatorProfile().avatar);
+}
+function handleCreatorInput(){
+  const profile=readCreatorProfile();
+  const result=validateCreatorProfile(profile);
+  const err=$('creator-error');
+  if(err){ err.innerText=result.ok?'':result.msg; err.classList.toggle('ok', result.ok); }
+  renderCreatorAvatar();
+}
+function fillCreatorForm(profile=loadProfileFoundation()){
+  $('creator-username').value=profile.username||'';
+  $('creator-first-name').value=profile.boxerFirstName||'';
+  $('creator-last-name').value=profile.boxerLastName||'';
+  $('creator-nickname').value=profile.nickname||'';
+  $('creator-country').innerHTML=COUNTRY_OPTIONS.map(c=>'<option value="'+c+'"'+(c===profile.country?' selected':'')+'>'+c+'</option>').join('');
+  $('creator-skin-tone').innerHTML=optionHTML(AVATAR_OPTIONS.skinTone, profile.avatar.skinTone);
+  $('creator-hair-style').innerHTML=optionHTML(AVATAR_OPTIONS.hairStyle, profile.avatar.hairStyle);
+  $('creator-hair-colour').innerHTML=optionHTML(AVATAR_OPTIONS.hairColour, profile.avatar.hairColour);
+  $('creator-facial-hair').innerHTML=optionHTML(AVATAR_OPTIONS.facialHair, profile.avatar.facialHair);
+  $('creator-gloves').innerHTML=optionHTML(AVATAR_OPTIONS.gloves, profile.avatar.gloves);
+  $('creator-shorts').innerHTML=optionHTML(AVATAR_OPTIONS.shorts, profile.avatar.shorts);
+  $('creator-boots').innerHTML=optionHTML(AVATAR_OPTIONS.boots, profile.avatar.boots);
+  if($('creator-error')) $('creator-error').innerText='';
+  renderCreatorAvatar();
+}
+function openBoxerCreator(returnScreen='menu-screen', afterSave=null){
+  boxerCreatorReturnScreen=returnScreen;
+  boxerCreatorAfterSave=afterSave;
+  fillCreatorForm(loadProfileFoundation());
+  $('creator-cancel-btn').classList.toggle('hidden', !loadProfileFoundation().profileSetupComplete);
+  screen('boxer-creator-screen');
+}
+function saveBoxerCreator(){
+  const profile=readCreatorProfile();
+  const result=validateCreatorProfile(profile);
+  if(!result.ok){ $('creator-error').innerText=result.msg; $('creator-error').classList.remove('ok'); return; }
+  saveProfileFoundation(profile);
+  if(S.player){
+    applyProfileFoundation(S.player, profile);
+    S.player.Name=boxerDisplayName(profile);
+    saveCareer();
+    updateHub();
+  }
+  if(typeof boxerCreatorAfterSave==='function'){ const fn=boxerCreatorAfterSave; boxerCreatorAfterSave=null; fn(); return; }
+  screen(boxerCreatorReturnScreen||'menu-screen');
+}
+function cancelBoxerCreator(){ screen(boxerCreatorReturnScreen||'menu-screen'); }
 function getRecords(){ try{ return {...NIL, ...JSON.parse(localStorage.getItem(KEYS.records)||'{}')}; }catch{ return {...NIL}; } }
 function saveRecords(r){ localStorage.setItem(KEYS.records, JSON.stringify(r)); }
-function saveCareer(){ localStorage.setItem(KEYS.career, JSON.stringify({mode:S.mode,player:S.player,career:S.career,opponent:S.opponent,traitsRolled:S.traitsRolled})); refreshMenu(); }
-function loadCareer(){ try{ return JSON.parse(localStorage.getItem(KEYS.career)||'null'); }catch{ return null; } }
+function saveCareer(){ if(S.player){ ensurePlayerFoundation(S.player); saveProfileFromPlayer(S.player); } localStorage.setItem(KEYS.career, JSON.stringify({mode:S.mode,player:S.player,career:S.career,opponent:S.opponent,traitsRolled:S.traitsRolled})); markLocalUpdated(); refreshMenu(); requestCloudSync(); }
+function loadCareer(){ try{ const data=migrateCareerSave(JSON.parse(localStorage.getItem(KEYS.career)||'null')); if(data) localStorage.setItem(KEYS.career, JSON.stringify(data)); return data; }catch{ return null; } }
 function clearCareer(){ localStorage.removeItem(KEYS.career); refreshMenu(); }
 function screen(id){ document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active')); $(id).classList.add('active'); }
-function refreshMenu(){ const r=getRecords(); $('rec-streak').innerText=r.bestRecord; $('rec-money').innerText=cash(r.mostMoney); $('rec-kos').innerText=r.mostKOs+' KO'; $('rec-tier').innerText=r.bestTier; const save=loadCareer(); if(save&&save.player&&save.career){ $('continue-btn').classList.remove('hidden'); $('delete-save-btn').classList.remove('hidden'); $('save-status').innerText='Career in progress'; $('save-fighter').innerText=save.player.Name||'Unnamed Fighter'; $('save-progress').innerText='Bout '+save.career.currentFight+'/50 • '+(MODE[save.career.mode]?.name||'Mode')+' • Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:''); } else { $('continue-btn').classList.add('hidden'); $('delete-save-btn').classList.add('hidden'); $('save-status').innerText='No active career'; $('save-fighter').innerText='-'; $('save-progress').innerText='-'; } }
+function currentCareerEarnings(){
+  const save=S.career?{career:S.career}:loadCareer();
+  return safeMoney(save?.career?.earnings||0);
+}
+function updateWalletDisplays(){
+  const profile=S.player?createProfileFoundation(S.player):loadProfileFoundation();
+  const careerEarnings=S.career?safeMoney(S.career.earnings||0):currentCareerEarnings();
+  [['menu-wallet',profile.walletBalance],['hub-wallet',profile.walletBalance]].forEach(([id,val])=>{ if($(id)) $(id).innerText=cash(val||0); });
+  [['menu-lifetime',profile.lifetimeEarnings],['hub-lifetime',profile.lifetimeEarnings]].forEach(([id,val])=>{ if($(id)) $(id).innerText=cash(val||0); });
+  [['menu-career-earnings',careerEarnings],['hub-career-earnings',careerEarnings]].forEach(([id,val])=>{ if($(id)) $(id).innerText=cash(val||0); });
+}
+let collectionReturnScreen = 'menu-screen';
+function activeProfileForCollection(){
+  if(S.player){ ensurePlayerFoundation(S.player); return createProfileFoundation(S.player); }
+  return loadProfileFoundation();
+}
+function openCollection(returnScreen='menu-screen'){
+  collectionReturnScreen=returnScreen;
+  if(S.player&&S.career) checkAchievements(false);
+  renderCollectionScreen();
+  screen('collection-screen');
+}
+function closeCollection(){
+  if(collectionReturnScreen==='hub-screen'&&S.player&&S.career) updateHub();
+  else refreshMenu();
+  screen(collectionReturnScreen||'menu-screen');
+}
+function renderCollectionScreen(){
+  const profile=activeProfileForCollection();
+  if($('collection-avatar-preview')) $('collection-avatar-preview').innerHTML=avatarMarkup(profile.avatar, profile.equippedCosmetics);
+  const unlockedAchievements=Object.keys(profile.achievements?.unlocked||{}).length;
+  const achievementTotal=Object.keys(ACHIEVEMENT_DEFINITIONS).length;
+  const cosmeticIds=Object.keys(COSMETIC_DEFINITIONS);
+  const unlockedCosmetics=(profile.unlockedCosmetics||[]).filter(id=>COSMETIC_DEFINITIONS[id]).length;
+  if($('collection-achievement-count')) $('collection-achievement-count').innerText=unlockedAchievements+'/'+achievementTotal;
+  if($('collection-cosmetic-count')) $('collection-cosmetic-count').innerText=unlockedCosmetics+'/'+cosmeticIds.length;
+  const achievementList=$('achievement-list');
+  if(achievementList){
+    achievementList.innerHTML='';
+    Object.values(ACHIEVEMENT_DEFINITIONS).forEach(a=>{
+      const unlocked=!!profile.achievements?.unlocked?.[a.id];
+      const reward=getCosmeticDefinition(a.reward);
+      const card=document.createElement('div');
+      card.className='achievement-card '+(unlocked?'unlocked':'locked');
+      card.innerHTML='<div class="collection-title"><strong>'+a.name+'</strong><span class="collection-status '+(unlocked?'on':'')+'">'+(unlocked?'Unlocked':'Locked')+'</span></div><div class="collection-desc">'+a.desc+'</div><div class="collection-desc" style="margin-top:6px">Reward: '+(reward?reward.name:'None')+'</div>';
+      achievementList.appendChild(card);
+    });
+  }
+  const cosmeticList=$('cosmetic-list');
+  if(cosmeticList){
+    cosmeticList.innerHTML='';
+    cosmeticIds.forEach(id=>{
+      const c=COSMETIC_DEFINITIONS[id];
+      const unlocked=(profile.unlockedCosmetics||[]).includes(id);
+      const equipped=profile.equippedCosmetics?.[c.slot]===id;
+      const card=document.createElement('div');
+      card.className='cosmetic-card '+(unlocked?'unlocked':'locked');
+      card.innerHTML='<div class="cosmetic-row"><div class="cosmetic-swatch" style="--swatch:'+c.swatch+'"></div><div style="min-width:0;flex:1"><div class="collection-title"><strong>'+c.name+'</strong><span class="collection-status '+(equipped?'on':unlocked?'reward':'')+'">'+(equipped?'Equipped':unlocked?'Unlocked':'Locked')+'</span></div><div class="collection-desc">'+c.slot.toUpperCase()+' - '+c.rarity.toUpperCase()+' - '+c.desc+'</div></div></div>';
+      if(unlocked){
+        const btn=document.createElement('button');
+        btn.className='btn '+(equipped?'ghost':'blue');
+        btn.innerText=equipped?'Equipped':'Equip';
+        btn.disabled=equipped;
+        btn.onclick=()=>equipCollectionCosmetic(id);
+        card.appendChild(btn);
+      }
+      cosmeticList.appendChild(card);
+    });
+  }
+}
+function equipCollectionCosmetic(cosmeticId){
+  const cosmetic=getCosmeticDefinition(cosmeticId);
+  if(!cosmetic) return;
+  if(!S.player){
+    const profile=loadProfileFoundation();
+    if(!(profile.unlockedCosmetics||[]).includes(cosmeticId)) return;
+    profile.equippedCosmetics=createEquippedCosmetics(profile.equippedCosmetics);
+    profile.equippedCosmetics[cosmetic.slot]=cosmeticId;
+    saveProfileFoundation(profile);
+  } else if(equipCosmetic(S.player, cosmetic.slot, cosmeticId)){
+    saveCareer();
+  }
+  renderCollectionScreen();
+  if(S.player&&S.career) renderProfileFoundation();
+}
+function refreshMenu(){ updateWalletDisplays(); const r=getRecords(); $('rec-streak').innerText=r.bestRecord; $('rec-money').innerText=cash(r.mostMoney); $('rec-kos').innerText=r.mostKOs+' KO'; $('rec-tier').innerText=r.bestTier; const save=loadCareer(); if(save&&save.player&&save.career){ $('continue-btn').classList.remove('hidden'); $('delete-save-btn').classList.remove('hidden'); $('save-status').innerText='Career in progress'; $('save-fighter').innerText=save.player.Name||'Unnamed Fighter'; $('save-progress').innerText='Bout '+save.career.currentFight+'/50 • '+(MODE[save.career.mode]?.name||'Mode')+' • Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:''); } else { $('continue-btn').classList.add('hidden'); $('delete-save-btn').classList.add('hidden'); $('save-status').innerText='No active career'; $('save-fighter').innerText='-'; $('save-progress').innerText='-'; } }
+let storeReturnScreen = 'menu-screen';
+function storeProfile(){
+  if(S.player){ ensurePlayerFoundation(S.player); return createProfileFoundation(S.player); }
+  return loadProfileFoundation();
+}
+function openStore(returnScreen='menu-screen'){ storeReturnScreen=returnScreen; renderStoreScreen(); screen('store-screen'); }
+function closeStore(){ if(storeReturnScreen==='hub-screen'&&S.player&&S.career) updateHub(); else refreshMenu(); screen(storeReturnScreen||'menu-screen'); }
+function storeItems(){ return Object.values(COSMETIC_DEFINITIONS).filter(c=>c.source==='store'); }
+function storeRequirementText(item){ return item.requires50?item.requires50+' completed 50-0 careers':'No prestige requirement'; }
+function storeItemState(item, profile){
+  const owned=(profile.unlockedCosmetics||[]).includes(item.id), equipped=profile.equippedCosmetics?.[item.slot]===item.id;
+  const meets50=(profile.completed50And0Careers||0)>=(item.requires50||0), affordable=safeMoney(profile.walletBalance)>=safeMoney(item.price||0);
+  if(equipped) return 'equipped'; if(owned) return 'owned'; if(!meets50) return 'locked'; if(!affordable) return 'unaffordable'; return 'affordable';
+}
+function renderStoreScreen(){
+  const profile=storeProfile();
+  if($('store-wallet')) $('store-wallet').innerText=cash(profile.walletBalance||0);
+  if($('store-lifetime')) $('store-lifetime').innerText=cash(profile.lifetimeEarnings||0);
+  if($('store-50-count')) $('store-50-count').innerText=String(profile.completed50And0Careers||0);
+  if($('store-avatar-preview')) $('store-avatar-preview').innerHTML=avatarMarkup(profile.avatar, profile.equippedCosmetics);
+  const list=$('store-list'); if(!list) return; list.innerHTML='';
+  storeItems().forEach(item=>{
+    const state=storeItemState(item, profile), price=cash(item.price||0), status=state==='equipped'?'Equipped':state==='owned'?'Owned':state==='affordable'?'Affordable':state==='locked'?'Locked':'Unaffordable';
+    const card=document.createElement('div'); card.className='store-card '+state;
+    card.innerHTML='<div class="cosmetic-row"><div class="cosmetic-swatch" style="--swatch:'+item.swatch+'"></div><div style="min-width:0;flex:1"><div class="collection-title"><strong>'+item.name+'</strong><span class="collection-status '+(state==='equipped'||state==='owned'?'on':state==='affordable'?'reward':'')+'">'+status+'</span></div><div class="collection-desc">'+item.slot.toUpperCase()+' - '+item.rarity.toUpperCase()+' - <span class="store-price">'+price+'</span></div><div class="store-req">'+storeRequirementText(item)+'</div></div></div>';
+    if(state==='owned'||state==='equipped'||state==='affordable'){ const actions=document.createElement('div'), btn=document.createElement('button'); actions.className='store-actions'; btn.className='btn '+(state==='affordable'?'gold':state==='owned'?'blue':'ghost'); btn.innerText=state==='affordable'?'Purchase':state==='owned'?'Equip':'Equipped'; btn.disabled=state==='equipped'; btn.onclick=state==='affordable'?()=>purchaseStoreCosmetic(item.id):()=>equipStoreCosmetic(item.id); actions.appendChild(btn); card.appendChild(actions); }
+    list.appendChild(card);
+  });
+}
+function mutateProfileForStore(mutator){
+  if(S.player){ ensurePlayerFoundation(S.player); const result=mutator(S.player); saveCareer(); return result; }
+  const profile=loadProfileFoundation(), result=mutator(profile); saveProfileFoundation(profile); return result;
+}
+function purchaseStoreCosmetic(cosmeticId){
+  const item=getCosmeticDefinition(cosmeticId); if(!item||item.source!=='store') return;
+  if(storeItemState(item, storeProfile())!=='affordable') return;
+  if(!confirm('Purchase '+item.name+' for '+cash(item.price||0)+' from your wallet?')) return;
+  mutateProfileForStore(target=>{ target.walletBalance=safeMoney(target.walletBalance)-safeMoney(item.price||0); unlockCosmetic(target, item.id); equipCosmetic(target, item.slot, item.id); });
+  showToast('Purchased', item.name); renderStoreScreen(); if(S.player&&S.career) renderProfileFoundation();
+}
+function equipStoreCosmetic(cosmeticId){
+  const item=getCosmeticDefinition(cosmeticId); if(!item) return;
+  mutateProfileForStore(target=>equipCosmetic(target, item.slot, item.id));
+  showToast('Equipped', item.name); renderStoreScreen(); if(S.player&&S.career) renderProfileFoundation();
+}
 function selectMode(id){ S.mode=id; document.querySelectorAll('.mode-card').forEach(el=>el.classList.remove('selected')); $('mode-card-'+id).classList.add('selected'); }
 function valCls(v){ if(v==null)return'stat-tier-bad'; if(v>=99)return'stat-tier-ultra'; if(v>=95)return'stat-tier-legendary'; if(v>=90)return'stat-tier-mythic'; if(v>=85)return'stat-tier-epic'; if(v>=80)return'stat-tier-rare'; if(v>=75)return'stat-tier-uncommon'; if(v>=70)return'stat-tier-common'; if(v>=65)return'stat-tier-low'; if(v>=60)return'stat-tier-poor'; return'stat-tier-bad'; }
 function modeCfg(){ return MODE[S.career?.mode || S.mode || 'normal']; }
-function fresh(){ S.player={Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}; STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:S.mode,currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:MODE[S.mode].rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0, firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
+function fresh(){ const profile=loadProfileFoundation(); S.player=applyProfileFoundation({Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}, profile); STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:S.mode,currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:MODE[S.mode].rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0,achievementStartIds:Object.keys(S.player.achievements?.unlocked||{}), firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false, profile50Counted: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
 function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?'('+(S.player.StatSources[st]||'Unknown')+')'+(S.player.PerfectSpinStats[st]?' • Perfect Spin':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
 function updateDraftTop(){ const cfg=modeCfg(); $('draft-mode-label').innerText=cfg.name; $('draft-rerolls-left').innerText=S.career.draftRerolls; $('reroll-btn').innerText='Use Re-Roll ('+S.career.draftRerolls+')'; $('reroll-btn').disabled=!S.awaiting || S.career.draftRerolls<=0; }
 function avgLegend(l){ return STATS.reduce((s,st)=>s+l[st],0)/STATS.length; }
@@ -1126,8 +1965,9 @@ function poolWeight(l){ const avg=avgLegend(l); let w=1; switch(l.Pool||'standar
 function randomLegend(reroll=false){ return weightedPick(LEGENDS, l=>{ let w=poolWeight(l); if(S.mode==='easy'&&reroll&&avgLegend(l)>=90) w*=avgLegend(l)>=95?0.48:0.64; return w; }); }
 function perfectChance(l){ const avg=avgLegend(l), elite=STATS.filter(st=>l[st]>=97).length; let c=.02; if(avg>=95) c+=.06; if(elite>=3) c+=.05; if((l.Pool||'standard')==='crossover') c+=.03; return Math.random()<clamp(c,.02,.16); }
 function pillHTML(pool){ if(pool==='crossover') return '<span class="legend-pill crossover">Crossover Chaos</span>'; if(pool==='cult') return '<span class="legend-pill cult">Cult Icon</span>'; if(pool==='prospect') return '<span class="legend-pill prospect">Future Star</span>'; if(pool==='gatekeeper') return '<span class="legend-pill gatekeeper">Gatekeeper</span>'; if(pool==='low') return '<span class="legend-pill low">Bad Roll</span>'; if(pool==='spoiler') return '<span class="legend-pill spoiler">Spoiler</span>'; return '<span class="legend-pill standard">Legend Source</span>'; }
-function startNewCareer(){ fresh(); $('trait-list').innerHTML=''; $('trait-result').innerText='???'; $('trait-spin-btn').disabled=false; $('trait-spin-btn').innerText='Spin Trait #1'; $('fighter-name-input').value=''; $('draft-archetype').innerText='Undetermined'; $('synergy-panel').innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; $('slot-mid').innerText='???'; $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('spin-btn').disabled=false; $('reroll-btn').disabled=true; buildDraft(); updateDraftTop(); saveCareer(); screen('draft-screen'); }
-function continueCareer(){ const d=loadCareer(); if(!d){ refreshMenu(); return; } S.mode=d.mode||d.career.mode||'normal'; S.player=d.player; S.career=d.career; S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; S.awaiting=false; S.perfect=false; selectMode(S.mode); if(!S.opponent&&S.career.currentFight<=50) generateOpponent(); updateSynergyPanel(); updateHub(); screen('hub-screen'); }
+function beginNewCareerDraft(){ fresh(); $('trait-list').innerHTML=''; $('trait-result').innerText='???'; $('trait-spin-btn').disabled=false; $('trait-spin-btn').innerText='Spin Trait #1'; $('fighter-name-input').value=boxerDisplayName(loadProfileFoundation()); $('draft-archetype').innerText='Undetermined'; $('synergy-panel').innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; $('slot-mid').innerText='???'; $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('spin-btn').disabled=false; $('reroll-btn').disabled=true; buildDraft(); updateDraftTop(); saveCareer(); screen('draft-screen'); }
+function startNewCareer(){ const profile=loadProfileFoundation(); if(!profile.profileSetupComplete){ openBoxerCreator('menu-screen', beginNewCareerDraft); return; } beginNewCareerDraft(); }
+function continueCareer(){ const d=loadCareer(); if(!d){ refreshMenu(); return; } S.mode=d.mode||d.career.mode||'normal'; S.player=d.player; S.career=d.career; S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; S.awaiting=false; S.perfect=false; selectMode(S.mode); if(!S.opponent&&S.career.currentFight<=50) generateOpponent(); checkAchievements(false); updateSynergyPanel(); updateHub(); screen('hub-screen'); }
 function deleteSave(){ clearCareer(); }
 function restartDraft(){ if(confirm('Restart this boxer draft and roll again from scratch?')) startNewCareer(); }
 function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=a.Name; $('slot-mid').innerText=b.Name; $('slot-bottom').innerText=c.Name; ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=S.legend.Name; $('slot-bottom').innerText=LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' • '+S.legend.Pool; if(S.perfect) txt+=' • Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
@@ -1136,8 +1976,7 @@ function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} • ${t.rar
 function checkSynergy(){ const unlocked=[]; SYNERGY.forEach(sy=>{ const ok=Object.entries(sy.requirements).every(([st,name])=>S.player.StatSources[st]===name); if(ok) unlocked.push(sy); }); S.player.HiddenBonuses=unlocked; updateOverallDisplays(); }
 function updateSynergyPanel(){ const p=$('synergy-panel'); if(!(S.player.HiddenBonuses||[]).length){ p.innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; return; } p.innerHTML=''; S.player.HiddenBonuses.forEach(b=>{ const div=document.createElement('div'); div.className='trait-pill secret'; div.title=b.desc; div.innerHTML='<div class="trait-title">'+b.name+'</div><div>'+b.desc+'</div><span class="trait-chip secret">Secret</span>'; p.appendChild(div); }); }
 function lockStat(stat){ if(!S.legend||S.player.Stats[stat]!=null||!S.awaiting) return; let v=S.legend[stat]; if(S.perfect){ v=clamp(v+1,1,99); S.player.PerfectSpinStats[stat]=true; } S.player.Stats[stat]=v; S.player.StatSources[stat]=S.legend.Name; S.awaiting=false; checkSynergy(); buildDraft(); updateSynergyPanel(); if (v >= 98 || S.perfect) { playHeavenlyChord(); } else { playLock(); } $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('perfect-banner').classList.remove('active'); S.perfect=false; const filled=STATS.filter(st=>S.player.Stats[st]!=null).length; if(filled===10){ $('spin-btn').disabled=true; $('reroll-btn').disabled=true; $('draft-archetype').innerText=archetype(getPerm()).name; saveCareer(); setTimeout(()=>screen('trait-screen'),300); } else { $('spin-btn').disabled=false; updateDraftTop(); saveCareer(); } updateOverallDisplays(); }
-function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTraitBusy=true; const btn=$('trait-spin-btn'), reel=$('trait-result'); btn.disabled=true; const available=TRAITS.filter(t=>!(S.player.Traits||[]).some(x=>x.id===t.id)); let i=0; const loop=()=>{ if(i<12){ playTick(); const tease=choice(available); reel.innerText=tease.name+' • '+tease.rarity.toUpperCase(); reel.className='trait-reel '+tease.rarity; i++; setTimeout(loop,60+i*5); } else { playLock(); const pick=weightedPick(available,t=>{ let w=TRAIT_W[t.rarity]||8; if(t.type==='positive') w*=1.12; return w; }); S.player.Traits.push(pick); S.traitsRolled++; reel.innerText=pick.name+' • '+pick.rarity.toUpperCase(); reel.className='trait-reel '+pick.rarity; const box=document.createElement('div'); box.className='trait-pill '+(pick.type==='negative'?'negative ':'')+pick.rarity; box.title=traitTooltip(pick); box.innerHTML='<div class="trait-title">'+pick.name+' ('+pick.type.toUpperCase()+' • '+pick.rarity.toUpperCase()+')</div><div>'+pick.desc+'</div><span class="trait-chip '+pick.rarity+'">'+pick.rarity+'</span>'; $('trait-list').appendChild(box); $('draft-archetype').innerText=archetype(getPerm()).name; if($('trait-count')) $('trait-count').innerText=S.traitsRolled+'/2';
-if(S.traitsRolled===1){ btn.innerText='Spin Trait #2'; btn.disabled=false; } else { btn.innerText='Draft Complete'; btn.disabled=true; } saveCareer(); updateOverallDisplays(); S.spinTraitBusy=false; } }; loop(); }
+function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTraitBusy=true; const btn=$('trait-spin-btn'), reel=$('trait-result'); btn.disabled=true; const available=TRAITS.filter(t=>!(S.player.Traits||[]).some(x=>x.id===t.id)); let i=0; const loop=()=>{ if(i<12){ playTick(); const tease=choice(available); reel.innerText=tease.name+' • '+tease.rarity.toUpperCase(); reel.className='trait-reel '+tease.rarity; i++; setTimeout(loop,60+i*5); } else { playLock(); const pick=weightedPick(available,t=>{ let w=TRAIT_W[t.rarity]||8; if(t.type==='positive') w*=1.12; return w; }); S.player.Traits.push(pick); S.traitsRolled++; reel.innerText=pick.name+' • '+pick.rarity.toUpperCase(); reel.className='trait-reel '+pick.rarity; const box=document.createElement('div'); box.className='trait-pill '+(pick.type==='negative'?'negative ':'')+pick.rarity; box.title=traitTooltip(pick); box.innerHTML='<div class="trait-title">'+pick.name+' ('+pick.type.toUpperCase()+' • '+pick.rarity.toUpperCase()+')</div><div>'+pick.desc+'</div><span class="trait-chip '+pick.rarity+'">'+pick.rarity+'</span>'; $('trait-list').appendChild(box); $('draft-archetype').innerText=archetype(getPerm()).name; if(S.traitsRolled===1){ btn.innerText='Spin Trait #2'; btn.disabled=false; } else { btn.innerText='Draft Complete'; btn.disabled=true; } saveCareer(); updateOverallDisplays(); S.spinTraitBusy=false; } }; loop(); }
 function getPerm(){ const s=deep(S.player.Stats); if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number')) return s; if(hasTrait('iron_chin')){s.Chin+=4; s.Recovery+=5;} if(hasTrait('glass_cannon')){s.Power+=8; s.Chin-=10;} if(hasTrait('counter_puncher')){s.Defence+=6; s['Ring IQ']+=6;} if(hasTrait('ring_general')){s['Ring IQ']+=4; s.Accuracy+=3;} if(hasTrait('volume_puncher')){s.Accuracy+=2; s.Stamina+=1;} if(hasTrait('generational_talent')) STATS.forEach(st=>s[st]+=3); if(hasTrait('supertank')){s.Chin+=7; s.Heart+=5; s.Recovery+=5;} (S.player.HiddenBonuses||[]).forEach(b=>Object.entries(b.bonuses).forEach(([st,amt])=>s[st]+=amt)); STATS.forEach(st=>s[st]=clamp(Math.round(s[st]),1,99)); return s; }
 function calculateOverall(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null && typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(()=>overall+=2); return clamp(Math.round(overall), 40, 99); }
 function updateOverallDisplays(){ const ovr=calculateOverall(); if($('overall-rating-draft')) $('overall-rating-draft').innerText=ovr; if($('overall-rating-trait')) $('overall-rating-trait').innerText=ovr; if($('overall-rating-hub')) $('overall-rating-hub').innerText=ovr; if($('hub-rating')) $('hub-rating').innerText='Rating '+ovr; }
@@ -1155,6 +1994,7 @@ function goToHub(){
     return;
   }
   S.player.Name=nm; 
+  if(!S.player.username||S.player.username==='Custom Contender') S.player.username=nm;
   if(S.traitsRolled<2){ alert('Spin both traits first.'); return; } 
   if(STATS.some(st=>S.player.Stats[st]==null)){ alert('Complete the draft first.'); return; } 
   if(!S.career.id) S.career.id=makeId('career');
@@ -1170,7 +2010,58 @@ function goToHub(){
 }
 function recalcRank(){ const ovr=calculateOverall(); const score=ovr+(S.career.wins*2.2)+(S.career.kos*1.0)+(S.career.belts.length*14)+(S.career.bestWinStreak*.5)+(S.career.titleDef*2.2)-(S.career.losses*11.5)-(S.career.draws*4.5)-(S.career.recentLossPenalty*4.4); let rank=Math.round(80-(score/2.45)); rank=clamp(rank,1,60); if(S.career.belts.length>=3&&S.career.wins>=35&&S.career.recentLossPenalty<3) rank=Math.min(rank,4); if(S.career.belts.length===4&&S.career.wins>=45&&S.career.recentLossPenalty<2) rank=Math.min(rank,1); if(S.career.wins===50&&S.career.losses===0&&S.career.draws===0) rank=1; S.career.worldRank=rank; S.career.bestWorldRank=Math.min(S.career.bestWorldRank||60, rank); S.career.rating=ovr; }
 function streakBonus(){ const streak = S.career.winStreak || 0; if(streak >= 10) return 0.25; if(streak >= 7) return 0.18; if(streak >= 5) return 0.12; if(streak >= 3) return 0.06; return 0; }
-function updateHub(){ const cfg=modeCfg(); updateOverallDisplays(); $('hub-fighter-name').innerText=S.player.Name; $('hub-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hub-record').className='record-badge '+(S.career.losses===0?'unbeaten':'flawed'); $('hub-money').innerText=cash(S.career.earnings); const a=archetype(getPerm()); $('hub-arch').innerText=a.name; $('hub-rank').innerText='Rank #'+S.career.worldRank; const streakEl = $('hub-streak'); streakEl.innerText='Streak '+S.career.winStreak; if(S.career.winStreak >= 5) streakEl.classList.add('green'); else streakEl.classList.remove('green'); $('hub-mode').innerText=cfg.name; $('hub-rank-line').innerText='#'+S.career.worldRank; $('hub-best-rank-line').innerText='#'+S.career.bestWorldRank; $('hub-title-def-line').innerText=S.career.titleDef||0; const titleDefTag = $('hub-title-def'); if(S.career.titleDef > 0){ titleDefTag.style.display='inline'; titleDefTag.innerText=S.career.titleDef+' Defense'+(S.career.titleDef>1?'s':''); } else { titleDefTag.style.display='none'; } ['WBC','WBA','IBF','WBO'].forEach(b=>{ if(S.career.belts.includes(b)) $('belt-'+b).classList.add('on'); else $('belt-'+b).classList.remove('on'); }); const g=$('stats-grid'); g.innerHTML=''; const s=getPerm(); STATS.forEach(st=>{ const card=document.createElement('div'); card.className='stat-card'; card.innerHTML='<div class="stat-head"><span>'+st+':</span><strong class="'+valCls(s[st])+'">'+s[st]+'</strong></div><div class="stat-source">'+(S.player.StatSources[st]?'('+S.player.StatSources[st]+')':'')+'</div>'; g.appendChild(card); }); const tr=$('hub-traits'); tr.innerHTML=''; if(!(S.player.Traits||[]).length&&!(S.player.HiddenBonuses||[]).length){ tr.innerHTML='<div style="color:var(--muted);text-align:center">No traits or synergies yet.</div>'; } else { const wrap=document.createElement('div'); wrap.className='chip-wrap'; (S.player.Traits||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip '+t.rarity; chip.title=traitTooltip(t); chip.innerText=t.name; wrap.appendChild(chip); }); (S.player.HiddenBonuses||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip secret'; chip.title=t.desc; chip.innerText=t.name; wrap.appendChild(chip); }); tr.appendChild(wrap); } const hist=$('recent-history'); hist.innerHTML=''; if(!S.career.history.length) hist.innerHTML='<div style="color:var(--muted);text-align:center">No fight data recorded yet.</div>'; else S.career.history.slice(0,1).forEach(line=>{ const d=document.createElement('div'); d.innerText=line; hist.appendChild(d); }); if(S.opponent) $('enter-ring-btn').innerText='Enter the Ring to Face '+S.opponent.Name; else if(S.career.currentFight>50) $('enter-ring-btn').innerText='Career Complete'; else $('enter-ring-btn').innerText='Enter the Ring'; }
+function fighterCardTier(career){
+  const wins=career?.wins||0, losses=career?.losses||0, draws=career?.draws||0;
+  if(wins===50&&losses===0&&draws===0) return {id:'immortal',label:'Immortal'};
+  if(wins>=41) return {id:'champion',label:'Champion'};
+  if(wins>=26) return {id:'gold',label:'Gold'};
+  if(wins>=11) return {id:'silver',label:'Silver'};
+  return {id:'bronze',label:'Bronze'};
+}
+function renderFighterCard(profile){
+  if(!S.player||!S.career) return;
+  const card=$('fighter-card');
+  if(!card) return;
+  const tier=fighterCardTier(S.career);
+  card.className='fighter-card '+tier.id;
+  const record=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:'');
+  if($('fighter-card-tier')) $('fighter-card-tier').innerText=tier.label;
+  if($('fighter-card-ovr')) $('fighter-card-ovr').innerText=calculateOverall();
+  if($('fighter-card-avatar')) $('fighter-card-avatar').innerHTML=avatarMarkup(profile.avatar, profile.equippedCosmetics);
+  if($('fighter-card-name')) $('fighter-card-name').innerText=boxerDisplayName(profile);
+  if($('fighter-card-nickname')) $('fighter-card-nickname').innerText=profile.nickname?'"'+profile.nickname+'"':'No Nickname';
+  if($('fighter-card-country')) $('fighter-card-country').innerText=profile.country||'Local Contender';
+  if($('fighter-card-record')) $('fighter-card-record').innerText=record;
+  if($('fighter-card-earnings')) $('fighter-card-earnings').innerText=cash(S.career.earnings||0);
+  if($('fighter-card-belts')) $('fighter-card-belts').innerText=(S.career.belts||[]).length+'/4';
+  if($('fighter-card-kos')) $('fighter-card-kos').innerText=String(S.career.kos||0);
+  if($('fighter-card-mode')) $('fighter-card-mode').innerText=modeCfg().name;
+  if($('fighter-card-rank')) $('fighter-card-rank').innerText='#'+(S.career.worldRank||60);
+  const slotBox=document.querySelector('.fighter-card-slots');
+  if(slotBox){
+    slotBox.innerHTML=['gloves','shorts','boots','tattoo','aura'].map(slot=>{
+      const cosmetic=equippedCosmetic(profile, slot);
+      return '<span class="fighter-slot">'+cosmetic.name+'</span>';
+    }).join('');
+  }
+}
+function renderProfileFoundation(){
+  if(!S.player) return;
+  ensurePlayerFoundation(S.player);
+  updateWalletDisplays();
+  const profile=saveProfileFromPlayer(S.player);
+  if($('hub-avatar-preview')) $('hub-avatar-preview').innerHTML=avatarMarkup(profile.avatar, profile.equippedCosmetics);
+  if($('hub-profile-name')) $('hub-profile-name').innerText=boxerDisplayName(profile);
+  if($('hub-profile-country')) $('hub-profile-country').innerText=(profile.nickname?'"'+profile.nickname+'" • ':'')+profile.country;
+  renderFighterCard(profile);
+  if($('profile-username')) $('profile-username').innerText=S.player.username||'-';
+  if($('profile-player-id')) $('profile-player-id').innerText=S.player.playerId||'-';
+  if($('profile-avatar-style')) $('profile-avatar-style').innerText=[S.player.avatar?.skinTone,S.player.avatar?.hairStyle,S.player.avatar?.gloves].filter(Boolean).join(' / ')||'classic';
+  if($('profile-cosmetics')) $('profile-cosmetics').innerText=(S.player.unlockedCosmetics||[]).length+' unlocked';
+  if($('profile-achievements')) $('profile-achievements').innerText=Object.keys(S.player.achievements?.unlocked||{}).length+' unlocked';
+  if($('profile-50-count')) $('profile-50-count').innerText=String(S.player.completed50And0Careers||0);
+}
+function updateHub(){ const cfg=modeCfg(); ensurePlayerFoundation(S.player); checkAchievements(!S.batch); updateOverallDisplays(); $('hub-fighter-name').innerText=S.player.Name; $('hub-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hub-record').className='record-badge '+(S.career.losses===0?'unbeaten':'flawed'); $('hub-money').innerText=cash(S.career.earnings); const a=archetype(getPerm()); $('hub-arch').innerText=a.name; $('hub-rank').innerText='Rank #'+S.career.worldRank; const streakEl = $('hub-streak'); streakEl.innerText='Streak '+S.career.winStreak; if(S.career.winStreak >= 5) streakEl.classList.add('green'); else streakEl.classList.remove('green'); $('hub-mode').innerText=cfg.name; $('hub-rank-line').innerText='#'+S.career.worldRank; $('hub-best-rank-line').innerText='#'+S.career.bestWorldRank; $('hub-title-def-line').innerText=S.career.titleDef||0; const titleDefTag = $('hub-title-def'); if(S.career.titleDef > 0){ titleDefTag.style.display='inline'; titleDefTag.innerText=S.career.titleDef+' Defense'+(S.career.titleDef>1?'s':''); } else { titleDefTag.style.display='none'; } ['WBC','WBA','IBF','WBO'].forEach(b=>{ if(S.career.belts.includes(b)) $('belt-'+b).classList.add('on'); else $('belt-'+b).classList.remove('on'); }); const g=$('stats-grid'); g.innerHTML=''; const s=getPerm(); STATS.forEach(st=>{ const card=document.createElement('div'); card.className='stat-card'; card.innerHTML='<div class="stat-head"><span>'+st+':</span><strong class="'+valCls(s[st])+'">'+s[st]+'</strong></div><div class="stat-source">'+(S.player.StatSources[st]?'('+S.player.StatSources[st]+')':'')+'</div>'; g.appendChild(card); }); const tr=$('hub-traits'); tr.innerHTML=''; if(!(S.player.Traits||[]).length&&!(S.player.HiddenBonuses||[]).length){ tr.innerHTML='<div style="color:var(--muted);text-align:center">No traits or synergies yet.</div>'; } else { const wrap=document.createElement('div'); wrap.className='chip-wrap'; (S.player.Traits||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip '+t.rarity; chip.title=traitTooltip(t); chip.innerText=t.name; wrap.appendChild(chip); }); (S.player.HiddenBonuses||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip secret'; chip.title=t.desc; chip.innerText=t.name; wrap.appendChild(chip); }); tr.appendChild(wrap); } renderProfileFoundation(); const hist=$('recent-history'); hist.innerHTML=''; if(!S.career.history.length) hist.innerHTML='<div style="color:var(--muted);text-align:center">No fight data recorded yet.</div>'; else S.career.history.slice(0,3).forEach(line=>{ const d=document.createElement('div'); d.innerText=line; hist.appendChild(d); }); if(S.opponent) $('enter-ring-btn').innerText='Enter the Ring to Face '+S.opponent.Name; else if(S.career.currentFight>50) $('enter-ring-btn').innerText='Career Complete'; else $('enter-ring-btn').innerText='Enter the Ring'; }
 function generateOpponent(){ if(S.career.currentFight>50){ if(!S.batch) triggerHof(); return; } const bout=S.career.currentFight, cfg=modeCfg(); let tier='Journeyman',baseMin=60,baseMax=72,rateMin=40,rateMax=55; if(bout>10&&bout<=25){ tier='Contender'; baseMin=73;baseMax=83;rateMin=56;rateMax=72; } else if(bout>25&&bout<=44){ tier='Championship Elite'; baseMin=84;baseMax=92;rateMin=73;rateMax=88; } else if(bout>=45){ tier='Pound-for-Pound Legend'; baseMin=92;baseMax=99;rateMin=89;rateMax=99; } let title=null; if(bout===15){ title='WBC'; tier='WBC World Championship'; } else if(bout===25){ title='WBA'; tier='WBA World Championship'; } else if(bout===35){ title='IBF'; tier='IBF World Championship'; } else if(bout===50){ title='WBO'; tier='Undisputed Mega-Fight'; } const slump=clamp(S.career.losses*2+S.career.draws+S.career.recentLossPenalty,0,12); if(bout>=35&&slump>=3){ baseMin-=Math.floor(slump*.8); baseMax-=Math.min(9,slump); rateMin-=Math.floor(slump*1.1); rateMax-=Math.floor(slump*1.0); if(bout>=45&&S.career.losses>=2) tier=title?title+' Rebuild Fight':'Late-Career Rebuild Bout'; } if(S.career.losses > 0 && S.career.winStreak === 0){ baseMin -= 4; baseMax -= 3; rateMin -= 5; rateMax -= 4; tier = bout <= 10 ? 'Comeback Opponent' : tier; } baseMin=clamp(baseMin,56,99); baseMax=clamp(baseMax,baseMin+4,99); rateMin=clamp(rateMin,38,99); rateMax=clamp(rateMax,rateMin+4,99); const style=choice(OPPSTYLE), name=choice(OPPF)+' '+choice(OPPL)+(Math.random()<.2?' Jr.':''); const opp={Name:name===S.player.Name?name+' II':name,Tier:tier,TitleOnLine:title,Style:style,Stats:{},Rating:rand(rateMin,rateMax)}; STATS.forEach(st=>opp.Stats[st]=rand(baseMin,baseMax)); if(style.power)opp.Stats.Power+=style.power; if(style.speed)opp.Stats.Speed+=style.speed; if(style.defence)opp.Stats.Defence+=style.defence; if(style.chin)opp.Stats.Chin+=style.chin; if(style.footwork)opp.Stats.Footwork+=style.footwork; if(style.ringIQ)opp.Stats['Ring IQ']+=style.ringIQ; if(style.heart)opp.Stats.Heart+=style.heart; if(style.stamina)opp.Stats.Stamina+=style.stamina; if(style.accuracy)opp.Stats.Accuracy+=style.accuracy; STATS.forEach(st=>opp.Stats[st]=clamp(opp.Stats[st]+cfg.oppMod,40,99)); const wins=Math.floor(bout*1.5)+rand(4,10); let losses=tier==='Journeyman'?rand(6,16):rand(0,4); if(bout>40&&slump<3)losses=rand(0,2); else if(slump>=4)losses=rand(3,7); opp.Record=wins+'-'+losses; S.opponent=opp; $('opp-bout').innerText='BOUT '+bout+'/50'; $('opp-tier').innerText=tier; $('opp-name').innerText=opp.Name; $('opp-details').innerText='Record: '+opp.Record+' | Power: '+opp.Stats.Power+' | Chin: '+opp.Stats.Chin+' | Speed: '+opp.Stats.Speed; const tags=$('opp-tags'); tags.innerHTML=''; let t=document.createElement('span'); t.className='tag'; t.innerText=opp.Style.name; tags.appendChild(t); t=document.createElement('span'); t.className='tag blue'; t.innerText='Rating '+opp.Rating; tags.appendChild(t); t=document.createElement('span'); t.className='tag green'; t.innerText='You rank #'+S.career.worldRank; tags.appendChild(t); if(title){ t=document.createElement('span'); t.className='tag gold'; t.innerText=title+' on the line'; tags.appendChild(t); } if(MILESTONES.includes(bout)){ t=document.createElement('span'); t.className='tag orange'; t.innerText='🏆 Milestone Fight'; tags.appendChild(t); } updateHub(); saveCareer(); }
 function makeFight(){ const p=getPerm(), o=deep(S.opponent.Stats); return {p1:{name:S.player.Name,hp:p.Chin*4+p.Heart*2,maxHp:p.Chin*4+p.Heart*2,stamina:p.Stamina*5,maxStamina:p.Stamina*5,score:0,cut:0}, p2:{name:S.opponent.Name,hp:o.Chin*4+o.Heart*2,maxHp:o.Chin*4+o.Heart*2,stamina:o.Stamina*5,maxStamina:o.Stamina*5,score:0,cut:0}, flags:{p1BrokenHands:false,p1QuitTriggered:false}, round:1,done:false,winner:null,method:null,detail:null,log:[],rendered:0,p1Dom:0,p2Dom:0,p1Dmg:0,p2Dmg:0}; }
 function addLog(type,text){ S.fight.log.push({type,text}); }
@@ -1237,6 +2128,12 @@ function careerSnapshot(){
   if(!nameCheck.ok) return null;
   const record=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:'');
   return {
+    playerId:S.player.playerId,
+    username:S.player.username,
+    avatar:S.player.avatar,
+    equippedCosmetics:S.player.equippedCosmetics,
+    achievementCount:Object.keys(S.player.achievements?.unlocked||{}).length,
+    completed50And0Careers:S.player.completed50And0Careers||0,
     fighterName:name,
     fighterNameLower:name.toLowerCase(),
     careerLegacyScore:l.score,
@@ -1259,6 +2156,279 @@ function careerSnapshot(){
     careerEndDate:new Date().toISOString(),
     submittedAt:firebase.firestore.FieldValue.serverTimestamp()
   };
+}
+function loadRetiredCareers(){
+  try{ return JSON.parse(localStorage.getItem(KEYS.retired)||'[]'); }catch{ return []; }
+}
+function saveRetiredCareers(list){
+  localStorage.setItem(KEYS.retired, JSON.stringify(list.slice(0,100)));
+  markLocalUpdated();
+  requestCloudSync();
+}
+function careerAchievementUnlocks(){
+  const start=new Set(S.career?.achievementStartIds||[]);
+  return Object.keys(S.player?.achievements?.unlocked||{}).filter(id=>!start.has(id)).map(id=>ACHIEVEMENT_DEFINITIONS[id]?.name||id);
+}
+function retiredCareerSnapshot(economyAward={reward:0}){
+  const base=careerSnapshot();
+  if(!base) return null;
+  const tier=fighterCardTier(S.career);
+  const id=S.career.retiredCareerId||S.career.hofSubmissionId||S.career.id||makeId('retired');
+  S.career.retiredCareerId=id;
+  return {
+    id,
+    careerId:id,
+    playerId:base.playerId,
+    username:base.username,
+    boxerName:base.fighterName,
+    avatar:deep(base.avatar),
+    equippedCosmetics:deep(base.equippedCosmetics||{}),
+    finalRecord:base.record,
+    wins:base.wins,
+    losses:base.losses,
+    draws:base.draws,
+    koCount:base.koWins,
+    careerEarnings:base.lifetimeEarnings,
+    walletRewardEarned:safeMoney(economyAward.reward||careerWalletReward(S.career)),
+    titles:S.career.belts?S.career.belts.slice():[],
+    beltsUnified:base.beltsUnified,
+    titleDefenses:base.titleDefenses,
+    achievementsUnlockedDuringCareer:careerAchievementUnlocks(),
+    achievementCount:base.achievementCount,
+    legacyScore:base.careerLegacyScore,
+    legacyTier:base.legacyTier,
+    finalCardTier:tier.label,
+    finalCardTierId:tier.id,
+    finalRating:base.finalRating,
+    overallRating:base.overallRating,
+    peakWorldRank:base.peakWorldRank,
+    gameMode:base.gameMode,
+    buildIdentity:base.buildIdentity,
+    retirementDate:base.careerEndDate
+  };
+}
+function saveRetiredCareerSnapshot(economyAward){
+  if(!S.career||S.career.retiredSnapshotSaved) return null;
+  const snap=retiredCareerSnapshot(economyAward);
+  if(!snap) return null;
+  const list=loadRetiredCareers();
+  if(list.some(c=>c.id===snap.id||c.careerId===snap.careerId)){
+    S.career.retiredSnapshotSaved=true;
+    return null;
+  }
+  list.unshift(snap);
+  saveRetiredCareers(list);
+  S.career.retiredSnapshotSaved=true;
+  return snap;
+}
+let retiredReturnScreen='menu-screen';
+function retiredMiniCard(entry){
+  const tierId=entry.finalCardTierId||'bronze';
+  return '<div class="retired-card"><div class="fighter-card retired-fut '+tierId+'"><div class="fighter-card-top"><div class="fighter-card-ovr"><strong>'+(entry.overallRating||entry.finalRating||50)+'</strong><span>OVR</span></div><div class="fighter-card-tier">'+(entry.finalCardTier||'Bronze')+'</div></div><div class="fighter-card-avatar">'+avatarMarkup(entry.avatar, entry.equippedCosmetics)+'</div><div class="fighter-card-name">'+(entry.boxerName||'Retired Fighter')+'</div><div class="fighter-card-nick">'+(entry.username||'Local Profile')+'</div><div class="fighter-card-stats"><div class="fighter-card-stat"><span>Record</span><strong>'+(entry.finalRecord||'0-0')+'</strong></div><div class="fighter-card-stat"><span>Score</span><strong>'+(entry.legacyScore||0)+'</strong></div><div class="fighter-card-stat"><span>KOs</span><strong>'+(entry.koCount||0)+'</strong></div></div></div><div class="retired-meta">'+(entry.gameMode||'Mode')+'<br>'+new Date(entry.retirementDate||Date.now()).toLocaleDateString()+'</div><button class="btn blue" onclick="openRetiredCareerDetail(\''+entry.id+'\')">View Career</button></div>';
+}
+function openRetiredCareers(returnScreen='menu-screen'){
+  retiredReturnScreen=returnScreen;
+  const box=$('retired-career-list');
+  const list=loadRetiredCareers();
+  box.innerHTML=list.length?list.map(retiredMiniCard).join(''):'<div class="empty-state">No retired careers saved yet. Complete a career to create one.</div>';
+  screen('retired-careers-screen');
+}
+function closeRetiredCareers(){
+  if(retiredReturnScreen==='hub-screen'&&S.player&&S.career) updateHub();
+  else refreshMenu();
+  screen(retiredReturnScreen||'menu-screen');
+}
+function openRetiredCareerDetail(id){
+  const entry=loadRetiredCareers().find(c=>c.id===id);
+  if(!entry){ openRetiredCareers(retiredReturnScreen); return; }
+  if($('retired-detail-title')) $('retired-detail-title').innerText=entry.boxerName||'Retired Career';
+  if($('retired-detail-card')) $('retired-detail-card').innerHTML=retiredMiniCard(entry).replace(/<button[\s\S]*<\/button><\/div>$/,'</div>');
+  const stats=$('retired-detail-stats');
+  if(stats){
+    stats.innerHTML=[
+      ['Username',entry.username||'-'],
+      ['Final Record',entry.finalRecord||'0-0'],
+      ['KO Count',entry.koCount||0],
+      ['Career Earnings',cash(entry.careerEarnings||0)],
+      ['Wallet Reward',cash(entry.walletRewardEarned||0)],
+      ['Titles/Belts',(entry.titles||[]).join(', ')||'None'],
+      ['Legacy Score',entry.legacyScore||0],
+      ['Final Card Tier',entry.finalCardTier||'Bronze'],
+      ['Retirement Date',new Date(entry.retirementDate||Date.now()).toLocaleString()]
+    ].map(([k,v])=>'<div class="row"><span>'+k+':</span><span>'+v+'</span></div>').join('');
+  }
+  const ach=$('retired-detail-achievements');
+  if(ach){
+    const list=entry.achievementsUnlockedDuringCareer||[];
+    ach.innerHTML=list.length?'<div class="retired-chip-row">'+list.map(a=>'<span class="retired-chip">'+a+'</span>').join('')+'</div>':'<div class="empty-state">No new achievements unlocked during this career.</div>';
+  }
+  screen('retired-career-detail-screen');
+}
+function antiCheatProfile(profile){
+  const clean=createProfileFoundation(profile||{});
+  clean.walletBalance=clamp(safeMoney(clean.walletBalance),0,25000000000);
+  clean.lifetimeEarnings=clamp(safeMoney(clean.lifetimeEarnings),0,999999999999);
+  clean.completed50And0Careers=clamp(safeMoney(clean.completed50And0Careers),0,999);
+  clean.unlockedCosmetics=(clean.unlockedCosmetics||[]).filter(id=>COSMETIC_DEFINITIONS[id]);
+  clean.equippedCosmetics=createEquippedCosmetics(clean.equippedCosmetics);
+  Object.keys(clean.equippedCosmetics).forEach(slot=>{
+    const id=clean.equippedCosmetics[slot];
+    if(id&&!clean.unlockedCosmetics.includes(id)) clean.equippedCosmetics[slot]=DEFAULT_EQUIPPED_COSMETICS[slot];
+  });
+  return clean;
+}
+function antiCheatCareerData(data){
+  if(!data||!data.career) return null;
+  const copy=deep(data);
+  copy.career.wins=clamp(safeMoney(copy.career.wins),0,50);
+  copy.career.losses=clamp(safeMoney(copy.career.losses),0,50);
+  copy.career.draws=clamp(safeMoney(copy.career.draws),0,50);
+  copy.career.kos=clamp(safeMoney(copy.career.kos),0,50);
+  copy.career.earnings=clamp(safeMoney(copy.career.earnings),0,500000000);
+  copy.career.currentFight=clamp(safeMoney(copy.career.currentFight||1),1,51);
+  return copy;
+}
+function highestLocalLegacy(retired=loadRetiredCareers()){
+  return retired.reduce((best,c)=>Math.max(best,c.legacyScore||0),0);
+}
+function cloudPayload(){
+  const profile=antiCheatProfile(S.player?createProfileFoundation(S.player):loadProfileFoundation());
+  const retired=loadRetiredCareers().slice(0,100);
+  const active=antiCheatCareerData(S.career?{mode:S.mode,player:S.player,career:S.career,opponent:S.opponent,traitsRolled:S.traitsRolled}:loadCareer());
+  const now=localUpdatedAtMillis();
+  return {
+    schemaVersion:8,
+    updatedAtMillis:now,
+    profile,
+    activeCareer:active||null,
+    retiredCareers:retired,
+    records:getRecords()
+  };
+}
+function publicProfileFromPayload(payload){
+  const p=antiCheatProfile(payload.profile||{});
+  const retired=(payload.retiredCareers||[]).slice(0,30);
+  return {
+    uid:currentUser?.uid||null,
+    username:p.username,
+    usernameLower:normaliseNameForFilter(p.username),
+    avatar:p.avatar,
+    equippedCosmetics:p.equippedCosmetics,
+    walletBalance:p.walletBalance||0,
+    completed50And0Careers:p.completed50And0Careers||0,
+    achievementCount:Object.keys(p.achievements?.unlocked||{}).length,
+    cosmeticCount:(p.unlockedCosmetics||[]).length,
+    highestLegacyScore:highestLocalLegacy(retired),
+    achievements:p.achievements||createAchievementState(),
+    retiredCareers:retired,
+    hofCareers:retired.filter(c=>(c.legacyScore||0)>0).slice(0,20),
+    updatedAtMillis:payload.updatedAtMillis,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+}
+function localSaveSummary(data){
+  const p=data?.profile||loadProfileFoundation();
+  const retired=data?.retiredCareers||loadRetiredCareers();
+  const active=data?.activeCareer||loadCareer();
+  return '<div class="row"><span>Username:</span><span>'+cleanName(p.username||'-')+'</span></div><div class="row"><span>Wallet:</span><span>'+cash(p.walletBalance||0)+'</span></div><div class="row"><span>50-0 Careers:</span><span>'+(p.completed50And0Careers||0)+'</span></div><div class="row"><span>Retired Careers:</span><span>'+retired.length+'</span></div><div class="row"><span>Active Career:</span><span>'+(active?'Yes':'No')+'</span></div><div class="row"><span>Updated:</span><span>'+new Date(data?.updatedAtMillis||Date.now()).toLocaleString()+'</span></div>';
+}
+function restoreCloudPayload(payload){
+  if(!payload) return;
+  restoringCloud=true;
+  saveProfileFoundation(antiCheatProfile(payload.profile||{}));
+  saveRetiredCareers(Array.isArray(payload.retiredCareers)?payload.retiredCareers:[]);
+  if(payload.records) saveRecords(payload.records);
+  if(payload.activeCareer) localStorage.setItem(KEYS.career, JSON.stringify(antiCheatCareerData(payload.activeCareer)));
+  else localStorage.removeItem(KEYS.career);
+  localStorage.setItem(KEYS.cloudStamp, String(payload.updatedAtMillis||Date.now()));
+  restoringCloud=false;
+  S.player=null; S.career=null; S.opponent=null; S.fight=null;
+  refreshMenu();
+}
+function updateAuthUI(){
+  if($('auth-status')) $('auth-status').innerText=currentUser?'Signed in: '+(currentUser.displayName||currentUser.email||'Google Player'):'Guest Mode';
+  if($('sync-status')) $('sync-status').innerText=currentUser?'Cloud sync ready':'Sign in to protect progress';
+  if($('sign-in-btn')) $('sign-in-btn').classList.toggle('hidden', !!currentUser);
+  if($('sign-out-btn')) $('sign-out-btn').classList.toggle('hidden', !currentUser);
+}
+function signInWithGoogle(){
+  const provider=new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(e=>{ console.error(e); showToast('Sign In Failed', e.message||'Unable to sign in'); });
+}
+function signOutCloud(){ auth.signOut(); }
+async function syncNow(manual=false){
+  if(!currentUser){ if(manual) showToast('Guest Mode', 'Sign in to sync progress.'); return; }
+  const payload=cloudPayload();
+  try{
+    await db.collection('user_saves').doc(currentUser.uid).set(payload,{merge:true});
+    await db.collection('public_profiles').doc(currentUser.uid).set(publicProfileFromPayload(payload),{merge:true});
+    if($('sync-status')) $('sync-status').innerText='Synced '+new Date().toLocaleTimeString();
+    if(manual) showToast('Cloud Synced', 'Profile updated.');
+  }catch(e){ console.error(e); if(manual) showToast('Sync Failed', 'Cloud save could not update.'); }
+}
+function requestCloudSync(){
+  if(!currentUser) return;
+  clearTimeout(pendingCloudSync);
+  pendingCloudSync=setTimeout(()=>syncNow(false),1200);
+}
+async function handleSignedIn(user){
+  currentUser=user;
+  updateAuthUI();
+  const ref=db.collection('user_saves').doc(user.uid);
+  const snap=await ref.get();
+  const local=cloudPayload();
+  if(snap.exists){
+    const cloud=snap.data();
+    if(Math.abs((cloud.updatedAtMillis||0)-(local.updatedAtMillis||0))>60000){
+      conflictLocalData=local; conflictCloudData=cloud;
+      if($('local-save-summary')) $('local-save-summary').innerHTML=localSaveSummary(local);
+      if($('cloud-save-summary')) $('cloud-save-summary').innerHTML=localSaveSummary(cloud);
+      screen('cloud-conflict-screen');
+      return;
+    }
+  }
+  await syncNow(false);
+}
+function resolveCloudConflict(choice){
+  if(choice==='cloud') restoreCloudPayload(conflictCloudData);
+  syncNow(true);
+  conflictLocalData=null; conflictCloudData=null;
+  screen('menu-screen');
+}
+function openPublicProfiles(){ screen('public-profiles-screen'); }
+async function searchPublicProfiles(){
+  const q=normaliseNameForFilter($('profile-search-input')?.value||'');
+  const box=$('profile-search-results');
+  if(!q){ box.innerHTML='<div class="empty-state">Enter a username to search.</div>'; return; }
+  box.innerHTML='<div class="empty-state">Searching...</div>';
+  try{
+    const snap=await db.collection('public_profiles').where('usernameLower','>=',q).where('usernameLower','<=',q+'\\uf8ff').limit(10).get();
+    box.innerHTML=snap.empty?'<div class="empty-state">No profiles found.</div>':snap.docs.map(d=>publicProfileCard(d.id,d.data())).join('');
+  }catch(e){ console.error(e); box.innerHTML='<div class="empty-state">Unable to search profiles.</div>'; }
+}
+function publicProfileCard(id,p){
+  return "<div class=\"cloud-profile-card\"><div class=\"cloud-profile-head\"><div class=\"cloud-mini-avatar\">"+avatarMarkup(p.avatar,p.equippedCosmetics)+"</div><div><div class=\"name\">"+(p.username||'Player')+"</div><div class=\"sub\">50-0: "+(p.completed50And0Careers||0)+"<br>Best Legacy: "+(p.highestLegacyScore||0)+"</div></div></div><button class=\"btn blue\" onclick=\"openPublicProfileDetail('"+id+"')\">View Profile</button></div>";
+}
+async function openPublicProfileDetail(uid){
+  const snap=await db.collection('public_profiles').doc(uid).get();
+  if(!snap.exists){ showToast('Profile Missing','This profile is no longer available.'); return; }
+  const p=snap.data();
+  $('public-profile-title').innerText=p.username||'Player Profile';
+  $('public-profile-content').innerHTML='<div class="cloud-profile-card"><div class="cloud-profile-head"><div class="cloud-mini-avatar">'+avatarMarkup(p.avatar,p.equippedCosmetics)+'</div><div><div class="name">'+(p.username||'Player')+'</div><div class="sub">Wallet: '+cash(p.walletBalance||0)+'<br>50-0 Careers: '+(p.completed50And0Careers||0)+'<br>Achievements: '+(p.achievementCount||0)+'<br>Cosmetics: '+(p.cosmeticCount||0)+'</div></div></div></div><h2>Retired Careers</h2><div class="retired-grid">'+((p.retiredCareers||[]).length?(p.retiredCareers||[]).slice(0,10).map(retiredMiniCard).join(''):'<div class="empty-state">No public retired careers.</div>')+'</div>';
+  screen('public-profile-detail-screen');
+}
+function openCloudLeaderboards(){ screen('cloud-leaderboards-screen'); loadCloudLeaderboard('walletBalance'); }
+async function loadCloudLeaderboard(field){
+  const box=$('cloud-leaderboard-list');
+  box.innerHTML='<div class="empty-state">Loading...</div>';
+  try{
+    const snap=await db.collection('public_profiles').orderBy(field,'desc').limit(30).get();
+    box.innerHTML=snap.empty?'<div class="empty-state">No signed-in players yet.</div>':snap.docs.map((d,i)=>leaderboardProfileRow(d.id,d.data(),field,i+1)).join('');
+  }catch(e){ console.error(e); box.innerHTML='<div class="empty-state">Unable to load leaderboard. Firestore index may be required.</div>'; }
+}
+function leaderboardProfileRow(id,p,field,rank){
+  const label=field==='walletBalance'?cash(p.walletBalance||0):field==='completed50And0Careers'?(p.completed50And0Careers||0):field==='highestLegacyScore'?(p.highestLegacyScore||0):field==='achievementCount'?(p.achievementCount||0):(p.cosmeticCount||0);
+  return "<div class=\"leaderboard-card\" onclick=\"openPublicProfileDetail('"+id+"')\"><div class=\"rank\">#"+rank+"</div><div class=\"name\">"+(p.username||'Player')+"</div><div class=\"sub\"><span class=\"score\">"+label+"</span><br>50-0: "+(p.completed50And0Careers||0)+"</div></div>";
 }
 async function ensureCurrentSeason(){
   const ref=db.collection('seasons').doc('current');
@@ -1298,6 +2468,7 @@ async function submitCareerToHallOfFame(){
   await db.collection('seasonal_hall_of_fame').doc(id).set({...data, careerId:id, seasonId:season.id, seasonNumber:season.seasonNumber}, {merge:true});
   S.career.hofSubmitted=true;
   rememberSubmittedId(id);
+  requestCloudSync();
 }
 function hofCard(entry, rank, showSeason=false){
   const record=entry.record || ((entry.wins||0)+'-'+(entry.losses||0)+(entry.draws>0?'-'+entry.draws:''));
@@ -1361,6 +2532,11 @@ function openHallOfFame(){
 function better(cand,rec){ const parse=r=>{ const p=(r||'0-0').split('-').map(n=>parseInt(n,10)||0); return {w:p[0]||0,l:p[1]||0,d:p[2]||0}; }; const b=parse(rec), c={w:cand.wins,l:cand.losses,d:cand.draws}; if(rec==='0-0'&&c.w>0) return true; if(c.l<b.l) return true; if(c.l>b.l) return false; if(c.w>b.w) return true; if(c.w<b.w) return false; return c.d<b.d; }
 function triggerHof(){ 
   screen('hof-screen'); 
+  checkAchievements(true);
+  const economyAward=awardCareerCompletionEconomy(true);
+  saveRetiredCareerSnapshot(economyAward);
+  if($('hof-wallet-reward')) $('hof-wallet-reward').innerText=cash(economyAward.reward||0);
+  if($('hof-wallet-balance')) $('hof-wallet-balance').innerText=cash(S.player?.walletBalance||0);
   const breakdown=$('legacy-breakdown');
   if(breakdown){ breakdown.classList.remove('active'); breakdown.innerHTML=''; }
   if (S.career.wins === 50 && S.career.losses === 0 && S.career.draws === 0 && !S.career.firebaseCounted) {
@@ -1369,6 +2545,12 @@ function triggerHof(){
       total50And0s: firebase.firestore.FieldValue.increment(1),
       weekly50And0s: firebase.firestore.FieldValue.increment(1)
     }, {merge:true}).catch(e => console.error("Firebase error updating 50-0 stats:", e));
+  }
+  if (S.career.wins === 50 && S.career.losses === 0 && S.career.draws === 0 && !S.career.profile50Counted) {
+    S.career.profile50Counted = true;
+    ensurePlayerFoundation(S.player);
+    S.player.completed50And0Careers=(S.player.completed50And0Careers||0)+1;
+    saveProfileFromPlayer(S.player);
   }
   submitCareerToHallOfFame().catch(e => console.error("Hall Of Fame submission failed:", e));
   const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?Math.floor((S.career.kos/total)*100):0, a=archetype(getPerm()).name, l=leg(), ovr=calculateOverall(), wealth=getWealthInfo(S.career.earnings), identity=getBuildIdentity(getPerm()); $('hof-tier').innerText=l.t; $('hof-pct').innerText='Top '+l.p+'% Career'; $('hof-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hof-kos').innerText=S.career.kos+' KO'; $('hof-kopct').innerText=koPct+'%'; $('hof-earnings').innerText=cash(S.career.earnings); $('hof-wealth').innerText=wealth[0]+' ('+wealth[1]+' Earners)'; $('hof-best-purse').innerText=cash(S.career.bestPurse||0); $('hof-belts').innerText=S.career.belts.length+' / 4 Belts'; $('hof-title-def').innerText=S.career.titleDef||0; $('hof-rating').innerText=''+S.career.rating; $('hof-ovr').innerText=''+ovr; $('hof-best-rank').innerText='#'+S.career.bestWorldRank; $('hof-score').innerText=''+l.score; $('hof-arch').innerText=a; $('hof-identity').innerText=identity; $('hof-mode').innerText=modeCfg().name; const r=getRecords(), finalRec=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); if(better(S.career,r.bestRecord)) r.bestRecord=finalRec; if(S.career.earnings>r.mostMoney) r.mostMoney=S.career.earnings; if(S.career.kos>r.mostKOs) r.mostKOs=S.career.kos; const prior={'None':0,'GOAT (50-0 UNDISPUTED)':1000}; HOF.slice().reverse().forEach((h,i)=>prior[h.t]=i+1); if((prior[l.t]||0)>(prior[r.bestTier]||0)) r.bestTier=l.t; saveRecords(r); refreshMenu(); 
@@ -1385,7 +2567,20 @@ function shareCareer(){ const l = leg(); const wealth = getWealthInfo(S.career.e
   }
 }
 function backToMenu(fromHof=false){ if(!fromHof&&S.career&&S.player&&S.player.Name&&S.career.currentFight<=50) saveCareer(); refreshMenu(); screen('menu-screen'); }
-window.onload = () => { selectMode(S.mode); refreshMenu(); };
+window.onload = () => {
+  selectMode(S.mode);
+  refreshMenu();
+  updateAuthUI();
+  auth.onAuthStateChanged(user=>{
+    currentUser=user;
+    updateAuthUI();
+    clearInterval(syncTimer);
+    if(user){
+      handleSignedIn(user).catch(e=>console.error(e));
+      syncTimer=setInterval(()=>syncNow(false),15*60*1000);
+    }
+  });
+};
 </script>
 </body>
 </html>
