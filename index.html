@@ -134,14 +134,14 @@ header p{
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 h2{
   font-family:'Bebas Neue',Impact,sans-serif;
-  font-size:1rem;color:var(--gold);
-  margin:18px 0 12px;padding-bottom:8px;
+  font-size:.95rem;color:var(--gold);
+  margin:12px 0 8px;padding-bottom:6px;
   border-bottom:1px solid var(--line);
   text-transform:uppercase;letter-spacing:2.5px;
   font-weight:400;
   position:relative;
 }
-h2:first-child{margin-top:4px}
+h2:first-child{margin-top:2px}
 h2::before{
   content:'';position:absolute;left:0;bottom:-1px;width:32px;height:2px;
   background:var(--gold);
@@ -151,8 +151,8 @@ h2::before{
   background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
   border:1px solid var(--line);
   border-radius:var(--radius);
-  padding:14px;
-  margin-bottom:14px;
+  padding:10px 12px;
+  margin-bottom:10px;
   box-shadow:var(--shadow-card), var(--shadow-inset);
 }
 .spin-card,.trait-spin-card{
@@ -201,7 +201,7 @@ h2::before{
 .stat-pill .value.loading{color:var(--muted);font-size:.85rem;font-family:'Inter',sans-serif;letter-spacing:0;text-shadow:none}
 .row{
   display:flex;justify-content:space-between;gap:14px;align-items:center;
-  margin-bottom:10px;font-size:.88rem;
+  margin-bottom:7px;font-size:.84rem;
 }
 .row:last-child{margin-bottom:0}
 .row > span:first-child{color:var(--text-dim);font-weight:500}
@@ -294,14 +294,14 @@ h2::before{
 .name-input::placeholder{color:var(--muted)}
 .validation-msg{min-height:20px;margin-top:8px;text-align:center;color:#ff9b9b;font-size:.78rem;font-weight:800;line-height:1.35}
 .validation-msg.ok{color:var(--green)}
-.draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .draft-btn{
   background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
   border:1px solid var(--line);
-  border-radius:12px;
-  padding:11px;
-  display:flex;flex-direction:column;gap:4px;
-  text-align:left;min-height:78px;
+  border-radius:10px;
+  padding:7px 9px;
+  display:flex;flex-direction:column;gap:2px;
+  text-align:left;min-height:54px;
   color:#fff;
   font-family:'Inter',sans-serif;
   cursor:pointer;
@@ -339,7 +339,7 @@ h2::before{
 .tag.blue{background:rgba(59,155,255,.12);color:var(--blue);border-color:rgba(59,155,255,.4)}
 .tag.purple{background:rgba(168,85,247,.14);color:#d5a6ff;border-color:rgba(168,85,247,.4)}
 .tag.orange{background:rgba(245,158,11,.14);color:var(--orange);border-color:rgba(245,158,11,.4)}
-.slot{height:120px;display:flex;flex-direction:column;justify-content:center;gap:4px;position:relative}
+.slot{height:72px;display:flex;flex-direction:column;justify-content:center;gap:4px;position:relative}
 .slot::before,.slot::after{
   content:'';position:absolute;left:0;right:0;height:30px;pointer-events:none;
 }
@@ -431,8 +431,8 @@ h2::before{
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .stat-card{
   background:linear-gradient(180deg,rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 100%);
-  border:1px solid var(--line);border-radius:10px;padding:9px 10px;
-  display:flex;flex-direction:column;gap:3px;min-height:60px;
+  border:1px solid var(--line);border-radius:8px;padding:6px 8px;
+  display:flex;flex-direction:column;gap:2px;min-height:46px;
   box-shadow:var(--shadow-inset);
 }
 .stat-head{display:flex;justify-content:space-between;gap:8px;align-items:center}
@@ -489,8 +489,8 @@ h2::before{
 .line.info{color:#bdbdbd;border-left-color:#4a4f5a}
 .hof-box{
   background:linear-gradient(180deg,#0a0b0e 0%, #020203 100%);
-  border:2px solid var(--gold);border-radius:18px;
-  padding:24px 20px;text-align:center;margin:16px 0;
+  border:2px solid var(--gold);border-radius:14px;
+  padding:14px 16px;text-align:center;margin:8px 0;
   box-shadow:0 0 40px rgba(230,194,71,.2), inset 0 0 40px rgba(230,194,71,.05);
   position:relative;overflow:hidden;
 }
@@ -510,7 +510,7 @@ h2::before{
 .hof-pct{margin-top:12px;color:var(--platinum);font-size:1rem;font-weight:800}
 .metric{
   display:flex;justify-content:space-between;gap:14px;
-  padding:11px 0;border-bottom:1px solid var(--line);font-size:.92rem;
+  padding:7px 0;border-bottom:1px solid var(--line);font-size:.82rem;
 }
 .metric > span{color:var(--text-dim);font-weight:500}
 .metric strong{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
@@ -622,6 +622,15 @@ h2::before{
 .screen::-webkit-scrollbar,.log::-webkit-scrollbar,.sim-body::-webkit-scrollbar{width:6px}
 .screen::-webkit-scrollbar-thumb,.log::-webkit-scrollbar-thumb,.sim-body::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 .screen::-webkit-scrollbar-track,.log::-webkit-scrollbar-track,.sim-body::-webkit-scrollbar-track{background:transparent}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px;vertical-align:middle;animation:livepulse 2s ease-in-out infinite;box-shadow:0 0 6px var(--green)}
+@keyframes livepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.social-bar{display:flex;gap:8px;justify-content:center;padding:10px 0 4px}
+.social-link{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);text-decoration:none;font-size:.72rem;font-weight:800;color:var(--text-dim);flex:1;justify-content:center;letter-spacing:.4px;text-transform:uppercase;transition:border-color .15s,color .15s}
+.social-link:active{transform:scale(.96)}
+.social-link.ig{border-color:rgba(193,53,132,.5);color:#e1306c}
+.social-link.tt{border-color:rgba(255,255,255,.2);color:var(--text)}
+.social-link.tw{border-color:rgba(29,155,240,.5);color:#1d9bf0}
+.social-icon{font-size:1rem}
 </style>
 </head>
 <body>
@@ -635,7 +644,7 @@ h2::before{
 
 <section id="menu-screen" class="screen active">
   <div class="hero">🥊</div>
-  <h2>Worldwide Stats</h2>
+  <h2><span class="live-dot"></span>Worldwide Stats</h2>
   <div class="global-stats">
     <div class="stat-pill">
       <div class="label"><span class="ico">🥊</span><span>Fighters Created Worldwide</span></div>
@@ -674,18 +683,33 @@ h2::before{
     <button class="btn gold" onclick="startNewCareer()">Draft New Boxer</button>
     <button class="btn blue" onclick="openHallOfFame()">Hall Of Fame</button>
     <button id="delete-save-btn" class="btn red hidden" onclick="deleteSave()">Delete Current Save</button>
+  <div class="social-bar">
+    <a class="social-link ig" href="https://instagram.com/500boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">📸</span>500boxing</a>
+    <a class="social-link tt" href="https://tiktok.com/@500boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">🎵</span>@500boxing</a>
+    <a class="social-link tw" href="https://x.com/iJDani_98_" target="_blank" rel="noopener noreferrer"><span class="social-icon">𝕏</span>@iJDani_98_</a>
+  </div>
   </div>
 </section>
 
-<section id="draft-screen" class="screen">
-  <h2>Fighter Generation</h2>
-  <p class="subtle">Spin the legend wheel. Good sources still appear most of the time, but bad-roll fighters, spoilers and prospects can now shake up drafts.</p>
-  <div class="panel"><div class="row"><span>Mode:</span><span id="draft-mode-label">Title Distance</span></div><div class="row"><span>Draft Re-Rolls Left:</span><span id="draft-rerolls-left">1</span></div></div>
-  <div class="overall-banner"><div class="label">Live Overall Rating</div><div id="overall-rating-draft" class="value">50</div></div>
-  <div class="spin-card"><div class="slot"><div class="slot-item" id="slot-top">Mike Tyson</div><div class="slot-item win" id="slot-mid">???</div><div class="slot-item" id="slot-bottom">Muhammad Ali</div></div><div id="legend-pill-wrap"></div><div id="perfect-banner" class="perfect"></div></div>
-  <div class="two-col"><button id="spin-btn" class="btn gold" onclick="spinWheel()">Spin Wheel</button><button id="reroll-btn" class="btn blue" onclick="useReroll()" disabled>Use Re-Roll</button></div>
+<section id="draft-screen" class="screen" style="padding:10px 14px 14px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <h2 style="margin:0;border:none;padding:0">Fighter Generation</h2>
+    <span id="draft-meta" style="font-size:.72rem;color:var(--text-dim);font-weight:700"></span>
+  </div>
+  <div style="display:flex;gap:6px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:.78rem">
+    <span style="color:var(--text-dim)">Mode:</span><span id="draft-mode-label" style="color:var(--gold);font-weight:800">-</span>
+    <span style="color:var(--line-2);margin:0 4px">•</span>
+    <span style="color:var(--text-dim)">Re-Rolls:</span><span id="draft-rerolls-left" style="color:var(--gold);font-weight:800">-</span>
+    <span style="color:var(--line-2);margin:0 4px">•</span>
+    <span style="color:var(--text-dim)">OVR:</span><span id="overall-rating-draft" style="color:var(--gold);font-weight:900;font-family:'Bebas Neue',sans-serif;font-size:1rem">50</span>
+  </div>
+  <div class="spin-card" style="padding:10px 14px"><div class="slot"><div class="slot-item" id="slot-top">Mike Tyson</div><div class="slot-item win" id="slot-mid">???</div><div class="slot-item" id="slot-bottom">Muhammad Ali</div></div><div id="legend-pill-wrap"></div><div id="perfect-banner" class="perfect"></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">
+    <button id="spin-btn" class="btn gold" style="margin:0;padding:10px 6px;font-size:.78rem" onclick="spinWheel()">Spin</button>
+    <button id="reroll-btn" class="btn blue" style="margin:0;padding:10px 6px;font-size:.78rem" onclick="useReroll()" disabled>Re-Roll</button>
+    <button class="btn red" style="margin:0;padding:10px 6px;font-size:.78rem" onclick="restartDraft()">Restart</button>
+  </div>
   <div id="draft-grid" class="draft-grid"></div>
-  <button class="btn red" onclick="restartDraft()">Restart Draft</button>
 </section>
 
 <section id="trait-screen" class="screen">
@@ -814,7 +838,12 @@ h2::before{
   <div id="legacy-breakdown" class="panel breakdown-panel"></div>
   <button class="btn blue" onclick="showHistory()">View Full Fight History</button>
   <a href="https://buymeacoffee.com/unbeaten50" target="_blank" rel="noopener noreferrer" class="btn ghost" style="display:block; text-align:center; text-decoration:none;">Support UNBEATEN ☕</a>
-  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+<button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+  <div class="social-bar">
+    <a class="social-link ig" href="https://instagram.com/500boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">📸</span>500boxing</a>
+    <a class="social-link tt" href="https://tiktok.com/@500boxing" target="_blank" rel="noopener noreferrer"><span class="social-icon">🎵</span>@500boxing</a>
+    <a class="social-link tw" href="https://x.com/iJDani_98_" target="_blank" rel="noopener noreferrer"><span class="social-icon">𝕏</span>@iJDani_98_</a>
+  </div>
 </section>
 
 <section id="global-hof-screen" class="screen">
