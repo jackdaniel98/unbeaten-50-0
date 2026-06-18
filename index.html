@@ -109,6 +109,7 @@ header p{
   margin-top:6px;font-weight:600;
 }
 .version{font-size:.65rem;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+.build-indicator{font-size:.6rem;color:#9ea4b3;margin-top:5px;letter-spacing:.7px;text-transform:uppercase;font-weight:800}
 .sound-toggle{
   position:absolute;top:14px;right:14px;
   width:38px;height:38px;border-radius:50%;
@@ -809,6 +810,7 @@ h2::before{
   <h1>UNBEATEN: 50-0</h1>
   <p>Heavyweight Management Loop</p>
   <div class="version">Final Release v1.1</div>
+  <div id="build-indicator" class="build-indicator">Build loading...</div>
 </header>
 
 <section id="menu-screen" class="screen active">
@@ -861,16 +863,16 @@ h2::before{
     <div class="row"><span>Progress:</span><span id="save-progress">-</span></div>
   </div>
   <div class="menu-actions" style="margin-top:auto;padding-top:16px">
-    <button id="continue-btn" class="btn blue hidden">Continue Career</button>
-    <button id="draft-fighter-btn" class="btn gold">Draft New Boxer</button>
-    <button id="store-menu-btn" class="btn blue">Cosmetic Store</button>
-    <button id="collection-menu-btn" class="btn ghost">Achievements &amp; Collection</button>
-    <button id="trophy-menu-btn" class="btn ghost">Trophy Cabinet</button>
-    <button id="retired-menu-btn" class="btn ghost">Retired Careers</button>
-    <button id="profiles-menu-btn" class="btn ghost">Public Profiles</button>
-    <button id="leaderboards-menu-btn" class="btn ghost">Cloud Leaderboards</button>
-    <button id="hof-menu-btn" class="btn blue">Hall Of Fame</button>
-    <button id="delete-save-btn" class="btn red hidden">Delete Current Save</button>
+    <button id="continue-btn" type="button" class="btn blue hidden" data-menu-action="continue">Continue Career</button>
+    <button id="draft-fighter-btn" type="button" class="btn gold" data-menu-action="draft">Draft New Boxer</button>
+    <button id="store-menu-btn" type="button" class="btn blue" data-menu-action="store">Cosmetic Store</button>
+    <button id="collection-menu-btn" type="button" class="btn ghost" data-menu-action="collection">Achievements &amp; Collection</button>
+    <button id="trophy-menu-btn" type="button" class="btn ghost" data-menu-action="trophy">Trophy Cabinet</button>
+    <button id="retired-menu-btn" type="button" class="btn ghost" data-menu-action="retired">Retired Careers</button>
+    <button id="profiles-menu-btn" type="button" class="btn ghost" data-menu-action="profiles">Public Profiles</button>
+    <button id="leaderboards-menu-btn" type="button" class="btn ghost" data-menu-action="leaderboards">Cloud Leaderboards</button>
+    <button id="hof-menu-btn" type="button" class="btn blue" data-menu-action="hof">Hall Of Fame</button>
+    <button id="delete-save-btn" type="button" class="btn red hidden" data-menu-action="delete">Delete Current Save</button>
   </div>
 </section>
 
@@ -2733,30 +2735,66 @@ function kdCheck(target,attackerName,defenderName,dmg,a,d,round,winnerKey){ cons
 function simRound(){ const r=S.fight.round,p1=roundStrength('p1',r),p2=roundStrength('p2',r); let h1=Math.max(1,Math.floor((p1.Speed+p1.Accuracy+p1['Ring IQ']-(p2.Defence+p2.Footwork))/22)+3+rand(0,1)), h2=Math.max(1,Math.floor((p2.Speed+p2.Accuracy+p2['Ring IQ']-(p1.Defence+p1.Footwork))/22)+3+rand(0,1)); let d1=Math.max(4,Math.floor(h1*(p1.Power/19.5))), d2=Math.max(4,Math.floor(h2*(p2.Power/19.8))); if(hasTrait('ko_artist')&&(S.fight.p2.hp/S.fight.p2.maxHp)<.5) d1=Math.floor(d1*1.18); if(hasTrait('body_snatcher')&&Math.random()<.35) S.fight.p2.stamina=Math.max(8,S.fight.p2.stamina-rand(4,8)); if(hasTrait('ice_in_veins')&&Math.abs(S.fight.p1.score-S.fight.p2.score)<=2&&r>=8) d1+=3; if(hasTrait('volume_puncher')) d1+=2; d1=Math.floor(d1*(.88+Math.random()*.28)); d2=Math.floor(d2*(.88+Math.random()*.26)); if(Math.random()<(p1.Accuracy/200)){ d1=Math.floor(d1*1.4); addLog('crit',S.player.Name+' clips '+S.opponent.Name+' with a perfect counter.'); } if(Math.random()<(p2.Accuracy/210)){ d2=Math.floor(d2*1.32); addLog('crit',S.opponent.Name+' lands a sharp counter.'); } S.fight.p2.hp-=d1; S.fight.p1.hp-=d2; S.fight.p1Dmg+=d1; S.fight.p2Dmg+=d2; if(d1>d2+8) S.fight.p1Dom++; else if(d2>d1+8) S.fight.p2Dom++; addLog('action','R'+r+': '+S.player.Name+' lands '+h1+' scoring shots ('+d1+' dmg). '+S.opponent.Name+' answers with '+h2+' clean connects ('+d2+' dmg).'); if(d1>=13&&Math.random()<.24) maybeDoctor(p1,'p2'); if(!S.fight.done&&d2>=13&&Math.random()<.22) maybeDoctor(p2,'p1'); if(S.fight.done) return; let drain1=18,drain2=18; if(hasTrait('gas_out')&&r>=6) drain1*=1.6; if(hasTrait('second_wind')&&r>=7) drain1-=4; if(hasTrait('volume_puncher')&&r>=5) drain2+=2; S.fight.p1.stamina=Math.max(5,S.fight.p1.stamina-drain1+(p1.Recovery/9)); S.fight.p2.stamina=Math.max(5,S.fight.p2.stamina-drain2+(p2.Recovery/9)); const p1Collapse=S.fight.p1.stamina/S.fight.p1.maxStamina<.25,p2Collapse=S.fight.p2.stamina/S.fight.p2.maxStamina<.25; if(p1Collapse) d2=Math.floor(d2*1.25); if(p2Collapse) d1=Math.floor(d1*1.25); const caught1=maybeCaught(S.fight.p2,S.player.Name,S.opponent.Name,p1,p2,r,'p1'); if(caught1&&caught1.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=caught1.detail; return; } const caught2=maybeCaught(S.fight.p1,S.opponent.Name,S.player.Name,p2,p1,r,'p2'); if(caught2&&caught2.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=caught2.detail; return; } if(!S.fight.done&&(S.fight.p2.hp<=0||d1>S.fight.p2.maxHp*.105)){ const kd=kdCheck(S.fight.p2,S.player.Name,S.opponent.Name,d1,p1,p2,r,'p1'); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('brittle_hands')) S.fight.flags.p1BrokenHands=true; } if(!S.fight.done&&(S.fight.p1.hp<=0||d2>S.fight.p1.maxHp*.105)){ const kd=kdCheck(S.fight.p1,S.opponent.Name,S.player.Name,d2,p2,p1,r,'p2'); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('quit_risk')) S.fight.flags.p1QuitTriggered=true; } const p2Weak=(S.fight.p2.hp/S.fight.p2.maxHp)<.24||(S.fight.p2.stamina/S.fight.p2.maxStamina)<.22, p1Weak=(S.fight.p1.hp/S.fight.p1.maxHp)<.24||(S.fight.p1.stamina/S.fight.p1.maxStamina)<.22; if(!S.fight.done&&r>=7&&p2Weak&&canFightFinish('p1','accumulation')){ let chance=.14; if(r>=9) chance+=.12; if(S.fight.p1Dom>=3) chance+=.10; if(S.fight.p1Dmg>S.fight.p2Dmg+40) chance+=.10; if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.18) chance+=.08; if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p1'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); addLog('system',S.opponent.Name+' cannot continue. '+S.fight.detail+'.'); return; } } if(!S.fight.done&&r>=7&&p1Weak&&canFightFinish('p2','accumulation')){ let chance=.11; if(r>=9) chance+=.08; if(S.fight.p2Dom>=3) chance+=.08; if(S.fight.p2Dmg>S.fight.p1Dmg+40) chance+=.08; if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.18) chance+=.08; if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p2'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); S.fight.lossReason=(S.fight.p1.stamina/S.fight.p1.maxStamina)<.18?'gassed':'accumulation'; addLog('system',S.player.Name+' cannot continue. '+S.fight.detail+'.'); return; } } let score1=10,score2=9; const ctrl1=(p1.Speed+p1.Accuracy+p1['Ring IQ']+d1*.9)+(hasTrait('ice_in_veins')?3:0)+(hasTrait('ring_general')?3:0)-(hasTrait('low_iq')?4:0), ctrl2=(p2.Speed+p2.Accuracy+p2['Ring IQ']+d2*.9); if(Math.abs(ctrl1-ctrl2)<4){ if(Math.random()<.05){score1=10;score2=10;} else if(ctrl1>=ctrl2){score1=10;score2=9;} else {score1=9;score2=10;} } else if(ctrl2>ctrl1){ score1=9; score2=10; } S.fight.p1.score+=score1; S.fight.p2.score+=score2; }
 function scoreDecision(){ S.fight.done=true; const diff=S.fight.p1.score-S.fight.p2.score, ad=Math.abs(diff); let winner=S.fight.intendedWinner||'p1'; if(winner==='p2'&&ad<=2&&(hasTrait('ring_general')||hasTrait('ice_in_veins'))&&Math.random()<.28) winner='p1'; S.fight.winner=winner; if(ad===0) S.fight.method='MD'; else if(ad===1) S.fight.method='SD'; else if(ad<=3) S.fight.method=Math.random()<.55?'SD':'MD'; else S.fight.method='UD'; S.fight.detail=choice(ad>=7?['Comfortable On The Cards','Took The Championship Rounds']:ad>=4?['Controlled The Fight','Clear Decision']:['Razor-Close Cards','Narrow But Fair']); if(winner==='p2'&&!S.fight.lossReason){ if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.22) S.fight.lossReason='gassed'; else if((S.fight.balance?.styleMatchup||0)<=-3) S.fight.lossReason='style'; else S.fight.lossReason='decision'; } }
 function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) extra.push('The cleaner work and control dominated the rounds.'); if(S.fight.p1Dmg>S.fight.p2Dmg+35) extra.push('The damage output was clearly tilting the fight.'); if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.28) extra.push('The opponent faded badly as stamina drained.'); if(['TKO','RTD'].includes(S.fight.method)) extra.push('Sustained punishment forced the stoppage.'); const dom=choice(extra.length?extra:['The style edge kept stacking up over the rounds.']); if(kind==='win') return sourceText()+'. '+weakText().charAt(0).toUpperCase()+weakText().slice(1)+' was exposed. '+dom; if(kind==='loss'){ const reason=S.fight.lossReason||'decision'; const copy={decision:'Lost close cards after the fight drifted away late.',accumulation:'Sustained damage built up until the danger became real.',gassed:'Stamina collapsed after the middle rounds and the opponent took over.',caught:'A clean caught-shot opened the door, then recovery failed the count.',style:'The opponent style countered this build and stole the key exchanges.'}; return copy[reason]||copy.decision; } return 'Neither fighter truly separated from the other over 12 rounds.'; }
+const BUILD_ID='mobile-nav-debug-2026-06-18-2';
+console.info('[UNBEATEN]', BUILD_ID, 'page script loaded');
+let lastMenuActionAt=0,lastMenuActionName='';
+function menuActionHandlers(){
+  return {
+    continue:()=>continueCareer(),
+    draft:()=>startNewCareer(),
+    store:()=>openStore('menu-screen'),
+    collection:()=>openCollection('menu-screen'),
+    trophy:()=>openTrophyCabinet(),
+    retired:()=>openRetiredCareers('menu-screen'),
+    profiles:()=>openPublicProfiles(),
+    leaderboards:()=>openCloudLeaderboards(),
+    hof:()=>openHallOfFame(),
+    delete:()=>deleteSave()
+  };
+}
+function runMenuAction(action, eventType='manual'){
+  const now=Date.now();
+  if(action===lastMenuActionName&&now-lastMenuActionAt<500) return;
+  lastMenuActionAt=now; lastMenuActionName=action;
+  const handlers=menuActionHandlers();
+  console.info('[UNBEATEN]', BUILD_ID, 'menu action', action, 'via', eventType, {
+    draftExists:!!$('draft-screen'),
+    startNewCareerType:typeof window.startNewCareer,
+    active:document.querySelector('.screen.active')?.id
+  });
+  if(handlers[action]) handlers[action]();
+}
 function bindMainMenuButtons(){
-  const bindings=[
-    ['continue-btn',()=>continueCareer()],
-    ['draft-fighter-btn',()=>startNewCareer()],
-    ['store-menu-btn',()=>openStore('menu-screen')],
-    ['collection-menu-btn',()=>openCollection('menu-screen')],
-    ['trophy-menu-btn',()=>openTrophyCabinet()],
-    ['retired-menu-btn',()=>openRetiredCareers('menu-screen')],
-    ['profiles-menu-btn',()=>openPublicProfiles()],
-    ['leaderboards-menu-btn',()=>openCloudLeaderboards()],
-    ['hof-menu-btn',()=>openHallOfFame()],
-    ['delete-save-btn',()=>deleteSave()]
-  ];
-  bindings.forEach(([id,fn])=>{
-    const btn=$(id);
-    if(!btn||btn.dataset.boundMenuAction==='1') return;
+  console.info('[UNBEATEN]', BUILD_ID, 'bindMainMenuButtons run');
+  if($('build-indicator')) $('build-indicator').innerText='Build '+BUILD_ID;
+  document.querySelectorAll('[data-menu-action]').forEach(btn=>{
+    if(btn.dataset.boundMenuAction==='1') return;
     btn.dataset.boundMenuAction='1';
-    btn.addEventListener('click', e=>{ e.preventDefault(); if(!btn.disabled) fn(); }, {passive:false});
-    btn.addEventListener('touchend', e=>{ e.preventDefault(); if(!btn.disabled) fn(); }, {passive:false});
+    btn.addEventListener('click', e=>{ e.preventDefault(); if(!btn.disabled) runMenuAction(btn.dataset.menuAction,'click'); }, {passive:false});
+    btn.addEventListener('touchend', e=>{ e.preventDefault(); if(!btn.disabled) runMenuAction(btn.dataset.menuAction,'touchend'); }, {passive:false});
+    btn.addEventListener('pointerup', e=>{ if(!btn.disabled) runMenuAction(btn.dataset.menuAction,'pointerup'); });
   });
 }
+function delegatedMainMenuTap(e){
+  const target=e.target?.closest?.('[data-menu-action]');
+  if(!target||target.disabled) return;
+  console.info('[UNBEATEN]', BUILD_ID, 'delegated', e.type, target.dataset.menuAction);
+  if(e.cancelable) e.preventDefault();
+  runMenuAction(target.dataset.menuAction,'delegated '+e.type);
+}
+['click','touchend','pointerup'].forEach(type=>document.addEventListener(type, delegatedMainMenuTap, {capture:true, passive:false}));
+const originalGameScreen=screen;
+screen=function(id){ console.info('[UNBEATEN]', BUILD_ID, 'screen()', id); return originalGameScreen(id); };
+const originalStartNewCareer=startNewCareer;
+startNewCareer=function(){ console.info('[UNBEATEN]', BUILD_ID, 'startNewCareer()', {profileSetupComplete:loadProfileFoundation()?.profileSetupComplete}); return originalStartNewCareer(); };
+const originalBeginNewCareerDraft=beginNewCareerDraft;
+beginNewCareerDraft=function(){ console.info('[UNBEATEN]', BUILD_ID, 'beginNewCareerDraft()', {draftScreenExists:!!$('draft-screen')}); return originalBeginNewCareerDraft(); };
+window.startNewCareer=startNewCareer;
+window.beginNewCareerDraft=beginNewCareerDraft;
 bindMainMenuButtons();
 const priorUnbeatenOnload=window.onload;
 window.onload=function(event){
+  console.info('[UNBEATEN]', BUILD_ID, 'window load');
   if(typeof priorUnbeatenOnload==='function') priorUnbeatenOnload.call(window,event);
   bindMainMenuButtons();
 };
