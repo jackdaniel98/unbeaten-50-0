@@ -788,7 +788,7 @@ h2::before{
   .fighter-card-avatar{height:138px}
   .fighter-card-stats{gap:5px;margin-top:9px}
   .account-actions{gap:7px}
-  #menu-screen{display:flex;flex-direction:column}
+  #menu-screen.active{display:flex;flex-direction:column}
   #menu-screen>*{order:20}
   #menu-screen>.account-panel{order:1}
   #menu-screen>.menu-actions{order:2;margin-top:4px!important;padding-top:4px!important}
@@ -822,7 +822,10 @@ h2::before{
     <div><span>Target</span><span id="debug-target">none</span></div>
     <div><span>Exists</span><span id="debug-exists">unknown</span></div>
     <div><span>showScreen</span><span id="debug-ran">not run</span></div>
+    <div><span>Active Screen</span><span id="debug-active-screen">unknown</span></div>
+    <div><span>Screen Calls</span><span id="debug-screen-calls">0</span></div>
     <div><span>Error</span><span id="debug-error">none</span></div>
+    <button type="button" class="btn red" style="margin-top:8px;padding:8px;font-size:.7rem" onclick="document.getElementById('draft-screen').style.display='block'">FORCE SHOW DRAFT</button>
   </div>
 </header>
 
@@ -2748,9 +2751,11 @@ function kdCheck(target,attackerName,defenderName,dmg,a,d,round,winnerKey){ cons
 function simRound(){ const r=S.fight.round,p1=roundStrength('p1',r),p2=roundStrength('p2',r); let h1=Math.max(1,Math.floor((p1.Speed+p1.Accuracy+p1['Ring IQ']-(p2.Defence+p2.Footwork))/22)+3+rand(0,1)), h2=Math.max(1,Math.floor((p2.Speed+p2.Accuracy+p2['Ring IQ']-(p1.Defence+p1.Footwork))/22)+3+rand(0,1)); let d1=Math.max(4,Math.floor(h1*(p1.Power/19.5))), d2=Math.max(4,Math.floor(h2*(p2.Power/19.8))); if(hasTrait('ko_artist')&&(S.fight.p2.hp/S.fight.p2.maxHp)<.5) d1=Math.floor(d1*1.18); if(hasTrait('body_snatcher')&&Math.random()<.35) S.fight.p2.stamina=Math.max(8,S.fight.p2.stamina-rand(4,8)); if(hasTrait('ice_in_veins')&&Math.abs(S.fight.p1.score-S.fight.p2.score)<=2&&r>=8) d1+=3; if(hasTrait('volume_puncher')) d1+=2; d1=Math.floor(d1*(.88+Math.random()*.28)); d2=Math.floor(d2*(.88+Math.random()*.26)); if(Math.random()<(p1.Accuracy/200)){ d1=Math.floor(d1*1.4); addLog('crit',S.player.Name+' clips '+S.opponent.Name+' with a perfect counter.'); } if(Math.random()<(p2.Accuracy/210)){ d2=Math.floor(d2*1.32); addLog('crit',S.opponent.Name+' lands a sharp counter.'); } S.fight.p2.hp-=d1; S.fight.p1.hp-=d2; S.fight.p1Dmg+=d1; S.fight.p2Dmg+=d2; if(d1>d2+8) S.fight.p1Dom++; else if(d2>d1+8) S.fight.p2Dom++; addLog('action','R'+r+': '+S.player.Name+' lands '+h1+' scoring shots ('+d1+' dmg). '+S.opponent.Name+' answers with '+h2+' clean connects ('+d2+' dmg).'); if(d1>=13&&Math.random()<.24) maybeDoctor(p1,'p2'); if(!S.fight.done&&d2>=13&&Math.random()<.22) maybeDoctor(p2,'p1'); if(S.fight.done) return; let drain1=18,drain2=18; if(hasTrait('gas_out')&&r>=6) drain1*=1.6; if(hasTrait('second_wind')&&r>=7) drain1-=4; if(hasTrait('volume_puncher')&&r>=5) drain2+=2; S.fight.p1.stamina=Math.max(5,S.fight.p1.stamina-drain1+(p1.Recovery/9)); S.fight.p2.stamina=Math.max(5,S.fight.p2.stamina-drain2+(p2.Recovery/9)); const p1Collapse=S.fight.p1.stamina/S.fight.p1.maxStamina<.25,p2Collapse=S.fight.p2.stamina/S.fight.p2.maxStamina<.25; if(p1Collapse) d2=Math.floor(d2*1.25); if(p2Collapse) d1=Math.floor(d1*1.25); const caught1=maybeCaught(S.fight.p2,S.player.Name,S.opponent.Name,p1,p2,r,'p1'); if(caught1&&caught1.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=caught1.detail; return; } const caught2=maybeCaught(S.fight.p1,S.opponent.Name,S.player.Name,p2,p1,r,'p2'); if(caught2&&caught2.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=caught2.detail; return; } if(!S.fight.done&&(S.fight.p2.hp<=0||d1>S.fight.p2.maxHp*.105)){ const kd=kdCheck(S.fight.p2,S.player.Name,S.opponent.Name,d1,p1,p2,r,'p1'); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('brittle_hands')) S.fight.flags.p1BrokenHands=true; } if(!S.fight.done&&(S.fight.p1.hp<=0||d2>S.fight.p1.maxHp*.105)){ const kd=kdCheck(S.fight.p1,S.opponent.Name,S.player.Name,d2,p2,p1,r,'p2'); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('quit_risk')) S.fight.flags.p1QuitTriggered=true; } const p2Weak=(S.fight.p2.hp/S.fight.p2.maxHp)<.24||(S.fight.p2.stamina/S.fight.p2.maxStamina)<.22, p1Weak=(S.fight.p1.hp/S.fight.p1.maxHp)<.24||(S.fight.p1.stamina/S.fight.p1.maxStamina)<.22; if(!S.fight.done&&r>=7&&p2Weak&&canFightFinish('p1','accumulation')){ let chance=.14; if(r>=9) chance+=.12; if(S.fight.p1Dom>=3) chance+=.10; if(S.fight.p1Dmg>S.fight.p2Dmg+40) chance+=.10; if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.18) chance+=.08; if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p1'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); addLog('system',S.opponent.Name+' cannot continue. '+S.fight.detail+'.'); return; } } if(!S.fight.done&&r>=7&&p1Weak&&canFightFinish('p2','accumulation')){ let chance=.11; if(r>=9) chance+=.08; if(S.fight.p2Dom>=3) chance+=.08; if(S.fight.p2Dmg>S.fight.p1Dmg+40) chance+=.08; if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.18) chance+=.08; if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p2'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); S.fight.lossReason=(S.fight.p1.stamina/S.fight.p1.maxStamina)<.18?'gassed':'accumulation'; addLog('system',S.player.Name+' cannot continue. '+S.fight.detail+'.'); return; } } let score1=10,score2=9; const ctrl1=(p1.Speed+p1.Accuracy+p1['Ring IQ']+d1*.9)+(hasTrait('ice_in_veins')?3:0)+(hasTrait('ring_general')?3:0)-(hasTrait('low_iq')?4:0), ctrl2=(p2.Speed+p2.Accuracy+p2['Ring IQ']+d2*.9); if(Math.abs(ctrl1-ctrl2)<4){ if(Math.random()<.05){score1=10;score2=10;} else if(ctrl1>=ctrl2){score1=10;score2=9;} else {score1=9;score2=10;} } else if(ctrl2>ctrl1){ score1=9; score2=10; } S.fight.p1.score+=score1; S.fight.p2.score+=score2; }
 function scoreDecision(){ S.fight.done=true; const diff=S.fight.p1.score-S.fight.p2.score, ad=Math.abs(diff); let winner=S.fight.intendedWinner||'p1'; if(winner==='p2'&&ad<=2&&(hasTrait('ring_general')||hasTrait('ice_in_veins'))&&Math.random()<.28) winner='p1'; S.fight.winner=winner; if(ad===0) S.fight.method='MD'; else if(ad===1) S.fight.method='SD'; else if(ad<=3) S.fight.method=Math.random()<.55?'SD':'MD'; else S.fight.method='UD'; S.fight.detail=choice(ad>=7?['Comfortable On The Cards','Took The Championship Rounds']:ad>=4?['Controlled The Fight','Clear Decision']:['Razor-Close Cards','Narrow But Fair']); if(winner==='p2'&&!S.fight.lossReason){ if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.22) S.fight.lossReason='gassed'; else if((S.fight.balance?.styleMatchup||0)<=-3) S.fight.lossReason='style'; else S.fight.lossReason='decision'; } }
 function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) extra.push('The cleaner work and control dominated the rounds.'); if(S.fight.p1Dmg>S.fight.p2Dmg+35) extra.push('The damage output was clearly tilting the fight.'); if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.28) extra.push('The opponent faded badly as stamina drained.'); if(['TKO','RTD'].includes(S.fight.method)) extra.push('Sustained punishment forced the stoppage.'); const dom=choice(extra.length?extra:['The style edge kept stacking up over the rounds.']); if(kind==='win') return sourceText()+'. '+weakText().charAt(0).toUpperCase()+weakText().slice(1)+' was exposed. '+dom; if(kind==='loss'){ const reason=S.fight.lossReason||'decision'; const copy={decision:'Lost close cards after the fight drifted away late.',accumulation:'Sustained damage built up until the danger became real.',gassed:'Stamina collapsed after the middle rounds and the opponent took over.',caught:'A clean caught-shot opened the door, then recovery failed the count.',style:'The opponent style countered this build and stole the key exchanges.'}; return copy[reason]||copy.decision; } return 'Neither fighter truly separated from the other over 12 rounds.'; }
-const BUILD_ID='screen-target-nav-2026-06-18-1';
+const BUILD_ID='screen-target-nav-2026-06-18-2';
 console.info('[UNBEATEN]', BUILD_ID, 'page script loaded');
+let screenCallCount=0;
 function setDebugValue(id,value){ const el=$(id); if(el) el.innerText=String(value); }
+function currentActiveScreenId(){ return document.querySelector('.screen.active')?.id||'none'; }
 function updateNavDebug(data={}){
   if($('build-indicator')) $('build-indicator').innerText='Build '+BUILD_ID;
   setDebugValue('debug-build', BUILD_ID);
@@ -2758,15 +2763,19 @@ function updateNavDebug(data={}){
   if(data.target!=null) setDebugValue('debug-target', data.target);
   if(data.exists!=null) setDebugValue('debug-exists', data.exists?'yes':'no');
   if(data.ran!=null) setDebugValue('debug-ran', data.ran?'yes':'no');
+  if(data.calls!=null) setDebugValue('debug-screen-calls', data.calls);
+  setDebugValue('debug-active-screen', currentActiveScreenId());
   if(data.error!=null) setDebugValue('debug-error', data.error||'none');
 }
 function showScreen(targetId){
+  screenCallCount++;
   console.info('[UNBEATEN]', BUILD_ID, 'showScreen()', targetId);
   const target=$(targetId);
-  updateNavDebug({target:targetId,exists:!!target,ran:true,error:target?'none':'missing target'});
+  updateNavDebug({target:targetId,exists:!!target,ran:true,calls:screenCallCount,error:target?'none':'missing target'});
   if(!target) return false;
   document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
   target.classList.add('active');
+  updateNavDebug({target:targetId,exists:true,ran:true,calls:screenCallCount,error:'none'});
   return true;
 }
 function screen(id){ return showScreen(id); }
@@ -2782,11 +2791,20 @@ function mainMenuScreenDelegation(e){
   showScreen(targetId);
 }
 document.addEventListener('click', mainMenuScreenDelegation, true);
-updateNavDebug({lastTap:'none',target:'none',exists:false,ran:false,error:'none'});
+function watchScreenState(){
+  document.querySelectorAll('.screen').forEach(el=>{
+    if(el.dataset.screenWatch==='1') return;
+    el.dataset.screenWatch='1';
+    new MutationObserver(()=>updateNavDebug({calls:screenCallCount})).observe(el,{attributes:true,attributeFilter:['class','style']});
+  });
+}
+watchScreenState();
+updateNavDebug({lastTap:'none',target:'none',exists:false,ran:false,calls:screenCallCount,error:'none'});
 const priorUnbeatenOnload=window.onload;
 window.onload=function(event){
   console.info('[UNBEATEN]', BUILD_ID, 'window load');
   if(typeof priorUnbeatenOnload==='function') priorUnbeatenOnload.call(window,event);
+  watchScreenState();
   updateNavDebug({lastTap:'page loaded',error:'none'});
 };
 </script>
