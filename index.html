@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -17,7 +17,7 @@
 
 <style>
 /* ============================================================
-   UNBEATEN: 50-0 — Premium Mobile UI
+   UNBEATEN: 50-0 â€” Premium Mobile UI
    Design tokens, fluid type, safe-area aware, touch-first
 ============================================================ */
 :root{
@@ -270,7 +270,7 @@ h2::before{
   box-shadow:0 0 0 1px var(--gold-glow), 0 0 24px rgba(230,194,71,.1);
 }
 .mode-card.selected::after{
-  content:'✓';position:absolute;top:12px;right:14px;
+  content:'âœ“';position:absolute;top:12px;right:14px;
   width:22px;height:22px;border-radius:50%;
   background:var(--gold);color:#0a0a0a;
   font-size:.75rem;font-weight:900;
@@ -807,7 +807,7 @@ h2::before{
 <body>
 <div class="app">
 <header>
-  <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()" aria-label="Toggle sound">🔊</button>
+  <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()" aria-label="Toggle sound">ðŸ”Š</button>
   <h1>UNBEATEN: 50-0</h1>
   <p>Heavyweight Management Loop</p>
   <div class="version">Final Release v1.1</div>
@@ -823,27 +823,27 @@ h2::before{
     </div>
     <div id="auth-error" class="auth-error"></div>
   </div>
-  <div class="hero">🥊</div>
+  <div class="hero">ðŸ¥Š</div>
   <h2>Worldwide Stats</h2>
   <div class="global-stats">
     <div class="stat-pill">
-      <div class="label"><span class="ico">🥊</span><span>Fighters Created Worldwide</span></div>
+      <div class="label"><span class="ico">ðŸ¥Š</span><span>Fighters Created Worldwide</span></div>
       <div class="value loading" id="global-fighters">Loading...</div>
     </div>
     <div class="stat-pill">
-      <div class="label"><span class="ico">🏆</span><span>50-0 Careers This Week</span></div>
+      <div class="label"><span class="ico">ðŸ†</span><span>50-0 Careers This Week</span></div>
       <div class="value loading" id="global-weekly-50">Loading...</div>
     </div>
     <div class="stat-pill">
-      <div class="label"><span class="ico">🏅</span><span>Total 50-0 Careers Ever</span></div>
+      <div class="label"><span class="ico">ðŸ…</span><span>Total 50-0 Careers Ever</span></div>
       <div class="value loading" id="global-total-50">Loading...</div>
     </div>
   </div>
   <h2>Choose Game Mode</h2>
   <div class="mode-grid">
-    <div class="mode-card selected" id="mode-card-easy" onclick="selectMode('easy')"><div class="mode-title">Four-Rounder</div><div class="mode-sub">Easy • 2 draft re-rolls • softer opponents • better legend odds • slightly better purses</div></div>
-    <div class="mode-card" id="mode-card-normal" onclick="selectMode('normal')"><div class="mode-title">Title Distance</div><div class="mode-sub">Medium • 1 draft re-roll • balanced legend odds • standard career balance</div></div>
-    <div class="mode-card" id="mode-card-hard" onclick="selectMode('hard')"><div class="mode-title">Championship Gauntlet</div><div class="mode-sub">Hard • no draft re-rolls • elite legends rarer • tougher opponents • slightly lower purses</div></div>
+    <div class="mode-card selected" id="mode-card-easy" onclick="selectMode('easy')"><div class="mode-title">Four-Rounder</div><div class="mode-sub">Easy â€¢ 2 draft re-rolls â€¢ softer opponents â€¢ better legend odds â€¢ slightly better purses</div></div>
+    <div class="mode-card" id="mode-card-normal" onclick="selectMode('normal')"><div class="mode-title">Title Distance</div><div class="mode-sub">Medium â€¢ 1 draft re-roll â€¢ balanced legend odds â€¢ standard career balance</div></div>
+    <div class="mode-card" id="mode-card-hard" onclick="selectMode('hard')"><div class="mode-title">Championship Gauntlet</div><div class="mode-sub">Hard â€¢ no draft re-rolls â€¢ elite legends rarer â€¢ tougher opponents â€¢ slightly lower purses</div></div>
   </div>
   <h2>All-Time Personal Records</h2>
   <div class="wallet-strip">
@@ -1071,11 +1071,11 @@ h2::before{
     <div class="metric" style="border-bottom:none"><span>Game Mode:</span><strong id="hof-mode">Mode</strong></div>
   </div>
   
-  <button id="share-btn" class="btn share" onclick="shareCareer()">📤 Share Career</button>
+  <button id="share-btn" class="btn share" onclick="shareCareer()">ðŸ“¤ Share Career</button>
   <button class="btn ghost" onclick="toggleLegacyBreakdown()">How Was This Calculated?</button>
   <div id="legacy-breakdown" class="panel breakdown-panel"></div>
   <button class="btn blue" onclick="showHistory()">View Full Fight History</button>
-  <a href="https://buymeacoffee.com/unbeaten50" target="_blank" rel="noopener noreferrer" class="btn ghost" style="display:block; text-align:center; text-decoration:none;">Support UNBEATEN ☕</a>
+  <a href="https://buymeacoffee.com/unbeaten50" target="_blank" rel="noopener noreferrer" class="btn ghost" style="display:block; text-align:center; text-decoration:none;">Support UNBEATEN â˜•</a>
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
@@ -1243,7 +1243,7 @@ function toggleSound() {
   initAudio();
   isMuted = !isMuted;
   const btn = document.getElementById('sound-toggle');
-  if(btn) btn.innerText = isMuted ? '🔇' : '🔊';
+  if(btn) btn.innerText = isMuted ? 'ðŸ”‡' : 'ðŸ”Š';
 }
 
 function playTone(freq, type, duration, vol) {
@@ -1375,7 +1375,7 @@ loadGlobalStats();
 setInterval(loadGlobalStats, 120000);
 
 const LEGENDS = [{"Name": "Muhammad Ali", "Power": 90, "Chin": 95, "Speed": 98, "Footwork": 99, "Ring IQ": 99, "Heart": 98, "Defence": 95, "Stamina": 97, "Accuracy": 96, "Recovery": 95, "Pool": "standard"}, {"Name": "Mike Tyson", "Power": 97, "Chin": 92, "Speed": 99, "Footwork": 90, "Ring IQ": 90, "Heart": 95, "Defence": 88, "Stamina": 92, "Accuracy": 90, "Recovery": 93, "Pool": "standard"}, {"Name": "Tyson Fury", "Power": 88, "Chin": 98, "Speed": 86, "Footwork": 92, "Ring IQ": 97, "Heart": 95, "Defence": 96, "Stamina": 96, "Accuracy": 92, "Recovery": 97, "Pool": "standard"}, {"Name": "Oleksandr Usyk", "Power": 88, "Chin": 94, "Speed": 96, "Footwork": 98, "Ring IQ": 99, "Heart": 95, "Defence": 97, "Stamina": 98, "Accuracy": 95, "Recovery": 95, "Pool": "standard"}, {"Name": "Lennox Lewis", "Power": 94, "Chin": 94, "Speed": 88, "Footwork": 90, "Ring IQ": 99, "Heart": 94, "Defence": 96, "Stamina": 95, "Accuracy": 95, "Recovery": 94, "Pool": "standard"}, {"Name": "Evander Holyfield", "Power": 90, "Chin": 95, "Speed": 92, "Footwork": 91, "Ring IQ": 95, "Heart": 99, "Defence": 92, "Stamina": 96, "Accuracy": 93, "Recovery": 94, "Pool": "standard"}, {"Name": "George Foreman", "Power": 98, "Chin": 94, "Speed": 75, "Footwork": 78, "Ring IQ": 88, "Heart": 92, "Defence": 88, "Stamina": 94, "Accuracy": 85, "Recovery": 90, "Pool": "standard"}, {"Name": "Joe Frazier", "Power": 92, "Chin": 93, "Speed": 95, "Footwork": 94, "Ring IQ": 90, "Heart": 99, "Defence": 89, "Stamina": 98, "Accuracy": 90, "Recovery": 92, "Pool": "standard"}, {"Name": "Larry Holmes", "Power": 88, "Chin": 94, "Speed": 92, "Footwork": 95, "Ring IQ": 98, "Heart": 95, "Defence": 95, "Stamina": 97, "Accuracy": 96, "Recovery": 94, "Pool": "standard"}, {"Name": "Vitali Klitschko", "Power": 93, "Chin": 98, "Speed": 82, "Footwork": 84, "Ring IQ": 94, "Heart": 95, "Defence": 95, "Stamina": 97, "Accuracy": 90, "Recovery": 96, "Pool": "standard"}, {"Name": "Riddick Bowe", "Power": 93, "Chin": 92, "Speed": 84, "Footwork": 84, "Ring IQ": 92, "Heart": 92, "Defence": 87, "Stamina": 90, "Accuracy": 88, "Recovery": 89, "Pool": "standard"}, {"Name": "David Tua", "Power": 96, "Chin": 89, "Speed": 77, "Footwork": 72, "Ring IQ": 80, "Heart": 91, "Defence": 78, "Stamina": 83, "Accuracy": 84, "Recovery": 82, "Pool": "standard"}, {"Name": "Ken Norton", "Power": 89, "Chin": 90, "Speed": 84, "Footwork": 86, "Ring IQ": 88, "Heart": 93, "Defence": 86, "Stamina": 90, "Accuracy": 85, "Recovery": 88, "Pool": "standard"}, {"Name": "Earnie Shavers", "Power": 99, "Chin": 74, "Speed": 76, "Footwork": 68, "Ring IQ": 70, "Heart": 80, "Defence": 62, "Stamina": 71, "Accuracy": 74, "Recovery": 69, "Pool": "standard"}, {"Name": "Shannon Briggs", "Power": 95, "Chin": 83, "Speed": 77, "Footwork": 70, "Ring IQ": 74, "Heart": 86, "Defence": 71, "Stamina": 69, "Accuracy": 76, "Recovery": 79, "Pool": "cult"}, {"Name": "Butterbean", "Power": 94, "Chin": 84, "Speed": 46, "Footwork": 38, "Ring IQ": 58, "Heart": 82, "Defence": 48, "Stamina": 64, "Accuracy": 61, "Recovery": 76, "Pool": "cult"}, {"Name": "Jake Paul", "Power": 80, "Chin": 73, "Speed": 76, "Footwork": 72, "Ring IQ": 71, "Heart": 70, "Defence": 69, "Stamina": 74, "Accuracy": 85, "Recovery": 75, "Pool": "crossover"}, {"Name": "Eddie Hall", "Power": 99, "Chin": 86, "Speed": 46, "Footwork": 38, "Ring IQ": 52, "Heart": 87, "Defence": 42, "Stamina": 58, "Accuracy": 54, "Recovery": 78, "Pool": "crossover"}, {"Name": "Hafthor Bjornsson", "Power": 98, "Chin": 88, "Speed": 50, "Footwork": 43, "Ring IQ": 56, "Heart": 85, "Defence": 46, "Stamina": 61, "Accuracy": 57, "Recovery": 80, "Pool": "crossover"}, {"Name": "Francis Ngannou", "Power": 99, "Chin": 88, "Speed": 78, "Footwork": 68, "Ring IQ": 72, "Heart": 90, "Defence": 60, "Stamina": 70, "Accuracy": 75, "Recovery": 82, "Pool": "crossover"}, {"Name": "Moses Itauma", "Power": 88, "Chin": 85, "Speed": 90, "Footwork": 88, "Ring IQ": 82, "Heart": 84, "Defence": 86, "Stamina": 87, "Accuracy": 85, "Recovery": 86, "Pool": "prospect"}, {"Name": "Leo Atang", "Power": 86, "Chin": 84, "Speed": 88, "Footwork": 87, "Ring IQ": 80, "Heart": 83, "Defence": 85, "Stamina": 86, "Accuracy": 84, "Recovery": 85, "Pool": "prospect"}, {"Name": "Jared Anderson", "Power": 87, "Chin": 84, "Speed": 86, "Footwork": 84, "Ring IQ": 81, "Heart": 83, "Defence": 82, "Stamina": 84, "Accuracy": 83, "Recovery": 84, "Pool": "prospect"}, {"Name": "Justis Huni", "Power": 84, "Chin": 84, "Speed": 87, "Footwork": 88, "Ring IQ": 84, "Heart": 84, "Defence": 86, "Stamina": 88, "Accuracy": 85, "Recovery": 86, "Pool": "prospect"}, {"Name": "Filip Hrgovic", "Power": 88, "Chin": 85, "Speed": 80, "Footwork": 79, "Ring IQ": 82, "Heart": 84, "Defence": 81, "Stamina": 84, "Accuracy": 82, "Recovery": 83, "Pool": "prospect"}, {"Name": "Frank Sanchez", "Power": 84, "Chin": 84, "Speed": 88, "Footwork": 89, "Ring IQ": 85, "Heart": 82, "Defence": 86, "Stamina": 86, "Accuracy": 84, "Recovery": 85, "Pool": "prospect"}, {"Name": "Arslanbek Makhmudov", "Power": 90, "Chin": 82, "Speed": 74, "Footwork": 72, "Ring IQ": 78, "Heart": 84, "Defence": 74, "Stamina": 80, "Accuracy": 78, "Recovery": 81, "Pool": "prospect"}, {"Name": "Zhilei Zhang", "Power": 89, "Chin": 84, "Speed": 72, "Footwork": 70, "Ring IQ": 82, "Heart": 84, "Defence": 79, "Stamina": 77, "Accuracy": 82, "Recovery": 82, "Pool": "prospect"}, {"Name": "Dereck Chisora", "Power": 85, "Chin": 88, "Speed": 72, "Footwork": 70, "Ring IQ": 74, "Heart": 92, "Defence": 68, "Stamina": 80, "Accuracy": 72, "Recovery": 78, "Pool": "gatekeeper"}, {"Name": "Dillian Whyte", "Power": 90, "Chin": 78, "Speed": 74, "Footwork": 70, "Ring IQ": 73, "Heart": 85, "Defence": 67, "Stamina": 76, "Accuracy": 75, "Recovery": 72, "Pool": "gatekeeper"}, {"Name": "Joseph Parker", "Power": 82, "Chin": 84, "Speed": 82, "Footwork": 80, "Ring IQ": 83, "Heart": 82, "Defence": 80, "Stamina": 85, "Accuracy": 80, "Recovery": 84, "Pool": "gatekeeper"}, {"Name": "Andy Ruiz Jr.", "Power": 88, "Chin": 85, "Speed": 86, "Footwork": 72, "Ring IQ": 76, "Heart": 82, "Defence": 72, "Stamina": 78, "Accuracy": 84, "Recovery": 80, "Pool": "gatekeeper"}, {"Name": "Carlos Takam", "Power": 83, "Chin": 86, "Speed": 70, "Footwork": 68, "Ring IQ": 75, "Heart": 88, "Defence": 72, "Stamina": 82, "Accuracy": 70, "Recovery": 76, "Pool": "gatekeeper"}, {"Name": "Otto Wallin", "Power": 78, "Chin": 82, "Speed": 78, "Footwork": 79, "Ring IQ": 80, "Heart": 84, "Defence": 78, "Stamina": 83, "Accuracy": 77, "Recovery": 79, "Pool": "gatekeeper"}, {"Name": "Michael Hunter", "Power": 80, "Chin": 80, "Speed": 84, "Footwork": 84, "Ring IQ": 82, "Heart": 80, "Defence": 81, "Stamina": 84, "Accuracy": 81, "Recovery": 82, "Pool": "gatekeeper"}, {"Name": "Kubrat Pulev", "Power": 82, "Chin": 84, "Speed": 70, "Footwork": 72, "Ring IQ": 83, "Heart": 80, "Defence": 79, "Stamina": 83, "Accuracy": 79, "Recovery": 80, "Pool": "gatekeeper"}, {"Name": "Hughie Fury", "Power": 72, "Chin": 82, "Speed": 82, "Footwork": 87, "Ring IQ": 84, "Heart": 78, "Defence": 86, "Stamina": 86, "Accuracy": 73, "Recovery": 81, "Pool": "spoiler"}, {"Name": "Chris Byrd", "Power": 68, "Chin": 80, "Speed": 88, "Footwork": 90, "Ring IQ": 91, "Heart": 84, "Defence": 90, "Stamina": 89, "Accuracy": 80, "Recovery": 86, "Pool": "spoiler"}, {"Name": "Tony Thompson", "Power": 80, "Chin": 83, "Speed": 68, "Footwork": 70, "Ring IQ": 82, "Heart": 84, "Defence": 80, "Stamina": 82, "Accuracy": 78, "Recovery": 80, "Pool": "spoiler"}, {"Name": "John Ruiz", "Power": 70, "Chin": 85, "Speed": 62, "Footwork": 66, "Ring IQ": 80, "Heart": 84, "Defence": 82, "Stamina": 80, "Accuracy": 68, "Recovery": 79, "Pool": "spoiler"}, {"Name": "Kevin Johnson", "Power": 65, "Chin": 88, "Speed": 70, "Footwork": 78, "Ring IQ": 85, "Heart": 78, "Defence": 85, "Stamina": 90, "Accuracy": 68, "Recovery": 80, "Pool": "spoiler"}, {"Name": "Audley Harrison", "Power": 82, "Chin": 75, "Speed": 78, "Footwork": 80, "Ring IQ": 70, "Heart": 60, "Defence": 72, "Stamina": 78, "Accuracy": 68, "Recovery": 72, "Pool": "low"}, {"Name": "Nikolai Valuev", "Power": 85, "Chin": 90, "Speed": 45, "Footwork": 40, "Ring IQ": 70, "Heart": 78, "Defence": 60, "Stamina": 72, "Accuracy": 65, "Recovery": 75, "Pool": "low"}, {"Name": "David Price", "Power": 96, "Chin": 60, "Speed": 72, "Footwork": 68, "Ring IQ": 65, "Heart": 55, "Defence": 60, "Stamina": 65, "Accuracy": 75, "Recovery": 62, "Pool": "low"}, {"Name": "Lucas Browne", "Power": 92, "Chin": 72, "Speed": 60, "Footwork": 55, "Ring IQ": 62, "Heart": 70, "Defence": 55, "Stamina": 60, "Accuracy": 65, "Recovery": 68, "Pool": "low"}, {"Name": "Amir Mansour", "Power": 88, "Chin": 78, "Speed": 75, "Footwork": 70, "Ring IQ": 68, "Heart": 82, "Defence": 65, "Stamina": 72, "Accuracy": 70, "Recovery": 74, "Pool": "low"}, {"Name": "Gerald Washington", "Power": 80, "Chin": 75, "Speed": 78, "Footwork": 75, "Ring IQ": 72, "Heart": 74, "Defence": 70, "Stamina": 76, "Accuracy": 72, "Recovery": 74, "Pool": "low"}, {"Name": "Dave Allen", "Power": 78, "Chin": 90, "Speed": 65, "Footwork": 62, "Ring IQ": 70, "Heart": 95, "Defence": 65, "Stamina": 82, "Accuracy": 72, "Recovery": 88, "Pool": "low"}];
-const TRAITS = [{"id": "ko_artist", "name": "Knockout Artist", "type": "positive", "rarity": "uncommon", "desc": "+15% damage when opponent falls below 50% health."}, {"id": "iron_chin", "name": "Iron Chin", "type": "positive", "rarity": "uncommon", "desc": "+4 Chin and +5 Recovery to permanent stats."}, {"id": "fast_starter", "name": "Fast Starter", "type": "positive", "rarity": "common", "desc": "+8 Speed and +8 Accuracy during Rounds 1–3."}, {"id": "late_finisher", "name": "Late Finisher", "type": "positive", "rarity": "common", "desc": "+8 Power and +8 Heart during Rounds 9–12."}, {"id": "counter_puncher", "name": "Counter Puncher", "type": "positive", "rarity": "rare", "desc": "+6 Defence and +6 Ring IQ to permanent stats."}, {"id": "fan_favourite", "name": "Fan Favourite", "type": "positive", "rarity": "common", "desc": "+25% entertainment and broadcast purse bonus."}, {"id": "second_wind", "name": "Second Wind", "type": "positive", "rarity": "common", "desc": "Recover extra stamina from Round 7 onward."}, {"id": "ring_general", "name": "Ring General", "type": "positive", "rarity": "rare", "desc": "+4 Ring IQ, +3 Accuracy, better in close scorecards."}, {"id": "volume_puncher", "name": "Volume Puncher", "type": "positive", "rarity": "uncommon", "desc": "Higher work rate, better round scoring, more opponent stamina drain."}, {"id": "glass_cannon", "name": "Glass Cannon", "type": "negative", "rarity": "cursed", "desc": "+8 Power permanently, but -10 Chin."}, {"id": "gas_out", "name": "Gas Out", "type": "negative", "rarity": "common", "desc": "From Round 6 onward, stamina drains 50% faster."}, {"id": "slow_starter", "name": "Slow Starter", "type": "negative", "rarity": "common", "desc": "-10 Speed and -10 Accuracy during Rounds 1–3."}, {"id": "low_iq", "name": "Low Ring IQ", "type": "negative", "rarity": "common", "desc": "Drops close rounds more often on the cards."}, {"id": "brittle_hands", "name": "Brittle Hands", "type": "negative", "rarity": "uncommon", "desc": "Power drops after Round 6 or after scoring a knockdown."}, {"id": "quit_risk", "name": "Quit Risk", "type": "negative", "rarity": "cursed", "desc": "If knocked down, Heart and Recovery collapse for the rest of the fight."}, {"id": "generational_talent", "name": "Generational Talent", "type": "positive", "rarity": "legendary", "desc": "+3 to every permanent stat. Extremely rare."}, {"id": "southpaw_enigma", "name": "Southpaw Enigma", "type": "positive", "rarity": "rare", "desc": "Opponents suffer a small accuracy penalty every round."}, {"id": "body_snatcher", "name": "Body Snatcher", "type": "positive", "rarity": "epic", "desc": "Improves body-shot stoppage odds and drains opponent stamina faster."}, {"id": "ice_in_veins", "name": "Ice In The Veins", "type": "positive", "rarity": "epic", "desc": "Judges favour your clean work in razor-close rounds."}, {"id": "supertank", "name": "Supertank", "type": "positive", "rarity": "legendary", "desc": "+7 Chin, +5 Heart and +5 Recovery to permanent stats."}, {"id": "fragile_cutman", "name": "Fragile Cutman", "type": "negative", "rarity": "cursed", "desc": "You are more vulnerable to swelling and cut stoppages."}];
+const TRAITS = [{"id": "ko_artist", "name": "Knockout Artist", "type": "positive", "rarity": "uncommon", "desc": "+15% damage when opponent falls below 50% health."}, {"id": "iron_chin", "name": "Iron Chin", "type": "positive", "rarity": "uncommon", "desc": "+4 Chin and +5 Recovery to permanent stats."}, {"id": "fast_starter", "name": "Fast Starter", "type": "positive", "rarity": "common", "desc": "+8 Speed and +8 Accuracy during Rounds 1â€“3."}, {"id": "late_finisher", "name": "Late Finisher", "type": "positive", "rarity": "common", "desc": "+8 Power and +8 Heart during Rounds 9â€“12."}, {"id": "counter_puncher", "name": "Counter Puncher", "type": "positive", "rarity": "rare", "desc": "+6 Defence and +6 Ring IQ to permanent stats."}, {"id": "fan_favourite", "name": "Fan Favourite", "type": "positive", "rarity": "common", "desc": "+25% entertainment and broadcast purse bonus."}, {"id": "second_wind", "name": "Second Wind", "type": "positive", "rarity": "common", "desc": "Recover extra stamina from Round 7 onward."}, {"id": "ring_general", "name": "Ring General", "type": "positive", "rarity": "rare", "desc": "+4 Ring IQ, +3 Accuracy, better in close scorecards."}, {"id": "volume_puncher", "name": "Volume Puncher", "type": "positive", "rarity": "uncommon", "desc": "Higher work rate, better round scoring, more opponent stamina drain."}, {"id": "glass_cannon", "name": "Glass Cannon", "type": "negative", "rarity": "cursed", "desc": "+8 Power permanently, but -10 Chin."}, {"id": "gas_out", "name": "Gas Out", "type": "negative", "rarity": "common", "desc": "From Round 6 onward, stamina drains 50% faster."}, {"id": "slow_starter", "name": "Slow Starter", "type": "negative", "rarity": "common", "desc": "-10 Speed and -10 Accuracy during Rounds 1â€“3."}, {"id": "low_iq", "name": "Low Ring IQ", "type": "negative", "rarity": "common", "desc": "Drops close rounds more often on the cards."}, {"id": "brittle_hands", "name": "Brittle Hands", "type": "negative", "rarity": "uncommon", "desc": "Power drops after Round 6 or after scoring a knockdown."}, {"id": "quit_risk", "name": "Quit Risk", "type": "negative", "rarity": "cursed", "desc": "If knocked down, Heart and Recovery collapse for the rest of the fight."}, {"id": "generational_talent", "name": "Generational Talent", "type": "positive", "rarity": "legendary", "desc": "+3 to every permanent stat. Extremely rare."}, {"id": "southpaw_enigma", "name": "Southpaw Enigma", "type": "positive", "rarity": "rare", "desc": "Opponents suffer a small accuracy penalty every round."}, {"id": "body_snatcher", "name": "Body Snatcher", "type": "positive", "rarity": "epic", "desc": "Improves body-shot stoppage odds and drains opponent stamina faster."}, {"id": "ice_in_veins", "name": "Ice In The Veins", "type": "positive", "rarity": "epic", "desc": "Judges favour your clean work in razor-close rounds."}, {"id": "supertank", "name": "Supertank", "type": "positive", "rarity": "legendary", "desc": "+7 Chin, +5 Heart and +5 Recovery to permanent stats."}, {"id": "fragile_cutman", "name": "Fragile Cutman", "type": "negative", "rarity": "cursed", "desc": "You are more vulnerable to swelling and cut stoppages."}];
 const SYNERGY = [{"id": "phantom_feet", "name": "Phantom Feet", "desc": "Ali's speed fused with Usyk's footwork. +2 Speed, +2 Footwork.", "requirements": {"Speed": "Muhammad Ali", "Footwork": "Oleksandr Usyk"}, "bonuses": {"Speed": 2, "Footwork": 2}}, {"id": "granite_sledgehammer", "name": "Granite Sledgehammer", "desc": "Foreman's power welded to Vitali's chin. +3 Power, +3 Chin.", "requirements": {"Power": "George Foreman", "Chin": "Vitali Klitschko"}, "bonuses": {"Power": 3, "Chin": 3}}, {"id": "master_technician", "name": "Master Technician", "desc": "Lennox IQ with Holmes defence. +2 Ring IQ, +2 Defence.", "requirements": {"Ring IQ": "Lennox Lewis", "Defence": "Larry Holmes"}, "bonuses": {"Ring IQ": 2, "Defence": 2}}, {"id": "untouchable_survivor", "name": "Untouchable Survivor", "desc": "Ali accuracy matched with Fury recovery. +2 Accuracy, +3 Recovery.", "requirements": {"Accuracy": "Muhammad Ali", "Recovery": "Tyson Fury"}, "bonuses": {"Accuracy": 2, "Recovery": 3}}, {"id": "dream_superfight_dna", "name": "Dream Superfight DNA", "desc": "Tyson power, Ali speed, Holyfield heart. +2 Power, +2 Speed, +2 Heart.", "requirements": {"Power": "Mike Tyson", "Speed": "Muhammad Ali", "Heart": "Evander Holyfield"}, "bonuses": {"Power": 2, "Speed": 2, "Heart": 2}}, {"id": "bean_briggs_bomb_squad", "name": "Bean & Briggs Bomb Squad", "desc": "Butterbean chaos with Briggs power. +4 Power, +1 Heart.", "requirements": {"Power": "Butterbean", "Heart": "Shannon Briggs"}, "bonuses": {"Power": 4, "Heart": 1}}, {"id": "strongman_storm", "name": "Strongman Storm", "desc": "Eddie Hall power with Hafthor recovery. +4 Power, +2 Recovery.", "requirements": {"Power": "Eddie Hall", "Recovery": "Hafthor Bjornsson"}, "bonuses": {"Power": 4, "Recovery": 2}}, {"id": "problem_child_poise", "name": "Problem Child Poise", "desc": "Jake Paul accuracy with Fury recovery. +1 Accuracy, +2 Recovery.", "requirements": {"Accuracy": "Jake Paul", "Recovery": "Tyson Fury"}, "bonuses": {"Accuracy": 1, "Recovery": 2}}, {"id": "ngannou_nightmare", "name": "Ngannou Nightmare", "desc": "Ngannou power with Foreman chin. +3 Power, +1 Chin.", "requirements": {"Power": "Francis Ngannou", "Chin": "George Foreman"}, "bonuses": {"Power": 3, "Chin": 1}}, {"id": "future_star_engine", "name": "Future Star Engine", "desc": "Itauma speed with Huni stamina. +2 Speed, +2 Stamina.", "requirements": {"Speed": "Moses Itauma", "Stamina": "Justis Huni"}, "bonuses": {"Speed": 2, "Stamina": 2}}, {"id": "future_star_ringcraft", "name": "Future Star Ringcraft", "desc": "Leo Atang footwork with Frank Sanchez defence. +2 Footwork, +2 Defence.", "requirements": {"Footwork": "Leo Atang", "Defence": "Frank Sanchez"}, "bonuses": {"Footwork": 2, "Defence": 2}}, {"id": "prospect_bomb_squad", "name": "Prospect Bomb Squad", "desc": "Itauma power with Hrgovic chin. +2 Power, +1 Chin.", "requirements": {"Power": "Moses Itauma", "Chin": "Filip Hrgovic"}, "bonuses": {"Power": 2, "Chin": 1}}, {"id": "gatekeeper_grit", "name": "Gatekeeper Grit", "desc": "Chisora heart and Parker recovery. +2 Heart, +2 Recovery.", "requirements": {"Heart": "Dereck Chisora", "Recovery": "Joseph Parker"}, "bonuses": {"Heart": 2, "Recovery": 2}}, {"id": "ruiz_hands", "name": "Ruiz Fast Hands", "desc": "Andy Ruiz accuracy and Parker speed. +2 Accuracy, +1 Speed.", "requirements": {"Accuracy": "Andy Ruiz Jr.", "Speed": "Joseph Parker"}, "bonuses": {"Accuracy": 2, "Speed": 1}}, {"id": "wallin_wall", "name": "Wallin Wall", "desc": "Otto Wallin chin and Whyte power. +1 Chin, +2 Power.", "requirements": {"Chin": "Otto Wallin", "Power": "Dillian Whyte"}, "bonuses": {"Chin": 1, "Power": 2}}, {"id": "spoiler_school", "name": "Spoiler School", "desc": "Chris Byrd footwork with Hughie Fury defence. +2 Footwork, +2 Defence.", "requirements": {"Footwork": "Chris Byrd", "Defence": "Hughie Fury"}, "bonuses": {"Footwork": 2, "Defence": 2}}, {"id": "clinch_king", "name": "Clinch King", "desc": "John Ruiz ring IQ with Tony Thompson stamina. +1 Ring IQ, +2 Stamina.", "requirements": {"Ring IQ": "John Ruiz", "Stamina": "Tony Thompson"}, "bonuses": {"Ring IQ": 1, "Stamina": 2}}, {"id": "price_of_power", "name": "Price Of Power", "desc": "David Price power with Dave Allen heart. +3 Power, +1 Heart.", "requirements": {"Power": "David Price", "Heart": "Dave Allen"}, "bonuses": {"Power": 3, "Heart": 1}}, {"id": "awkward_giant", "name": "Awkward Giant", "desc": "Valuev chin with Hughie footwork. +2 Chin, +1 Footwork.", "requirements": {"Chin": "Nikolai Valuev", "Footwork": "Hughie Fury"}, "bonuses": {"Chin": 2, "Footwork": 1}}, {"id": "allen_survival_kit", "name": "Allen Survival Kit", "desc": "Dave Allen heart with Fury chin. +3 Heart, +1 Chin.", "requirements": {"Heart": "Dave Allen", "Chin": "Tyson Fury"}, "bonuses": {"Heart": 3, "Chin": 1}}, {"id": "makhmudov_monster", "name": "Makhmudov Monster", "desc": "Makhmudov power with Zhang chin. +2 Power, +2 Chin.", "requirements": {"Power": "Arslanbek Makhmudov", "Chin": "Zhilei Zhang"}, "bonuses": {"Power": 2, "Chin": 2}}, {"id": "sanchez_sniper", "name": "Sanchez Sniper", "desc": "Frank Sanchez accuracy with Ali footwork. +2 Accuracy, +1 Footwork.", "requirements": {"Accuracy": "Frank Sanchez", "Footwork": "Muhammad Ali"}, "bonuses": {"Accuracy": 2, "Footwork": 1}}, {"id": "itauma_future_king", "name": "Future King", "desc": "Itauma speed with Usyk ring IQ. +1 Speed, +2 Ring IQ.", "requirements": {"Speed": "Moses Itauma", "Ring IQ": "Oleksandr Usyk"}, "bonuses": {"Speed": 1, "Ring IQ": 2}}, {"id": "wild_pressure", "name": "Wild Pressure", "desc": "Mansour heart with Chisora power. +1 Heart, +2 Power.", "requirements": {"Heart": "Amir Mansour", "Power": "Dereck Chisora"}, "bonuses": {"Heart": 1, "Power": 2}}, {"id": "pulev_professor", "name": "Pulev Professor", "desc": "Pulev ring IQ with Holmes accuracy. +1 Ring IQ, +1 Accuracy.", "requirements": {"Ring IQ": "Kubrat Pulev", "Accuracy": "Larry Holmes"}, "bonuses": {"Ring IQ": 1, "Accuracy": 1}}, {"id": "takam_tank", "name": "Takam Tank", "desc": "Carlos Takam chin with Holyfield recovery. +2 Chin, +1 Recovery.", "requirements": {"Chin": "Carlos Takam", "Recovery": "Evander Holyfield"}, "bonuses": {"Chin": 2, "Recovery": 1}}, {"id": "hunter_hunted", "name": "Hunter Hunted", "desc": "Michael Hunter speed with Byrd defence. +1 Speed, +2 Defence.", "requirements": {"Speed": "Michael Hunter", "Defence": "Chris Byrd"}, "bonuses": {"Speed": 1, "Defence": 2}}];
 const EXTRA_SYNERGY = [
   {"id":"ali_holmes_school","name":"Ali-Holmes School","desc":"Ali footwork with Holmes accuracy. +2 Footwork, +2 Accuracy.","requirements":{"Footwork":"Muhammad Ali","Accuracy":"Larry Holmes"},"bonuses":{"Footwork":2,"Accuracy":2}},
@@ -1430,6 +1430,3174 @@ const EXTRA_SYNERGY = [
   {"id":"sanchez_usyk_blueprint","name":"Blueprint Boxer","desc":"Sanchez defence with Usyk stamina. +2 Defence, +2 Stamina.","requirements":{"Defence":"Frank Sanchez","Stamina":"Oleksandr Usyk"},"bonuses":{"Defence":2,"Stamina":2}}
 ];
 SYNERGY.push(...EXTRA_SYNERGY);
+// UNBEATEN: 50-0 CONTENT EXPANSION PACK
+// Paste this after the existing LEGENDS, TRAITS and SYNERGY arrays are defined.
+// This pack avoids changing fight simulation, drafting logic, legacy score, or save data.
+
+const EXPANSION_FIGHTERS = [
+  {
+    "Name": "Amir Khan",
+    "Power": 82,
+    "Chin": 68,
+    "Speed": 97,
+    "Footwork": 92,
+    "Ring IQ": 84,
+    "Heart": 88,
+    "Defence": 78,
+    "Stamina": 90,
+    "Accuracy": 91,
+    "Recovery": 74,
+    "Pool": "standard"
+  },
+  {
+    "Name": "George Groves",
+    "Power": 90,
+    "Chin": 82,
+    "Speed": 84,
+    "Footwork": 82,
+    "Ring IQ": 86,
+    "Heart": 91,
+    "Defence": 79,
+    "Stamina": 86,
+    "Accuracy": 87,
+    "Recovery": 82,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Lawrence Okolie",
+    "Power": 91,
+    "Chin": 85,
+    "Speed": 76,
+    "Footwork": 75,
+    "Ring IQ": 82,
+    "Heart": 84,
+    "Defence": 86,
+    "Stamina": 86,
+    "Accuracy": 81,
+    "Recovery": 83,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Chris Billam-Smith",
+    "Power": 86,
+    "Chin": 91,
+    "Speed": 76,
+    "Footwork": 76,
+    "Ring IQ": 80,
+    "Heart": 93,
+    "Defence": 78,
+    "Stamina": 91,
+    "Accuracy": 79,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Fabio Wardley",
+    "Power": 91,
+    "Chin": 82,
+    "Speed": 80,
+    "Footwork": 76,
+    "Ring IQ": 76,
+    "Heart": 90,
+    "Defence": 73,
+    "Stamina": 84,
+    "Accuracy": 78,
+    "Recovery": 82,
+    "Pool": "prospect"
+  },
+  {
+    "Name": "Martin Bakole",
+    "Power": 90,
+    "Chin": 88,
+    "Speed": 74,
+    "Footwork": 72,
+    "Ring IQ": 81,
+    "Heart": 86,
+    "Defence": 75,
+    "Stamina": 84,
+    "Accuracy": 80,
+    "Recovery": 84,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Agit Kabayel",
+    "Power": 84,
+    "Chin": 87,
+    "Speed": 82,
+    "Footwork": 84,
+    "Ring IQ": 86,
+    "Heart": 88,
+    "Defence": 84,
+    "Stamina": 91,
+    "Accuracy": 84,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Alexander Povetkin",
+    "Power": 92,
+    "Chin": 87,
+    "Speed": 83,
+    "Footwork": 82,
+    "Ring IQ": 88,
+    "Heart": 90,
+    "Defence": 80,
+    "Stamina": 86,
+    "Accuracy": 88,
+    "Recovery": 84,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Tony Yoka",
+    "Power": 84,
+    "Chin": 82,
+    "Speed": 83,
+    "Footwork": 84,
+    "Ring IQ": 81,
+    "Heart": 78,
+    "Defence": 83,
+    "Stamina": 82,
+    "Accuracy": 83,
+    "Recovery": 80,
+    "Pool": "prospect"
+  },
+  {
+    "Name": "Jai Opetaia",
+    "Power": 90,
+    "Chin": 86,
+    "Speed": 91,
+    "Footwork": 92,
+    "Ring IQ": 89,
+    "Heart": 91,
+    "Defence": 87,
+    "Stamina": 92,
+    "Accuracy": 90,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Murat Gassiev",
+    "Power": 93,
+    "Chin": 88,
+    "Speed": 78,
+    "Footwork": 75,
+    "Ring IQ": 82,
+    "Heart": 88,
+    "Defence": 78,
+    "Stamina": 85,
+    "Accuracy": 84,
+    "Recovery": 84,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Krzysztof Glowacki",
+    "Power": 87,
+    "Chin": 88,
+    "Speed": 78,
+    "Footwork": 76,
+    "Ring IQ": 81,
+    "Heart": 91,
+    "Defence": 76,
+    "Stamina": 87,
+    "Accuracy": 80,
+    "Recovery": 85,
+    "Pool": "gatekeeper"
+  },
+  {
+    "Name": "Badou Jack",
+    "Power": 84,
+    "Chin": 88,
+    "Speed": 82,
+    "Footwork": 84,
+    "Ring IQ": 89,
+    "Heart": 91,
+    "Defence": 87,
+    "Stamina": 90,
+    "Accuracy": 86,
+    "Recovery": 87,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Jean Pascal",
+    "Power": 88,
+    "Chin": 86,
+    "Speed": 89,
+    "Footwork": 83,
+    "Ring IQ": 82,
+    "Heart": 91,
+    "Defence": 78,
+    "Stamina": 84,
+    "Accuracy": 82,
+    "Recovery": 83,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Gilberto Ramirez",
+    "Power": 88,
+    "Chin": 88,
+    "Speed": 82,
+    "Footwork": 83,
+    "Ring IQ": 86,
+    "Heart": 88,
+    "Defence": 82,
+    "Stamina": 91,
+    "Accuracy": 85,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Callum Smith",
+    "Power": 91,
+    "Chin": 84,
+    "Speed": 80,
+    "Footwork": 80,
+    "Ring IQ": 84,
+    "Heart": 86,
+    "Defence": 82,
+    "Stamina": 85,
+    "Accuracy": 86,
+    "Recovery": 82,
+    "Pool": "standard"
+  },
+  {
+    "Name": "David Benavidez",
+    "Power": 94,
+    "Chin": 88,
+    "Speed": 86,
+    "Footwork": 82,
+    "Ring IQ": 86,
+    "Heart": 91,
+    "Defence": 80,
+    "Stamina": 93,
+    "Accuracy": 89,
+    "Recovery": 87,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Caleb Plant",
+    "Power": 80,
+    "Chin": 82,
+    "Speed": 90,
+    "Footwork": 93,
+    "Ring IQ": 88,
+    "Heart": 86,
+    "Defence": 90,
+    "Stamina": 87,
+    "Accuracy": 87,
+    "Recovery": 83,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Billy Joe Saunders",
+    "Power": 78,
+    "Chin": 83,
+    "Speed": 90,
+    "Footwork": 93,
+    "Ring IQ": 90,
+    "Heart": 84,
+    "Defence": 89,
+    "Stamina": 86,
+    "Accuracy": 86,
+    "Recovery": 83,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Demetrius Andrade",
+    "Power": 82,
+    "Chin": 84,
+    "Speed": 91,
+    "Footwork": 92,
+    "Ring IQ": 89,
+    "Heart": 85,
+    "Defence": 88,
+    "Stamina": 87,
+    "Accuracy": 87,
+    "Recovery": 84,
+    "Pool": "standard"
+  },
+  {
+    "Name": "David Lemieux",
+    "Power": 94,
+    "Chin": 82,
+    "Speed": 78,
+    "Footwork": 72,
+    "Ring IQ": 77,
+    "Heart": 85,
+    "Defence": 72,
+    "Stamina": 80,
+    "Accuracy": 81,
+    "Recovery": 78,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Felix Sturm",
+    "Power": 79,
+    "Chin": 87,
+    "Speed": 82,
+    "Footwork": 86,
+    "Ring IQ": 89,
+    "Heart": 87,
+    "Defence": 91,
+    "Stamina": 89,
+    "Accuracy": 87,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Arthur Abraham",
+    "Power": 92,
+    "Chin": 91,
+    "Speed": 73,
+    "Footwork": 70,
+    "Ring IQ": 79,
+    "Heart": 88,
+    "Defence": 86,
+    "Stamina": 83,
+    "Accuracy": 78,
+    "Recovery": 86,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Julio Cesar Chavez Jr",
+    "Power": 84,
+    "Chin": 90,
+    "Speed": 74,
+    "Footwork": 70,
+    "Ring IQ": 75,
+    "Heart": 84,
+    "Defence": 70,
+    "Stamina": 82,
+    "Accuracy": 77,
+    "Recovery": 83,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Liam Smith",
+    "Power": 86,
+    "Chin": 87,
+    "Speed": 80,
+    "Footwork": 79,
+    "Ring IQ": 84,
+    "Heart": 90,
+    "Defence": 80,
+    "Stamina": 88,
+    "Accuracy": 84,
+    "Recovery": 85,
+    "Pool": "gatekeeper"
+  },
+  {
+    "Name": "Josh Taylor",
+    "Power": 86,
+    "Chin": 86,
+    "Speed": 90,
+    "Footwork": 89,
+    "Ring IQ": 88,
+    "Heart": 92,
+    "Defence": 84,
+    "Stamina": 91,
+    "Accuracy": 88,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Regis Prograis",
+    "Power": 90,
+    "Chin": 86,
+    "Speed": 86,
+    "Footwork": 84,
+    "Ring IQ": 84,
+    "Heart": 89,
+    "Defence": 80,
+    "Stamina": 87,
+    "Accuracy": 86,
+    "Recovery": 84,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Jose Ramirez",
+    "Power": 86,
+    "Chin": 88,
+    "Speed": 83,
+    "Footwork": 80,
+    "Ring IQ": 82,
+    "Heart": 91,
+    "Defence": 78,
+    "Stamina": 92,
+    "Accuracy": 83,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Danny Garcia",
+    "Power": 88,
+    "Chin": 89,
+    "Speed": 80,
+    "Footwork": 78,
+    "Ring IQ": 87,
+    "Heart": 88,
+    "Defence": 82,
+    "Stamina": 86,
+    "Accuracy": 87,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Shawn Porter",
+    "Power": 83,
+    "Chin": 90,
+    "Speed": 87,
+    "Footwork": 85,
+    "Ring IQ": 85,
+    "Heart": 94,
+    "Defence": 82,
+    "Stamina": 94,
+    "Accuracy": 82,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Keith Thurman",
+    "Power": 89,
+    "Chin": 84,
+    "Speed": 89,
+    "Footwork": 86,
+    "Ring IQ": 86,
+    "Heart": 86,
+    "Defence": 83,
+    "Stamina": 85,
+    "Accuracy": 87,
+    "Recovery": 82,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Jaron Ennis",
+    "Power": 91,
+    "Chin": 85,
+    "Speed": 94,
+    "Footwork": 92,
+    "Ring IQ": 88,
+    "Heart": 86,
+    "Defence": 87,
+    "Stamina": 89,
+    "Accuracy": 91,
+    "Recovery": 85,
+    "Pool": "prospect"
+  },
+  {
+    "Name": "Vergil Ortiz Jr",
+    "Power": 94,
+    "Chin": 86,
+    "Speed": 87,
+    "Footwork": 82,
+    "Ring IQ": 84,
+    "Heart": 91,
+    "Defence": 78,
+    "Stamina": 90,
+    "Accuracy": 86,
+    "Recovery": 84,
+    "Pool": "prospect"
+  },
+  {
+    "Name": "Tim Tszyu",
+    "Power": 89,
+    "Chin": 87,
+    "Speed": 84,
+    "Footwork": 82,
+    "Ring IQ": 87,
+    "Heart": 91,
+    "Defence": 82,
+    "Stamina": 90,
+    "Accuracy": 88,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Sebastian Fundora",
+    "Power": 86,
+    "Chin": 86,
+    "Speed": 82,
+    "Footwork": 78,
+    "Ring IQ": 82,
+    "Heart": 92,
+    "Defence": 74,
+    "Stamina": 93,
+    "Accuracy": 82,
+    "Recovery": 85,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Liam Paro",
+    "Power": 82,
+    "Chin": 86,
+    "Speed": 86,
+    "Footwork": 88,
+    "Ring IQ": 86,
+    "Heart": 89,
+    "Defence": 86,
+    "Stamina": 90,
+    "Accuracy": 85,
+    "Recovery": 85,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Adrien Broner",
+    "Power": 84,
+    "Chin": 87,
+    "Speed": 88,
+    "Footwork": 83,
+    "Ring IQ": 82,
+    "Heart": 79,
+    "Defence": 86,
+    "Stamina": 78,
+    "Accuracy": 85,
+    "Recovery": 82,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Jessie Vargas",
+    "Power": 81,
+    "Chin": 86,
+    "Speed": 83,
+    "Footwork": 84,
+    "Ring IQ": 85,
+    "Heart": 88,
+    "Defence": 83,
+    "Stamina": 87,
+    "Accuracy": 84,
+    "Recovery": 84,
+    "Pool": "gatekeeper"
+  },
+  {
+    "Name": "Victor Ortiz",
+    "Power": 88,
+    "Chin": 81,
+    "Speed": 85,
+    "Footwork": 80,
+    "Ring IQ": 77,
+    "Heart": 78,
+    "Defence": 76,
+    "Stamina": 82,
+    "Accuracy": 82,
+    "Recovery": 77,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Brandon Rios",
+    "Power": 86,
+    "Chin": 92,
+    "Speed": 73,
+    "Footwork": 68,
+    "Ring IQ": 76,
+    "Heart": 94,
+    "Defence": 66,
+    "Stamina": 90,
+    "Accuracy": 78,
+    "Recovery": 87,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Jorge Linares",
+    "Power": 83,
+    "Chin": 78,
+    "Speed": 92,
+    "Footwork": 91,
+    "Ring IQ": 89,
+    "Heart": 86,
+    "Defence": 84,
+    "Stamina": 86,
+    "Accuracy": 91,
+    "Recovery": 78,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Yuriorkis Gamboa",
+    "Power": 86,
+    "Chin": 76,
+    "Speed": 95,
+    "Footwork": 92,
+    "Ring IQ": 84,
+    "Heart": 84,
+    "Defence": 78,
+    "Stamina": 84,
+    "Accuracy": 87,
+    "Recovery": 76,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Abner Mares",
+    "Power": 82,
+    "Chin": 86,
+    "Speed": 87,
+    "Footwork": 84,
+    "Ring IQ": 85,
+    "Heart": 91,
+    "Defence": 82,
+    "Stamina": 90,
+    "Accuracy": 84,
+    "Recovery": 84,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Buster Douglas",
+    "Power": 89,
+    "Chin": 83,
+    "Speed": 82,
+    "Footwork": 84,
+    "Ring IQ": 85,
+    "Heart": 92,
+    "Defence": 80,
+    "Stamina": 88,
+    "Accuracy": 86,
+    "Recovery": 83,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Chris Eubank Jr",
+    "Power": 87,
+    "Chin": 90,
+    "Speed": 85,
+    "Footwork": 80,
+    "Ring IQ": 82,
+    "Heart": 92,
+    "Defence": 78,
+    "Stamina": 93,
+    "Accuracy": 82,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Conor Benn",
+    "Power": 89,
+    "Chin": 84,
+    "Speed": 89,
+    "Footwork": 82,
+    "Ring IQ": 80,
+    "Heart": 90,
+    "Defence": 76,
+    "Stamina": 88,
+    "Accuracy": 84,
+    "Recovery": 82,
+    "Pool": "prospect"
+  },
+  {
+    "Name": "James DeGale",
+    "Power": 82,
+    "Chin": 85,
+    "Speed": 88,
+    "Footwork": 91,
+    "Ring IQ": 89,
+    "Heart": 87,
+    "Defence": 88,
+    "Stamina": 85,
+    "Accuracy": 86,
+    "Recovery": 83,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Anthony Crolla",
+    "Power": 80,
+    "Chin": 88,
+    "Speed": 82,
+    "Footwork": 82,
+    "Ring IQ": 84,
+    "Heart": 93,
+    "Defence": 80,
+    "Stamina": 90,
+    "Accuracy": 82,
+    "Recovery": 86,
+    "Pool": "gatekeeper"
+  },
+  {
+    "Name": "Scott Quigg",
+    "Power": 84,
+    "Chin": 86,
+    "Speed": 84,
+    "Footwork": 80,
+    "Ring IQ": 81,
+    "Heart": 90,
+    "Defence": 78,
+    "Stamina": 89,
+    "Accuracy": 81,
+    "Recovery": 84,
+    "Pool": "gatekeeper"
+  },
+  {
+    "Name": "Josh Warrington",
+    "Power": 78,
+    "Chin": 88,
+    "Speed": 88,
+    "Footwork": 87,
+    "Ring IQ": 84,
+    "Heart": 94,
+    "Defence": 82,
+    "Stamina": 94,
+    "Accuracy": 82,
+    "Recovery": 87,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Errol Spence Jr",
+    "Power": 88,
+    "Chin": 88,
+    "Speed": 86,
+    "Footwork": 85,
+    "Ring IQ": 89,
+    "Heart": 91,
+    "Defence": 86,
+    "Stamina": 93,
+    "Accuracy": 90,
+    "Recovery": 87,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Miguel Cotto",
+    "Power": 89,
+    "Chin": 86,
+    "Speed": 85,
+    "Footwork": 86,
+    "Ring IQ": 90,
+    "Heart": 92,
+    "Defence": 85,
+    "Stamina": 89,
+    "Accuracy": 90,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Marco Antonio Barrera",
+    "Power": 87,
+    "Chin": 89,
+    "Speed": 87,
+    "Footwork": 86,
+    "Ring IQ": 91,
+    "Heart": 94,
+    "Defence": 84,
+    "Stamina": 92,
+    "Accuracy": 89,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Erik Morales",
+    "Power": 88,
+    "Chin": 88,
+    "Speed": 86,
+    "Footwork": 85,
+    "Ring IQ": 90,
+    "Heart": 95,
+    "Defence": 82,
+    "Stamina": 93,
+    "Accuracy": 88,
+    "Recovery": 87,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Juan Manuel Marquez",
+    "Power": 88,
+    "Chin": 88,
+    "Speed": 85,
+    "Footwork": 87,
+    "Ring IQ": 94,
+    "Heart": 93,
+    "Defence": 86,
+    "Stamina": 91,
+    "Accuracy": 92,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Nonito Donaire",
+    "Power": 91,
+    "Chin": 86,
+    "Speed": 90,
+    "Footwork": 87,
+    "Ring IQ": 89,
+    "Heart": 91,
+    "Defence": 83,
+    "Stamina": 88,
+    "Accuracy": 90,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Roman Gonzalez",
+    "Power": 87,
+    "Chin": 88,
+    "Speed": 89,
+    "Footwork": 88,
+    "Ring IQ": 93,
+    "Heart": 94,
+    "Defence": 84,
+    "Stamina": 94,
+    "Accuracy": 93,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Conor McGregor",
+    "Power": 88,
+    "Chin": 80,
+    "Speed": 84,
+    "Footwork": 78,
+    "Ring IQ": 77,
+    "Heart": 84,
+    "Defence": 70,
+    "Stamina": 74,
+    "Accuracy": 82,
+    "Recovery": 75,
+    "Pool": "crossover"
+  },
+  {
+    "Name": "Anderson Silva",
+    "Power": 82,
+    "Chin": 82,
+    "Speed": 88,
+    "Footwork": 86,
+    "Ring IQ": 88,
+    "Heart": 86,
+    "Defence": 82,
+    "Stamina": 82,
+    "Accuracy": 85,
+    "Recovery": 80,
+    "Pool": "crossover"
+  },
+  {
+    "Name": "Nate Diaz",
+    "Power": 78,
+    "Chin": 91,
+    "Speed": 76,
+    "Footwork": 73,
+    "Ring IQ": 79,
+    "Heart": 96,
+    "Defence": 68,
+    "Stamina": 90,
+    "Accuracy": 78,
+    "Recovery": 88,
+    "Pool": "crossover"
+  },
+  {
+    "Name": "Anthony Joshua",
+    "Power": 94,
+    "Chin": 86,
+    "Speed": 82,
+    "Footwork": 80,
+    "Ring IQ": 86,
+    "Heart": 86,
+    "Defence": 84,
+    "Stamina": 86,
+    "Accuracy": 88,
+    "Recovery": 84,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Wladimir Klitschko",
+    "Power": 94,
+    "Chin": 87,
+    "Speed": 82,
+    "Footwork": 86,
+    "Ring IQ": 97,
+    "Heart": 87,
+    "Defence": 96,
+    "Stamina": 92,
+    "Accuracy": 92,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Roy Jones Jr.",
+    "Power": 90,
+    "Chin": 84,
+    "Speed": 99,
+    "Footwork": 96,
+    "Ring IQ": 94,
+    "Heart": 88,
+    "Defence": 89,
+    "Stamina": 90,
+    "Accuracy": 93,
+    "Recovery": 84,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Joe Calzaghe",
+    "Power": 84,
+    "Chin": 90,
+    "Speed": 94,
+    "Footwork": 91,
+    "Ring IQ": 92,
+    "Heart": 96,
+    "Defence": 88,
+    "Stamina": 99,
+    "Accuracy": 89,
+    "Recovery": 91,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Carl Froch",
+    "Power": 91,
+    "Chin": 94,
+    "Speed": 78,
+    "Footwork": 76,
+    "Ring IQ": 84,
+    "Heart": 98,
+    "Defence": 76,
+    "Stamina": 91,
+    "Accuracy": 84,
+    "Recovery": 89,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Kell Brook",
+    "Power": 87,
+    "Chin": 84,
+    "Speed": 87,
+    "Footwork": 86,
+    "Ring IQ": 88,
+    "Heart": 87,
+    "Defence": 85,
+    "Stamina": 86,
+    "Accuracy": 91,
+    "Recovery": 83,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Chris Eubank",
+    "Power": 88,
+    "Chin": 94,
+    "Speed": 84,
+    "Footwork": 84,
+    "Ring IQ": 88,
+    "Heart": 96,
+    "Defence": 87,
+    "Stamina": 92,
+    "Accuracy": 86,
+    "Recovery": 91,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Nigel Benn",
+    "Power": 94,
+    "Chin": 88,
+    "Speed": 86,
+    "Footwork": 80,
+    "Ring IQ": 82,
+    "Heart": 97,
+    "Defence": 76,
+    "Stamina": 90,
+    "Accuracy": 84,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Andre Ward",
+    "Power": 82,
+    "Chin": 88,
+    "Speed": 88,
+    "Footwork": 92,
+    "Ring IQ": 97,
+    "Heart": 92,
+    "Defence": 96,
+    "Stamina": 91,
+    "Accuracy": 91,
+    "Recovery": 89,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Floyd Mayweather Jr.",
+    "Power": 78,
+    "Chin": 90,
+    "Speed": 96,
+    "Footwork": 98,
+    "Ring IQ": 99,
+    "Heart": 90,
+    "Defence": 99,
+    "Stamina": 93,
+    "Accuracy": 96,
+    "Recovery": 92,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Manny Pacquiao",
+    "Power": 92,
+    "Chin": 88,
+    "Speed": 98,
+    "Footwork": 94,
+    "Ring IQ": 91,
+    "Heart": 96,
+    "Defence": 84,
+    "Stamina": 96,
+    "Accuracy": 91,
+    "Recovery": 90,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Canelo Alvarez",
+    "Power": 93,
+    "Chin": 94,
+    "Speed": 85,
+    "Footwork": 86,
+    "Ring IQ": 96,
+    "Heart": 92,
+    "Defence": 94,
+    "Stamina": 90,
+    "Accuracy": 95,
+    "Recovery": 91,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Gennady Golovkin",
+    "Power": 95,
+    "Chin": 96,
+    "Speed": 82,
+    "Footwork": 84,
+    "Ring IQ": 91,
+    "Heart": 95,
+    "Defence": 84,
+    "Stamina": 92,
+    "Accuracy": 90,
+    "Recovery": 92,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Terence Crawford",
+    "Power": 90,
+    "Chin": 88,
+    "Speed": 94,
+    "Footwork": 94,
+    "Ring IQ": 98,
+    "Heart": 91,
+    "Defence": 93,
+    "Stamina": 92,
+    "Accuracy": 95,
+    "Recovery": 89,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Vasyl Lomachenko",
+    "Power": 82,
+    "Chin": 86,
+    "Speed": 96,
+    "Footwork": 99,
+    "Ring IQ": 98,
+    "Heart": 90,
+    "Defence": 94,
+    "Stamina": 93,
+    "Accuracy": 94,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Bernard Hopkins",
+    "Power": 82,
+    "Chin": 91,
+    "Speed": 84,
+    "Footwork": 88,
+    "Ring IQ": 99,
+    "Heart": 93,
+    "Defence": 96,
+    "Stamina": 91,
+    "Accuracy": 91,
+    "Recovery": 92,
+    "Pool": "standard"
+  },
+  {
+    "Name": "James Toney",
+    "Power": 86,
+    "Chin": 94,
+    "Speed": 84,
+    "Footwork": 84,
+    "Ring IQ": 96,
+    "Heart": 93,
+    "Defence": 95,
+    "Stamina": 88,
+    "Accuracy": 92,
+    "Recovery": 90,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Pernell Whitaker",
+    "Power": 76,
+    "Chin": 88,
+    "Speed": 95,
+    "Footwork": 99,
+    "Ring IQ": 98,
+    "Heart": 90,
+    "Defence": 99,
+    "Stamina": 92,
+    "Accuracy": 93,
+    "Recovery": 90,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Sugar Ray Leonard",
+    "Power": 90,
+    "Chin": 91,
+    "Speed": 97,
+    "Footwork": 96,
+    "Ring IQ": 97,
+    "Heart": 96,
+    "Defence": 93,
+    "Stamina": 95,
+    "Accuracy": 94,
+    "Recovery": 92,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Roberto Duran",
+    "Power": 92,
+    "Chin": 96,
+    "Speed": 91,
+    "Footwork": 91,
+    "Ring IQ": 97,
+    "Heart": 98,
+    "Defence": 92,
+    "Stamina": 96,
+    "Accuracy": 93,
+    "Recovery": 93,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Oscar De La Hoya",
+    "Power": 89,
+    "Chin": 88,
+    "Speed": 92,
+    "Footwork": 91,
+    "Ring IQ": 91,
+    "Heart": 90,
+    "Defence": 88,
+    "Stamina": 90,
+    "Accuracy": 94,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Julio Cesar Chavez",
+    "Power": 91,
+    "Chin": 97,
+    "Speed": 88,
+    "Footwork": 87,
+    "Ring IQ": 95,
+    "Heart": 99,
+    "Defence": 89,
+    "Stamina": 98,
+    "Accuracy": 93,
+    "Recovery": 95,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Naseem Hamed",
+    "Power": 93,
+    "Chin": 83,
+    "Speed": 95,
+    "Footwork": 92,
+    "Ring IQ": 87,
+    "Heart": 86,
+    "Defence": 78,
+    "Stamina": 86,
+    "Accuracy": 88,
+    "Recovery": 82,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Ricky Hatton",
+    "Power": 87,
+    "Chin": 90,
+    "Speed": 86,
+    "Footwork": 82,
+    "Ring IQ": 85,
+    "Heart": 96,
+    "Defence": 78,
+    "Stamina": 96,
+    "Accuracy": 84,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Carl Frampton",
+    "Power": 84,
+    "Chin": 87,
+    "Speed": 90,
+    "Footwork": 91,
+    "Ring IQ": 90,
+    "Heart": 91,
+    "Defence": 89,
+    "Stamina": 90,
+    "Accuracy": 88,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Barry McGuigan",
+    "Power": 84,
+    "Chin": 89,
+    "Speed": 88,
+    "Footwork": 90,
+    "Ring IQ": 88,
+    "Heart": 95,
+    "Defence": 84,
+    "Stamina": 94,
+    "Accuracy": 85,
+    "Recovery": 88,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Arturo Gatti",
+    "Power": 88,
+    "Chin": 92,
+    "Speed": 82,
+    "Footwork": 76,
+    "Ring IQ": 80,
+    "Heart": 99,
+    "Defence": 70,
+    "Stamina": 93,
+    "Accuracy": 82,
+    "Recovery": 95,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Antonio Margarito",
+    "Power": 87,
+    "Chin": 95,
+    "Speed": 74,
+    "Footwork": 72,
+    "Ring IQ": 80,
+    "Heart": 94,
+    "Defence": 72,
+    "Stamina": 96,
+    "Accuracy": 81,
+    "Recovery": 88,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Winky Wright",
+    "Power": 78,
+    "Chin": 90,
+    "Speed": 84,
+    "Footwork": 88,
+    "Ring IQ": 94,
+    "Heart": 90,
+    "Defence": 97,
+    "Stamina": 91,
+    "Accuracy": 89,
+    "Recovery": 89,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Kostya Tszyu",
+    "Power": 93,
+    "Chin": 86,
+    "Speed": 86,
+    "Footwork": 85,
+    "Ring IQ": 91,
+    "Heart": 90,
+    "Defence": 84,
+    "Stamina": 89,
+    "Accuracy": 92,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Mairis Briedis",
+    "Power": 88,
+    "Chin": 88,
+    "Speed": 82,
+    "Footwork": 83,
+    "Ring IQ": 88,
+    "Heart": 90,
+    "Defence": 84,
+    "Stamina": 89,
+    "Accuracy": 91,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Marco Huck",
+    "Power": 91,
+    "Chin": 87,
+    "Speed": 76,
+    "Footwork": 73,
+    "Ring IQ": 80,
+    "Heart": 92,
+    "Defence": 75,
+    "Stamina": 88,
+    "Accuracy": 78,
+    "Recovery": 84,
+    "Pool": "cult"
+  },
+  {
+    "Name": "Tony Bellew",
+    "Power": 87,
+    "Chin": 85,
+    "Speed": 80,
+    "Footwork": 80,
+    "Ring IQ": 86,
+    "Heart": 93,
+    "Defence": 81,
+    "Stamina": 87,
+    "Accuracy": 84,
+    "Recovery": 86,
+    "Pool": "standard"
+  },
+  {
+    "Name": "Paul Williams",
+    "Power": 85,
+    "Chin": 88,
+    "Speed": 87,
+    "Footwork": 83,
+    "Ring IQ": 86,
+    "Heart": 94,
+    "Defence": 78,
+    "Stamina": 97,
+    "Accuracy": 85,
+    "Recovery": 87,
+    "Pool": "cult"
+  }
+];
+
+const EXPANSION_TRAITS = [
+  {
+    "id": "snap_jab",
+    "name": "Snap Jab",
+    "type": "positive",
+    "rarity": "uncommon",
+    "desc": "Your jab steals rhythm early, improving clean scoring in the first four rounds."
+  },
+  {
+    "id": "inside_worker",
+    "name": "Inside Worker",
+    "type": "positive",
+    "rarity": "uncommon",
+    "desc": "Close-range exchanges drain the opponent harder, but outside rounds are less dominant."
+  },
+  {
+    "id": "calm_corner",
+    "name": "Calm Corner",
+    "type": "positive",
+    "rarity": "rare",
+    "desc": "After a bad round, your next round gets a composure bump instead of spiralling."
+  },
+  {
+    "id": "busy_feet",
+    "name": "Busy Feet",
+    "type": "positive",
+    "rarity": "uncommon",
+    "desc": "Movement builds momentum over three-round stretches, rewarding technical starts."
+  },
+  {
+    "id": "heavy_hands",
+    "name": "Heavy Hands",
+    "type": "positive",
+    "rarity": "rare",
+    "desc": "Power shots carry more danger when stamina is above half."
+  },
+  {
+    "id": "body_engine",
+    "name": "Body Engine",
+    "type": "positive",
+    "rarity": "rare",
+    "desc": "Body work pays off late, making championship rounds stronger after sustained pressure."
+  },
+  {
+    "id": "late_read",
+    "name": "Late Read",
+    "type": "positive",
+    "rarity": "rare",
+    "desc": "If trailing after six rounds, Ring IQ and Accuracy matter more in the back half."
+  },
+  {
+    "id": "scar_tissue",
+    "name": "Scar Tissue",
+    "type": "negative",
+    "rarity": "cursed",
+    "desc": "Cuts and swelling are more dangerous, but surviving them gives a Heart spike."
+  },
+  {
+    "id": "switch_rhythm",
+    "name": "Switch Rhythm",
+    "type": "positive",
+    "rarity": "epic",
+    "desc": "Alternates speed and accuracy advantages round by round, creating high-variance boxing."
+  },
+  {
+    "id": "championship_lungs",
+    "name": "Championship Lungs",
+    "type": "positive",
+    "rarity": "epic",
+    "desc": "Late-round stamina loss is softened in title-distance fights."
+  },
+  {
+    "id": "counter_trap",
+    "name": "Counter Trap",
+    "type": "positive",
+    "rarity": "rare",
+    "desc": "Defensive rounds can flip into sudden counter damage if Accuracy is high."
+  },
+  {
+    "id": "big_stage",
+    "name": "Big Stage",
+    "type": "positive",
+    "rarity": "rare",
+    "desc": "Title fights boost composure, but routine fights gain less benefit."
+  },
+  {
+    "id": "southpaw_switch",
+    "name": "Southpaw Switch",
+    "type": "positive",
+    "rarity": "epic",
+    "desc": "Awkward angles randomly punish opponents with lower Ring IQ."
+  },
+  {
+    "id": "perfect_timing",
+    "name": "Perfect Timing",
+    "type": "positive",
+    "rarity": "legendary",
+    "desc": "Small chance each round to convert clean accuracy into a fight-changing moment."
+  },
+  {
+    "id": "unbreakable_rhythm",
+    "name": "Unbreakable Rhythm",
+    "type": "positive",
+    "rarity": "legendary",
+    "desc": "Winning two rounds in a row improves control; losing two breaks the rhythm."
+  },
+  {
+    "id": "comeback_gene",
+    "name": "Comeback Gene",
+    "type": "positive",
+    "rarity": "epic",
+    "desc": "Knockdowns suffered can trigger a Heart and Recovery surge once per fight."
+  },
+  {
+    "id": "generational_flashes",
+    "name": "Generational Flashes",
+    "type": "positive",
+    "rarity": "legendary",
+    "desc": "One random elite attribute surges each fight, but it changes every bout."
+  },
+  {
+    "id": "ring_immortal",
+    "name": "Ring Immortal",
+    "type": "positive",
+    "rarity": "legendary",
+    "desc": "Legacy fights create clutch moments instead of simple flat stat boosts."
+  },
+  {
+    "id": "the_natural",
+    "name": "The Natural",
+    "type": "positive",
+    "rarity": "epic",
+    "desc": "Early-career fights are easier to read, but late-career opponents adapt faster."
+  },
+  {
+    "id": "perfect_camp",
+    "name": "Perfect Camp",
+    "type": "positive",
+    "rarity": "rare",
+    "desc": "Every third fight starts sharper if you have avoided major damage."
+  },
+  {
+    "id": "reckless_entry",
+    "name": "Reckless Entry",
+    "type": "negative",
+    "rarity": "common",
+    "desc": "You start hot but leave openings for counters when facing accurate opponents."
+  },
+  {
+    "id": "flat_feet",
+    "name": "Flat Feet",
+    "type": "negative",
+    "rarity": "common",
+    "desc": "Pressure is heavier, but slick movers are harder to catch."
+  },
+  {
+    "id": "weight_cut",
+    "name": "Weight Cut",
+    "type": "negative",
+    "rarity": "uncommon",
+    "desc": "Early speed improves slightly, but late stamina and recovery become fragile."
+  },
+  {
+    "id": "head_hunter",
+    "name": "Head Hunter",
+    "type": "negative",
+    "rarity": "uncommon",
+    "desc": "Knockout chances rise, but body work and round control become inconsistent."
+  },
+  {
+    "id": "cuts_easy",
+    "name": "Cuts Easy",
+    "type": "negative",
+    "rarity": "cursed",
+    "desc": "Doctor stoppage risk rises against accurate fighters."
+  },
+  {
+    "id": "showboat_habit",
+    "name": "Showboat Habit",
+    "type": "negative",
+    "rarity": "common",
+    "desc": "Big leads can become sloppy, risking close-round swings."
+  },
+  {
+    "id": "glass_ankles",
+    "name": "Glass Ankles",
+    "type": "negative",
+    "rarity": "cursed",
+    "desc": "Footwork spikes early but collapses after knockdowns."
+  },
+  {
+    "id": "red_mist",
+    "name": "Red Mist",
+    "type": "negative",
+    "rarity": "cursed",
+    "desc": "After being hurt, Power rises while Defence and Ring IQ drop."
+  },
+  {
+    "id": "front_runner",
+    "name": "Front Runner",
+    "type": "negative",
+    "rarity": "uncommon",
+    "desc": "Dominant starts are stronger, but losing momentum late hurts more."
+  },
+  {
+    "id": "one_hand_problem",
+    "name": "One-Hand Problem",
+    "type": "negative",
+    "rarity": "cursed",
+    "desc": "Power remains scary, but Accuracy can dip sharply after long fights."
+  }
+];
+
+const EXPANSION_SYNERGIES = [
+  {
+    "id": "fast_lane_wembley",
+    "name": "Fast Lane Wembley",
+    "desc": "Khan speed and Groves power recreate a nervous London roar.",
+    "requirements": {
+      "Speed": "Amir Khan",
+      "Power": "George Groves"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "next_generation_bad_blood",
+    "name": "Next Generation Bad Blood",
+    "desc": "Eubank Jr stamina and Conor Benn power turn family history into pressure.",
+    "requirements": {
+      "Stamina": "Chris Eubank Jr",
+      "Power": "Conor Benn"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "eubank_family_engine",
+    "name": "Eubank Family Engine",
+    "desc": "Old-school Eubank chin with Jr's engine creates a stubborn contender.",
+    "requirements": {
+      "Chin": "Chris Eubank",
+      "Stamina": "Chris Eubank Jr"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "benn_family_fire",
+    "name": "Benn Family Fire",
+    "desc": "Nigel Benn heart with Conor Benn speed makes every round dangerous.",
+    "requirements": {
+      "Heart": "Nigel Benn",
+      "Speed": "Conor Benn"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "bitter_bloodline",
+    "name": "Bitter Bloodline",
+    "desc": "Conor Benn accuracy and Eubank Jr recovery keep the rivalry alive.",
+    "requirements": {
+      "Accuracy": "Conor Benn",
+      "Recovery": "Chris Eubank Jr"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Recovery": 2
+    }
+  },
+  {
+    "id": "wembley_echo",
+    "name": "Wembley Echo",
+    "desc": "Groves accuracy and Froch heart summon one more Wembley storm.",
+    "requirements": {
+      "Accuracy": "George Groves",
+      "Heart": "Carl Froch"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "amateur_grudge",
+    "name": "Amateur Grudge",
+    "desc": "DeGale footwork and Groves power make a bitter domestic puzzle.",
+    "requirements": {
+      "Footwork": "James DeGale",
+      "Power": "George Groves"
+    },
+    "bonuses": {
+      "Footwork": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "domestic_firestorm",
+    "name": "Domestic Firestorm",
+    "desc": "Khan speed and Brook accuracy recreate a long-awaited British shootout.",
+    "requirements": {
+      "Speed": "Amir Khan",
+      "Accuracy": "Kell Brook"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "belfast_manchester_pressure",
+    "name": "Belfast-Manchester Pressure",
+    "desc": "Quigg heart and Frampton defence reward a tight, tactical scrap.",
+    "requirements": {
+      "Heart": "Scott Quigg",
+      "Defence": "Carl Frampton"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "leeds_wall",
+    "name": "Leeds Wall",
+    "desc": "Warrington stamina and McGuigan footwork make pressure hard to escape.",
+    "requirements": {
+      "Stamina": "Josh Warrington",
+      "Footwork": "Barry McGuigan"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "manchester_grit",
+    "name": "Manchester Grit",
+    "desc": "Crolla heart and Hatton stamina grind opponents down.",
+    "requirements": {
+      "Heart": "Anthony Crolla",
+      "Stamina": "Ricky Hatton"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "smith_family_laser",
+    "name": "Smith Family Laser",
+    "desc": "Callum Smith power and Liam Smith accuracy keep the family sharp.",
+    "requirements": {
+      "Power": "Callum Smith",
+      "Accuracy": "Liam Smith"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "cruiserweight_tide",
+    "name": "Cruiserweight Tide",
+    "desc": "Okolie power and Billam-Smith heart bring rough nights at cruiserweight.",
+    "requirements": {
+      "Power": "Lawrence Okolie",
+      "Heart": "Chris Billam-Smith"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "heavyweight_brawl_club",
+    "name": "Heavyweight Brawl Club",
+    "desc": "Wardley power and Bakole chin make a modern heavyweight shootout.",
+    "requirements": {
+      "Power": "Fabio Wardley",
+      "Chin": "Martin Bakole"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Chin": 2
+    }
+  },
+  {
+    "id": "british_speed_school",
+    "name": "British Speed School",
+    "desc": "Khan speed and Taylor ring IQ give slick southpaw rhythm.",
+    "requirements": {
+      "Speed": "Amir Khan",
+      "Ring IQ": "Josh Taylor"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "mirror_box",
+    "name": "Mirror Box",
+    "desc": "Saunders footwork and Plant defence create a cautious maze.",
+    "requirements": {
+      "Footwork": "Billy Joe Saunders",
+      "Defence": "Caleb Plant"
+    },
+    "bonuses": {
+      "Footwork": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "southpaw_angles",
+    "name": "Southpaw Angles",
+    "desc": "DeGale footwork and Calzaghe stamina pull fights into awkward territory.",
+    "requirements": {
+      "Footwork": "James DeGale",
+      "Stamina": "Joe Calzaghe"
+    },
+    "bonuses": {
+      "Footwork": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "big_lights_pressure",
+    "name": "Big Lights Pressure",
+    "desc": "Benavidez power and Groves heart make big nights volatile.",
+    "requirements": {
+      "Power": "David Benavidez",
+      "Heart": "George Groves"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "relentless_engine",
+    "name": "Relentless Engine",
+    "desc": "Eubank Jr stamina and Calzaghe speed swarm tired opponents.",
+    "requirements": {
+      "Stamina": "Chris Eubank Jr",
+      "Speed": "Joe Calzaghe"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "one_night_in_tokyo",
+    "name": "One Night In Tokyo",
+    "desc": "Douglas heart and Tyson power capture boxing's greatest shockwave.",
+    "requirements": {
+      "Heart": "Buster Douglas",
+      "Power": "Mike Tyson"
+    },
+    "bonuses": {
+      "Heart": 3,
+      "Power": 1
+    }
+  },
+  {
+    "id": "opetaia_blade",
+    "name": "Opetaia Blade",
+    "desc": "Opetaia footwork and Usyk ring IQ slice through bigger men.",
+    "requirements": {
+      "Footwork": "Jai Opetaia",
+      "Ring IQ": "Oleksandr Usyk"
+    },
+    "bonuses": {
+      "Footwork": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "aussie_southpaw_line",
+    "name": "Aussie Southpaw Line",
+    "desc": "Opetaia accuracy and Paro defence create patient control.",
+    "requirements": {
+      "Accuracy": "Jai Opetaia",
+      "Defence": "Liam Paro"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "gassiev_hammer",
+    "name": "Gassiev Hammer",
+    "desc": "Gassiev power and Glowacki heart make cruiserweight rounds brutal.",
+    "requirements": {
+      "Power": "Murat Gassiev",
+      "Heart": "Krzysztof Glowacki"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "jack_of_all_rounds",
+    "name": "Jack Of All Rounds",
+    "desc": "Badou Jack defence and Ramirez stamina age beautifully over distance.",
+    "requirements": {
+      "Defence": "Badou Jack",
+      "Stamina": "Gilberto Ramirez"
+    },
+    "bonuses": {
+      "Defence": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "pascal_spark",
+    "name": "Pascal Spark",
+    "desc": "Pascal speed and Hopkins ring IQ turn bursts into traps.",
+    "requirements": {
+      "Speed": "Jean Pascal",
+      "Ring IQ": "Bernard Hopkins"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "mexican_super_middle_heat",
+    "name": "Mexican Super-Middle Heat",
+    "desc": "Benavidez power and Ramirez chin bring constant danger.",
+    "requirements": {
+      "Power": "David Benavidez",
+      "Chin": "Gilberto Ramirez"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Chin": 2
+    }
+  },
+  {
+    "id": "plantation_feint",
+    "name": "Plantation Feint",
+    "desc": "Plant footwork and Mayweather defence make clean punches rare.",
+    "requirements": {
+      "Footwork": "Caleb Plant",
+      "Defence": "Floyd Mayweather Jr."
+    },
+    "bonuses": {
+      "Footwork": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "boogeyman_southpaw",
+    "name": "Boogeyman Southpaw",
+    "desc": "Andrade speed and Saunders ring IQ test impatient opponents.",
+    "requirements": {
+      "Speed": "Demetrius Andrade",
+      "Ring IQ": "Billy Joe Saunders"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "lemieux_thunder",
+    "name": "Lemieux Thunder",
+    "desc": "Lemieux power and Golovkin chin make a dangerous trade-off.",
+    "requirements": {
+      "Power": "David Lemieux",
+      "Chin": "Gennady Golovkin"
+    },
+    "bonuses": {
+      "Power": 3,
+      "Chin": 1
+    }
+  },
+  {
+    "id": "sturm_shell",
+    "name": "Sturm Shell",
+    "desc": "Sturm defence and Abraham power create a patient puncher's guard.",
+    "requirements": {
+      "Defence": "Felix Sturm",
+      "Power": "Arthur Abraham"
+    },
+    "bonuses": {
+      "Defence": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "chavez_shadow",
+    "name": "Chavez Shadow",
+    "desc": "Chavez Jr chin and Cotto accuracy make flawed but stubborn pressure.",
+    "requirements": {
+      "Chin": "Julio Cesar Chavez Jr",
+      "Accuracy": "Miguel Cotto"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "tartan_tornado",
+    "name": "Tartan Tornado",
+    "desc": "Taylor footwork and Prograis power give southpaw violence shape.",
+    "requirements": {
+      "Footwork": "Josh Taylor",
+      "Power": "Regis Prograis"
+    },
+    "bonuses": {
+      "Footwork": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "pressure_140",
+    "name": "Pressure 140",
+    "desc": "Jose Ramirez stamina and Taylor accuracy keep the pocket busy.",
+    "requirements": {
+      "Stamina": "Jose Ramirez",
+      "Accuracy": "Josh Taylor"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "philly_brooklyn_crossroads",
+    "name": "Philly-Brooklyn Crossroads",
+    "desc": "Garcia accuracy and Porter heart make messy elite rounds.",
+    "requirements": {
+      "Accuracy": "Danny Garcia",
+      "Heart": "Shawn Porter"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "one_time_pressure",
+    "name": "One Time Pressure",
+    "desc": "Thurman power and Porter stamina force uncomfortable exchanges.",
+    "requirements": {
+      "Power": "Keith Thurman",
+      "Stamina": "Shawn Porter"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "boots_rising",
+    "name": "Boots Rising",
+    "desc": "Ennis speed and Crawford ring IQ look like the future arriving early.",
+    "requirements": {
+      "Speed": "Jaron Ennis",
+      "Ring IQ": "Terence Crawford"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "ortiz_wrecking_line",
+    "name": "Ortiz Wrecking Line",
+    "desc": "Vergil Ortiz power and Spence stamina make pressure feel inevitable.",
+    "requirements": {
+      "Power": "Vergil Ortiz Jr",
+      "Stamina": "Errol Spence Jr"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "tszyu_inheritance",
+    "name": "Tszyu Inheritance",
+    "desc": "Tim Tszyu accuracy and Kostya Tszyu power keep the name dangerous.",
+    "requirements": {
+      "Accuracy": "Tim Tszyu",
+      "Power": "Kostya Tszyu"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "towering_pressure",
+    "name": "Towering Pressure",
+    "desc": "Fundora stamina and Williams heart make a nightmare pace.",
+    "requirements": {
+      "Stamina": "Sebastian Fundora",
+      "Heart": "Paul Williams"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "paro_control",
+    "name": "Paro Control",
+    "desc": "Paro defence and Lomachenko footwork reward cool, tidy boxing.",
+    "requirements": {
+      "Defence": "Liam Paro",
+      "Footwork": "Vasyl Lomachenko"
+    },
+    "bonuses": {
+      "Defence": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "broner_flash",
+    "name": "Broner Flash",
+    "desc": "Broner speed and Mayweather defence tease greatness in bursts.",
+    "requirements": {
+      "Speed": "Adrien Broner",
+      "Defence": "Floyd Mayweather Jr."
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "vargas_survivor",
+    "name": "Vargas Survivor",
+    "desc": "Vargas heart and Pacquiao speed turn survival into counters.",
+    "requirements": {
+      "Heart": "Jessie Vargas",
+      "Speed": "Manny Pacquiao"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "ortiz_wildcard",
+    "name": "Ortiz Wildcard",
+    "desc": "Victor Ortiz power and Rios chin make chaos useful.",
+    "requirements": {
+      "Power": "Victor Ortiz",
+      "Chin": "Brandon Rios"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Chin": 2
+    }
+  },
+  {
+    "id": "linares_silk",
+    "name": "Linares Silk",
+    "desc": "Linares accuracy and Whitaker footwork sharpen the pretty work.",
+    "requirements": {
+      "Accuracy": "Jorge Linares",
+      "Footwork": "Pernell Whitaker"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "gamboa_flashpoint",
+    "name": "Gamboa Flashpoint",
+    "desc": "Gamboa speed and Donaire power reward explosive starts.",
+    "requirements": {
+      "Speed": "Yuriorkis Gamboa",
+      "Power": "Nonito Donaire"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "mares_pressure_code",
+    "name": "Mares Pressure Code",
+    "desc": "Mares heart and Barrera ring IQ give pressure a brain.",
+    "requirements": {
+      "Heart": "Abner Mares",
+      "Ring IQ": "Marco Antonio Barrera"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "spence_body_bank",
+    "name": "Spence Body Bank",
+    "desc": "Spence stamina and Cotto accuracy punish the ribs all night.",
+    "requirements": {
+      "Stamina": "Errol Spence Jr",
+      "Accuracy": "Miguel Cotto"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "mexican_trilogy_echo",
+    "name": "Mexican Trilogy Echo",
+    "desc": "Barrera ring IQ and Morales heart bring legendary bad intentions.",
+    "requirements": {
+      "Ring IQ": "Marco Antonio Barrera",
+      "Heart": "Erik Morales"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "marquez_counter_clock",
+    "name": "Marquez Counter Clock",
+    "desc": "Marquez accuracy and Pacquiao speed make counters electric.",
+    "requirements": {
+      "Accuracy": "Juan Manuel Marquez",
+      "Speed": "Manny Pacquiao"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "flash_left_hook",
+    "name": "Flash Left Hook",
+    "desc": "Donaire power and Linares speed create one perfect opening.",
+    "requirements": {
+      "Power": "Nonito Donaire",
+      "Speed": "Jorge Linares"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "chocolatito_engine",
+    "name": "Chocolatito Engine",
+    "desc": "Roman Gonzalez accuracy and Morales stamina make pressure beautiful.",
+    "requirements": {
+      "Accuracy": "Roman Gonzalez",
+      "Stamina": "Erik Morales"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "crossover_supernova",
+    "name": "Crossover Supernova",
+    "desc": "McGregor accuracy and Ngannou power make the celebrity pick scary.",
+    "requirements": {
+      "Accuracy": "Conor McGregor",
+      "Power": "Francis Ngannou"
+    },
+    "bonuses": {
+      "Accuracy": 1,
+      "Power": 3
+    }
+  },
+  {
+    "id": "silva_matrix",
+    "name": "Silva Matrix",
+    "desc": "Anderson Silva footwork and Roy Jones Jr speed bend timing.",
+    "requirements": {
+      "Footwork": "Anderson Silva",
+      "Speed": "Roy Jones Jr."
+    },
+    "bonuses": {
+      "Footwork": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "diaz_war_card",
+    "name": "Diaz War Card",
+    "desc": "Nate Diaz heart and Gatti chin create ugly survivability.",
+    "requirements": {
+      "Heart": "Nate Diaz",
+      "Chin": "Arturo Gatti"
+    },
+    "bonuses": {
+      "Heart": 3,
+      "Chin": 1
+    }
+  },
+  {
+    "id": "money_mac",
+    "name": "Money Mac",
+    "desc": "McGregor power and Mayweather defence make a loud, awkward cash fight.",
+    "requirements": {
+      "Power": "Conor McGregor",
+      "Defence": "Floyd Mayweather Jr."
+    },
+    "bonuses": {
+      "Power": 1,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "stockton_storm",
+    "name": "Stockton Storm",
+    "desc": "Diaz stamina and Margarito chin refuse to go away.",
+    "requirements": {
+      "Stamina": "Nate Diaz",
+      "Chin": "Antonio Margarito"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Chin": 2
+    }
+  },
+  {
+    "id": "spider_school",
+    "name": "Spider School",
+    "desc": "Silva ring IQ and Hopkins defence turn patience into traps.",
+    "requirements": {
+      "Ring IQ": "Anderson Silva",
+      "Defence": "Bernard Hopkins"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "heavy_hands_heritage",
+    "name": "Heavy Hands Heritage",
+    "desc": "Povetkin power and Frazier heart make compact pressure dangerous.",
+    "requirements": {
+      "Power": "Alexander Povetkin",
+      "Heart": "Joe Frazier"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "kabayel_body_map",
+    "name": "Kabayel Body Map",
+    "desc": "Kabayel stamina and Usyk footwork break bigger bodies down.",
+    "requirements": {
+      "Stamina": "Agit Kabayel",
+      "Footwork": "Oleksandr Usyk"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "yoka_gold_standard",
+    "name": "Yoka Gold Standard",
+    "desc": "Yoka footwork and Joshua power carry Olympic shine into the pros.",
+    "requirements": {
+      "Footwork": "Tony Yoka",
+      "Power": "Anthony Joshua"
+    },
+    "bonuses": {
+      "Footwork": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "benavidez_blizzard",
+    "name": "Benavidez Blizzard",
+    "desc": "Benavidez stamina and Calzaghe speed bury opponents in volume.",
+    "requirements": {
+      "Stamina": "David Benavidez",
+      "Speed": "Joe Calzaghe"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "plant_and_counter",
+    "name": "Plant And Counter",
+    "desc": "Plant defence and Crawford accuracy punish reckless entries.",
+    "requirements": {
+      "Defence": "Caleb Plant",
+      "Accuracy": "Terence Crawford"
+    },
+    "bonuses": {
+      "Defence": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "bjs_magic_circle",
+    "name": "BJS Magic Circle",
+    "desc": "Saunders ring IQ and Lomachenko footwork make the ring feel tilted.",
+    "requirements": {
+      "Ring IQ": "Billy Joe Saunders",
+      "Footwork": "Vasyl Lomachenko"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "andrade_labyrinth",
+    "name": "Andrade Labyrinth",
+    "desc": "Andrade footwork and Whitaker defence turn rounds into riddles.",
+    "requirements": {
+      "Footwork": "Demetrius Andrade",
+      "Defence": "Pernell Whitaker"
+    },
+    "bonuses": {
+      "Footwork": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "arthur_guard",
+    "name": "Arthur Guard",
+    "desc": "Abraham chin and Winky Wright defence make a tight high guard.",
+    "requirements": {
+      "Chin": "Arthur Abraham",
+      "Defence": "Winky Wright"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "chavez_jr_pressure_name",
+    "name": "Chavez Jr Pressure Name",
+    "desc": "Chavez Jr chin and Chavez Sr heart drag fights into family territory.",
+    "requirements": {
+      "Chin": "Julio Cesar Chavez Jr",
+      "Heart": "Julio Cesar Chavez"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "garcia_no_look_hook",
+    "name": "Garcia No-Look Hook",
+    "desc": "Danny Garcia power and Khan speed make timing sudden.",
+    "requirements": {
+      "Power": "Danny Garcia",
+      "Speed": "Amir Khan"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "porter_maul",
+    "name": "Porter Maul",
+    "desc": "Porter stamina and Hatton heart make clinches feel like rounds.",
+    "requirements": {
+      "Stamina": "Shawn Porter",
+      "Heart": "Ricky Hatton"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "thurman_one_time",
+    "name": "Thurman One Time",
+    "desc": "Thurman power and Leonard speed bring ambushes from distance.",
+    "requirements": {
+      "Power": "Keith Thurman",
+      "Speed": "Sugar Ray Leonard"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "ennis_switchboard",
+    "name": "Ennis Switchboard",
+    "desc": "Ennis accuracy and Andrade footwork make stance changes nasty.",
+    "requirements": {
+      "Accuracy": "Jaron Ennis",
+      "Footwork": "Demetrius Andrade"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "vergil_breaker",
+    "name": "Vergil Breaker",
+    "desc": "Vergil Ortiz power and Margarito stamina promise a cruel pace.",
+    "requirements": {
+      "Power": "Vergil Ortiz Jr",
+      "Stamina": "Antonio Margarito"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "tszyu_ice",
+    "name": "Tszyu Ice",
+    "desc": "Tim Tszyu ring IQ and Tszyu power make pressure disciplined.",
+    "requirements": {
+      "Ring IQ": "Tim Tszyu",
+      "Power": "Kostya Tszyu"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "fundora_furnace",
+    "name": "Fundora Furnace",
+    "desc": "Fundora heart and Benavidez power create a long-armed firefight.",
+    "requirements": {
+      "Heart": "Sebastian Fundora",
+      "Power": "David Benavidez"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "paro_cool_hand",
+    "name": "Paro Cool Hand",
+    "desc": "Paro ring IQ and Taylor footwork keep danger at arm's length.",
+    "requirements": {
+      "Ring IQ": "Liam Paro",
+      "Footwork": "Josh Taylor"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "broner_problem",
+    "name": "Broner Problem",
+    "desc": "Broner defence and Toney ring IQ make shoulder-roll habits useful.",
+    "requirements": {
+      "Defence": "Adrien Broner",
+      "Ring IQ": "James Toney"
+    },
+    "bonuses": {
+      "Defence": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "vargas_close_rounds",
+    "name": "Vargas Close Rounds",
+    "desc": "Vargas stamina and De La Hoya accuracy please the judges.",
+    "requirements": {
+      "Stamina": "Jessie Vargas",
+      "Accuracy": "Oscar De La Hoya"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "rios_phonebooth",
+    "name": "Rios Phonebooth",
+    "desc": "Rios chin and Duran power reward staying in the pocket.",
+    "requirements": {
+      "Chin": "Brandon Rios",
+      "Power": "Roberto Duran"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "linares_showcase",
+    "name": "Linares Showcase",
+    "desc": "Linares speed and Marquez accuracy look perfect until danger arrives.",
+    "requirements": {
+      "Speed": "Jorge Linares",
+      "Accuracy": "Juan Manuel Marquez"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "gamboa_spark",
+    "name": "Gamboa Spark",
+    "desc": "Gamboa speed and Hamed power create a reckless highlight reel.",
+    "requirements": {
+      "Speed": "Yuriorkis Gamboa",
+      "Power": "Naseem Hamed"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "mares_battle_hardened",
+    "name": "Mares Battle Hardened",
+    "desc": "Mares heart and Warrington stamina make pressure honest.",
+    "requirements": {
+      "Heart": "Abner Mares",
+      "Stamina": "Josh Warrington"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "douglas_miracle_night",
+    "name": "Douglas Miracle Night",
+    "desc": "Douglas accuracy and Ali heart give the underdog a script.",
+    "requirements": {
+      "Accuracy": "Buster Douglas",
+      "Heart": "Muhammad Ali"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "okolie_clinch_code",
+    "name": "Okolie Clinch Code",
+    "desc": "Okolie defence and Wladimir ring IQ make range miserable.",
+    "requirements": {
+      "Defence": "Lawrence Okolie",
+      "Ring IQ": "Wladimir Klitschko"
+    },
+    "bonuses": {
+      "Defence": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "billam_smith_tide",
+    "name": "Billam-Smith Tide",
+    "desc": "Billam-Smith chin and Holyfield heart make a seafront war.",
+    "requirements": {
+      "Chin": "Chris Billam-Smith",
+      "Heart": "Evander Holyfield"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "wardley_brawler",
+    "name": "Wardley Brawler",
+    "desc": "Wardley power and Chisora heart make every exchange loud.",
+    "requirements": {
+      "Power": "Fabio Wardley",
+      "Heart": "Dereck Chisora"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "bakole_pressure_cooker",
+    "name": "Bakole Pressure Cooker",
+    "desc": "Bakole chin and Zhang power keep heavyweights nervous.",
+    "requirements": {
+      "Chin": "Martin Bakole",
+      "Power": "Zhilei Zhang"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "pascal_ambush",
+    "name": "Pascal Ambush",
+    "desc": "Pascal speed and Roy Jones Jr ring IQ create sudden traps.",
+    "requirements": {
+      "Speed": "Jean Pascal",
+      "Ring IQ": "Roy Jones Jr."
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "badou_late_rounds",
+    "name": "Badou Late Rounds",
+    "desc": "Badou Jack recovery and Hopkins ring IQ mature into control.",
+    "requirements": {
+      "Recovery": "Badou Jack",
+      "Ring IQ": "Bernard Hopkins"
+    },
+    "bonuses": {
+      "Recovery": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "ramirez_long_game",
+    "name": "Ramirez Long Game",
+    "desc": "Ramirez stamina and Canelo accuracy make patience pay.",
+    "requirements": {
+      "Stamina": "Gilberto Ramirez",
+      "Accuracy": "Canelo Alvarez"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "callum_lever",
+    "name": "Callum Lever",
+    "desc": "Callum Smith power and Froch chin make long right hands count.",
+    "requirements": {
+      "Power": "Callum Smith",
+      "Chin": "Carl Froch"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Chin": 2
+    }
+  },
+  {
+    "id": "degale_olympic_turn",
+    "name": "DeGale Olympic Turn",
+    "desc": "DeGale ring IQ and Ward defence bring medal-table craft.",
+    "requirements": {
+      "Ring IQ": "James DeGale",
+      "Defence": "Andre Ward"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "crolla_million_dollar",
+    "name": "Crolla Million Dollar",
+    "desc": "Crolla heart and Gatti recovery make the crowd believe.",
+    "requirements": {
+      "Heart": "Anthony Crolla",
+      "Recovery": "Arturo Gatti"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Recovery": 2
+    }
+  },
+  {
+    "id": "quigg_short_hook",
+    "name": "Quigg Short Hook",
+    "desc": "Quigg power and Frampton footwork make a domestic trap.",
+    "requirements": {
+      "Power": "Scott Quigg",
+      "Footwork": "Carl Frampton"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "warrington_wall_noise",
+    "name": "Warrington Wall Noise",
+    "desc": "Warrington stamina and Hatton pressure make arenas shake.",
+    "requirements": {
+      "Stamina": "Josh Warrington",
+      "Heart": "Ricky Hatton"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "royal_jab_line",
+    "name": "Royal Jab Line",
+    "desc": "Holmes accuracy and Khan speed keep opponents pinned outside.",
+    "requirements": {
+      "Accuracy": "Larry Holmes",
+      "Speed": "Amir Khan"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "old_master_new_engine",
+    "name": "Old Master New Engine",
+    "desc": "Hopkins ring IQ and Ennis speed make youth listen to age.",
+    "requirements": {
+      "Ring IQ": "Bernard Hopkins",
+      "Speed": "Jaron Ennis"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "body_snatcher_bank",
+    "name": "Body Snatcher Bank",
+    "desc": "Spence accuracy and Cotto power punish the beltline.",
+    "requirements": {
+      "Accuracy": "Errol Spence Jr",
+      "Power": "Miguel Cotto"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "aztec_pressure",
+    "name": "Aztec Pressure",
+    "desc": "Morales heart and Roman Gonzalez stamina build beautiful violence.",
+    "requirements": {
+      "Heart": "Erik Morales",
+      "Stamina": "Roman Gonzalez"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "barrera_blueprint",
+    "name": "Barrera Blueprint",
+    "desc": "Barrera ring IQ and Donaire power turn reads into left hooks.",
+    "requirements": {
+      "Ring IQ": "Marco Antonio Barrera",
+      "Power": "Nonito Donaire"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "marquez_receipt",
+    "name": "Marquez Receipt",
+    "desc": "Marquez ring IQ and Taylor speed make counters arrive on time.",
+    "requirements": {
+      "Ring IQ": "Juan Manuel Marquez",
+      "Speed": "Josh Taylor"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Speed": 2
+    }
+  },
+  {
+    "id": "roman_small_ring",
+    "name": "Roman Small Ring",
+    "desc": "Roman Gonzalez accuracy and Warrington heart prove size is not everything.",
+    "requirements": {
+      "Accuracy": "Roman Gonzalez",
+      "Heart": "Josh Warrington"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "donaire_flashpoint",
+    "name": "Donaire Flashpoint",
+    "desc": "Donaire power and Gamboa footwork make the first mistake fatal.",
+    "requirements": {
+      "Power": "Nonito Donaire",
+      "Footwork": "Yuriorkis Gamboa"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "boots_and_spence",
+    "name": "Boots And Spence",
+    "desc": "Ennis speed and Spence defence make a modern welterweight lab.",
+    "requirements": {
+      "Speed": "Jaron Ennis",
+      "Defence": "Errol Spence Jr"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "thurman_garcia_timing",
+    "name": "Thurman Garcia Timing",
+    "desc": "Thurman speed and Garcia accuracy find shots between beats.",
+    "requirements": {
+      "Speed": "Keith Thurman",
+      "Accuracy": "Danny Garcia"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "porter_fundora_swarm",
+    "name": "Porter Fundora Swarm",
+    "desc": "Porter heart and Fundora stamina make space disappear.",
+    "requirements": {
+      "Heart": "Shawn Porter",
+      "Stamina": "Sebastian Fundora"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Stamina": 2
+    }
+  },
+  {
+    "id": "prograis_left_hand",
+    "name": "Prograis Left Hand",
+    "desc": "Prograis power and Saunders footwork sharpen southpaw counters.",
+    "requirements": {
+      "Power": "Regis Prograis",
+      "Footwork": "Billy Joe Saunders"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "ramirez_taylor_war",
+    "name": "Ramirez Taylor War",
+    "desc": "Jose Ramirez heart and Josh Taylor accuracy score through traffic.",
+    "requirements": {
+      "Heart": "Jose Ramirez",
+      "Accuracy": "Josh Taylor"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "plant_degale_mirror",
+    "name": "Plant Degale Mirror",
+    "desc": "Plant defence and DeGale footwork make an awkward mirror match.",
+    "requirements": {
+      "Defence": "Caleb Plant",
+      "Footwork": "James DeGale"
+    },
+    "bonuses": {
+      "Defence": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "benavidez_ortiz_storm",
+    "name": "Benavidez Ortiz Storm",
+    "desc": "Benavidez stamina and Vergil Ortiz power make a young storm.",
+    "requirements": {
+      "Stamina": "David Benavidez",
+      "Power": "Vergil Ortiz Jr"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "andrade_boots_switch",
+    "name": "Andrade Boots Switch",
+    "desc": "Andrade ring IQ and Ennis accuracy punish straight lines.",
+    "requirements": {
+      "Ring IQ": "Demetrius Andrade",
+      "Accuracy": "Jaron Ennis"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "arthur_lemieux_bunker",
+    "name": "Arthur Lemieux Bunker",
+    "desc": "Abraham chin and Lemieux power are crude but terrifying.",
+    "requirements": {
+      "Chin": "Arthur Abraham",
+      "Power": "David Lemieux"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "sturm_jack_patience",
+    "name": "Sturm Jack Patience",
+    "desc": "Sturm defence and Badou Jack recovery reward slow-burning rounds.",
+    "requirements": {
+      "Defence": "Felix Sturm",
+      "Recovery": "Badou Jack"
+    },
+    "bonuses": {
+      "Defence": 2,
+      "Recovery": 2
+    }
+  },
+  {
+    "id": "pascal_broner_flash",
+    "name": "Pascal Broner Flash",
+    "desc": "Pascal speed and Broner defence make a flashy spoiler.",
+    "requirements": {
+      "Speed": "Jean Pascal",
+      "Defence": "Adrien Broner"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "rios_diaz_no_quit",
+    "name": "Rios Diaz No Quit",
+    "desc": "Rios chin and Nate Diaz heart create a cursed survival build.",
+    "requirements": {
+      "Chin": "Brandon Rios",
+      "Heart": "Nate Diaz"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "mcgregor_hamed_noise",
+    "name": "Mcgregor Hamed Noise",
+    "desc": "McGregor power and Hamed footwork turn entrances into danger.",
+    "requirements": {
+      "Power": "Conor McGregor",
+      "Footwork": "Naseem Hamed"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Footwork": 2
+    }
+  },
+  {
+    "id": "silva_toney_reads",
+    "name": "Silva Toney Reads",
+    "desc": "Silva ring IQ and Toney defence make timing slippery.",
+    "requirements": {
+      "Ring IQ": "Anderson Silva",
+      "Defence": "James Toney"
+    },
+    "bonuses": {
+      "Ring IQ": 2,
+      "Defence": 2
+    }
+  },
+  {
+    "id": "diaz_gatti_warpath",
+    "name": "Diaz Gatti Warpath",
+    "desc": "Diaz recovery and Gatti heart make damage part of the show.",
+    "requirements": {
+      "Recovery": "Nate Diaz",
+      "Heart": "Arturo Gatti"
+    },
+    "bonuses": {
+      "Recovery": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "cotto_barrera_craft",
+    "name": "Cotto Barrera Craft",
+    "desc": "Cotto accuracy and Barrera ring IQ make pressure technical.",
+    "requirements": {
+      "Accuracy": "Miguel Cotto",
+      "Ring IQ": "Marco Antonio Barrera"
+    },
+    "bonuses": {
+      "Accuracy": 2,
+      "Ring IQ": 2
+    }
+  },
+  {
+    "id": "morales_marquez_pride",
+    "name": "Morales Marquez Pride",
+    "desc": "Morales heart and Marquez accuracy bring Mexican pride and counters.",
+    "requirements": {
+      "Heart": "Erik Morales",
+      "Accuracy": "Juan Manuel Marquez"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "donaire_roman_precision",
+    "name": "Donaire Roman Precision",
+    "desc": "Donaire power and Roman Gonzalez accuracy add danger to craft.",
+    "requirements": {
+      "Power": "Nonito Donaire",
+      "Accuracy": "Roman Gonzalez"
+    },
+    "bonuses": {
+      "Power": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "opetaia_gassiev_collision",
+    "name": "Opetaia Gassiev Collision",
+    "desc": "Opetaia speed and Gassiev power make cruiserweight fireworks.",
+    "requirements": {
+      "Speed": "Jai Opetaia",
+      "Power": "Murat Gassiev"
+    },
+    "bonuses": {
+      "Speed": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "glowacki_briedis_grit",
+    "name": "Glowacki Briedis Grit",
+    "desc": "Glowacki heart and Briedis accuracy make rough nights technical.",
+    "requirements": {
+      "Heart": "Krzysztof Glowacki",
+      "Accuracy": "Mairis Briedis"
+    },
+    "bonuses": {
+      "Heart": 2,
+      "Accuracy": 2
+    }
+  },
+  {
+    "id": "okolie_huck_ugly_range",
+    "name": "Okolie Huck Ugly Range",
+    "desc": "Okolie defence and Huck power make awkward cruiserweight danger.",
+    "requirements": {
+      "Defence": "Lawrence Okolie",
+      "Power": "Marco Huck"
+    },
+    "bonuses": {
+      "Defence": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "billam_smith_bellew_belief",
+    "name": "Billam Smith Bellew Belief",
+    "desc": "Billam-Smith recovery and Bellew heart make late drama believable.",
+    "requirements": {
+      "Recovery": "Chris Billam-Smith",
+      "Heart": "Tony Bellew"
+    },
+    "bonuses": {
+      "Recovery": 2,
+      "Heart": 2
+    }
+  },
+  {
+    "id": "bakole_povetkin_compact",
+    "name": "Bakole Povetkin Compact",
+    "desc": "Bakole chin and Povetkin power punish careless giants.",
+    "requirements": {
+      "Chin": "Martin Bakole",
+      "Power": "Alexander Povetkin"
+    },
+    "bonuses": {
+      "Chin": 2,
+      "Power": 2
+    }
+  },
+  {
+    "id": "kabayel_parker_engine",
+    "name": "Kabayel Parker Engine",
+    "desc": "Kabayel stamina and Parker speed make heavyweights work.",
+    "requirements": {
+      "Stamina": "Agit Kabayel",
+      "Speed": "Joseph Parker"
+    },
+    "bonuses": {
+      "Stamina": 2,
+      "Speed": 2
+    }
+  }
+];
+
+LEGENDS.push(...EXPANSION_FIGHTERS);
+TRAITS.push(...EXPANSION_TRAITS);
+SYNERGY.push(...EXPANSION_SYNERGIES);
+
 const STATS = ['Power','Chin','Speed','Footwork','Ring IQ','Heart','Defence','Stamina','Accuracy','Recovery'];
 const MODE = {easy:{id:'easy',name:'Four-Rounder',rerolls:2,oppMod:-2,purse:1.08,elite:1.18,ultra:1.08},normal:{id:'normal',name:'Title Distance',rerolls:1,oppMod:0,purse:1,elite:.92,ultra:.82},hard:{id:'hard',name:'Championship Gauntlet',rerolls:0,oppMod:2,purse:.92,elite:.60,ultra:.36}};
 const TRAIT_W = {common:42,uncommon:28,rare:16,epic:7,legendary:2,cursed:11};
@@ -1975,7 +5143,7 @@ function equipCollectionCosmetic(cosmeticId){
   renderCollectionScreen();
   if(S.player&&S.career) renderProfileFoundation();
 }
-function refreshMenu(){ updateWalletDisplays(); const r=getRecords(); $('rec-streak').innerText=r.bestRecord; $('rec-money').innerText=cash(r.mostMoney); $('rec-kos').innerText=r.mostKOs+' KO'; $('rec-tier').innerText=r.bestTier; const save=loadCareer(); if(save&&save.player&&save.career){ $('continue-btn').classList.remove('hidden'); $('delete-save-btn').classList.remove('hidden'); $('save-status').innerText='Career in progress'; $('save-fighter').innerText=save.player.Name||'Unnamed Fighter'; $('save-progress').innerText='Bout '+save.career.currentFight+'/50 • '+(MODE[save.career.mode]?.name||'Mode')+' • Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:''); } else { $('continue-btn').classList.add('hidden'); $('delete-save-btn').classList.add('hidden'); $('save-status').innerText='No active career'; $('save-fighter').innerText='-'; $('save-progress').innerText='-'; } }
+function refreshMenu(){ updateWalletDisplays(); const r=getRecords(); $('rec-streak').innerText=r.bestRecord; $('rec-money').innerText=cash(r.mostMoney); $('rec-kos').innerText=r.mostKOs+' KO'; $('rec-tier').innerText=r.bestTier; const save=loadCareer(); if(save&&save.player&&save.career){ $('continue-btn').classList.remove('hidden'); $('delete-save-btn').classList.remove('hidden'); $('save-status').innerText='Career in progress'; $('save-fighter').innerText=save.player.Name||'Unnamed Fighter'; $('save-progress').innerText='Bout '+save.career.currentFight+'/50 â€¢ '+(MODE[save.career.mode]?.name||'Mode')+' â€¢ Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:''); } else { $('continue-btn').classList.add('hidden'); $('delete-save-btn').classList.add('hidden'); $('save-status').innerText='No active career'; $('save-fighter').innerText='-'; $('save-progress').innerText='-'; } }
 let storeReturnScreen = 'menu-screen';
 function storeProfile(){
   if(S.player){ ensurePlayerFoundation(S.player); return createProfileFoundation(S.player); }
@@ -2025,7 +5193,7 @@ function selectMode(id){ S.mode=id; document.querySelectorAll('.mode-card').forE
 function valCls(v){ if(v==null)return'stat-tier-bad'; if(v>=99)return'stat-tier-ultra'; if(v>=95)return'stat-tier-legendary'; if(v>=90)return'stat-tier-mythic'; if(v>=85)return'stat-tier-epic'; if(v>=80)return'stat-tier-rare'; if(v>=75)return'stat-tier-uncommon'; if(v>=70)return'stat-tier-common'; if(v>=65)return'stat-tier-low'; if(v>=60)return'stat-tier-poor'; return'stat-tier-bad'; }
 function modeCfg(){ return MODE[S.career?.mode || S.mode || 'normal']; }
 function fresh(){ const profile=loadProfileFoundation(); S.player=applyProfileFoundation({Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}, profile); STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:S.mode,currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:MODE[S.mode].rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0,achievementStartIds:Object.keys(S.player.achievements?.unlocked||{}), firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false, profile50Counted: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
-function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?'('+(S.player.StatSources[st]||'Unknown')+')'+(S.player.PerfectSpinStats[st]?' • Perfect Spin':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
+function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?'('+(S.player.StatSources[st]||'Unknown')+')'+(S.player.PerfectSpinStats[st]?' â€¢ Perfect Spin':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
 function updateDraftTop(){ const cfg=modeCfg(); $('draft-mode-label').innerText=cfg.name; $('draft-rerolls-left').innerText=S.career.draftRerolls; $('reroll-btn').innerText='Use Re-Roll ('+S.career.draftRerolls+')'; $('reroll-btn').disabled=!S.awaiting || S.career.draftRerolls<=0; }
 function avgLegend(l){ return STATS.reduce((s,st)=>s+l[st],0)/STATS.length; }
 function weightedPick(list,fn){ const arr=list.map(item=>({item,weight:Math.max(0,fn(item))})); const total=arr.reduce((s,e)=>s+e.weight,0); let roll=Math.random()*total; for(const e of arr){ roll-=e.weight; if(roll<=0) return e.item; } return arr[arr.length-1].item; }
@@ -2038,13 +5206,13 @@ function startNewCareer(){ const profile=loadProfileFoundation(); if(!profile.pr
 function continueCareer(){ const d=loadCareer(); if(!d){ refreshMenu(); return; } S.mode=d.mode||d.career.mode||'normal'; S.player=d.player; S.career=d.career; S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; S.awaiting=false; S.perfect=false; selectMode(S.mode); if(!S.opponent&&S.career.currentFight<=50) generateOpponent(); checkAchievements(false); updateSynergyPanel(); updateHub(); screen('hub-screen'); }
 function deleteSave(){ clearCareer(); }
 function restartDraft(){ if(confirm('Restart this boxer draft and roll again from scratch?')) startNewCareer(); }
-function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=a.Name; $('slot-mid').innerText=b.Name; $('slot-bottom').innerText=c.Name; ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=S.legend.Name; $('slot-bottom').innerText=LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' • '+S.legend.Pool; if(S.perfect) txt+=' • Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
+function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=a.Name; $('slot-mid').innerText=b.Name; $('slot-bottom').innerText=c.Name; ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=S.legend.Name; $('slot-bottom').innerText=LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' â€¢ '+S.legend.Pool; if(S.perfect) txt+=' â€¢ Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
 function useReroll(){ if(!S.awaiting||S.career.draftRerolls<=0) return; S.career.draftRerolls--; saveCareer(); spinWheel(true,true); }
-function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} • ${t.rarity.toUpperCase()}\n\n${t.desc}`; }
+function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} â€¢ ${t.rarity.toUpperCase()}\n\n${t.desc}`; }
 function checkSynergy(){ const unlocked=[]; SYNERGY.forEach(sy=>{ const ok=Object.entries(sy.requirements).every(([st,name])=>S.player.StatSources[st]===name); if(ok) unlocked.push(sy); }); S.player.HiddenBonuses=unlocked; updateOverallDisplays(); }
 function updateSynergyPanel(){ const p=$('synergy-panel'); if(!(S.player.HiddenBonuses||[]).length){ p.innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; return; } p.innerHTML=''; S.player.HiddenBonuses.forEach(b=>{ const div=document.createElement('div'); div.className='trait-pill secret'; div.title=b.desc; div.innerHTML='<div class="trait-title">'+b.name+'</div><div>'+b.desc+'</div><span class="trait-chip secret">Secret</span>'; p.appendChild(div); }); }
 function lockStat(stat){ if(!S.legend||S.player.Stats[stat]!=null||!S.awaiting) return; let v=S.legend[stat]; if(S.perfect){ v=clamp(v+1,1,99); S.player.PerfectSpinStats[stat]=true; } S.player.Stats[stat]=v; S.player.StatSources[stat]=S.legend.Name; S.awaiting=false; checkSynergy(); buildDraft(); updateSynergyPanel(); if (v >= 98 || S.perfect) { playHeavenlyChord(); } else { playLock(); } $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('perfect-banner').classList.remove('active'); S.perfect=false; const filled=STATS.filter(st=>S.player.Stats[st]!=null).length; if(filled===10){ $('spin-btn').disabled=true; $('reroll-btn').disabled=true; $('draft-archetype').innerText=archetype(getPerm()).name; saveCareer(); setTimeout(()=>screen('trait-screen'),300); } else { $('spin-btn').disabled=false; updateDraftTop(); saveCareer(); } updateOverallDisplays(); }
-function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTraitBusy=true; const btn=$('trait-spin-btn'), reel=$('trait-result'); btn.disabled=true; const available=TRAITS.filter(t=>!(S.player.Traits||[]).some(x=>x.id===t.id)); let i=0; const loop=()=>{ if(i<12){ playTick(); const tease=choice(available); reel.innerText=tease.name+' • '+tease.rarity.toUpperCase(); reel.className='trait-reel '+tease.rarity; i++; setTimeout(loop,60+i*5); } else { playLock(); const pick=weightedPick(available,t=>{ let w=TRAIT_W[t.rarity]||8; if(t.type==='positive') w*=1.12; return w; }); S.player.Traits.push(pick); S.traitsRolled++; reel.innerText=pick.name+' • '+pick.rarity.toUpperCase(); reel.className='trait-reel '+pick.rarity; const box=document.createElement('div'); box.className='trait-pill '+(pick.type==='negative'?'negative ':'')+pick.rarity; box.title=traitTooltip(pick); box.innerHTML='<div class="trait-title">'+pick.name+' ('+pick.type.toUpperCase()+' • '+pick.rarity.toUpperCase()+')</div><div>'+pick.desc+'</div><span class="trait-chip '+pick.rarity+'">'+pick.rarity+'</span>'; $('trait-list').appendChild(box); $('draft-archetype').innerText=archetype(getPerm()).name; if(S.traitsRolled===1){ btn.innerText='Spin Trait #2'; btn.disabled=false; } else { btn.innerText='Draft Complete'; btn.disabled=true; } saveCareer(); updateOverallDisplays(); S.spinTraitBusy=false; } }; loop(); }
+function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTraitBusy=true; const btn=$('trait-spin-btn'), reel=$('trait-result'); btn.disabled=true; const available=TRAITS.filter(t=>!(S.player.Traits||[]).some(x=>x.id===t.id)); let i=0; const loop=()=>{ if(i<12){ playTick(); const tease=choice(available); reel.innerText=tease.name+' â€¢ '+tease.rarity.toUpperCase(); reel.className='trait-reel '+tease.rarity; i++; setTimeout(loop,60+i*5); } else { playLock(); const pick=weightedPick(available,t=>{ let w=TRAIT_W[t.rarity]||8; if(t.type==='positive') w*=1.12; return w; }); S.player.Traits.push(pick); S.traitsRolled++; reel.innerText=pick.name+' â€¢ '+pick.rarity.toUpperCase(); reel.className='trait-reel '+pick.rarity; const box=document.createElement('div'); box.className='trait-pill '+(pick.type==='negative'?'negative ':'')+pick.rarity; box.title=traitTooltip(pick); box.innerHTML='<div class="trait-title">'+pick.name+' ('+pick.type.toUpperCase()+' â€¢ '+pick.rarity.toUpperCase()+')</div><div>'+pick.desc+'</div><span class="trait-chip '+pick.rarity+'">'+pick.rarity+'</span>'; $('trait-list').appendChild(box); $('draft-archetype').innerText=archetype(getPerm()).name; if(S.traitsRolled===1){ btn.innerText='Spin Trait #2'; btn.disabled=false; } else { btn.innerText='Draft Complete'; btn.disabled=true; } saveCareer(); updateOverallDisplays(); S.spinTraitBusy=false; } }; loop(); }
 function getPerm(){ const s=deep(S.player.Stats); if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number')) return s; if(hasTrait('iron_chin')){s.Chin+=4; s.Recovery+=5;} if(hasTrait('glass_cannon')){s.Power+=8; s.Chin-=10;} if(hasTrait('counter_puncher')){s.Defence+=6; s['Ring IQ']+=6;} if(hasTrait('ring_general')){s['Ring IQ']+=4; s.Accuracy+=3;} if(hasTrait('volume_puncher')){s.Accuracy+=2; s.Stamina+=1;} if(hasTrait('generational_talent')) STATS.forEach(st=>s[st]+=3); if(hasTrait('supertank')){s.Chin+=7; s.Heart+=5; s.Recovery+=5;} (S.player.HiddenBonuses||[]).forEach(b=>Object.entries(b.bonuses).forEach(([st,amt])=>s[st]+=amt)); STATS.forEach(st=>s[st]=clamp(Math.round(s[st]),1,99)); return s; }
 function calculateOverall(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null && typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(()=>overall+=2); return clamp(Math.round(overall), 40, 99); }
 function updateOverallDisplays(){ const ovr=calculateOverall(); if($('overall-rating-draft')) $('overall-rating-draft').innerText=ovr; if($('overall-rating-trait')) $('overall-rating-trait').innerText=ovr; if($('overall-rating-hub')) $('overall-rating-hub').innerText=ovr; if($('hub-rating')) $('hub-rating').innerText='Rating '+ovr; }
@@ -2120,7 +5288,7 @@ function renderProfileFoundation(){
   const profile=saveProfileFromPlayer(S.player);
   if($('hub-avatar-preview')) $('hub-avatar-preview').innerHTML=avatarMarkup(profile.avatar, profile.equippedCosmetics);
   if($('hub-profile-name')) $('hub-profile-name').innerText=boxerDisplayName(profile);
-  if($('hub-profile-country')) $('hub-profile-country').innerText=(profile.nickname?'"'+profile.nickname+'" • ':'')+profile.country;
+  if($('hub-profile-country')) $('hub-profile-country').innerText=(profile.nickname?'"'+profile.nickname+'" â€¢ ':'')+profile.country;
   renderFighterCard(profile);
   if($('profile-username')) $('profile-username').innerText=S.player.username||'-';
   if($('profile-player-id')) $('profile-player-id').innerText=S.player.playerId||'-';
@@ -2130,35 +5298,35 @@ function renderProfileFoundation(){
   if($('profile-50-count')) $('profile-50-count').innerText=String(S.player.completed50And0Careers||0);
 }
 function updateHub(){ const cfg=modeCfg(); ensurePlayerFoundation(S.player); checkAchievements(!S.batch); updateOverallDisplays(); $('hub-fighter-name').innerText=S.player.Name; $('hub-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hub-record').className='record-badge '+(S.career.losses===0?'unbeaten':'flawed'); $('hub-money').innerText=cash(S.career.earnings); const a=archetype(getPerm()); $('hub-arch').innerText=a.name; $('hub-rank').innerText='Rank #'+S.career.worldRank; const streakEl = $('hub-streak'); streakEl.innerText='Streak '+S.career.winStreak; if(S.career.winStreak >= 5) streakEl.classList.add('green'); else streakEl.classList.remove('green'); $('hub-mode').innerText=cfg.name; $('hub-rank-line').innerText='#'+S.career.worldRank; $('hub-best-rank-line').innerText='#'+S.career.bestWorldRank; $('hub-title-def-line').innerText=S.career.titleDef||0; const titleDefTag = $('hub-title-def'); if(S.career.titleDef > 0){ titleDefTag.style.display='inline'; titleDefTag.innerText=S.career.titleDef+' Defense'+(S.career.titleDef>1?'s':''); } else { titleDefTag.style.display='none'; } ['WBC','WBA','IBF','WBO'].forEach(b=>{ if(S.career.belts.includes(b)) $('belt-'+b).classList.add('on'); else $('belt-'+b).classList.remove('on'); }); const g=$('stats-grid'); g.innerHTML=''; const s=getPerm(); STATS.forEach(st=>{ const card=document.createElement('div'); card.className='stat-card'; card.innerHTML='<div class="stat-head"><span>'+st+':</span><strong class="'+valCls(s[st])+'">'+s[st]+'</strong></div><div class="stat-source">'+(S.player.StatSources[st]?'('+S.player.StatSources[st]+')':'')+'</div>'; g.appendChild(card); }); const tr=$('hub-traits'); tr.innerHTML=''; if(!(S.player.Traits||[]).length&&!(S.player.HiddenBonuses||[]).length){ tr.innerHTML='<div style="color:var(--muted);text-align:center">No traits or synergies yet.</div>'; } else { const wrap=document.createElement('div'); wrap.className='chip-wrap'; (S.player.Traits||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip '+t.rarity; chip.title=traitTooltip(t); chip.innerText=t.name; wrap.appendChild(chip); }); (S.player.HiddenBonuses||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip secret'; chip.title=t.desc; chip.innerText=t.name; wrap.appendChild(chip); }); tr.appendChild(wrap); } renderProfileFoundation(); const hist=$('recent-history'); hist.innerHTML=''; if(!S.career.history.length) hist.innerHTML='<div style="color:var(--muted);text-align:center">No fight data recorded yet.</div>'; else S.career.history.slice(0,3).forEach(line=>{ const d=document.createElement('div'); d.innerText=line; hist.appendChild(d); }); if(S.opponent) $('enter-ring-btn').innerText='Enter the Ring to Face '+S.opponent.Name; else if(S.career.currentFight>50) $('enter-ring-btn').innerText='Career Complete'; else $('enter-ring-btn').innerText='Enter the Ring'; }
-function generateOpponent(){ if(S.career.currentFight>50){ if(!S.batch) triggerHof(); return; } const bout=S.career.currentFight, cfg=modeCfg(); let tier='Journeyman',baseMin=60,baseMax=72,rateMin=40,rateMax=55; if(bout>10&&bout<=25){ tier='Contender'; baseMin=73;baseMax=83;rateMin=56;rateMax=72; } else if(bout>25&&bout<=44){ tier='Championship Elite'; baseMin=84;baseMax=92;rateMin=73;rateMax=88; } else if(bout>=45){ tier='Pound-for-Pound Legend'; baseMin=92;baseMax=99;rateMin=89;rateMax=99; } let title=null; if(bout===15){ title='WBC'; tier='WBC World Championship'; } else if(bout===25){ title='WBA'; tier='WBA World Championship'; } else if(bout===35){ title='IBF'; tier='IBF World Championship'; } else if(bout===50){ title='WBO'; tier='Undisputed Mega-Fight'; } const slump=clamp(S.career.losses*2+S.career.draws+S.career.recentLossPenalty,0,12); if(bout>=35&&slump>=3){ baseMin-=Math.floor(slump*.8); baseMax-=Math.min(9,slump); rateMin-=Math.floor(slump*1.1); rateMax-=Math.floor(slump*1.0); if(bout>=45&&S.career.losses>=2) tier=title?title+' Rebuild Fight':'Late-Career Rebuild Bout'; } if(S.career.losses > 0 && S.career.winStreak === 0){ baseMin -= 4; baseMax -= 3; rateMin -= 5; rateMax -= 4; tier = bout <= 10 ? 'Comeback Opponent' : tier; } baseMin=clamp(baseMin,56,99); baseMax=clamp(baseMax,baseMin+4,99); rateMin=clamp(rateMin,38,99); rateMax=clamp(rateMax,rateMin+4,99); const style=choice(OPPSTYLE), name=choice(OPPF)+' '+choice(OPPL)+(Math.random()<.2?' Jr.':''); const opp={Name:name===S.player.Name?name+' II':name,Tier:tier,TitleOnLine:title,Style:style,Stats:{},Rating:rand(rateMin,rateMax)}; STATS.forEach(st=>opp.Stats[st]=rand(baseMin,baseMax)); if(style.power)opp.Stats.Power+=style.power; if(style.speed)opp.Stats.Speed+=style.speed; if(style.defence)opp.Stats.Defence+=style.defence; if(style.chin)opp.Stats.Chin+=style.chin; if(style.footwork)opp.Stats.Footwork+=style.footwork; if(style.ringIQ)opp.Stats['Ring IQ']+=style.ringIQ; if(style.heart)opp.Stats.Heart+=style.heart; if(style.stamina)opp.Stats.Stamina+=style.stamina; if(style.accuracy)opp.Stats.Accuracy+=style.accuracy; STATS.forEach(st=>opp.Stats[st]=clamp(opp.Stats[st]+cfg.oppMod,40,99)); const wins=Math.floor(bout*1.5)+rand(4,10); let losses=tier==='Journeyman'?rand(6,16):rand(0,4); if(bout>40&&slump<3)losses=rand(0,2); else if(slump>=4)losses=rand(3,7); opp.Record=wins+'-'+losses; S.opponent=opp; $('opp-bout').innerText='BOUT '+bout+'/50'; $('opp-tier').innerText=tier; $('opp-name').innerText=opp.Name; $('opp-details').innerText='Record: '+opp.Record+' | Power: '+opp.Stats.Power+' | Chin: '+opp.Stats.Chin+' | Speed: '+opp.Stats.Speed; const tags=$('opp-tags'); tags.innerHTML=''; let t=document.createElement('span'); t.className='tag'; t.innerText=opp.Style.name; tags.appendChild(t); t=document.createElement('span'); t.className='tag blue'; t.innerText='Rating '+opp.Rating; tags.appendChild(t); t=document.createElement('span'); t.className='tag green'; t.innerText='You rank #'+S.career.worldRank; tags.appendChild(t); if(title){ t=document.createElement('span'); t.className='tag gold'; t.innerText=title+' on the line'; tags.appendChild(t); } if(MILESTONES.includes(bout)){ t=document.createElement('span'); t.className='tag orange'; t.innerText='🏆 Milestone Fight'; tags.appendChild(t); } updateHub(); saveCareer(); }
+function generateOpponent(){ if(S.career.currentFight>50){ if(!S.batch) triggerHof(); return; } const bout=S.career.currentFight, cfg=modeCfg(); let tier='Journeyman',baseMin=60,baseMax=72,rateMin=40,rateMax=55; if(bout>10&&bout<=25){ tier='Contender'; baseMin=73;baseMax=83;rateMin=56;rateMax=72; } else if(bout>25&&bout<=44){ tier='Championship Elite'; baseMin=84;baseMax=92;rateMin=73;rateMax=88; } else if(bout>=45){ tier='Pound-for-Pound Legend'; baseMin=92;baseMax=99;rateMin=89;rateMax=99; } let title=null; if(bout===15){ title='WBC'; tier='WBC World Championship'; } else if(bout===25){ title='WBA'; tier='WBA World Championship'; } else if(bout===35){ title='IBF'; tier='IBF World Championship'; } else if(bout===50){ title='WBO'; tier='Undisputed Mega-Fight'; } const slump=clamp(S.career.losses*2+S.career.draws+S.career.recentLossPenalty,0,12); if(bout>=35&&slump>=3){ baseMin-=Math.floor(slump*.8); baseMax-=Math.min(9,slump); rateMin-=Math.floor(slump*1.1); rateMax-=Math.floor(slump*1.0); if(bout>=45&&S.career.losses>=2) tier=title?title+' Rebuild Fight':'Late-Career Rebuild Bout'; } if(S.career.losses > 0 && S.career.winStreak === 0){ baseMin -= 4; baseMax -= 3; rateMin -= 5; rateMax -= 4; tier = bout <= 10 ? 'Comeback Opponent' : tier; } baseMin=clamp(baseMin,56,99); baseMax=clamp(baseMax,baseMin+4,99); rateMin=clamp(rateMin,38,99); rateMax=clamp(rateMax,rateMin+4,99); const style=choice(OPPSTYLE), name=choice(OPPF)+' '+choice(OPPL)+(Math.random()<.2?' Jr.':''); const opp={Name:name===S.player.Name?name+' II':name,Tier:tier,TitleOnLine:title,Style:style,Stats:{},Rating:rand(rateMin,rateMax)}; STATS.forEach(st=>opp.Stats[st]=rand(baseMin,baseMax)); if(style.power)opp.Stats.Power+=style.power; if(style.speed)opp.Stats.Speed+=style.speed; if(style.defence)opp.Stats.Defence+=style.defence; if(style.chin)opp.Stats.Chin+=style.chin; if(style.footwork)opp.Stats.Footwork+=style.footwork; if(style.ringIQ)opp.Stats['Ring IQ']+=style.ringIQ; if(style.heart)opp.Stats.Heart+=style.heart; if(style.stamina)opp.Stats.Stamina+=style.stamina; if(style.accuracy)opp.Stats.Accuracy+=style.accuracy; STATS.forEach(st=>opp.Stats[st]=clamp(opp.Stats[st]+cfg.oppMod,40,99)); const wins=Math.floor(bout*1.5)+rand(4,10); let losses=tier==='Journeyman'?rand(6,16):rand(0,4); if(bout>40&&slump<3)losses=rand(0,2); else if(slump>=4)losses=rand(3,7); opp.Record=wins+'-'+losses; S.opponent=opp; $('opp-bout').innerText='BOUT '+bout+'/50'; $('opp-tier').innerText=tier; $('opp-name').innerText=opp.Name; $('opp-details').innerText='Record: '+opp.Record+' | Power: '+opp.Stats.Power+' | Chin: '+opp.Stats.Chin+' | Speed: '+opp.Stats.Speed; const tags=$('opp-tags'); tags.innerHTML=''; let t=document.createElement('span'); t.className='tag'; t.innerText=opp.Style.name; tags.appendChild(t); t=document.createElement('span'); t.className='tag blue'; t.innerText='Rating '+opp.Rating; tags.appendChild(t); t=document.createElement('span'); t.className='tag green'; t.innerText='You rank #'+S.career.worldRank; tags.appendChild(t); if(title){ t=document.createElement('span'); t.className='tag gold'; t.innerText=title+' on the line'; tags.appendChild(t); } if(MILESTONES.includes(bout)){ t=document.createElement('span'); t.className='tag orange'; t.innerText='ðŸ† Milestone Fight'; tags.appendChild(t); } updateHub(); saveCareer(); }
 function makeFight(){ const p=getPerm(), o=deep(S.opponent.Stats); return {p1:{name:S.player.Name,hp:p.Chin*4+p.Heart*2,maxHp:p.Chin*4+p.Heart*2,stamina:p.Stamina*5,maxStamina:p.Stamina*5,score:0,cut:0}, p2:{name:S.opponent.Name,hp:o.Chin*4+o.Heart*2,maxHp:o.Chin*4+o.Heart*2,stamina:o.Stamina*5,maxStamina:o.Stamina*5,score:0,cut:0}, flags:{p1BrokenHands:false,p1QuitTriggered:false}, round:1,done:false,winner:null,method:null,detail:null,log:[],rendered:0,p1Dom:0,p2Dom:0,p1Dmg:0,p2Dmg:0}; }
 function addLog(type,text){ S.fight.log.push({type,text}); }
 function renderFightLog(){ const box=$('fight-log'); for(let i=S.fight.rendered;i<S.fight.log.length;i++){ const e=S.fight.log[i], row=document.createElement('div'); row.className='line '+e.type; row.innerText=e.text; box.appendChild(row); } S.fight.rendered=S.fight.log.length; box.scrollTop=box.scrollHeight; }
 function updBars(){ $('c1-hp').style.width=Math.max(0,(S.fight.p1.hp/S.fight.p1.maxHp)*100)+'%'; $('c2-hp').style.width=Math.max(0,(S.fight.p2.hp/S.fight.p2.maxHp)*100)+'%'; $('c1-sta').style.width=Math.max(0,(S.fight.p1.stamina/S.fight.p1.maxStamina)*100)+'%'; $('c2-sta').style.width=Math.max(0,(S.fight.p2.stamina/S.fight.p2.maxStamina)*100)+'%'; }
 function roundStrength(side,round){ const me=side==='p1'; let st=me?getPerm():deep(S.opponent.Stats); if(me){ if(hasTrait('fast_starter')&&round<=3){st.Speed+=8;st.Accuracy+=8;} if(hasTrait('slow_starter')&&round<=3){st.Speed-=10;st.Accuracy-=10;} if(hasTrait('late_finisher')&&round>=9){st.Power+=8;st.Heart+=8;} if(hasTrait('brittle_hands')&&(round>=6||S.fight.flags.p1BrokenHands))st.Power-=12; if(hasTrait('quit_risk')&&S.fight.flags.p1QuitTriggered){st.Heart=40;st.Recovery=40;} } else if(hasTrait('southpaw_enigma')) st.Accuracy-=4; STATS.forEach(k=>st[k]=clamp(Math.round(st[k]),1,99)); return st; }
 function punchText(st,body){ const pool=[]; if(Math.random()<(body||0)||hasTrait('body_snatcher')) pool.push('Left Body Shot','Body Shot Barrage'); if(st.Power>=95) pool.push('Left Hook','Overhand Right','Short Right Hand','Uppercut'); if(st.Speed>=90) pool.push('Counter Left Hook','Rapid Combination'); if(st.Accuracy>=90) pool.push('Right Hand Over The Jab','Precision Counter'); if(!pool.length) pool.push('Heavy Hook','Right Hand','Accumulation','Counter Shot'); return choice(pool); }
-function maybeDoctor(attacker,key){ const side=S.fight[key]; let chance=(attacker.Accuracy+attacker.Speed)/7.5; if(key==='p1'&&hasTrait('fragile_cutman')) chance+=10; chance=clamp(chance-8,5,24); if(Math.random()*100<chance){ side.cut+=rand(6,11); addLog('cut','🩸 '+(key==='p1'?S.player.Name:S.opponent.Name)+' is cut and swelling is building.'); if(side.cut>=24){ S.fight.done=true; S.fight.winner=(key==='p1'?'p2':'p1'); S.fight.method='TKO'; S.fight.detail='Doctor Stoppage'; } } }
-function kdCheck(target,attackerName,defenderName,dmg,a,d,round){ const hpPct=target.hp/target.maxHp; let chance=15+(dmg*1.05)+((a.Power-d.Recovery)*.38)+((1-hpPct)*32)-((d.Heart-70)*.10); if(hasTrait('ko_artist')&&attackerName===S.player.Name&&hpPct<.5) chance+=10; chance=clamp(chance,12,82); if(Math.random()*100<chance){ target.hp-=Math.floor(dmg*.65); let detail=punchText(a,.25); const flash=round<=4&&dmg>target.maxHp*.10&&Math.random()<.15; const survive=clamp(d.Recovery+d.Heart*.24-dmg*1.12-(flash?14:0),5,90); if(Math.random()*100>survive){ if(flash) detail='Flash KO • '+detail; addLog('kd','💥 '+defenderName+' is flattened by a brutal '+detail.toLowerCase()+' from '+attackerName+'! No count. It\'s over.'); return {ko:true,detail}; } else { target.hp=Math.max(target.hp,Math.floor(target.maxHp*.16)); addLog('kd','🚨 Knockdown! '+defenderName+' crashes to the canvas but beats the count!'); return {ko:false,detail}; } } return null; }
-function luckyPunch(attacker, defender, attackerName, defenderName, round){ if(Math.random() > 0.04) return null; const detail = 'Lucky Punch • ' + choice(['Flash KO','Hail Mary Right Hand','Out of Nowhere']); addLog('kd','💥 '+defenderName+' caught flush by a '+ detail.toLowerCase() +' from '+attackerName+'! It\'s over!'); return {ko:true, detail}; }
-function simRound(){ const r=S.fight.round,p1=roundStrength('p1',r),p2=roundStrength('p2',r); let h1=Math.max(1,Math.floor((p1.Speed+p1.Accuracy+p1['Ring IQ']-(p2.Defence+p2.Footwork))/22)+3+rand(0,1)), h2=Math.max(1,Math.floor((p2.Speed+p2.Accuracy+p2['Ring IQ']-(p1.Defence+p1.Footwork))/22)+3+rand(0,1)); let d1=Math.max(4,Math.floor(h1*(p1.Power/19.5))), d2=Math.max(4,Math.floor(h2*(p2.Power/19.8))); if(hasTrait('ko_artist')&&(S.fight.p2.hp/S.fight.p2.maxHp)<.5) d1=Math.floor(d1*1.18); if(hasTrait('body_snatcher')&&Math.random()<.35) S.fight.p2.stamina=Math.max(8,S.fight.p2.stamina-rand(4,8)); if(hasTrait('ice_in_veins')&&Math.abs(S.fight.p1.score-S.fight.p2.score)<=2&&r>=8) d1+=3; if(hasTrait('volume_puncher')) d1+=2; d1=Math.floor(d1*(.88+Math.random()*.28)); d2=Math.floor(d2*(.88+Math.random()*.26)); if(Math.random()<(p1.Accuracy/200)){ d1=Math.floor(d1*1.4); addLog('crit','✨ '+S.player.Name+' clips '+S.opponent.Name+' with a perfect counter.'); } if(Math.random()<(p2.Accuracy/210)){ d2=Math.floor(d2*1.32); addLog('crit','✨ '+S.opponent.Name+' lands a sharp counter.'); } S.fight.p2.hp-=d1; S.fight.p1.hp-=d2; S.fight.p1Dmg+=d1; S.fight.p2Dmg+=d2; if(d1>d2+8) S.fight.p1Dom++; else if(d2>d1+8) S.fight.p2Dom++; addLog('action','R'+r+': '+S.player.Name+' lands '+h1+' scoring shots ('+d1+' dmg). '+S.opponent.Name+' answers with '+h2+' clean connects ('+d2+' dmg).'); if(d1>=13&&Math.random()<.24) maybeDoctor(p1,'p2'); if(!S.fight.done&&d2>=13&&Math.random()<.22) maybeDoctor(p2,'p1'); if(S.fight.done) return; let drain1=18,drain2=18; if(hasTrait('gas_out')&&r>=6) drain1*=1.6; if(hasTrait('second_wind')&&r>=7) drain1-=4; if(hasTrait('volume_puncher')&&r>=5) drain2+=2; S.fight.p1.stamina=Math.max(5,S.fight.p1.stamina-drain1+(p1.Recovery/9)); S.fight.p2.stamina=Math.max(5,S.fight.p2.stamina-drain2+(p2.Recovery/9)); const p1Collapse=S.fight.p1.stamina/S.fight.p1.maxStamina<.25,p2Collapse=S.fight.p2.stamina/S.fight.p2.maxStamina<.25; if(p1Collapse) d2=Math.floor(d2*1.25); if(p2Collapse) d1=Math.floor(d1*1.25); const lucky1 = luckyPunch(p1, p2, S.player.Name, S.opponent.Name, r); if(lucky1 && lucky1.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=lucky1.detail; return; } const lucky2 = luckyPunch(p2, p1, S.opponent.Name, S.player.Name, r); if(lucky2 && lucky2.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=lucky2.detail; return; } if(!S.fight.done&&(S.fight.p2.hp<=0||d1>S.fight.p2.maxHp*.105)){ const kd=kdCheck(S.fight.p2,S.player.Name,S.opponent.Name,d1,p1,p2,r); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('brittle_hands')) S.fight.flags.p1BrokenHands=true; } if(!S.fight.done&&(S.fight.p1.hp<=0||d2>S.fight.p1.maxHp*.105)){ const kd=kdCheck(S.fight.p1,S.opponent.Name,S.player.Name,d2,p2,p1,r); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('quit_risk')) S.fight.flags.p1QuitTriggered=true; } const p2Weak=(S.fight.p2.hp/S.fight.p2.maxHp)<.24||(S.fight.p2.stamina/S.fight.p2.maxStamina)<.22, p1Weak=(S.fight.p1.hp/S.fight.p1.maxHp)<.24||(S.fight.p1.stamina/S.fight.p1.maxStamina)<.22; if(!S.fight.done&&r>=7&&p2Weak){ let chance=.14; if(r>=9) chance+=.12; if(S.fight.p1Dom>=3) chance+=.10; if(S.fight.p1Dmg>S.fight.p2Dmg+40) chance+=.10; if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.18) chance+=.08; if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p1'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); addLog('system','⏹ '+S.opponent.Name+' cannot continue. '+S.fight.detail+'.'); return; } } if(!S.fight.done&&r>=7&&p1Weak){ let chance=.11; if(r>=9) chance+=.08; if(S.fight.p2Dom>=3) chance+=.08; if(S.fight.p2Dmg>S.fight.p1Dmg+40) chance+=.08; if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.18) chance+=.08; if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p2'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); addLog('system','⏹ '+S.player.Name+' cannot continue. '+S.fight.detail+'.'); return; } } let score1=10,score2=9; const ctrl1=(p1.Speed+p1.Accuracy+p1['Ring IQ']+d1*.9)+(hasTrait('ice_in_veins')?3:0)+(hasTrait('ring_general')?3:0)-(hasTrait('low_iq')?4:0), ctrl2=(p2.Speed+p2.Accuracy+p2['Ring IQ']+d2*.9); if(Math.abs(ctrl1-ctrl2)<4){ if(Math.random()<.05){score1=10;score2=10;} else if(ctrl1>=ctrl2){score1=10;score2=9;} else {score1=9;score2=10;} } else if(ctrl2>ctrl1){ score1=9; score2=10; } S.fight.p1.score+=score1; S.fight.p2.score+=score2; }
+function maybeDoctor(attacker,key){ const side=S.fight[key]; let chance=(attacker.Accuracy+attacker.Speed)/7.5; if(key==='p1'&&hasTrait('fragile_cutman')) chance+=10; chance=clamp(chance-8,5,24); if(Math.random()*100<chance){ side.cut+=rand(6,11); addLog('cut','ðŸ©¸ '+(key==='p1'?S.player.Name:S.opponent.Name)+' is cut and swelling is building.'); if(side.cut>=24){ S.fight.done=true; S.fight.winner=(key==='p1'?'p2':'p1'); S.fight.method='TKO'; S.fight.detail='Doctor Stoppage'; } } }
+function kdCheck(target,attackerName,defenderName,dmg,a,d,round){ const hpPct=target.hp/target.maxHp; let chance=15+(dmg*1.05)+((a.Power-d.Recovery)*.38)+((1-hpPct)*32)-((d.Heart-70)*.10); if(hasTrait('ko_artist')&&attackerName===S.player.Name&&hpPct<.5) chance+=10; chance=clamp(chance,12,82); if(Math.random()*100<chance){ target.hp-=Math.floor(dmg*.65); let detail=punchText(a,.25); const flash=round<=4&&dmg>target.maxHp*.10&&Math.random()<.15; const survive=clamp(d.Recovery+d.Heart*.24-dmg*1.12-(flash?14:0),5,90); if(Math.random()*100>survive){ if(flash) detail='Flash KO â€¢ '+detail; addLog('kd','ðŸ’¥ '+defenderName+' is flattened by a brutal '+detail.toLowerCase()+' from '+attackerName+'! No count. It\'s over.'); return {ko:true,detail}; } else { target.hp=Math.max(target.hp,Math.floor(target.maxHp*.16)); addLog('kd','ðŸš¨ Knockdown! '+defenderName+' crashes to the canvas but beats the count!'); return {ko:false,detail}; } } return null; }
+function luckyPunch(attacker, defender, attackerName, defenderName, round){ if(Math.random() > 0.04) return null; const detail = 'Lucky Punch â€¢ ' + choice(['Flash KO','Hail Mary Right Hand','Out of Nowhere']); addLog('kd','ðŸ’¥ '+defenderName+' caught flush by a '+ detail.toLowerCase() +' from '+attackerName+'! It\'s over!'); return {ko:true, detail}; }
+function simRound(){ const r=S.fight.round,p1=roundStrength('p1',r),p2=roundStrength('p2',r); let h1=Math.max(1,Math.floor((p1.Speed+p1.Accuracy+p1['Ring IQ']-(p2.Defence+p2.Footwork))/22)+3+rand(0,1)), h2=Math.max(1,Math.floor((p2.Speed+p2.Accuracy+p2['Ring IQ']-(p1.Defence+p1.Footwork))/22)+3+rand(0,1)); let d1=Math.max(4,Math.floor(h1*(p1.Power/19.5))), d2=Math.max(4,Math.floor(h2*(p2.Power/19.8))); if(hasTrait('ko_artist')&&(S.fight.p2.hp/S.fight.p2.maxHp)<.5) d1=Math.floor(d1*1.18); if(hasTrait('body_snatcher')&&Math.random()<.35) S.fight.p2.stamina=Math.max(8,S.fight.p2.stamina-rand(4,8)); if(hasTrait('ice_in_veins')&&Math.abs(S.fight.p1.score-S.fight.p2.score)<=2&&r>=8) d1+=3; if(hasTrait('volume_puncher')) d1+=2; d1=Math.floor(d1*(.88+Math.random()*.28)); d2=Math.floor(d2*(.88+Math.random()*.26)); if(Math.random()<(p1.Accuracy/200)){ d1=Math.floor(d1*1.4); addLog('crit','âœ¨ '+S.player.Name+' clips '+S.opponent.Name+' with a perfect counter.'); } if(Math.random()<(p2.Accuracy/210)){ d2=Math.floor(d2*1.32); addLog('crit','âœ¨ '+S.opponent.Name+' lands a sharp counter.'); } S.fight.p2.hp-=d1; S.fight.p1.hp-=d2; S.fight.p1Dmg+=d1; S.fight.p2Dmg+=d2; if(d1>d2+8) S.fight.p1Dom++; else if(d2>d1+8) S.fight.p2Dom++; addLog('action','R'+r+': '+S.player.Name+' lands '+h1+' scoring shots ('+d1+' dmg). '+S.opponent.Name+' answers with '+h2+' clean connects ('+d2+' dmg).'); if(d1>=13&&Math.random()<.24) maybeDoctor(p1,'p2'); if(!S.fight.done&&d2>=13&&Math.random()<.22) maybeDoctor(p2,'p1'); if(S.fight.done) return; let drain1=18,drain2=18; if(hasTrait('gas_out')&&r>=6) drain1*=1.6; if(hasTrait('second_wind')&&r>=7) drain1-=4; if(hasTrait('volume_puncher')&&r>=5) drain2+=2; S.fight.p1.stamina=Math.max(5,S.fight.p1.stamina-drain1+(p1.Recovery/9)); S.fight.p2.stamina=Math.max(5,S.fight.p2.stamina-drain2+(p2.Recovery/9)); const p1Collapse=S.fight.p1.stamina/S.fight.p1.maxStamina<.25,p2Collapse=S.fight.p2.stamina/S.fight.p2.maxStamina<.25; if(p1Collapse) d2=Math.floor(d2*1.25); if(p2Collapse) d1=Math.floor(d1*1.25); const lucky1 = luckyPunch(p1, p2, S.player.Name, S.opponent.Name, r); if(lucky1 && lucky1.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=lucky1.detail; return; } const lucky2 = luckyPunch(p2, p1, S.opponent.Name, S.player.Name, r); if(lucky2 && lucky2.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=lucky2.detail; return; } if(!S.fight.done&&(S.fight.p2.hp<=0||d1>S.fight.p2.maxHp*.105)){ const kd=kdCheck(S.fight.p2,S.player.Name,S.opponent.Name,d1,p1,p2,r); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('brittle_hands')) S.fight.flags.p1BrokenHands=true; } if(!S.fight.done&&(S.fight.p1.hp<=0||d2>S.fight.p1.maxHp*.105)){ const kd=kdCheck(S.fight.p1,S.opponent.Name,S.player.Name,d2,p2,p1,r); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('quit_risk')) S.fight.flags.p1QuitTriggered=true; } const p2Weak=(S.fight.p2.hp/S.fight.p2.maxHp)<.24||(S.fight.p2.stamina/S.fight.p2.maxStamina)<.22, p1Weak=(S.fight.p1.hp/S.fight.p1.maxHp)<.24||(S.fight.p1.stamina/S.fight.p1.maxStamina)<.22; if(!S.fight.done&&r>=7&&p2Weak){ let chance=.14; if(r>=9) chance+=.12; if(S.fight.p1Dom>=3) chance+=.10; if(S.fight.p1Dmg>S.fight.p2Dmg+40) chance+=.10; if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.18) chance+=.08; if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p1'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); addLog('system','â¹ '+S.opponent.Name+' cannot continue. '+S.fight.detail+'.'); return; } } if(!S.fight.done&&r>=7&&p1Weak){ let chance=.11; if(r>=9) chance+=.08; if(S.fight.p2Dom>=3) chance+=.08; if(S.fight.p2Dmg>S.fight.p1Dmg+40) chance+=.08; if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.18) chance+=.08; if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p2'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); addLog('system','â¹ '+S.player.Name+' cannot continue. '+S.fight.detail+'.'); return; } } let score1=10,score2=9; const ctrl1=(p1.Speed+p1.Accuracy+p1['Ring IQ']+d1*.9)+(hasTrait('ice_in_veins')?3:0)+(hasTrait('ring_general')?3:0)-(hasTrait('low_iq')?4:0), ctrl2=(p2.Speed+p2.Accuracy+p2['Ring IQ']+d2*.9); if(Math.abs(ctrl1-ctrl2)<4){ if(Math.random()<.05){score1=10;score2=10;} else if(ctrl1>=ctrl2){score1=10;score2=9;} else {score1=9;score2=10;} } else if(ctrl2>ctrl1){ score1=9; score2=10; } S.fight.p1.score+=score1; S.fight.p2.score+=score2; }
 function scoreDecision(){ S.fight.done=true; const diff=S.fight.p1.score-S.fight.p2.score; if(diff===0){ if(Math.random()<.18){ S.fight.winner='draw'; S.fight.method='Draw'; S.fight.detail='Even After 12'; } else if(Math.random()<.5){ S.fight.winner='p1'; S.fight.method='MD'; S.fight.detail='Competitive Decision'; } else { S.fight.winner='p2'; S.fight.method='MD'; S.fight.detail='Competitive Decision'; } return; } const ad=Math.abs(diff); S.fight.winner=diff>0?'p1':'p2'; if(ad===1) S.fight.method='SD'; else if(ad<=3) S.fight.method=Math.random()<.55?'SD':'MD'; else S.fight.method='UD'; S.fight.detail=choice(ad>=7?['Comfortable On The Cards','Took The Championship Rounds']:ad>=4?['Controlled The Fight','Clear Decision']:['Razor-Close Cards','Narrow But Fair']); }
-function startFight(instant){ if(S.batch) return; if(!S.opponent) generateOpponent(); S.fight=makeFight(); if(instant){ while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); finishBout(); } else { screen('fight-screen'); $('fight-title').innerText='BOUT #'+S.career.currentFight+' - 12 ROUNDS'; $('c1-name').innerText=S.fight.p1.name; $('c2-name').innerText=S.fight.p2.name; $('fight-log').innerHTML=''; $('round-display').innerText='ROUND 1'; $('fight-btn').innerText='Simulate Round 1'; $('fight-btn').disabled=false; $('fight-btn').onclick=()=>stepRound(); updBars(); addLog('system','🎟️ Main Event: '+S.player.Name+' vs '+S.opponent.Name); addLog('info','Opponent style: '+S.opponent.Style.name+' • Rating '+S.opponent.Rating+' • You rank #'+S.career.worldRank); renderFightLog(); } }
-function stepRound(){ if(S.fight.done) return; simRound(); renderFightLog(); updBars(); if(S.fight.done){ endFight(); return; } S.fight.round++; if(S.fight.round>12){ scoreDecision(); addLog('system', S.fight.winner==='p1'?'🏆 Fight over: '+S.player.Name+' wins by '+S.fight.method+(S.fight.detail?' • '+S.fight.detail:'')+'.':S.fight.winner==='p2'?'❌ Fight over: '+S.opponent.Name+' wins by '+S.fight.method+(S.fight.detail?' • '+S.fight.detail:'')+'.':'🤝 Fight over: the bout ends in a draw.'); renderFightLog(); endFight(); } else { $('round-display').innerText='ROUND '+S.fight.round; $('fight-btn').innerText='Simulate Round '+S.fight.round; } }
-function endFight(){ const row=document.createElement('div'); row.className='line system'; row.innerText=S.fight.winner==='p1'?'🏆 BOUT CONCLUDED: '+S.player.Name+' wins via '+S.fight.method+(S.fight.detail?' • '+S.fight.detail:'')+'!':S.fight.winner==='p2'?'❌ BOUT CONCLUDED: '+S.opponent.Name+' wins via '+S.fight.method+(S.fight.detail?' • '+S.fight.detail:'')+'.':'🤝 BOUT CONCLUDED: Draw.'; $('fight-log').appendChild(row); $('fight-log').scrollTop=$('fight-log').scrollHeight; const b=$('fight-btn'); b.innerText='Collect Purses & Return'; b.disabled=false; b.onclick=()=>{ b.disabled=true; finishBout(); }; }
+function startFight(instant){ if(S.batch) return; if(!S.opponent) generateOpponent(); S.fight=makeFight(); if(instant){ while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); finishBout(); } else { screen('fight-screen'); $('fight-title').innerText='BOUT #'+S.career.currentFight+' - 12 ROUNDS'; $('c1-name').innerText=S.fight.p1.name; $('c2-name').innerText=S.fight.p2.name; $('fight-log').innerHTML=''; $('round-display').innerText='ROUND 1'; $('fight-btn').innerText='Simulate Round 1'; $('fight-btn').disabled=false; $('fight-btn').onclick=()=>stepRound(); updBars(); addLog('system','ðŸŽŸï¸ Main Event: '+S.player.Name+' vs '+S.opponent.Name); addLog('info','Opponent style: '+S.opponent.Style.name+' â€¢ Rating '+S.opponent.Rating+' â€¢ You rank #'+S.career.worldRank); renderFightLog(); } }
+function stepRound(){ if(S.fight.done) return; simRound(); renderFightLog(); updBars(); if(S.fight.done){ endFight(); return; } S.fight.round++; if(S.fight.round>12){ scoreDecision(); addLog('system', S.fight.winner==='p1'?'ðŸ† Fight over: '+S.player.Name+' wins by '+S.fight.method+(S.fight.detail?' â€¢ '+S.fight.detail:'')+'.':S.fight.winner==='p2'?'âŒ Fight over: '+S.opponent.Name+' wins by '+S.fight.method+(S.fight.detail?' â€¢ '+S.fight.detail:'')+'.':'ðŸ¤ Fight over: the bout ends in a draw.'); renderFightLog(); endFight(); } else { $('round-display').innerText='ROUND '+S.fight.round; $('fight-btn').innerText='Simulate Round '+S.fight.round; } }
+function endFight(){ const row=document.createElement('div'); row.className='line system'; row.innerText=S.fight.winner==='p1'?'ðŸ† BOUT CONCLUDED: '+S.player.Name+' wins via '+S.fight.method+(S.fight.detail?' â€¢ '+S.fight.detail:'')+'!':S.fight.winner==='p2'?'âŒ BOUT CONCLUDED: '+S.opponent.Name+' wins via '+S.fight.method+(S.fight.detail?' â€¢ '+S.fight.detail:'')+'.':'ðŸ¤ BOUT CONCLUDED: Draw.'; $('fight-log').appendChild(row); $('fight-log').scrollTop=$('fight-log').scrollHeight; const b=$('fight-btn'); b.innerText='Collect Purses & Return'; b.disabled=false; b.onclick=()=>{ b.disabled=true; finishBout(); }; }
 function purse(){ let p=Math.floor(25000*Math.pow(1.13,S.career.currentFight)); if(S.opponent.Rating>=85) p=Math.floor(p*1.3); if(S.opponent.TitleOnLine) p=Math.floor(p*2.6); if(hasTrait('fan_favourite')) p=Math.floor(p*1.25); p = Math.floor(p * (1 + streakBonus())); return Math.floor(p*modeCfg().purse); }
 function weakText(){ const st=S.opponent.Stats, arr=[]; if(st.Chin<=76)arr.push('weak chin'); if(st.Recovery<=76)arr.push('poor recovery'); if(st.Stamina<=76)arr.push('limited stamina'); if(st.Defence<=76)arr.push('leaky defence'); if(st.Footwork<=76)arr.push('slow feet'); if(st.Speed<=76)arr.push('slow hands'); return choice(arr.length?arr:['fundamental issues']); }
 function sourceText(){ const src=S.player.StatSources||{}, stats=getPerm(), arr=[]; if(src.Power)arr.push(`${src.Power}'s power was too much for the opponent`); if(src.Speed)arr.push(`${src.Speed}'s speed controlled the tempo`); if(src.Footwork)arr.push(`${src.Footwork}'s footwork kept the angles clean`); if(src.Accuracy)arr.push(`${src.Accuracy}'s accuracy kept finding the target`); if(src['Ring IQ'])arr.push(`${src['Ring IQ']}'s ring IQ solved the fight`); if(src.Defence)arr.push(`${src.Defence}'s defence smothered the counters`); if(src.Heart)arr.push(`${src.Heart}'s heart took over in the hard moments`); const hi=STATS.slice().sort((a,b)=>stats[b]-stats[a])[0]; arr.push(src[hi]?`${src[hi]}'s ${hi.toLowerCase()} was a major edge`:`${hi} was a major edge`); if((S.player.HiddenBonuses||[]).length) arr.push(choice(S.player.HiddenBonuses).name+' gave the build an extra edge'); return choice(arr); }
 function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) extra.push('The cleaner work and control dominated the rounds.'); if(S.fight.p1Dmg>S.fight.p2Dmg+35) extra.push('The damage output was clearly tilting the fight.'); if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.28) extra.push('The opponent faded badly as stamina drained.'); if(S.fight.method==='KO'&&String(S.fight.detail||'').includes('Flash KO')) extra.push('One perfect shot ended it instantly.'); if(['TKO','RTD'].includes(S.fight.method)) extra.push('Sustained punishment forced the stoppage.'); const dom=choice(extra.length?extra:['The style edge kept stacking up over the rounds.']); if(kind==='win') return sourceText()+'. '+weakText().charAt(0).toUpperCase()+weakText().slice(1)+' was exposed. '+dom; if(kind==='loss') return S.opponent.Name+' exploited clear openings and your fighter never fully solved the pressure.'; return 'Neither fighter truly separated from the other over 12 rounds.'; }
-function histLine(bout,opp,icon,res,purseAmt,rank,arrow){ let line='Bout '+bout+': '+icon+' '+res+' vs '+opp; if(S.fight.method) line+=' ('+S.fight.method+(S.fight.detail?' • '+S.fight.detail:'')+')'; line+=' +'+cash(purseAmt)+' • World Rank #'+rank+' '+arrow; return line; }
-function finishBout(batch=false){ const isWin=S.fight.winner==='p1', isDraw=S.fight.winner==='draw', purseAmt=purse(), prev=S.career.worldRank, bout=S.career.currentFight, opp=S.opponent.Name, title=S.opponent.TitleOnLine; S.career.bestPurse=Math.max(S.career.bestPurse||0, purseAmt); if(isWin){ S.career.wins++; S.career.winStreak++; S.career.bestWinStreak=Math.max(S.career.bestWinStreak,S.career.winStreak); if(['KO','TKO','RTD'].includes(S.fight.method)) S.career.kos++; S.career.earnings+=purseAmt; if(title&&!S.career.belts.includes(title)) S.career.belts.push(title); if(title&&S.career.belts.includes(title)) S.career.titleDef++; S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-3); } else if(isDraw){ S.career.draws++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.45); S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-2); } else { S.career.losses++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.18); if(S.career.belts.length>0&&title) S.career.belts.pop(); S.career.recentLossPenalty+=2; if(S.career.worldRank===1) S.career.recentLossPenalty+=2; } S.career.currentFight++; recalcRank(); if(prev===1&&!isWin) S.career.worldRank=Math.max(2,Math.min(6,S.career.worldRank+rand(1,2))); const arrow=S.career.worldRank<prev?'⬆️':S.career.worldRank>prev?'⬇️':'➡️'; let line=''; if(isWin){ line=histLine(bout,opp,'✅','W',purseAmt,S.career.worldRank,arrow); if(title) line+=' 👑 '+title; } else if(isDraw) line=histLine(bout,opp,'🤝','D',Math.floor(purseAmt*.45),S.career.worldRank,arrow); else line=histLine(bout,opp,'❌','L',Math.floor(purseAmt*.18),S.career.worldRank,arrow); S.career.history.unshift(line); if(S.career.history.length>6) S.career.history.pop(); S.career.fullHistory.unshift(line); if(S.career.fullHistory.length>200) S.career.fullHistory=S.career.fullHistory.slice(0,200); if(S.career.currentFight>50){ clearCareer(); S.opponent=null; updateHub(); if(batch) S.pendingHof=true; else triggerHof(); } else { generateOpponent(); updateHub(); saveCareer(); if(!batch) screen('hub-screen'); } }
-function simResult(){ if(!S.opponent) generateOpponent(); const bout=S.career.currentFight, opp=S.opponent.Name, tier=S.opponent.Tier, title=S.opponent.TitleOnLine; S.fight=makeFight(); while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); const p=purse(), method=S.fight.method, detail=S.fight.detail||(method==='Draw'?'Even After 12':'Official Result'), pre=S.career.worldRank, kind=S.fight.winner==='p1'?'win':S.fight.winner==='p2'?'loss':'draw', ins=fightInsight(kind); const isMilestone = MILESTONES.includes(bout); finishBout(true); const post=S.career.worldRank, rankText='World Rank #'+post+' '+(post<pre?'⬆️':post>pre?'⬇️':'➡️'); if(kind==='win') return {bout,type:'win',outcome:(['KO','TKO','RTD'].includes(method)?'WIN • '+method:'WIN • DEC'),main:S.player.Name+' beat '+opp,method:method+(detail?' '+detail:''),sub:tier+(title?' • Won '+title:'')+' • '+cash(p)+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; if(kind==='loss') return {bout,type:'loss',outcome:(['KO','TKO','RTD'].includes(method)?'LOSS • '+method:'LOSS • DEC'),main:S.player.Name+' lost to '+opp,method:method+(detail?' • '+detail:''),sub:tier+(title?' • '+title+' slipped away':'')+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; return {bout,type:'draw',outcome:'DRAW',main:S.player.Name+' drew with '+opp,method:method+(detail?' • '+detail:''),sub:tier+' • Tough, close fight • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; }
+function histLine(bout,opp,icon,res,purseAmt,rank,arrow){ let line='Bout '+bout+': '+icon+' '+res+' vs '+opp; if(S.fight.method) line+=' ('+S.fight.method+(S.fight.detail?' â€¢ '+S.fight.detail:'')+')'; line+=' +'+cash(purseAmt)+' â€¢ World Rank #'+rank+' '+arrow; return line; }
+function finishBout(batch=false){ const isWin=S.fight.winner==='p1', isDraw=S.fight.winner==='draw', purseAmt=purse(), prev=S.career.worldRank, bout=S.career.currentFight, opp=S.opponent.Name, title=S.opponent.TitleOnLine; S.career.bestPurse=Math.max(S.career.bestPurse||0, purseAmt); if(isWin){ S.career.wins++; S.career.winStreak++; S.career.bestWinStreak=Math.max(S.career.bestWinStreak,S.career.winStreak); if(['KO','TKO','RTD'].includes(S.fight.method)) S.career.kos++; S.career.earnings+=purseAmt; if(title&&!S.career.belts.includes(title)) S.career.belts.push(title); if(title&&S.career.belts.includes(title)) S.career.titleDef++; S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-3); } else if(isDraw){ S.career.draws++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.45); S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-2); } else { S.career.losses++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.18); if(S.career.belts.length>0&&title) S.career.belts.pop(); S.career.recentLossPenalty+=2; if(S.career.worldRank===1) S.career.recentLossPenalty+=2; } S.career.currentFight++; recalcRank(); if(prev===1&&!isWin) S.career.worldRank=Math.max(2,Math.min(6,S.career.worldRank+rand(1,2))); const arrow=S.career.worldRank<prev?'â¬†ï¸':S.career.worldRank>prev?'â¬‡ï¸':'âž¡ï¸'; let line=''; if(isWin){ line=histLine(bout,opp,'âœ…','W',purseAmt,S.career.worldRank,arrow); if(title) line+=' ðŸ‘‘ '+title; } else if(isDraw) line=histLine(bout,opp,'ðŸ¤','D',Math.floor(purseAmt*.45),S.career.worldRank,arrow); else line=histLine(bout,opp,'âŒ','L',Math.floor(purseAmt*.18),S.career.worldRank,arrow); S.career.history.unshift(line); if(S.career.history.length>6) S.career.history.pop(); S.career.fullHistory.unshift(line); if(S.career.fullHistory.length>200) S.career.fullHistory=S.career.fullHistory.slice(0,200); if(S.career.currentFight>50){ clearCareer(); S.opponent=null; updateHub(); if(batch) S.pendingHof=true; else triggerHof(); } else { generateOpponent(); updateHub(); saveCareer(); if(!batch) screen('hub-screen'); } }
+function simResult(){ if(!S.opponent) generateOpponent(); const bout=S.career.currentFight, opp=S.opponent.Name, tier=S.opponent.Tier, title=S.opponent.TitleOnLine; S.fight=makeFight(); while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); const p=purse(), method=S.fight.method, detail=S.fight.detail||(method==='Draw'?'Even After 12':'Official Result'), pre=S.career.worldRank, kind=S.fight.winner==='p1'?'win':S.fight.winner==='p2'?'loss':'draw', ins=fightInsight(kind); const isMilestone = MILESTONES.includes(bout); finishBout(true); const post=S.career.worldRank, rankText='World Rank #'+post+' '+(post<pre?'â¬†ï¸':post>pre?'â¬‡ï¸':'âž¡ï¸'); if(kind==='win') return {bout,type:'win',outcome:(['KO','TKO','RTD'].includes(method)?'WIN â€¢ '+method:'WIN â€¢ DEC'),main:S.player.Name+' beat '+opp,method:method+(detail?' '+detail:''),sub:tier+(title?' â€¢ Won '+title:'')+' â€¢ '+cash(p)+' â€¢ '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; if(kind==='loss') return {bout,type:'loss',outcome:(['KO','TKO','RTD'].includes(method)?'LOSS â€¢ '+method:'LOSS â€¢ DEC'),main:S.player.Name+' lost to '+opp,method:method+(detail?' â€¢ '+detail:''),sub:tier+(title?' â€¢ '+title+' slipped away':'')+' â€¢ '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; return {bout,type:'draw',outcome:'DRAW',main:S.player.Name+' drew with '+opp,method:method+(detail?' â€¢ '+detail:''),sub:tier+' â€¢ Tough, close fight â€¢ '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; }
 function openOverlay(title){ $('sim-overlay').classList.remove('hidden'); $('sim-list').innerHTML=''; $('sim-subtitle').innerText=title||'Running bouts...'; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; $('sim-close-btn').classList.add('hidden'); $('sim-next-tease').classList.add('hidden'); }
 function closeOverlay(){ $('sim-overlay').classList.add('hidden'); if(S.pendingHof){ S.pendingHof=false; triggerHof(); } else { updateHub(); screen('hub-screen'); } }
 function toggleFast(){ S.fast=!S.fast; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; }
 function addSimCard(r){ const item=document.createElement('div'); item.className='sim-item '+r.type+(r.titleFight?' title':'')+(r.milestone?' milestone':''); let milestoneHtml = r.milestone ? '<span class="sim-milestone-badge">Milestone</span>' : ''; item.innerHTML='<div class="sim-top"><div class="sim-bout">Bout '+r.bout+'/50'+milestoneHtml+'</div><div class="sim-outcome '+r.type+'">'+r.outcome+'</div></div><div class="sim-main">'+r.main+'</div><div class="sim-method">'+r.method+'</div><div class="sim-sub">'+r.sub+'</div><div class="sim-insight">'+r.insight+'</div>'; $('sim-list').appendChild(item); $('sim-list').scrollTop=$('sim-list').scrollHeight; }
-function showNextTease(){ const tease = $('sim-next-tease'); if(S.career.currentFight <= 50 && S.opponent){ tease.innerHTML = '⚡ <strong>Next up:</strong> '+S.opponent.Name+' ('+S.opponent.Tier+')'; tease.classList.remove('hidden'); } else { tease.classList.add('hidden'); } }
+function showNextTease(){ const tease = $('sim-next-tease'); if(S.career.currentFight <= 50 && S.opponent){ tease.innerHTML = 'âš¡ <strong>Next up:</strong> '+S.opponent.Name+' ('+S.opponent.Tier+')'; tease.classList.remove('hidden'); } else { tease.classList.add('hidden'); } }
 function disableHub(dis){ $('enter-ring-btn').disabled=dis; document.querySelectorAll('.sim-btn').forEach(b=>b.disabled=dis); }
-async function simMany(count){ if(S.career.currentFight>50||S.batch) return; S.batch=true; S.pendingHof=false; openOverlay('Simulating '+count+' bout'+(count>1?'s':'')+'...'); disableHub(true); let shown=0; try{ for(let i=0;i<count;i++){ if(S.career.currentFight>50) break; const r=simResult(); addSimCard(r); shown++; const delay=S.fast?80:(r.outcome.includes('KO')||r.outcome.includes('TKO')||r.outcome.includes('RTD'))?600:350; await sleep(delay); } }catch(e){ console.error(e); $('sim-subtitle').innerText='Simulation error: '+e.message; } $('sim-subtitle').innerText='Simulation complete • '+shown+' result'+(shown!==1?'s':'')+' shown'; showNextTease(); $('sim-close-btn').classList.remove('hidden'); $('sim-close-btn').innerText=S.pendingHof?'View Hall of Fame':'Return To Hub'; disableHub(false); S.batch=false; }
+async function simMany(count){ if(S.career.currentFight>50||S.batch) return; S.batch=true; S.pendingHof=false; openOverlay('Simulating '+count+' bout'+(count>1?'s':'')+'...'); disableHub(true); let shown=0; try{ for(let i=0;i<count;i++){ if(S.career.currentFight>50) break; const r=simResult(); addSimCard(r); shown++; const delay=S.fast?80:(r.outcome.includes('KO')||r.outcome.includes('TKO')||r.outcome.includes('RTD'))?600:350; await sleep(delay); } }catch(e){ console.error(e); $('sim-subtitle').innerText='Simulation error: '+e.message; } $('sim-subtitle').innerText='Simulation complete â€¢ '+shown+' result'+(shown!==1?'s':'')+' shown'; showNextTease(); $('sim-close-btn').classList.remove('hidden'); $('sim-close-btn').innerText=S.pendingHof?'View Hall of Fame':'Return To Hub'; disableHub(false); S.batch=false; }
 async function simAll(){ if(S.career.currentFight>50||S.batch) return; await simMany(51-S.career.currentFight); }
 function leg(){ const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?(S.career.kos/total):0; let score=0; score+=S.career.wins*7; score-=S.career.losses*22; score-=S.career.draws*6; score+=S.career.kos*5; score+=S.career.belts.length*30; score+=Math.max(0,calculateOverall()-50)*2.5; score+=Math.floor(S.career.earnings/1000000)*0.9; score+=S.career.bestWinStreak*1.0; score+=(61-(S.career.bestWorldRank||60))*1.8; score+=Math.floor(koPct*55); score+=S.career.titleDef*8; if(S.career.losses===0&&S.career.wins>=30)score+=18; if(S.career.losses===0&&S.career.wins>=45)score+=28; if(S.career.wins===50&&S.career.losses===0&&S.career.draws===0)score+=52; if(S.career.belts.length===4)score+=24; if(S.career.bestWorldRank===1)score+=10; score=Math.max(0,Math.round(score)); if(S.career.wins===50&&S.career.losses===0&&S.career.draws===0&&S.career.belts.length===4) return {score,t:'GOAT (50-0 UNDISPUTED)',p:.2}; const x=HOF.find(h=>score>=h.min)||HOF[HOF.length-1]; return {score,t:x.t,p:x.p}; }
 function legacyBreakdownRows(){
@@ -2785,7 +5953,7 @@ function triggerHof(){
 }
 function showHistory(){ const p=$('full-history'); p.innerHTML=''; if(!S.career.fullHistory.length) p.innerHTML='<div style="color:var(--muted);text-align:center">No fight history recorded.</div>'; else S.career.fullHistory.forEach(line=>{ const d=document.createElement('div'); d.innerText=line; p.appendChild(d); }); screen('history-screen'); }
 function backToHof(){ screen('hof-screen'); }
-function shareCareer(){ const l = leg(); const wealth = getWealthInfo(S.career.earnings); const record = S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); const txt = `🥊 UNBEATEN: 50-0\n\n📊 Record: ${record}\n💥 KOs: ${S.career.kos}\n🏆 HOF: ${l.t}\n💰 Earnings: ${cash(S.career.earnings)}\n🎖️ Wealth: ${wealth[0]}\n🏅 Belts: ${S.career.belts.length}/4\n\nCan you go 50-0? Play now!`;
+function shareCareer(){ const l = leg(); const wealth = getWealthInfo(S.career.earnings); const record = S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); const txt = `ðŸ¥Š UNBEATEN: 50-0\n\nðŸ“Š Record: ${record}\nðŸ’¥ KOs: ${S.career.kos}\nðŸ† HOF: ${l.t}\nðŸ’° Earnings: ${cash(S.career.earnings)}\nðŸŽ–ï¸ Wealth: ${wealth[0]}\nðŸ… Belts: ${S.career.belts.length}/4\n\nCan you go 50-0? Play now!`;
   const url = window.location.href;
   if(navigator.share){
     navigator.share({title: 'UNBEATEN: 50-0 - My Career', text: txt, url: url}).catch(()=>{});
@@ -2897,3 +6065,4 @@ window.onload=function(event){
 </script>
 </body>
 </html>
+
