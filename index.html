@@ -662,6 +662,52 @@ h2::before{
 .account-actions{display:grid;grid-template-columns:1fr;gap:8px}
 .auth-error{min-height:18px;margin-top:8px;color:#ffb4b4;font-size:.72rem;line-height:1.35;font-weight:700}
 .auth-error.ok{color:var(--green)}
+.account-settings-toggle{
+  position:absolute;top:14px;left:14px;
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+  color:var(--text-dim);
+  font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s ease;
+  z-index:10;
+}
+.account-settings-toggle:hover{background:rgba(255,255,255,.08);color:var(--gold);border-color:var(--gold)}
+.account-settings-toggle:active{transform:scale(.92)}
+.login-card{
+  margin:auto 0;
+  background:linear-gradient(180deg,#111318 0%,#08090b 100%);
+  border:1px solid rgba(230,194,71,.26);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:var(--shadow-card), var(--shadow-inset);
+}
+.login-brand{text-align:center;margin-bottom:14px}
+.login-brand .mark{font-family:'Bebas Neue',Impact,sans-serif;color:var(--gold);font-size:2rem;letter-spacing:3px;line-height:1}
+.login-brand .sub{font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px}
+.auth-field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.auth-field label{font-size:.68rem;color:var(--text-dim);font-weight:900;text-transform:uppercase;letter-spacing:1px}
+.auth-field input{
+  width:100%;min-height:var(--tap);
+  padding:13px 14px;
+  border-radius:12px;
+  border:1px solid var(--line-2);
+  background:#0a0b0e;
+  color:#fff;
+  font-size:1rem;
+  outline:none;
+}
+.auth-field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(230,194,71,.15)}
+.auth-split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.account-detail{background:#0a0b0e;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
+.account-detail span{display:block;color:var(--text-dim);font-size:.64rem;text-transform:uppercase;font-weight:900;letter-spacing:.8px}
+.account-detail strong{display:block;color:#fff;font-size:.9rem;margin-top:3px;overflow-wrap:anywhere}
+.conflict-choice{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.conflict-card{min-width:0}
+.conflict-card h2{font-size:.82rem}
+.conflict-card .row{align-items:flex-start}
+.conflict-card .row span:last-child{max-width:58%;overflow-wrap:anywhere}
 .cloud-search{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
 .cloud-profile-card{background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:var(--shadow-card)}
 .cloud-profile-head{display:flex;gap:10px;align-items:center;margin-bottom:10px}
@@ -669,7 +715,7 @@ h2::before{
 .cloud-mini-avatar .boxer-avatar{transform:scale(.42);transform-origin:center}
 .leaderboard-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .leaderboard-tabs .btn{min-height:38px;font-size:.68rem}
-.conflict-choice{display:grid;grid-template-columns:1fr;gap:10px}
+.conflict-choice{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
 .profile-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
 .profile-metric{background:#0a0b0e;border:1px solid var(--line);border-radius:10px;padding:9px;text-align:center}
 .profile-metric strong{display:block;color:var(--gold);font-size:1rem;font-variant-numeric:tabular-nums}
@@ -787,7 +833,6 @@ h2::before{
   .account-actions{gap:7px}
   #menu-screen.active{display:flex;flex-direction:column}
   #menu-screen>*{order:20}
-  #menu-screen>.account-panel{order:1}
   #menu-screen>.menu-actions{order:2;margin-top:4px!important;padding-top:4px!important}
   #menu-screen>.hero{order:3;height:46px;font-size:34px}
 }
@@ -807,22 +852,39 @@ h2::before{
 <body>
 <div class="app">
 <header>
+  <button id="account-settings-toggle" class="account-settings-toggle hidden" type="button" onclick="openAccountSettings()" aria-label="Account settings">&#9881;</button>
   <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()" aria-label="Toggle sound">🔊</button>
   <h1>UNBEATEN: 50-0</h1>
   <p>Heavyweight Management Loop</p>
   <div class="version">Final Release v1.1</div>
 </header>
 
-<section id="menu-screen" class="screen active">
-  <div class="account-panel">
-    <div class="account-row"><strong id="auth-status">Guest Mode</strong><span id="sync-status">Local backup active</span></div>
-    <div class="account-actions">
-      <button id="sign-in-btn" type="button" class="btn blue">Sign In With Google</button>
-      <button id="sign-out-btn" class="btn ghost hidden" onclick="signOutCloud()">Sign Out</button>
-      <button id="sync-now-btn" class="btn ghost" onclick="syncNow(true)">Update Profile Now</button>
+<section id="login-screen" class="screen active">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="mark">UNBEATEN: 50-0</div>
+      <div class="sub">Sign in to protect your career</div>
     </div>
+    <div class="auth-field">
+      <label for="auth-email">Email</label>
+      <input id="auth-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
+    </div>
+    <div class="auth-field">
+      <label for="auth-password">Password</label>
+      <input id="auth-password" type="password" autocomplete="current-password" placeholder="Password" />
+    </div>
+    <button id="email-sign-in-btn" type="button" class="btn gold" onclick="signInWithEmailPassword()">Sign In</button>
+    <div class="auth-split">
+      <button id="email-create-btn" type="button" class="btn blue" onclick="createEmailAccount()">Create Account</button>
+      <button id="forgot-password-btn" type="button" class="btn ghost" onclick="sendPasswordReset()">Forgot Password</button>
+    </div>
+    <button id="sign-in-btn" type="button" class="btn ghost">Continue With Google</button>
     <div id="auth-error" class="auth-error"></div>
+    <div id="login-auth-status" class="subtle" style="margin:8px 0 0;text-align:center"></div>
   </div>
+</section>
+
+<section id="menu-screen" class="screen">
   <div class="hero">🥊</div>
   <h2>Worldwide Stats</h2>
   <div class="global-stats">
@@ -1162,11 +1224,23 @@ h2::before{
 
 <section id="cloud-conflict-screen" class="screen">
   <h2>Choose Save</h2>
-  <div class="sync-warning">We found progress on this device and in your Google cloud save. Nothing will be overwritten until you choose. Pick the save with the progress you want to keep.</div>
+  <div class="sync-warning">Nothing has been changed yet. Choose carefully. The selected save will become your account save.</div>
   <div class="conflict-choice">
-    <div class="panel"><h2>Local Device Save</h2><div id="local-save-summary"></div><button class="btn gold" onclick="resolveCloudConflict('local')">Keep This Device</button></div>
-    <div class="panel"><h2>Google Cloud Save</h2><div id="cloud-save-summary"></div><button class="btn blue" onclick="resolveCloudConflict('cloud')">Use Cloud Save</button></div>
+    <div class="panel conflict-card"><h2>This Device</h2><div id="local-save-summary"></div><button class="btn gold" onclick="resolveCloudConflict('local')">Use This Device Save</button></div>
+    <div class="panel conflict-card"><h2>Cloud Save</h2><div id="cloud-save-summary"></div><button class="btn blue" onclick="resolveCloudConflict('cloud')">Use Cloud Save</button></div>
   </div>
+</section>
+
+<section id="account-settings-screen" class="screen">
+  <h2>Account Settings</h2>
+  <div class="account-detail"><span>Status</span><strong id="account-status">Signed in</strong></div>
+  <div class="account-detail"><span>Email</span><strong id="account-email">-</strong></div>
+  <div class="account-detail"><span>User ID</span><strong id="account-uid">-</strong></div>
+  <div class="account-detail"><span>Cloud Sync</span><strong id="account-sync-status">Ready</strong></div>
+  <div id="account-auth-error" class="auth-error"></div>
+  <button id="account-sync-now-btn" type="button" class="btn blue" onclick="syncNow(true)">Update Profile Now</button>
+  <button id="account-sign-out-btn" type="button" class="btn ghost" onclick="signOutCloud()">Sign Out</button>
+  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
 <section id="global-hof-screen" class="screen">
@@ -1296,6 +1370,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
+const AUTH_REQUIRED = true;
 const SEASON_MS = 3 * 24 * 60 * 60 * 1000;
 let currentSeason = null;
 let seasonTimer = null;
@@ -1305,6 +1380,9 @@ let pendingCloudSync = null;
 let conflictCloudData = null;
 let conflictLocalData = null;
 let restoringCloud = false;
+let authMigrationComplete = false;
+let authMigrationRunning = false;
+let authHandledUid = null;
 const NAME_RULE_MESSAGE = "Fighter name must be 3-20 characters, letters and spaces only. No numbers, emojis, or special characters.";
 const BANNED_NAME_TERMS = [
   "fuck","fucker","fucking","shit","bitch","bastard","cunt","twat","wanker","dick","cock","pussy","asshole","arsehole",
@@ -4684,7 +4762,7 @@ const ACHIEVEMENT_DEFINITIONS = {
   earn_1m:{id:'earn_1m',name:'Earn $1M',desc:'Earn at least $1,000,000 in career purses.',reward:'shorts_millionaire',check:c=>c.earnings>=1000000},
   reach_50_0:{id:'reach_50_0',name:'Reach 50-0',desc:'Complete a perfect 50-0 career.',reward:'tattoo_50',bonusReward:'badge_50',check:c=>c.wins>=50&&c.losses===0&&c.draws===0}
 };
-const KEYS = {records:'unbeaten_final_records_v10',career:'unbeaten_final_career_v10',profile:'unbeaten_profile_foundation_v1',retired:'unbeaten_retired_careers_v1',cloudStamp:'unbeaten_cloud_stamp_v1'};
+const KEYS = {records:'unbeaten_final_records_v10',career:'unbeaten_final_career_v10',profile:'unbeaten_profile_foundation_v1',retired:'unbeaten_retired_careers_v1',cloudStamp:'unbeaten_cloud_stamp_v1',migration:'unbeaten_auth_migration_v1',migrationBackups:'unbeaten_migration_backups_v1'};
 const NIL = {bestRecord:'0-0',mostMoney:0,mostKOs:0,bestTier:'None'};
 const S = {mode:'easy',player:null,career:null,opponent:null,legend:null,fight:null,traitsRolled:0,awaiting:false,perfect:false,batch:false,pendingHof:false,fast:false,spinTraitBusy:false};
 const $ = id => document.getElementById(id), rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, choice=arr=>arr[Math.floor(Math.random()*arr.length)], clamp=(n,a,b)=>Math.max(a,Math.min(b,n)), cash=v=>'$'+Math.floor(v).toLocaleString(), deep=o=>JSON.parse(JSON.stringify(o)), sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -5041,7 +5119,18 @@ function saveRecords(r){ localStorage.setItem(KEYS.records, JSON.stringify(r)); 
 function saveCareer(){ if(S.player){ ensurePlayerFoundation(S.player); saveProfileFromPlayer(S.player); } localStorage.setItem(KEYS.career, JSON.stringify({mode:S.mode,player:S.player,career:S.career,opponent:S.opponent,traitsRolled:S.traitsRolled})); markLocalUpdated(); refreshMenu(); requestCloudSync(); }
 function loadCareer(){ try{ const data=migrateCareerSave(JSON.parse(localStorage.getItem(KEYS.career)||'null')); if(data) localStorage.setItem(KEYS.career, JSON.stringify(data)); return data; }catch{ return null; } }
 function clearCareer(){ localStorage.removeItem(KEYS.career); refreshMenu(); }
-function screen(id){ document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active')); $(id).classList.add('active'); }
+function isPreAuthScreen(id){ return id==='login-screen'; }
+function isAuthScreenAllowed(id){
+  if(!AUTH_REQUIRED) return true;
+  if(isPreAuthScreen(id)) return true;
+  if(id==='cloud-conflict-screen') return !!currentUser;
+  return !!currentUser && authMigrationComplete;
+}
+function screen(id){
+  if(!isAuthScreenAllowed(id)) id='login-screen';
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  $(id).classList.add('active');
+}
 function currentCareerEarnings(){
   const save=S.career?{career:S.career}:loadCareer();
   return safeMoney(save?.career?.earnings||0);
@@ -5565,11 +5654,39 @@ function publicProfileFromPayload(payload){
     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   };
 }
+function saveRecordText(active){
+  const c=active?.career;
+  if(!c) return '0-0';
+  return (c.wins||0)+'-'+(c.losses||0)+(c.draws>0?'-'+c.draws:'');
+}
+function saveDisplayName(data){
+  const p=data?.profile||loadProfileFoundation();
+  const active=data?.activeCareer;
+  const boxer=active?.player?.Name||boxerDisplayName(p);
+  return cleanName(p.username||boxer||'Player')+' / '+cleanName(boxer||'No boxer');
+}
+function payloadHighestLegacy(data){
+  return (data?.retiredCareers||[]).reduce((best,c)=>Math.max(best,c.legacyScore||c.careerLegacyScore||0),0);
+}
 function localSaveSummary(data){
   const p=data?.profile||loadProfileFoundation();
-  const retired=data?.retiredCareers||loadRetiredCareers();
-  const active=data?.activeCareer||loadCareer();
-  return '<div class="row"><span>Username:</span><span>'+cleanName(p.username||'-')+'</span></div><div class="row"><span>Wallet:</span><span>'+cash(p.walletBalance||0)+'</span></div><div class="row"><span>50-0 Careers:</span><span>'+(p.completed50And0Careers||0)+'</span></div><div class="row"><span>Retired Careers:</span><span>'+retired.length+'</span></div><div class="row"><span>Active Career:</span><span>'+(active?'Yes':'No')+'</span></div><div class="row"><span>Updated:</span><span>'+new Date(data?.updatedAtMillis||Date.now()).toLocaleString()+'</span></div>';
+  const retired=Array.isArray(data?.retiredCareers)?data.retiredCareers:loadRetiredCareers();
+  const active=data?.activeCareer||null;
+  const c=active?.career||null;
+  const activeStatus=c?'Active career':'No active career';
+  const currentFight=c?Math.max(1, Math.min(51, c.currentFight||1))+'/50':'-';
+  return [
+    ['Username / Boxer',saveDisplayName(data)],
+    ['Active Career',activeStatus],
+    ['Record',saveRecordText(active)],
+    ['Current Fight',currentFight],
+    ['Wallet Balance',cash(p.walletBalance||0)],
+    ['Lifetime Earnings',cash(p.lifetimeEarnings||0)],
+    ['Retired Careers',retired.length],
+    ['50-0 Careers',p.completed50And0Careers||0],
+    ['Highest Legacy',payloadHighestLegacy({retiredCareers:retired})],
+    ['Last Updated',new Date(data?.updatedAtMillis||Date.now()).toLocaleString()]
+  ].map(([k,v])=>'<div class="row"><span>'+k+':</span><span>'+v+'</span></div>').join('');
 }
 function restoreCloudPayload(payload){
   if(!payload) return;
@@ -5578,14 +5695,91 @@ function restoreCloudPayload(payload){
   saveRetiredCareers(Array.isArray(payload.retiredCareers)?payload.retiredCareers:[]);
   if(payload.records) saveRecords(payload.records);
   if(payload.activeCareer) localStorage.setItem(KEYS.career, JSON.stringify(antiCheatCareerData(payload.activeCareer)));
-  else localStorage.removeItem(KEYS.career);
+  else localStorage.setItem(KEYS.career, 'null');
   localStorage.setItem(KEYS.cloudStamp, String(payload.updatedAtMillis||Date.now()));
   restoringCloud=false;
   S.player=null; S.career=null; S.opponent=null; S.fight=null;
   refreshMenu();
 }
+function cleanCloudPayload(){
+  return {
+    schemaVersion:8,
+    updatedAtMillis:Date.now(),
+    profile:createProfileFoundation({profileSetupComplete:false}),
+    activeCareer:null,
+    retiredCareers:[],
+    records:{...NIL}
+  };
+}
+function migrationBackups(){
+  try{return JSON.parse(localStorage.getItem(KEYS.migrationBackups)||'[]');}catch{return [];}
+}
+function saveMigrationBackup(payload, reason){
+  if(!payload) return;
+  const backups=migrationBackups();
+  backups.unshift({reason, savedAt:new Date().toISOString(), uid:currentUser?.uid||null, payload});
+  localStorage.setItem(KEYS.migrationBackups, JSON.stringify(backups.slice(0,10)));
+}
+function markAuthMigrated(uid, source){
+  localStorage.setItem(KEYS.migration, JSON.stringify({uid, source, migratedAt:new Date().toISOString()}));
+}
+function hasBetterThanDefaultRecords(records={}){
+  const r={...NIL,...(records||{})};
+  return r.bestRecord!==NIL.bestRecord || safeMoney(r.mostMoney)>0 || safeMoney(r.mostKOs)>0 || r.bestTier!==NIL.bestTier;
+}
+function hasNonDefaultCosmetics(profile){
+  return (profile?.unlockedCosmetics||[]).some(id=>!DEFAULT_UNLOCKED_COSMETICS.includes(id));
+}
+function hasUnlockedAchievements(profile){
+  return Object.keys(profile?.achievements?.unlocked||{}).length>0;
+}
+function hasNonTrivialLocalProgress(payload){
+  const active=payload?.activeCareer;
+  const c=active?.career;
+  const profile=payload?.profile||{};
+  if(c&&((c.currentFight||1)>1 || (c.wins||0)>0 || (c.losses||0)>0 || (c.draws||0)>0)) return true;
+  if((payload?.retiredCareers||[]).length>0) return true;
+  if(safeMoney(profile.walletBalance)>0 || safeMoney(profile.lifetimeEarnings)>0) return true;
+  if(hasUnlockedAchievements(profile) || hasNonDefaultCosmetics(profile)) return true;
+  if(hasBetterThanDefaultRecords(payload?.records)) return true;
+  return false;
+}
+function payloadFingerprint(data){
+  const p=data?.profile||{};
+  const active=data?.activeCareer?.career||null;
+  const retired=data?.retiredCareers||[];
+  return JSON.stringify({
+    username:p.username||'',
+    wallet:safeMoney(p.walletBalance),
+    lifetime:safeMoney(p.lifetimeEarnings),
+    fifty:safeMoney(p.completed50And0Careers),
+    achievements:Object.keys(p.achievements?.unlocked||{}).sort(),
+    cosmetics:(p.unlockedCosmetics||[]).slice().sort(),
+    active:active?{fight:active.currentFight||1,wins:active.wins||0,losses:active.losses||0,draws:active.draws||0,kos:active.kos||0,earnings:active.earnings||0}:null,
+    retiredCount:retired.length,
+    highestLegacy:payloadHighestLegacy(data),
+    records:{...NIL,...(data?.records||{})}
+  });
+}
+function payloadsDiffer(a,b){
+  return payloadFingerprint(a)!==payloadFingerprint(b);
+}
+async function writeCloudPayload(payload, manual=false){
+  if(!currentUser) return;
+  const stamped={...payload, updatedAtMillis:Date.now()};
+  await db.collection('user_saves').doc(currentUser.uid).set(stamped,{merge:true});
+  const publicProfile=publicProfileFromPayload(stamped);
+  if(publicProfile){
+    await db.collection('public_profiles').doc(currentUser.uid).set(publicProfile,{merge:true});
+  } else if(manual) {
+    showToast('Profile Not Published', 'Set a valid username to appear in public profiles and leaderboards.');
+  }
+  localStorage.setItem(KEYS.cloudStamp, String(stamped.updatedAtMillis));
+  return stamped;
+}
 let lastAuthError='';
 let authBusy=false;
+let authBusyLabel='Working...';
 let authStateUnsubscribe=null;
 function authEnv(){
   const ua=navigator.userAgent||'';
@@ -5599,26 +5793,39 @@ function authEnv(){
 }
 function setAuthMessage(message='', isOk=false){
   lastAuthError=message||'';
-  const el=$('auth-error');
-  if(el){
+  ['auth-error','account-auth-error'].forEach(id=>{
+    const el=$(id);
+    if(!el) return;
     el.innerText=lastAuthError;
     el.classList.toggle('ok', !!isOk);
-  }
+  });
+  if($('login-auth-status')) $('login-auth-status').innerText=currentUser?'Signed in. Loading your account...':'';
 }
 function updateAuthUI(){
-  const label=currentUser?'Signed in as '+(currentUser.displayName||currentUser.email||'Google Player'):'Signed out / Guest';
+  const label=currentUser?'Signed in as '+(currentUser.displayName||currentUser.email||'Player'):'Sign in required';
   if($('auth-status')) $('auth-status').innerText=label;
-  if($('sync-status')) $('sync-status').innerText=currentUser?'Cloud sync ready':'Guest mode - sign in to protect progress';
+  if($('sync-status')) $('sync-status').innerText=currentUser?'Cloud sync ready':'Sign in to continue';
   if($('sign-in-btn')){
-    $('sign-in-btn').classList.toggle('hidden', !!currentUser);
     $('sign-in-btn').disabled=authBusy;
-    $('sign-in-btn').innerText=authBusy?'Opening Google...':'Sign In With Google';
+    $('sign-in-btn').innerText=authBusy?authBusyLabel:'Continue With Google';
   }
+  ['email-sign-in-btn','email-create-btn','forgot-password-btn'].forEach(id=>{ if($(id)) $(id).disabled=authBusy; });
+  if($('account-settings-toggle')) $('account-settings-toggle').classList.toggle('hidden', !currentUser || !authMigrationComplete);
+  if($('account-status')) $('account-status').innerText=label;
+  if($('account-email')) $('account-email').innerText=currentUser?.email||'-';
+  if($('account-uid')) $('account-uid').innerText=currentUser?.uid||'-';
+  if($('account-sync-status')) $('account-sync-status').innerText=currentUser?(authMigrationComplete?'Cloud sync ready':'Loading account...'):'Signed out';
   if($('sign-out-btn')) $('sign-out-btn').classList.toggle('hidden', !currentUser);
   if(!lastAuthError&&currentUser) setAuthMessage('Signed in. Checking cloud save...', true);
 }
 function friendlyAuthError(e){
   const code=e?.code||'';
+  if(code.includes('invalid-email')) return 'Enter a valid email address.';
+  if(code.includes('missing-password')) return 'Enter your password.';
+  if(code.includes('weak-password')) return 'Password must be at least 6 characters.';
+  if(code.includes('email-already-in-use')) return 'That email already has an account. Try signing in instead.';
+  if(code.includes('user-not-found')||code.includes('wrong-password')||code.includes('invalid-credential')) return 'Email or password is incorrect.';
+  if(code.includes('too-many-requests')) return 'Too many attempts. Wait a moment, then try again.';
   if(code.includes('unauthorized-domain')) return 'This domain is not authorised in Firebase Authentication. Add your GitHub Pages/live domain in Firebase Auth settings.';
   if(code.includes('invalid-api-key')||code.includes('app-deleted')||code.includes('project-not-found')) return 'Firebase Authentication is not available. Please refresh and try again.';
   if(code.includes('popup-blocked')) return 'The sign-in popup was blocked. Allow popups, then try again. On phone, open this page in Safari/Chrome.';
@@ -5628,7 +5835,50 @@ function friendlyAuthError(e){
   if(code.includes('redirect-cancelled-by-user')) return 'Google sign-in was cancelled.';
   if(code.includes('redirect-operation-pending')) return 'Google sign-in is already in progress.';
   if(code.includes('network')) return 'Network problem during sign-in. Check your connection and try again.';
-  return e?.message||'Unable to sign in with Google.';
+  return e?.message||'Unable to complete sign-in.';
+}
+function authEmail(){ return ($('auth-email')?.value||'').trim(); }
+function authPassword(){ return $('auth-password')?.value||''; }
+function validateEmailInput(requirePassword=true){
+  const email=authEmail();
+  const password=authPassword();
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return {ok:false,msg:'Enter a valid email address.'};
+  if(requirePassword&&password.length<6) return {ok:false,msg:'Password must be at least 6 characters.'};
+  return {ok:true,email,password};
+}
+async function runAuthAction(action, busyText){
+  if(authBusy) return;
+  if(!window.firebase||!firebase.auth||!auth){
+    setAuthMessage('Firebase Auth did not initialise. Refresh and try again.');
+    showToast('Sign In Failed','Firebase Auth did not initialise.');
+    return;
+  }
+  authBusy=true;
+  authBusyLabel=busyText;
+  setAuthMessage(busyText, true);
+  updateAuthUI();
+  try{ await action(); }
+  catch(e){ console.error(e); const msg=friendlyAuthError(e); setAuthMessage(msg); showToast('Sign In Failed', msg); }
+  finally{ authBusy=false; updateAuthUI(); }
+}
+async function signInWithEmailPassword(){
+  const check=validateEmailInput(true);
+  if(!check.ok){ setAuthMessage(check.msg); return; }
+  await runAuthAction(()=>auth.signInWithEmailAndPassword(check.email, check.password), 'Signing in...');
+}
+async function createEmailAccount(){
+  const check=validateEmailInput(true);
+  if(!check.ok){ setAuthMessage(check.msg); return; }
+  await runAuthAction(()=>auth.createUserWithEmailAndPassword(check.email, check.password), 'Creating account...');
+}
+async function sendPasswordReset(){
+  const check=validateEmailInput(false);
+  if(!check.ok){ setAuthMessage(check.msg); return; }
+  await runAuthAction(async()=>{
+    await auth.sendPasswordResetEmail(check.email);
+    setAuthMessage('Password reset email sent. Check your inbox.', true);
+    showToast('Reset Email Sent','Check your inbox for the reset link.');
+  }, 'Sending password reset email...');
 }
 function googleAuthProvider(){
   const provider=new firebase.auth.GoogleAuthProvider();
@@ -5657,6 +5907,7 @@ async function signInWithGoogle(event){
     return;
   }
   authBusy=true;
+  authBusyLabel='Opening Google...';
   updateAuthUI();
   const provider=googleAuthProvider();
   try{
@@ -5690,60 +5941,122 @@ function bindAuthButtons(){
     btn.dataset.authBound='1';
     btn.addEventListener('click', signInWithGoogle, {passive:false});
   }
+  ['auth-email','auth-password'].forEach(id=>{
+    const input=$(id);
+    if(input&&input.dataset.authBound!=='1'){
+      input.dataset.authBound='1';
+      input.addEventListener('keydown', e=>{ if(e.key==='Enter') signInWithEmailPassword(); });
+    }
+  });
 }
-function signOutCloud(){ auth.signOut().then(()=>setAuthMessage('Signed out. Guest mode is still available.', true)).catch(e=>setAuthMessage(friendlyAuthError(e))); }
+function signOutCloud(){
+  auth.signOut().then(()=>{
+    currentUser=null;
+    authMigrationComplete=false;
+    authHandledUid=null;
+    clearInterval(syncTimer);
+    setAuthMessage('Signed out. Sign in to continue.', true);
+    showScreen('login-screen');
+  }).catch(e=>setAuthMessage(friendlyAuthError(e)));
+}
 async function syncNow(manual=false){
-  if(!currentUser){ if(manual) showToast('Guest Mode', 'Sign in to sync progress.'); return; }
+  if(!currentUser){ if(manual) showToast('Sign In Required', 'Sign in to sync progress.'); return; }
+  if(AUTH_REQUIRED&&!authMigrationComplete){ if(manual) showToast('Account Loading', 'Wait for account migration to finish.'); return; }
   const payload=cloudPayload();
   try{
-    await db.collection('user_saves').doc(currentUser.uid).set(payload,{merge:true});
-    const publicProfile=publicProfileFromPayload(payload);
-    if(publicProfile){
-      await db.collection('public_profiles').doc(currentUser.uid).set(publicProfile,{merge:true});
-    } else {
-      if(manual) showToast('Profile Not Published', 'Set a valid username to appear in public profiles and leaderboards.');
-    }
+    await writeCloudPayload(payload, manual);
     if($('sync-status')) $('sync-status').innerText='Synced '+new Date().toLocaleTimeString();
+    if($('account-sync-status')) $('account-sync-status').innerText='Synced '+new Date().toLocaleTimeString();
     if(manual) showToast('Cloud Synced', 'Profile updated.');
-  }catch(e){ console.error(e); setAuthMessage('Cloud save could not update. Your local save is still safe.'); if(manual) showToast('Sync Failed', 'Cloud save could not update.'); }
+  }catch(e){ console.error(e); setAuthMessage('Cloud save could not update. Your local backup is still safe.'); if(manual) showToast('Sync Failed', 'Cloud save could not update.'); }
 }
 function requestCloudSync(){
   if(!currentUser) return;
+  if(AUTH_REQUIRED&&!authMigrationComplete) return;
   clearTimeout(pendingCloudSync);
   pendingCloudSync=setTimeout(()=>syncNow(false),1200);
 }
+function startCloudSyncTimer(){
+  clearInterval(syncTimer);
+  if(currentUser) syncTimer=setInterval(()=>syncNow(false),15*60*1000);
+}
+function finishAuthMigration(source){
+  authMigrationComplete=true;
+  authMigrationRunning=false;
+  authHandledUid=currentUser?.uid||authHandledUid;
+  if(currentUser) markAuthMigrated(currentUser.uid, source);
+  startCloudSyncTimer();
+  refreshMenu();
+  updateAuthUI();
+  setAuthMessage('Signed in and synced.', true);
+  showScreen('menu-screen');
+}
 async function handleSignedIn(user){
+  if(authMigrationRunning) return;
+  if(authMigrationComplete&&authHandledUid===user.uid) return;
   currentUser=user;
-  setAuthMessage('Signed in. Checking cloud save...', true);
+  authMigrationRunning=true;
+  authMigrationComplete=false;
+  setAuthMessage('Signed in. Checking account progress...', true);
   updateAuthUI();
   const ref=db.collection('user_saves').doc(user.uid);
   try{
     const snap=await ref.get();
     const local=cloudPayload();
+    const localNonTrivial=hasNonTrivialLocalProgress(local);
     if(snap.exists){
       const cloud=snap.data()||{};
-      if(Math.abs((cloud.updatedAtMillis||0)-(local.updatedAtMillis||0))>60000){
+      if(localNonTrivial&&payloadsDiffer(local,cloud)){
         conflictLocalData=local; conflictCloudData=cloud;
         if($('local-save-summary')) $('local-save-summary').innerHTML=localSaveSummary(local);
         if($('cloud-save-summary')) $('cloud-save-summary').innerHTML=localSaveSummary(cloud);
-        screen('cloud-conflict-screen');
+        authMigrationRunning=false;
+        showScreen('cloud-conflict-screen');
         return;
       }
+      if(!localNonTrivial) {
+        saveMigrationBackup(local, 'trivial-local-before-cloud-restore');
+        restoreCloudPayload(cloud);
+      }
+      finishAuthMigration('cloud');
+      return;
     }
-    await syncNow(false);
-    setAuthMessage('Signed in and synced.', true);
+    if(localNonTrivial){
+      await writeCloudPayload(local, false);
+      finishAuthMigration('local-upload');
+      return;
+    }
+    const clean=cleanCloudPayload();
+    saveMigrationBackup(local, 'trivial-local-before-clean-cloud');
+    restoreCloudPayload(clean);
+    await writeCloudPayload(clean, false);
+    finishAuthMigration('clean-cloud');
   }catch(e){
     console.error(e);
-    setAuthMessage('Cloud save is unavailable right now. Guest/local progress is still safe.');
-    showToast('Cloud Unavailable', 'Guest/local progress is still safe on this device.');
+    authMigrationRunning=false;
+    setAuthMessage('Cloud save is unavailable right now. Your local backup is still safe.');
+    showToast('Cloud Unavailable', 'Your local backup is still safe on this device.');
+    showScreen('login-screen');
   }
 }
-function resolveCloudConflict(choice){
-  if(choice==='cloud') restoreCloudPayload(conflictCloudData);
-  if(choice==='local') showToast('Keeping Local Save','This device progress will be uploaded to cloud.');
-  syncNow(true);
-  conflictLocalData=null; conflictCloudData=null;
-  screen('menu-screen');
+async function resolveCloudConflict(choice){
+  if(!currentUser) { showScreen('login-screen'); return; }
+  try{
+    setAuthMessage('Applying selected save...', true);
+    if(choice==='cloud'){
+      saveMigrationBackup(conflictLocalData, 'local-before-cloud-choice');
+      restoreCloudPayload(conflictCloudData);
+    } else {
+      saveMigrationBackup(conflictCloudData, 'cloud-before-local-choice');
+      await writeCloudPayload(conflictLocalData, true);
+    }
+    conflictLocalData=null; conflictCloudData=null;
+    finishAuthMigration(choice==='cloud'?'cloud-choice':'local-choice');
+  }catch(e){
+    console.error(e);
+    setAuthMessage('Could not apply that save choice. Nothing was deleted. Try again.');
+    showToast('Save Choice Failed','Nothing was deleted. Try again.');
+  }
 }
 function attachAuthStateListener(){
   if(authStateUnsubscribe) return;
@@ -5753,12 +6066,15 @@ function attachAuthStateListener(){
     clearInterval(syncTimer);
     if(user){
       handleSignedIn(user).catch(e=>console.error(e));
-      syncTimer=setInterval(()=>syncNow(false),15*60*1000);
     } else {
       authBusy=false;
+      authMigrationComplete=false;
+      authMigrationRunning=false;
+      authHandledUid=null;
       if(authEnv().isInApp) setAuthMessage('Google Sign-In may not work inside this app browser. Please open this page in Safari/Chrome.');
       else setAuthMessage('');
       updateAuthUI();
+      if(AUTH_REQUIRED) showScreen('login-screen');
     }
   });
 }
@@ -5784,6 +6100,7 @@ async function initialiseAuthFlow(){
     attachAuthStateListener();
     bindAuthButtons();
     updateAuthUI();
+    if(AUTH_REQUIRED&&!currentUser) showScreen('login-screen');
   }
 }
 function openPublicProfiles(){ screen('public-profiles-screen'); }
@@ -5962,11 +6279,13 @@ function shareCareer(){ const l = leg(); const wealth = getWealthInfo(S.career.e
     navigator.clipboard.writeText(fullText).then(()=>{ alert('Career stats copied to clipboard! Paste to share.'); }).catch(()=>{ prompt('Copy this to share:', fullText); });
   }
 }
+function openAccountSettings(){ updateAuthUI(); screen('account-settings-screen'); }
 function backToMenu(fromHof=false){ if(!fromHof&&S.career&&S.player&&S.player.Name&&S.career.currentFight<=50) saveCareer(); refreshMenu(); screen('menu-screen'); }
 window.onload = () => {
   selectMode(S.mode);
   refreshMenu();
   updateAuthUI();
+  screen(AUTH_REQUIRED?'login-screen':'menu-screen');
   initialiseAuthFlow();
 };
 </script>
@@ -6027,6 +6346,7 @@ function simRound(){ const r=S.fight.round,p1=roundStrength('p1',r),p2=roundStre
 function scoreDecision(){ S.fight.done=true; const diff=S.fight.p1.score-S.fight.p2.score, ad=Math.abs(diff); let winner=S.fight.intendedWinner||'p1'; if(winner==='p2'&&ad<=2&&(hasTrait('ring_general')||hasTrait('ice_in_veins'))&&Math.random()<.28) winner='p1'; S.fight.winner=winner; if(ad===0) S.fight.method='MD'; else if(ad===1) S.fight.method='SD'; else if(ad<=3) S.fight.method=Math.random()<.55?'SD':'MD'; else S.fight.method='UD'; S.fight.detail=choice(ad>=7?['Comfortable On The Cards','Took The Championship Rounds']:ad>=4?['Controlled The Fight','Clear Decision']:['Razor-Close Cards','Narrow But Fair']); if(winner==='p2'&&!S.fight.lossReason){ if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.22) S.fight.lossReason='gassed'; else if((S.fight.balance?.styleMatchup||0)<=-3) S.fight.lossReason='style'; else S.fight.lossReason='decision'; } }
 function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) extra.push('The cleaner work and control dominated the rounds.'); if(S.fight.p1Dmg>S.fight.p2Dmg+35) extra.push('The damage output was clearly tilting the fight.'); if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.28) extra.push('The opponent faded badly as stamina drained.'); if(['TKO','RTD'].includes(S.fight.method)) extra.push('Sustained punishment forced the stoppage.'); const dom=choice(extra.length?extra:['The style edge kept stacking up over the rounds.']); if(kind==='win') return sourceText()+'. '+weakText().charAt(0).toUpperCase()+weakText().slice(1)+' was exposed. '+dom; if(kind==='loss'){ const reason=S.fight.lossReason||'decision'; const copy={decision:'Lost close cards after the fight drifted away late.',accumulation:'Sustained damage built up until the danger became real.',gassed:'Stamina collapsed after the middle rounds and the opponent took over.',caught:'A clean caught-shot opened the door, then recovery failed the count.',style:'The opponent style countered this build and stole the key exchanges.'}; return copy[reason]||copy.decision; } return 'Neither fighter truly separated from the other over 12 rounds.'; }
 function showScreen(targetId){
+  if(!isAuthScreenAllowed(targetId)) targetId='login-screen';
   const target=$(targetId);
   if(!target) return false;
   document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
@@ -6036,6 +6356,10 @@ function showScreen(targetId){
 function screen(id){ return showScreen(id); }
 window.showScreen=showScreen;
 function openMenuTarget(targetId, button){
+  if(AUTH_REQUIRED&&(!currentUser||!authMigrationComplete)){
+    showScreen('login-screen');
+    return true;
+  }
   const intent=button?.getAttribute('data-menu-intent')||'';
   if(intent==='delete-save'){ deleteSave(); return true; }
   if(targetId==='hub-screen'){ continueCareer(); return true; }
