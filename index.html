@@ -662,10 +662,6 @@ h2::before{
 .account-actions{display:grid;grid-template-columns:1fr;gap:8px}
 .auth-error{min-height:18px;margin-top:8px;color:#ffb4b4;font-size:.72rem;line-height:1.35;font-weight:700}
 .auth-error.ok{color:var(--green)}
-.auth-debug-panel{margin-top:8px;padding:8px;border:1px solid rgba(230,194,71,.28);border-radius:8px;background:rgba(230,194,71,.06);font-size:.66rem;line-height:1.35;color:var(--text-dim)}
-.auth-debug-panel strong{display:block;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
-.auth-debug-panel div{display:flex;justify-content:space-between;gap:8px;border-top:1px solid rgba(255,255,255,.06);padding-top:3px;margin-top:3px}
-.auth-debug-panel span:last-child{text-align:right;color:#fff;font-weight:800;overflow-wrap:anywhere}
 .cloud-search{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
 .cloud-profile-card{background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:var(--shadow-card)}
 .cloud-profile-head{display:flex;gap:10px;align-items:center;margin-bottom:10px}
@@ -826,23 +822,6 @@ h2::before{
       <button id="sync-now-btn" class="btn ghost" onclick="syncNow(true)">Update Profile Now</button>
     </div>
     <div id="auth-error" class="auth-error"></div>
-    <div id="auth-debug-panel" class="auth-debug-panel">
-      <strong>Auth Debug</strong>
-      <div><span>Build</span><span id="auth-debug-build">loading</span></div>
-      <div><span>Provider</span><span id="auth-debug-provider">unknown</span></div>
-      <div><span>Domain</span><span id="auth-debug-domain">unknown</span></div>
-      <div><span>Mobile</span><span id="auth-debug-mobile">unknown</span></div>
-      <div><span>iOS</span><span id="auth-debug-ios">unknown</span></div>
-      <div><span>In-App</span><span id="auth-debug-inapp">unknown</span></div>
-      <div><span>Last Action</span><span id="auth-debug-action">none</span></div>
-      <div><span>Redirect Processed</span><span id="auth-debug-redirect">no</span></div>
-      <div><span>Auth State</span><span id="auth-debug-state">not fired</span></div>
-      <div><span>User</span><span id="auth-debug-user">none</span></div>
-      <div><span>Cloud Save</span><span id="auth-debug-cloud">not checked</span></div>
-      <div><span>Public Profile</span><span id="auth-debug-public">not checked</span></div>
-      <div><span>Error Code</span><span id="auth-debug-code">none</span></div>
-      <div><span>Error</span><span id="auth-debug-message">none</span></div>
-    </div>
   </div>
   <div class="hero">🥊</div>
   <h2>Worldwide Stats</h2>
@@ -2437,12 +2416,9 @@ function restoreCloudPayload(payload){
   S.player=null; S.career=null; S.opponent=null; S.fight=null;
   refreshMenu();
 }
-const AUTH_BUILD='auth-flow-2026-06-18-2';
 let lastAuthError='';
 let authBusy=false;
 let authStateUnsubscribe=null;
-function authDebugValue(id,value){ const el=$(id); if(el) el.innerText=String(value); }
-function authDebugUserLabel(user){ return user?(user.email||user.displayName||user.uid||'signed in'):'none'; }
 function authEnv(){
   const ua=navigator.userAgent||'';
   const vendor=navigator.vendor||'';
@@ -2452,24 +2428,6 @@ function authEnv(){
   const isSafari=/Safari/i.test(ua)&&/Apple/i.test(vendor)&&!/CriOS|FxiOS|Edg|OPR|Chrome/i.test(ua);
   const isInApp=/Instagram|FBAN|FBAV|FB_IAB|Messenger|Line|TikTok|Bytedance|MicroMessenger|WhatsApp|Snapchat|Pinterest|Twitter|XFB/i.test(ua);
   return {ua,isIOS,isAndroid,isMobile,isSafari,isInApp,domain:location.hostname||'local'};
-}
-function updateAuthDebug(action='', error=null){
-  const env=authEnv();
-  authDebugValue('auth-debug-build', AUTH_BUILD);
-  authDebugValue('auth-debug-provider', (window.firebase&&firebase.auth&&firebase.auth.GoogleAuthProvider)?'yes':'no');
-  authDebugValue('auth-debug-domain', env.domain);
-  authDebugValue('auth-debug-mobile', env.isMobile?'yes':'no');
-  authDebugValue('auth-debug-ios', env.isIOS?'yes':'no');
-  authDebugValue('auth-debug-inapp', env.isInApp?'yes':'no');
-  authDebugValue('auth-debug-user', authDebugUserLabel(currentUser));
-  if(action) authDebugValue('auth-debug-action', action);
-  if(error){
-    authDebugValue('auth-debug-code', error.code||'unknown');
-    authDebugValue('auth-debug-message', friendlyAuthError(error));
-  } else if(action){
-    authDebugValue('auth-debug-code', 'none');
-    authDebugValue('auth-debug-message', 'none');
-  }
 }
 function setAuthMessage(message='', isOk=false){
   lastAuthError=message||'';
@@ -2520,12 +2478,10 @@ function shouldRedirectAfterPopupError(e){
 }
 async function startGoogleRedirect(provider, reason='Redirecting to Google sign-in...'){
   setAuthMessage(reason, true);
-  updateAuthDebug('redirect start');
   await auth.signInWithRedirect(provider);
 }
 async function signInWithGoogle(event){
   if(event?.preventDefault) event.preventDefault();
-  updateAuthDebug('button clicked');
   if(authBusy) return;
   if(!window.firebase||!firebase.auth||!auth){
     setAuthMessage('Firebase Auth did not initialise. Refresh and try again.');
@@ -2545,12 +2501,9 @@ async function signInWithGoogle(event){
       return;
     }
     setAuthMessage(env.isInApp?'Trying Google popup. If nothing opens, use Safari/Chrome.':'Signing in with Google...', true);
-    updateAuthDebug('popup start');
     await auth.signInWithPopup(provider);
-    updateAuthDebug('popup complete');
   }catch(e){
     console.error(e);
-    updateAuthDebug('auth error', e);
     const msg=friendlyAuthError(e);
     setAuthMessage(msg);
     showToast('Sign In Failed', msg);
@@ -2568,7 +2521,6 @@ function bindAuthButtons(){
   if(btn&&btn.dataset.authBound!=='1'){
     btn.dataset.authBound='1';
     btn.addEventListener('click', signInWithGoogle, {passive:false});
-    updateAuthDebug('buttons bound');
   }
 }
 function signOutCloud(){ auth.signOut().then(()=>setAuthMessage('Signed out. Guest mode is still available.', true)).catch(e=>setAuthMessage(friendlyAuthError(e))); }
@@ -2577,13 +2529,10 @@ async function syncNow(manual=false){
   const payload=cloudPayload();
   try{
     await db.collection('user_saves').doc(currentUser.uid).set(payload,{merge:true});
-    authDebugValue('auth-debug-cloud', 'saved');
     const publicProfile=publicProfileFromPayload(payload);
     if(publicProfile){
       await db.collection('public_profiles').doc(currentUser.uid).set(publicProfile,{merge:true});
-      authDebugValue('auth-debug-public', 'saved');
     } else {
-      authDebugValue('auth-debug-public', 'not published');
       if(manual) showToast('Profile Not Published', 'Set a valid username to appear in public profiles and leaderboards.');
     }
     if($('sync-status')) $('sync-status').innerText='Synced '+new Date().toLocaleTimeString();
@@ -2597,16 +2546,13 @@ function requestCloudSync(){
 }
 async function handleSignedIn(user){
   currentUser=user;
-  updateAuthDebug('auth state signed in');
   setAuthMessage('Signed in. Checking cloud save...', true);
   updateAuthUI();
   const ref=db.collection('user_saves').doc(user.uid);
   try{
-    authDebugValue('auth-debug-cloud', 'checking');
     const snap=await ref.get();
     const local=cloudPayload();
     if(snap.exists){
-      authDebugValue('auth-debug-cloud', 'loaded');
       const cloud=snap.data()||{};
       if(Math.abs((cloud.updatedAtMillis||0)-(local.updatedAtMillis||0))>60000){
         conflictLocalData=local; conflictCloudData=cloud;
@@ -2635,18 +2581,13 @@ function attachAuthStateListener(){
   if(authStateUnsubscribe) return;
   authStateUnsubscribe=auth.onAuthStateChanged(user=>{
     currentUser=user;
-    authDebugValue('auth-debug-state', 'fired');
-    authDebugValue('auth-debug-user', authDebugUserLabel(user));
     updateAuthUI();
     clearInterval(syncTimer);
     if(user){
-      handleSignedIn(user).catch(e=>{ console.error(e); updateAuthDebug('signed-in handler error', e); });
+      handleSignedIn(user).catch(e=>console.error(e));
       syncTimer=setInterval(()=>syncNow(false),15*60*1000);
     } else {
       authBusy=false;
-      updateAuthDebug('auth state signed out');
-      authDebugValue('auth-debug-state', 'fired');
-      authDebugValue('auth-debug-user', 'none');
       if(authEnv().isInApp) setAuthMessage('Google Sign-In may not work inside this app browser. Please open this page in Safari/Chrome.');
       else setAuthMessage('');
       updateAuthUI();
@@ -2654,7 +2595,6 @@ function attachAuthStateListener(){
   });
 }
 async function initialiseAuthFlow(){
-  updateAuthDebug('page load');
   const env=authEnv();
   if(env.isInApp){
     setAuthMessage('Google Sign-In may not work inside this app browser. Please open this page in Safari/Chrome.');
@@ -2662,23 +2602,14 @@ async function initialiseAuthFlow(){
   try{
     auth.useDeviceLanguage();
     if(auth.setPersistence) await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-    updateAuthDebug('checking redirect');
     const result=await auth.getRedirectResult();
-    authDebugValue('auth-debug-redirect', 'yes');
     if(result?.user){
       currentUser=result.user;
-      updateAuthDebug('redirect complete');
-      authDebugValue('auth-debug-user', authDebugUserLabel(result.user));
       setAuthMessage('Google sign-in complete. Loading cloud save...', true);
-    } else {
-      updateAuthDebug('redirect checked');
-      authDebugValue('auth-debug-redirect', 'yes - no user');
     }
   }catch(e){
     console.error(e);
-    updateAuthDebug('redirect error', e);
     const msg=friendlyAuthError(e);
-    authDebugValue('auth-debug-redirect', 'error');
     setAuthMessage('Sign-in failed: '+msg);
     showToast('Sign In Failed', msg);
   }finally{
