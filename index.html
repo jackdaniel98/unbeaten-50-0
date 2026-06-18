@@ -835,6 +835,11 @@ h2::before{
       <div><span>iOS</span><span id="auth-debug-ios">unknown</span></div>
       <div><span>In-App</span><span id="auth-debug-inapp">unknown</span></div>
       <div><span>Last Action</span><span id="auth-debug-action">none</span></div>
+      <div><span>Redirect Processed</span><span id="auth-debug-redirect">no</span></div>
+      <div><span>Auth State</span><span id="auth-debug-state">not fired</span></div>
+      <div><span>User</span><span id="auth-debug-user">none</span></div>
+      <div><span>Cloud Save</span><span id="auth-debug-cloud">not checked</span></div>
+      <div><span>Public Profile</span><span id="auth-debug-public">not checked</span></div>
       <div><span>Error Code</span><span id="auth-debug-code">none</span></div>
       <div><span>Error</span><span id="auth-debug-message">none</span></div>
     </div>
@@ -2432,11 +2437,12 @@ function restoreCloudPayload(payload){
   S.player=null; S.career=null; S.opponent=null; S.fight=null;
   refreshMenu();
 }
-const AUTH_BUILD='auth-flow-2026-06-18-1';
+const AUTH_BUILD='auth-flow-2026-06-18-2';
 let lastAuthError='';
 let authBusy=false;
 let authStateUnsubscribe=null;
 function authDebugValue(id,value){ const el=$(id); if(el) el.innerText=String(value); }
+function authDebugUserLabel(user){ return user?(user.email||user.displayName||user.uid||'signed in'):'none'; }
 function authEnv(){
   const ua=navigator.userAgent||'';
   const vendor=navigator.vendor||'';
@@ -2455,6 +2461,7 @@ function updateAuthDebug(action='', error=null){
   authDebugValue('auth-debug-mobile', env.isMobile?'yes':'no');
   authDebugValue('auth-debug-ios', env.isIOS?'yes':'no');
   authDebugValue('auth-debug-inapp', env.isInApp?'yes':'no');
+  authDebugValue('auth-debug-user', authDebugUserLabel(currentUser));
   if(action) authDebugValue('auth-debug-action', action);
   if(error){
     authDebugValue('auth-debug-code', error.code||'unknown');
@@ -2488,10 +2495,10 @@ function friendlyAuthError(e){
   const code=e?.code||'';
   if(code.includes('unauthorized-domain')) return 'This domain is not authorised in Firebase Authentication. Add your GitHub Pages/live domain in Firebase Auth settings.';
   if(code.includes('invalid-api-key')||code.includes('app-deleted')||code.includes('project-not-found')) return 'Firebase Authentication is not available. Please refresh and try again.';
-  if(code.includes('popup-blocked')) return 'The sign-in popup was blocked. Redirecting to Google sign-in instead.';
+  if(code.includes('popup-blocked')) return 'The sign-in popup was blocked. Allow popups, then try again. On phone, open this page in Safari/Chrome.';
   if(code.includes('popup-closed')) return 'Sign-in was cancelled before it finished.';
   if(code.includes('cancelled-popup-request')) return 'A sign-in window was already open. Please try again.';
-  if(code.includes('operation-not-supported')||code.includes('unsupported')) return 'This browser cannot use a popup sign-in. Redirecting to Google sign-in instead.';
+  if(code.includes('operation-not-supported')||code.includes('unsupported')) return 'This browser cannot use popup sign-in. Open this page in Safari/Chrome and try again.';
   if(code.includes('redirect-cancelled-by-user')) return 'Google sign-in was cancelled.';
   if(code.includes('redirect-operation-pending')) return 'Google sign-in is already in progress.';
   if(code.includes('network')) return 'Network problem during sign-in. Check your connection and try again.';
@@ -2503,10 +2510,11 @@ function googleAuthProvider(){
   return provider;
 }
 function shouldUseRedirectAuth(){
-  const env=authEnv();
-  return env.isMobile||env.isIOS||env.isSafari||env.isInApp;
+  return false;
 }
 function shouldRedirectAfterPopupError(e){
+  const env=authEnv();
+  if(env.isIOS||env.isSafari||env.isInApp) return false;
   const code=e?.code||'';
   return code.includes('popup-blocked')||code.includes('operation-not-supported')||code.includes('unsupported')||code.includes('cancelled-popup-request');
 }
@@ -2536,7 +2544,7 @@ async function signInWithGoogle(event){
       await startGoogleRedirect(provider, env.isInApp?'Google Sign-In may not work inside this app browser. Please open this page in Safari/Chrome. Redirecting anyway...':'Redirecting to Google...');
       return;
     }
-    setAuthMessage('Signing in with Google...', true);
+    setAuthMessage(env.isInApp?'Trying Google popup. If nothing opens, use Safari/Chrome.':'Signing in with Google...', true);
     updateAuthDebug('popup start');
     await auth.signInWithPopup(provider);
     updateAuthDebug('popup complete');
@@ -2569,9 +2577,15 @@ async function syncNow(manual=false){
   const payload=cloudPayload();
   try{
     await db.collection('user_saves').doc(currentUser.uid).set(payload,{merge:true});
+    authDebugValue('auth-debug-cloud', 'saved');
     const publicProfile=publicProfileFromPayload(payload);
-    if(publicProfile) await db.collection('public_profiles').doc(currentUser.uid).set(publicProfile,{merge:true});
-    else if(manual) showToast('Profile Not Published', 'Set a valid username to appear in public profiles and leaderboards.');
+    if(publicProfile){
+      await db.collection('public_profiles').doc(currentUser.uid).set(publicProfile,{merge:true});
+      authDebugValue('auth-debug-public', 'saved');
+    } else {
+      authDebugValue('auth-debug-public', 'not published');
+      if(manual) showToast('Profile Not Published', 'Set a valid username to appear in public profiles and leaderboards.');
+    }
     if($('sync-status')) $('sync-status').innerText='Synced '+new Date().toLocaleTimeString();
     if(manual) showToast('Cloud Synced', 'Profile updated.');
   }catch(e){ console.error(e); setAuthMessage('Cloud save could not update. Your local save is still safe.'); if(manual) showToast('Sync Failed', 'Cloud save could not update.'); }
@@ -2588,9 +2602,11 @@ async function handleSignedIn(user){
   updateAuthUI();
   const ref=db.collection('user_saves').doc(user.uid);
   try{
+    authDebugValue('auth-debug-cloud', 'checking');
     const snap=await ref.get();
     const local=cloudPayload();
     if(snap.exists){
+      authDebugValue('auth-debug-cloud', 'loaded');
       const cloud=snap.data()||{};
       if(Math.abs((cloud.updatedAtMillis||0)-(local.updatedAtMillis||0))>60000){
         conflictLocalData=local; conflictCloudData=cloud;
@@ -2619,6 +2635,8 @@ function attachAuthStateListener(){
   if(authStateUnsubscribe) return;
   authStateUnsubscribe=auth.onAuthStateChanged(user=>{
     currentUser=user;
+    authDebugValue('auth-debug-state', 'fired');
+    authDebugValue('auth-debug-user', authDebugUserLabel(user));
     updateAuthUI();
     clearInterval(syncTimer);
     if(user){
@@ -2627,6 +2645,8 @@ function attachAuthStateListener(){
     } else {
       authBusy=false;
       updateAuthDebug('auth state signed out');
+      authDebugValue('auth-debug-state', 'fired');
+      authDebugValue('auth-debug-user', 'none');
       if(authEnv().isInApp) setAuthMessage('Google Sign-In may not work inside this app browser. Please open this page in Safari/Chrome.');
       else setAuthMessage('');
       updateAuthUI();
@@ -2644,17 +2664,21 @@ async function initialiseAuthFlow(){
     if(auth.setPersistence) await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     updateAuthDebug('checking redirect');
     const result=await auth.getRedirectResult();
+    authDebugValue('auth-debug-redirect', 'yes');
     if(result?.user){
       currentUser=result.user;
       updateAuthDebug('redirect complete');
+      authDebugValue('auth-debug-user', authDebugUserLabel(result.user));
       setAuthMessage('Google sign-in complete. Loading cloud save...', true);
     } else {
       updateAuthDebug('redirect checked');
+      authDebugValue('auth-debug-redirect', 'yes - no user');
     }
   }catch(e){
     console.error(e);
     updateAuthDebug('redirect error', e);
     const msg=friendlyAuthError(e);
+    authDebugValue('auth-debug-redirect', 'error');
     setAuthMessage('Sign-in failed: '+msg);
     showToast('Sign In Failed', msg);
   }finally{
