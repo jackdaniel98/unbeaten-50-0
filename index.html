@@ -668,6 +668,13 @@ h2::before{
 .leaderboard-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .leaderboard-tabs .btn{min-height:38px;font-size:.68rem}
 .conflict-choice{display:grid;grid-template-columns:1fr;gap:10px}
+.profile-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.profile-metric{background:#0a0b0e;border:1px solid var(--line);border-radius:10px;padding:9px;text-align:center}
+.profile-metric strong{display:block;color:var(--gold);font-size:1rem;font-variant-numeric:tabular-nums}
+.profile-metric span{display:block;color:var(--text-dim);font-size:.62rem;text-transform:uppercase;font-weight:900;letter-spacing:.7px}
+.compact-section{margin-top:10px}
+.compact-section h2{margin-top:10px}
+.sync-warning{border:1px solid rgba(230,194,71,.32);background:rgba(230,194,71,.08);border-radius:10px;padding:10px;color:var(--text-dim);font-size:.82rem;line-height:1.45;margin-bottom:12px}
 .boxer-avatar.cos-aura_champion::before,.boxer-avatar.cos-aura_diamond::before,.boxer-avatar.cos-aura_immortal::before,.boxer-avatar.cos-aura_crown::before{content:'';position:absolute;inset:4px;border-radius:50%;z-index:0;filter:blur(10px);opacity:.65}
 .boxer-avatar.cos-aura_champion::before{background:rgba(212,175,55,.34)}
 .boxer-avatar.cos-aura_diamond::before{background:rgba(125,211,252,.34)}
@@ -755,10 +762,31 @@ h2::before{
 }
 @media(max-width:380px){
   .app{border-radius:var(--radius-lg)}
+  header{padding:14px 14px 12px}
+  header h1{font-size:2rem}
+  .screen{padding:12px}
+  .panel,.account-panel,.store-card,.cloud-profile-card{padding:10px}
+  h2{font-size:.84rem;margin:12px 0 8px;padding-bottom:6px}
+  .hero{font-size:2.2rem;margin:4px 0 8px}
+  .btn{margin-bottom:8px}
   header h1{letter-spacing:2px}
   .stats-grid{grid-template-columns:1fr}
   .draft-grid{grid-template-columns:1fr}
   .quad{grid-template-columns:1fr 1fr}
+}
+@media(max-width:430px){
+  .screen{padding:13px}
+  .mode-grid,.global-stats,.collection-list,.retired-grid{gap:8px}
+  .mode-card,.stat-pill{padding:10px}
+  .fighter-card{padding:12px 10px 10px}
+  .fighter-card-avatar{height:138px}
+  .fighter-card-stats{gap:5px;margin-top:9px}
+  .account-actions{gap:7px}
+  #menu-screen{display:flex;flex-direction:column}
+  #menu-screen>*{order:20}
+  #menu-screen>.account-panel{order:1}
+  #menu-screen>.menu-actions{order:2;margin-top:4px!important;padding-top:4px!important}
+  #menu-screen>.hero{order:3;height:46px;font-size:34px}
 }
 @media(min-width:521px){
   body{padding:24px 12px}
@@ -831,11 +859,12 @@ h2::before{
     <div class="row"><span>Fighter:</span><span id="save-fighter">-</span></div>
     <div class="row"><span>Progress:</span><span id="save-progress">-</span></div>
   </div>
-  <div style="margin-top:auto;padding-top:16px">
+  <div class="menu-actions" style="margin-top:auto;padding-top:16px">
     <button id="continue-btn" class="btn blue hidden" onclick="continueCareer()">Continue Career</button>
     <button class="btn gold" onclick="startNewCareer()">Draft New Boxer</button>
     <button class="btn blue" onclick="openStore('menu-screen')">Cosmetic Store</button>
     <button class="btn ghost" onclick="openCollection('menu-screen')">Achievements &amp; Collection</button>
+    <button class="btn ghost" onclick="openTrophyCabinet()">Trophy Cabinet</button>
     <button class="btn ghost" onclick="openRetiredCareers('menu-screen')">Retired Careers</button>
     <button class="btn ghost" onclick="openPublicProfiles()">Public Profiles</button>
     <button class="btn ghost" onclick="openCloudLeaderboards()">Cloud Leaderboards</button>
@@ -1060,6 +1089,16 @@ h2::before{
   <button id="collection-back-btn" class="btn gold" onclick="closeCollection()">Back</button>
 </section>
 
+<section id="trophy-cabinet-screen" class="screen">
+  <h2>Trophy Cabinet</h2>
+  <div class="collection-summary">
+    <div class="mini-stat"><strong id="trophy-count">0/0</strong><span>Unlocked</span></div>
+    <div class="mini-stat"><strong id="trophy-50-count">0</strong><span>50-0 Careers</span></div>
+  </div>
+  <div id="trophy-list" class="collection-list"></div>
+  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+</section>
+
 <section id="store-screen" class="screen">
   <h2>Cosmetic Store</h2>
   <div class="wallet-strip">
@@ -1119,10 +1158,10 @@ h2::before{
 
 <section id="cloud-conflict-screen" class="screen">
   <h2>Choose Save</h2>
-  <p class="subtle">A cloud save and local backup were both found. Pick which progress to keep.</p>
+  <div class="sync-warning">We found progress on this device and in your Google cloud save. Nothing will be overwritten until you choose. Pick the save with the progress you want to keep.</div>
   <div class="conflict-choice">
-    <div class="panel"><h2>Local Save</h2><div id="local-save-summary"></div><button class="btn gold" onclick="resolveCloudConflict('local')">Keep Local</button></div>
-    <div class="panel"><h2>Cloud Save</h2><div id="cloud-save-summary"></div><button class="btn blue" onclick="resolveCloudConflict('cloud')">Use Cloud</button></div>
+    <div class="panel"><h2>Local Device Save</h2><div id="local-save-summary"></div><button class="btn gold" onclick="resolveCloudConflict('local')">Keep This Device</button></div>
+    <div class="panel"><h2>Google Cloud Save</h2><div id="cloud-save-summary"></div><button class="btn blue" onclick="resolveCloudConflict('cloud')">Use Cloud Save</button></div>
   </div>
 </section>
 
@@ -1723,6 +1762,15 @@ function validateIdentityText(value, label, min=2, max=20, allowNumbers=false){
   if(!banned.ok&&banned.msg==="This fighter name is not allowed.") return banned;
   return {ok:true,msg:''};
 }
+function validateUsername(value){
+  const text=cleanName(value);
+  if(text.length<3||text.length>20) return {ok:false,msg:'Username must be 3-20 characters.'};
+  if(!/^[A-Za-z0-9 ]+$/.test(text)) return {ok:false,msg:'Username can only use letters, numbers and spaces.'};
+  if(/^[0-9 ]+$/.test(text)) return {ok:false,msg:'Username cannot be numbers only.'};
+  const banned=validateFighterName(text.replace(/[0-9]/g,'A'));
+  if(!banned.ok&&banned.msg==="This fighter name is not allowed.") return banned;
+  return {ok:true,msg:''};
+}
 function boxerDisplayName(profile){
   return cleanName([profile.boxerFirstName, profile.boxerLastName].filter(Boolean).join(' '))||'Custom Contender';
 }
@@ -1759,7 +1807,7 @@ function readCreatorProfile(){
 }
 function validateCreatorProfile(profile){
   const checks=[
-    validateIdentityText(profile.username,'Username',3,20,true),
+    validateUsername(profile.username),
     validateIdentityText(profile.boxerFirstName,'First name',2,20,false),
     validateIdentityText(profile.boxerLastName,'Last name',2,20,false),
     validateIdentityText(profile.nickname,'Nickname',2,20,false)
@@ -1891,6 +1939,22 @@ function renderCollectionScreen(){
       cosmeticList.appendChild(card);
     });
   }
+}
+function openTrophyCabinet(){
+  const profile=activeProfileForCollection();
+  const unlocked=Object.keys(profile.achievements?.unlocked||{});
+  const total=Object.keys(ACHIEVEMENT_DEFINITIONS).length;
+  if($('trophy-count')) $('trophy-count').innerText=unlocked.length+'/'+total;
+  if($('trophy-50-count')) $('trophy-50-count').innerText=String(profile.completed50And0Careers||0);
+  const box=$('trophy-list');
+  if(box){
+    box.innerHTML=Object.values(ACHIEVEMENT_DEFINITIONS).map(a=>{
+      const isOn=unlocked.includes(a.id);
+      const reward=getCosmeticDefinition(a.reward);
+      return '<div class="achievement-card '+(isOn?'unlocked':'locked')+'"><div class="collection-title"><strong>'+a.name+'</strong><span class="collection-status '+(isOn?'on':'')+'">'+(isOn?'Unlocked':'Locked')+'</span></div><div class="collection-desc">'+a.desc+'</div><div class="collection-desc" style="margin-top:6px">Reward: '+(reward?reward.name:'None')+'</div></div>';
+    }).join('');
+  }
+  screen('trophy-cabinet-screen');
 }
 function equipCollectionCosmetic(cosmeticId){
   const cosmetic=getCosmeticDefinition(cosmeticId);
@@ -2307,6 +2371,8 @@ function cloudPayload(){
 }
 function publicProfileFromPayload(payload){
   const p=antiCheatProfile(payload.profile||{});
+  const usernameCheck=validateUsername(p.username);
+  if(!usernameCheck.ok) return null;
   const retired=(payload.retiredCareers||[]).slice(0,30);
   return {
     uid:currentUser?.uid||null,
@@ -2315,6 +2381,7 @@ function publicProfileFromPayload(payload){
     avatar:p.avatar,
     equippedCosmetics:p.equippedCosmetics,
     walletBalance:p.walletBalance||0,
+    lifetimeEarnings:p.lifetimeEarnings||0,
     completed50And0Careers:p.completed50And0Careers||0,
     achievementCount:Object.keys(p.achievements?.unlocked||{}).length,
     cosmeticCount:(p.unlockedCosmetics||[]).length,
@@ -2351,9 +2418,22 @@ function updateAuthUI(){
   if($('sign-in-btn')) $('sign-in-btn').classList.toggle('hidden', !!currentUser);
   if($('sign-out-btn')) $('sign-out-btn').classList.toggle('hidden', !currentUser);
 }
+function friendlyAuthError(e){
+  const code=e?.code||'';
+  if(code.includes('unauthorized-domain')) return 'This domain is not authorised in Firebase Authentication. Add your GitHub Pages/live domain in Firebase Auth settings.';
+  if(code.includes('popup-blocked')) return 'The sign-in popup was blocked. Allow popups for this site and try again.';
+  if(code.includes('popup-closed')) return 'Sign-in was cancelled before it finished.';
+  if(code.includes('network')) return 'Network problem during sign-in. Check your connection and try again.';
+  return e?.message||'Unable to sign in with Google.';
+}
 function signInWithGoogle(){
   const provider=new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(e=>{ console.error(e); showToast('Sign In Failed', e.message||'Unable to sign in'); });
+  provider.setCustomParameters({prompt:'select_account'});
+  auth.signInWithPopup(provider).catch(e=>{
+    console.error(e);
+    showToast('Sign In Failed', friendlyAuthError(e));
+    if(e?.code==='auth/popup-blocked') auth.signInWithRedirect(provider).catch(err=>showToast('Sign In Failed', friendlyAuthError(err)));
+  });
 }
 function signOutCloud(){ auth.signOut(); }
 async function syncNow(manual=false){
@@ -2361,7 +2441,9 @@ async function syncNow(manual=false){
   const payload=cloudPayload();
   try{
     await db.collection('user_saves').doc(currentUser.uid).set(payload,{merge:true});
-    await db.collection('public_profiles').doc(currentUser.uid).set(publicProfileFromPayload(payload),{merge:true});
+    const publicProfile=publicProfileFromPayload(payload);
+    if(publicProfile) await db.collection('public_profiles').doc(currentUser.uid).set(publicProfile,{merge:true});
+    else if(manual) showToast('Profile Not Published', 'Set a valid username to appear in public profiles and leaderboards.');
     if($('sync-status')) $('sync-status').innerText='Synced '+new Date().toLocaleTimeString();
     if(manual) showToast('Cloud Synced', 'Profile updated.');
   }catch(e){ console.error(e); if(manual) showToast('Sync Failed', 'Cloud save could not update.'); }
@@ -2375,22 +2457,28 @@ async function handleSignedIn(user){
   currentUser=user;
   updateAuthUI();
   const ref=db.collection('user_saves').doc(user.uid);
-  const snap=await ref.get();
-  const local=cloudPayload();
-  if(snap.exists){
-    const cloud=snap.data();
-    if(Math.abs((cloud.updatedAtMillis||0)-(local.updatedAtMillis||0))>60000){
-      conflictLocalData=local; conflictCloudData=cloud;
-      if($('local-save-summary')) $('local-save-summary').innerHTML=localSaveSummary(local);
-      if($('cloud-save-summary')) $('cloud-save-summary').innerHTML=localSaveSummary(cloud);
-      screen('cloud-conflict-screen');
-      return;
+  try{
+    const snap=await ref.get();
+    const local=cloudPayload();
+    if(snap.exists){
+      const cloud=snap.data()||{};
+      if(Math.abs((cloud.updatedAtMillis||0)-(local.updatedAtMillis||0))>60000){
+        conflictLocalData=local; conflictCloudData=cloud;
+        if($('local-save-summary')) $('local-save-summary').innerHTML=localSaveSummary(local);
+        if($('cloud-save-summary')) $('cloud-save-summary').innerHTML=localSaveSummary(cloud);
+        screen('cloud-conflict-screen');
+        return;
+      }
     }
+    await syncNow(false);
+  }catch(e){
+    console.error(e);
+    showToast('Cloud Unavailable', 'Guest/local progress is still safe on this device.');
   }
-  await syncNow(false);
 }
 function resolveCloudConflict(choice){
   if(choice==='cloud') restoreCloudPayload(conflictCloudData);
+  if(choice==='local') showToast('Keeping Local Save','This device progress will be uploaded to cloud.');
   syncNow(true);
   conflictLocalData=null; conflictCloudData=null;
   screen('menu-screen');
@@ -2400,22 +2488,27 @@ async function searchPublicProfiles(){
   const q=normaliseNameForFilter($('profile-search-input')?.value||'');
   const box=$('profile-search-results');
   if(!q){ box.innerHTML='<div class="empty-state">Enter a username to search.</div>'; return; }
+  if(q.length<3){ box.innerHTML='<div class="empty-state">Search needs at least 3 characters.</div>'; return; }
   box.innerHTML='<div class="empty-state">Searching...</div>';
   try{
     const snap=await db.collection('public_profiles').where('usernameLower','>=',q).where('usernameLower','<=',q+'\\uf8ff').limit(10).get();
     box.innerHTML=snap.empty?'<div class="empty-state">No profiles found.</div>':snap.docs.map(d=>publicProfileCard(d.id,d.data())).join('');
-  }catch(e){ console.error(e); box.innerHTML='<div class="empty-state">Unable to search profiles.</div>'; }
+  }catch(e){ console.error(e); box.innerHTML='<div class="empty-state">Unable to search profiles right now. Check Firebase rules/indexes and try again.</div>'; }
 }
 function publicProfileCard(id,p){
   return "<div class=\"cloud-profile-card\"><div class=\"cloud-profile-head\"><div class=\"cloud-mini-avatar\">"+avatarMarkup(p.avatar,p.equippedCosmetics)+"</div><div><div class=\"name\">"+(p.username||'Player')+"</div><div class=\"sub\">50-0: "+(p.completed50And0Careers||0)+"<br>Best Legacy: "+(p.highestLegacyScore||0)+"</div></div></div><button class=\"btn blue\" onclick=\"openPublicProfileDetail('"+id+"')\">View Profile</button></div>";
 }
 async function openPublicProfileDetail(uid){
-  const snap=await db.collection('public_profiles').doc(uid).get();
-  if(!snap.exists){ showToast('Profile Missing','This profile is no longer available.'); return; }
-  const p=snap.data();
-  $('public-profile-title').innerText=p.username||'Player Profile';
-  $('public-profile-content').innerHTML='<div class="cloud-profile-card"><div class="cloud-profile-head"><div class="cloud-mini-avatar">'+avatarMarkup(p.avatar,p.equippedCosmetics)+'</div><div><div class="name">'+(p.username||'Player')+'</div><div class="sub">Wallet: '+cash(p.walletBalance||0)+'<br>50-0 Careers: '+(p.completed50And0Careers||0)+'<br>Achievements: '+(p.achievementCount||0)+'<br>Cosmetics: '+(p.cosmeticCount||0)+'</div></div></div></div><h2>Retired Careers</h2><div class="retired-grid">'+((p.retiredCareers||[]).length?(p.retiredCareers||[]).slice(0,10).map(retiredMiniCard).join(''):'<div class="empty-state">No public retired careers.</div>')+'</div>';
-  screen('public-profile-detail-screen');
+  try{
+    const snap=await db.collection('public_profiles').doc(uid).get();
+    if(!snap.exists){ showToast('Profile Missing','This profile is no longer available.'); return; }
+    const p=snap.data()||{};
+    const retired=(p.retiredCareers||[]).slice(0,6);
+    const metrics='<div class="profile-metrics"><div class="profile-metric"><strong>'+(p.completed50And0Careers||0)+'</strong><span>50-0 Careers</span></div><div class="profile-metric"><strong>'+(p.highestLegacyScore||0)+'</strong><span>Best Legacy</span></div><div class="profile-metric"><strong>'+cash(p.walletBalance||0)+'</strong><span>Wallet</span></div><div class="profile-metric"><strong>'+cash(p.lifetimeEarnings||0)+'</strong><span>Lifetime</span></div><div class="profile-metric"><strong>'+(p.achievementCount||0)+'</strong><span>Achievements</span></div><div class="profile-metric"><strong>'+(p.cosmeticCount||0)+'</strong><span>Cosmetics</span></div></div>';
+    $('public-profile-title').innerText=p.username||'Player Profile';
+    $('public-profile-content').innerHTML='<div class="cloud-profile-card"><div class="cloud-profile-head"><div class="cloud-mini-avatar">'+avatarMarkup(p.avatar,p.equippedCosmetics)+'</div><div><div class="name">'+(p.username||'Player')+'</div><div class="sub">Read-only public boxer profile</div></div></div>'+metrics+'</div><div class="compact-section"><h2>Retired Career Highlights</h2><div class="retired-grid">'+(retired.length?retired.map(retiredMiniCard).join(''):'<div class="empty-state">No public retired careers yet.</div>')+'</div></div>';
+    screen('public-profile-detail-screen');
+  }catch(e){ console.error(e); showToast('Profile Error','Unable to load this public profile.'); }
 }
 function openCloudLeaderboards(){ screen('cloud-leaderboards-screen'); loadCloudLeaderboard('walletBalance'); }
 async function loadCloudLeaderboard(field){
@@ -2424,7 +2517,7 @@ async function loadCloudLeaderboard(field){
   try{
     const snap=await db.collection('public_profiles').orderBy(field,'desc').limit(30).get();
     box.innerHTML=snap.empty?'<div class="empty-state">No signed-in players yet.</div>':snap.docs.map((d,i)=>leaderboardProfileRow(d.id,d.data(),field,i+1)).join('');
-  }catch(e){ console.error(e); box.innerHTML='<div class="empty-state">Unable to load leaderboard. Firestore index may be required.</div>'; }
+  }catch(e){ console.error(e); const hint=(e.message||'').toLowerCase().includes('index')?' A Firestore index may need to be created for this leaderboard.':''; box.innerHTML='<div class="empty-state">Unable to load this leaderboard right now.'+hint+'</div>'; }
 }
 function leaderboardProfileRow(id,p,field,rank){
   const label=field==='walletBalance'?cash(p.walletBalance||0):field==='completed50And0Careers'?(p.completed50And0Careers||0):field==='highestLegacyScore'?(p.highestLegacyScore||0):field==='achievementCount'?(p.achievementCount||0):(p.cosmeticCount||0);
@@ -2571,6 +2664,7 @@ window.onload = () => {
   selectMode(S.mode);
   refreshMenu();
   updateAuthUI();
+  auth.getRedirectResult().catch(e=>showToast('Sign In Failed', friendlyAuthError(e)));
   auth.onAuthStateChanged(user=>{
     currentUser=user;
     updateAuthUI();
