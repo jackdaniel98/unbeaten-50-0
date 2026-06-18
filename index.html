@@ -700,6 +700,24 @@ h2::before{
 }
 .auth-field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(230,194,71,.15)}
 .auth-split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.auth-mode-panel{display:none}
+.auth-mode-panel.active{display:block}
+.auth-mode-note{
+  margin:0 0 12px;
+  color:var(--text-dim);
+  font-size:.78rem;
+  line-height:1.45;
+  text-align:center;
+}
+.auth-mode-title{
+  margin:0 0 6px;
+  color:#fff;
+  font-size:1rem;
+  font-weight:900;
+  text-align:center;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
 .account-detail{background:#0a0b0e;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
 .account-detail span{display:block;color:var(--text-dim);font-size:.64rem;text-transform:uppercase;font-weight:900;letter-spacing:.8px}
 .account-detail strong{display:block;color:#fff;font-size:.9rem;margin-top:3px;overflow-wrap:anywhere}
@@ -865,20 +883,38 @@ h2::before{
       <div class="mark">UNBEATEN: 50-0</div>
       <div class="sub">Sign in to protect your career</div>
     </div>
-    <div class="auth-field">
-      <label for="auth-email">Email</label>
-      <input id="auth-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
+    <div id="sign-in-panel" class="auth-mode-panel active">
+      <p class="auth-mode-title">Sign In</p>
+      <p class="auth-mode-note">Use your account to load your boxer, wallet, cosmetics and career progress.</p>
+      <div class="auth-field">
+        <label for="auth-email">Email</label>
+        <input id="auth-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
+      </div>
+      <div class="auth-field">
+        <label for="auth-password">Password</label>
+        <input id="auth-password" type="password" autocomplete="current-password" placeholder="Password" />
+      </div>
+      <button id="email-sign-in-btn" type="button" class="btn gold">Sign In</button>
+      <div class="auth-split">
+        <button id="open-create-account-btn" type="button" class="btn blue">Create Account</button>
+        <button id="forgot-password-btn" type="button" class="btn ghost">Forgot Password</button>
+      </div>
+      <button id="sign-in-btn" type="button" class="btn ghost">Continue With Google</button>
     </div>
-    <div class="auth-field">
-      <label for="auth-password">Password</label>
-      <input id="auth-password" type="password" autocomplete="current-password" placeholder="Password" />
+    <div id="create-account-panel" class="auth-mode-panel">
+      <p class="auth-mode-title">Create Account</p>
+      <p class="auth-mode-note">Pick an email and a password with at least 6 characters.</p>
+      <div class="auth-field">
+        <label for="create-auth-email">Email</label>
+        <input id="create-auth-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
+      </div>
+      <div class="auth-field">
+        <label for="create-auth-password">Password</label>
+        <input id="create-auth-password" type="password" autocomplete="new-password" placeholder="Create password" />
+      </div>
+      <button id="email-create-btn" type="button" class="btn gold">Create Account</button>
+      <button id="back-to-sign-in-btn" type="button" class="btn ghost">Back To Sign In</button>
     </div>
-    <button id="email-sign-in-btn" type="button" class="btn gold" onclick="signInWithEmailPassword()">Sign In</button>
-    <div class="auth-split">
-      <button id="email-create-btn" type="button" class="btn blue" onclick="createEmailAccount()">Create Account</button>
-      <button id="forgot-password-btn" type="button" class="btn ghost" onclick="sendPasswordReset()">Forgot Password</button>
-    </div>
-    <button id="sign-in-btn" type="button" class="btn ghost">Continue With Google</button>
     <div id="auth-error" class="auth-error"></div>
     <div id="login-auth-status" class="subtle" style="margin:8px 0 0;text-align:center"></div>
   </div>
@@ -5801,6 +5837,16 @@ function setAuthMessage(message='', isOk=false){
   });
   if($('login-auth-status')) $('login-auth-status').innerText=currentUser?'Signed in. Loading your account...':'';
 }
+function setAuthMode(mode='sign-in'){
+  const creating=mode==='create';
+  $('sign-in-panel')?.classList.toggle('active', !creating);
+  $('create-account-panel')?.classList.toggle('active', creating);
+  setAuthMessage('');
+  setTimeout(()=>{
+    const first=creating?$('create-auth-email'):$('auth-email');
+    if(first) first.focus();
+  }, 0);
+}
 function updateAuthUI(){
   const label=currentUser?'Signed in as '+(currentUser.displayName||currentUser.email||'Player'):'Sign in required';
   if($('auth-status')) $('auth-status').innerText=label;
@@ -5809,7 +5855,7 @@ function updateAuthUI(){
     $('sign-in-btn').disabled=authBusy;
     $('sign-in-btn').innerText=authBusy?authBusyLabel:'Continue With Google';
   }
-  ['email-sign-in-btn','email-create-btn','forgot-password-btn'].forEach(id=>{ if($(id)) $(id).disabled=authBusy; });
+  ['email-sign-in-btn','email-create-btn','forgot-password-btn','open-create-account-btn','back-to-sign-in-btn'].forEach(id=>{ if($(id)) $(id).disabled=authBusy; });
   if($('account-settings-toggle')) $('account-settings-toggle').classList.toggle('hidden', !currentUser || !authMigrationComplete);
   if($('account-status')) $('account-status').innerText=label;
   if($('account-email')) $('account-email').innerText=currentUser?.email||'-';
@@ -5837,11 +5883,11 @@ function friendlyAuthError(e){
   if(code.includes('network')) return 'Network problem during sign-in. Check your connection and try again.';
   return e?.message||'Unable to complete sign-in.';
 }
-function authEmail(){ return ($('auth-email')?.value||'').trim(); }
-function authPassword(){ return $('auth-password')?.value||''; }
-function validateEmailInput(requirePassword=true){
-  const email=authEmail();
-  const password=authPassword();
+function authEmail(source='sign-in'){ return ($(source==='create'?'create-auth-email':'auth-email')?.value||'').trim(); }
+function authPassword(source='sign-in'){ return $(source==='create'?'create-auth-password':'auth-password')?.value||''; }
+function validateEmailInput(requirePassword=true, source='sign-in'){
+  const email=authEmail(source);
+  const password=authPassword(source);
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return {ok:false,msg:'Enter a valid email address.'};
   if(requirePassword&&password.length<6) return {ok:false,msg:'Password must be at least 6 characters.'};
   return {ok:true,email,password};
@@ -5857,22 +5903,30 @@ async function runAuthAction(action, busyText){
   authBusyLabel=busyText;
   setAuthMessage(busyText, true);
   updateAuthUI();
-  try{ await action(); }
+  try{ return await action(); }
   catch(e){ console.error(e); const msg=friendlyAuthError(e); setAuthMessage(msg); showToast('Sign In Failed', msg); }
   finally{ authBusy=false; updateAuthUI(); }
 }
 async function signInWithEmailPassword(){
-  const check=validateEmailInput(true);
+  const check=validateEmailInput(true, 'sign-in');
   if(!check.ok){ setAuthMessage(check.msg); return; }
   await runAuthAction(()=>auth.signInWithEmailAndPassword(check.email, check.password), 'Signing in...');
 }
 async function createEmailAccount(){
-  const check=validateEmailInput(true);
+  const check=validateEmailInput(true, 'create');
   if(!check.ok){ setAuthMessage(check.msg); return; }
-  await runAuthAction(()=>auth.createUserWithEmailAndPassword(check.email, check.password), 'Creating account...');
+  const result=await runAuthAction(()=>auth.createUserWithEmailAndPassword(check.email, check.password), 'Creating account...');
+  if(result?.user){
+    if($('auth-email')) $('auth-email').value=check.email;
+    if($('auth-password')) $('auth-password').value='';
+    if($('create-auth-password')) $('create-auth-password').value='';
+    setAuthMode('sign-in');
+    setAuthMessage('Account created. Signing you in...', true);
+    showToast('Account Created','Your account is ready.');
+  }
 }
 async function sendPasswordReset(){
-  const check=validateEmailInput(false);
+  const check=validateEmailInput(false, 'sign-in');
   if(!check.ok){ setAuthMessage(check.msg); return; }
   await runAuthAction(async()=>{
     await auth.sendPasswordResetEmail(check.email);
@@ -5941,11 +5995,52 @@ function bindAuthButtons(){
     btn.dataset.authBound='1';
     btn.addEventListener('click', signInWithGoogle, {passive:false});
   }
+  const openCreate=$('open-create-account-btn');
+  if(openCreate&&openCreate.dataset.authBound!=='1'){
+    openCreate.dataset.authBound='1';
+    openCreate.addEventListener('click', e=>{
+      e.preventDefault();
+      if($('create-auth-email')&&!$('create-auth-email').value) $('create-auth-email').value=authEmail('sign-in');
+      if($('create-auth-password')) $('create-auth-password').value='';
+      setAuthMode('create');
+    }, {passive:false});
+  }
+  const backToSignIn=$('back-to-sign-in-btn');
+  if(backToSignIn&&backToSignIn.dataset.authBound!=='1'){
+    backToSignIn.dataset.authBound='1';
+    backToSignIn.addEventListener('click', e=>{
+      e.preventDefault();
+      if($('auth-email')&&!$('auth-email').value) $('auth-email').value=authEmail('create');
+      setAuthMode('sign-in');
+    }, {passive:false});
+  }
+  const emailSignIn=$('email-sign-in-btn');
+  if(emailSignIn&&emailSignIn.dataset.authBound!=='1'){
+    emailSignIn.dataset.authBound='1';
+    emailSignIn.addEventListener('click', e=>{ e.preventDefault(); signInWithEmailPassword(); }, {passive:false});
+  }
+  const emailCreate=$('email-create-btn');
+  if(emailCreate&&emailCreate.dataset.authBound!=='1'){
+    emailCreate.dataset.authBound='1';
+    emailCreate.addEventListener('click', e=>{ e.preventDefault(); createEmailAccount(); }, {passive:false});
+  }
+  const forgot=$('forgot-password-btn');
+  if(forgot&&forgot.dataset.authBound!=='1'){
+    forgot.dataset.authBound='1';
+    forgot.addEventListener('click', e=>{ e.preventDefault(); sendPasswordReset(); }, {passive:false});
+  }
   ['auth-email','auth-password'].forEach(id=>{
     const input=$(id);
     if(input&&input.dataset.authBound!=='1'){
       input.dataset.authBound='1';
       input.addEventListener('keydown', e=>{ if(e.key==='Enter') signInWithEmailPassword(); });
+    }
+  });
+  ['create-auth-email','create-auth-password'].forEach(id=>{
+    const input=$(id);
+    if(input&&input.dataset.authBound!=='1'){
+      input.dataset.authBound='1';
+      input.addEventListener('keydown', e=>{ if(e.key==='Enter') createEmailAccount(); });
     }
   });
 }
