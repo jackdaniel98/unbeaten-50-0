@@ -660,6 +660,8 @@ h2::before{
 .account-row strong{color:#fff;font-size:.9rem;overflow-wrap:anywhere}
 .account-row span{color:var(--text-dim);font-size:.72rem}
 .account-actions{display:grid;grid-template-columns:1fr;gap:8px}
+.auth-error{min-height:18px;margin-top:8px;color:#ffb4b4;font-size:.72rem;line-height:1.35;font-weight:700}
+.auth-error.ok{color:var(--green)}
 .cloud-search{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
 .cloud-profile-card{background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:var(--shadow-card)}
 .cloud-profile-head{display:flex;gap:10px;align-items:center;margin-bottom:10px}
@@ -815,10 +817,11 @@ h2::before{
   <div class="account-panel">
     <div class="account-row"><strong id="auth-status">Guest Mode</strong><span id="sync-status">Local backup active</span></div>
     <div class="account-actions">
-      <button id="sign-in-btn" class="btn blue" onclick="signInWithGoogle()">Sign In With Google</button>
+      <button id="sign-in-btn" type="button" class="btn blue">Sign In With Google</button>
       <button id="sign-out-btn" class="btn ghost hidden" onclick="signOutCloud()">Sign Out</button>
       <button id="sync-now-btn" class="btn ghost" onclick="syncNow(true)">Update Profile Now</button>
     </div>
+    <div id="auth-error" class="auth-error"></div>
   </div>
   <div class="hero">🥊</div>
   <h2>Worldwide Stats</h2>
@@ -2413,30 +2416,95 @@ function restoreCloudPayload(payload){
   S.player=null; S.career=null; S.opponent=null; S.fight=null;
   refreshMenu();
 }
+let lastAuthError='';
+let authBusy=false;
+function setAuthMessage(message='', isOk=false){
+  lastAuthError=message||'';
+  const el=$('auth-error');
+  if(el){
+    el.innerText=lastAuthError;
+    el.classList.toggle('ok', !!isOk);
+  }
+}
 function updateAuthUI(){
-  if($('auth-status')) $('auth-status').innerText=currentUser?'Signed in: '+(currentUser.displayName||currentUser.email||'Google Player'):'Guest Mode';
-  if($('sync-status')) $('sync-status').innerText=currentUser?'Cloud sync ready':'Sign in to protect progress';
-  if($('sign-in-btn')) $('sign-in-btn').classList.toggle('hidden', !!currentUser);
+  const label=currentUser?'Signed in as '+(currentUser.displayName||currentUser.email||'Google Player'):'Signed out / Guest';
+  if($('auth-status')) $('auth-status').innerText=label;
+  if($('sync-status')) $('sync-status').innerText=currentUser?'Cloud sync ready':'Guest mode - sign in to protect progress';
+  if($('sign-in-btn')){
+    $('sign-in-btn').classList.toggle('hidden', !!currentUser);
+    $('sign-in-btn').disabled=authBusy;
+    $('sign-in-btn').innerText=authBusy?'Opening Google...':'Sign In With Google';
+  }
   if($('sign-out-btn')) $('sign-out-btn').classList.toggle('hidden', !currentUser);
+  if(!lastAuthError&&currentUser) setAuthMessage('Signed in. Checking cloud save...', true);
 }
 function friendlyAuthError(e){
   const code=e?.code||'';
   if(code.includes('unauthorized-domain')) return 'This domain is not authorised in Firebase Authentication. Add your GitHub Pages/live domain in Firebase Auth settings.';
-  if(code.includes('popup-blocked')) return 'The sign-in popup was blocked. Allow popups for this site and try again.';
+  if(code.includes('popup-blocked')) return 'The sign-in popup was blocked. Redirecting to Google sign-in instead.';
   if(code.includes('popup-closed')) return 'Sign-in was cancelled before it finished.';
+  if(code.includes('cancelled-popup-request')) return 'A sign-in window was already open. Please try again.';
+  if(code.includes('operation-not-supported')||code.includes('unsupported')) return 'This browser cannot use a popup sign-in. Redirecting to Google sign-in instead.';
   if(code.includes('network')) return 'Network problem during sign-in. Check your connection and try again.';
   return e?.message||'Unable to sign in with Google.';
 }
-function signInWithGoogle(){
+function googleAuthProvider(){
   const provider=new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({prompt:'select_account'});
-  auth.signInWithPopup(provider).catch(e=>{
-    console.error(e);
-    showToast('Sign In Failed', friendlyAuthError(e));
-    if(e?.code==='auth/popup-blocked') auth.signInWithRedirect(provider).catch(err=>showToast('Sign In Failed', friendlyAuthError(err)));
-  });
+  return provider;
 }
-function signOutCloud(){ auth.signOut(); }
+function shouldUseRedirectAuth(){
+  const ua=navigator.userAgent||'';
+  return /Android|iPhone|iPad|iPod|Mobile|EdgA|CriOS|FxiOS/i.test(ua) || (window.matchMedia&&window.matchMedia('(pointer: coarse)').matches);
+}
+function shouldRedirectAfterPopupError(e){
+  const code=e?.code||'';
+  return code.includes('popup-blocked')||code.includes('operation-not-supported')||code.includes('unsupported')||code.includes('cancelled-popup-request');
+}
+async function startGoogleRedirect(provider, reason='Redirecting to Google sign-in...'){
+  setAuthMessage(reason, true);
+  await auth.signInWithRedirect(provider);
+}
+async function signInWithGoogle(event){
+  if(event?.preventDefault) event.preventDefault();
+  if(authBusy) return;
+  if(!window.firebase||!firebase.auth||!auth){
+    setAuthMessage('Firebase Auth did not initialise. Refresh and try again.');
+    showToast('Sign In Failed','Firebase Auth did not initialise.');
+    return;
+  }
+  authBusy=true;
+  updateAuthUI();
+  const provider=googleAuthProvider();
+  try{
+    if(shouldUseRedirectAuth()){
+      await startGoogleRedirect(provider, 'Opening Google sign-in...');
+      return;
+    }
+    setAuthMessage('Opening Google sign-in...', true);
+    await auth.signInWithPopup(provider);
+  }catch(e){
+    console.error(e);
+    const msg=friendlyAuthError(e);
+    setAuthMessage(msg);
+    showToast('Sign In Failed', msg);
+    if(shouldRedirectAfterPopupError(e)){
+      try{ await startGoogleRedirect(provider, msg); }
+      catch(err){ console.error(err); const fallback=friendlyAuthError(err); setAuthMessage(fallback); showToast('Sign In Failed', fallback); }
+    }
+  }finally{
+    authBusy=false;
+    updateAuthUI();
+  }
+}
+function bindAuthButtons(){
+  const btn=$('sign-in-btn');
+  if(btn&&btn.dataset.authBound!=='1'){
+    btn.dataset.authBound='1';
+    btn.addEventListener('click', signInWithGoogle, {passive:false});
+  }
+}
+function signOutCloud(){ auth.signOut().then(()=>setAuthMessage('Signed out. Guest mode is still available.', true)).catch(e=>setAuthMessage(friendlyAuthError(e))); }
 async function syncNow(manual=false){
   if(!currentUser){ if(manual) showToast('Guest Mode', 'Sign in to sync progress.'); return; }
   const payload=cloudPayload();
@@ -2447,7 +2515,7 @@ async function syncNow(manual=false){
     else if(manual) showToast('Profile Not Published', 'Set a valid username to appear in public profiles and leaderboards.');
     if($('sync-status')) $('sync-status').innerText='Synced '+new Date().toLocaleTimeString();
     if(manual) showToast('Cloud Synced', 'Profile updated.');
-  }catch(e){ console.error(e); if(manual) showToast('Sync Failed', 'Cloud save could not update.'); }
+  }catch(e){ console.error(e); setAuthMessage('Cloud save could not update. Your local save is still safe.'); if(manual) showToast('Sync Failed', 'Cloud save could not update.'); }
 }
 function requestCloudSync(){
   if(!currentUser) return;
@@ -2456,6 +2524,7 @@ function requestCloudSync(){
 }
 async function handleSignedIn(user){
   currentUser=user;
+  setAuthMessage('Signed in. Checking cloud save...', true);
   updateAuthUI();
   const ref=db.collection('user_saves').doc(user.uid);
   try{
@@ -2472,8 +2541,10 @@ async function handleSignedIn(user){
       }
     }
     await syncNow(false);
+    setAuthMessage('Signed in and synced.', true);
   }catch(e){
     console.error(e);
+    setAuthMessage('Cloud save is unavailable right now. Guest/local progress is still safe.');
     showToast('Cloud Unavailable', 'Guest/local progress is still safe on this device.');
   }
 }
@@ -2664,8 +2735,16 @@ function backToMenu(fromHof=false){ if(!fromHof&&S.career&&S.player&&S.player.Na
 window.onload = () => {
   selectMode(S.mode);
   refreshMenu();
+  bindAuthButtons();
   updateAuthUI();
-  auth.getRedirectResult().catch(e=>showToast('Sign In Failed', friendlyAuthError(e)));
+  auth.useDeviceLanguage();
+  auth.getRedirectResult().then(result=>{
+    if(result?.user) setAuthMessage('Google sign-in complete. Loading cloud save...', true);
+  }).catch(e=>{
+    const msg=friendlyAuthError(e);
+    setAuthMessage(msg);
+    showToast('Sign In Failed', msg);
+  });
   auth.onAuthStateChanged(user=>{
     currentUser=user;
     updateAuthUI();
@@ -2673,6 +2752,10 @@ window.onload = () => {
     if(user){
       handleSignedIn(user).catch(e=>console.error(e));
       syncTimer=setInterval(()=>syncNow(false),15*60*1000);
+    } else {
+      authBusy=false;
+      setAuthMessage('');
+      updateAuthUI();
     }
   });
 };
