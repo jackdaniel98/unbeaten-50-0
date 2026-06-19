@@ -7149,6 +7149,7 @@ function showScreen(targetId){
   if(!target) return false;
   document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
   target.classList.add('active');
+  if(targetId==='menu-screen') loadGlobalStats();
   return true;
 }
 function screen(id){ return showScreen(id); }
