@@ -5389,7 +5389,17 @@ function beginNewCareerDraft(){ fresh(); $('trait-list').innerHTML=''; $('trait-
 function startNewCareer(){ const profile=loadProfileFoundation(); if(!profile.profileSetupComplete){ openBoxerCreator('menu-screen', beginNewCareerDraft); return; } beginNewCareerDraft(); }
 function continueCareer(){ const d=loadCareer(); if(!d){ refreshMenu(); return; } S.mode=normaliseModeId(d.mode||d.career.mode); S.player=d.player; S.career=d.career; S.career.mode=normaliseModeId(S.career.mode||S.mode); S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; S.awaiting=false; S.perfect=false; if(!S.opponent&&S.career.currentFight<=50) generateOpponent(); checkAchievements(false); updateSynergyPanel(); updateHub(); screen('hub-screen'); }
 function deleteSave(){ clearCareer(); }
-function restartDraft(){ if(confirm('Restart this boxer draft and roll again from scratch?')) startNewCareer(); }
+function countAbandonedDraftAttempt(){
+  if(!S.career || S.career.firebaseCreatedCounted) return;
+  S.career.firebaseCreatedCounted = true;
+  incrementFightersCreated();
+}
+function restartDraft(){
+  if(confirm('Restart this boxer draft and roll again from scratch?')){
+    countAbandonedDraftAttempt();
+    startNewCareer();
+  }
+}
 function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=a.Name; $('slot-mid').innerText=b.Name; $('slot-bottom').innerText=c.Name; ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=S.legend.Name; $('slot-bottom').innerText=LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' • '+S.legend.Pool; if(S.perfect) txt+=' • Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
 function useReroll(){ if(!S.awaiting||S.career.draftRerolls<=0) return; S.career.draftRerolls--; saveCareer(); spinWheel(true,true); }
 function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} • ${t.rarity.toUpperCase()}\n\n${t.desc}`; }
