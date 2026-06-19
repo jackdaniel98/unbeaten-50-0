@@ -572,6 +572,13 @@ h2::before{
   display:flex;justify-content:center;align-items:center;min-height:230px;
   position:relative;overflow:hidden;margin-bottom:14px;
 }
+.creator-premium-stage{
+  background:transparent;
+  border:0;
+  padding:4px 0 12px;
+  min-height:0;
+  overflow:visible;
+}
 .avatar-card-mini{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .avatar-card-mini .avatar-stage{width:110px;min-width:110px;height:132px;min-height:132px;margin:0;padding:8px}
 .avatar-name-block{min-width:0}
@@ -609,6 +616,347 @@ h2::before{
 .boxer-avatar.cos-tattoo_50 .torso::after{content:'50'}
 .boxer-avatar.cos-robe_undisputed .torso{box-shadow:0 0 0 3px rgba(212,175,55,.42),0 0 22px rgba(212,175,55,.24)}
 .boxer-avatar.cos-badge_50 .badge{font-size:.82rem;color:#f7e7a1;text-shadow:0 0 8px rgba(212,175,55,.55)}
+/* ============================================================
+   UNBEATEN PREMIUM AVATAR CARD SYSTEM
+   Phase 1: SVG Avatar + Premium Creator Card Frame
+   ============================================================ */
+#boxer-creator-screen{
+  padding-top:14px;
+}
+#boxer-creator-screen>h2{
+  margin-bottom:6px;
+}
+.avatar-card-creator{
+  width:min(100%,318px);
+  margin:0 auto 14px;
+  --frame-a:#08090b;
+  --frame-b:#f7d45c;
+  --glow:rgba(247,212,92,.38);
+  --aura:rgba(247,212,92,.42);
+}
+.avatar-card-creator.rarity-mythic{--frame-a:#050507;--frame-b:#f7d45c;--glow:rgba(247,212,92,.48)}
+.avatar-card-frame{
+  position:relative;
+  overflow:hidden;
+  border-radius:22px;
+  padding:18px 13px 14px;
+  background:
+    radial-gradient(circle at 50% 18%, var(--glow), transparent 35%),
+    linear-gradient(145deg,#050507 0%,#12141a 55%,#050507 100%);
+  border:2px solid #f7d45c;
+  box-shadow:0 0 0 1px rgba(255,255,255,.08) inset,0 18px 45px rgba(0,0,0,.55),0 0 30px var(--glow);
+}
+.creator-card-frame-asset{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:100% 100%;
+  pointer-events:none;
+  z-index:2;
+  opacity:.82;
+  filter:drop-shadow(0 0 16px rgba(247,212,92,.28));
+}
+.avatar-card-frame::before{
+  content:'';
+  position:absolute;
+  inset:7px;
+  border-radius:17px;
+  border:1px solid rgba(247,212,92,.34);
+  pointer-events:none;
+  z-index:2;
+}
+.avatar-card-frame::after{
+  content:'';
+  position:absolute;
+  inset:-45%;
+  background:linear-gradient(120deg,transparent 42%,rgba(255,255,255,.12),transparent 58%);
+  transform:translateX(-45%) rotate(18deg);
+  animation:avatarCardShine 7s ease-in-out infinite;
+  pointer-events:none;
+  z-index:3;
+}
+@keyframes avatarCardShine{
+  0%,78%{transform:translateX(-45%) rotate(18deg);opacity:0}
+  84%{opacity:1}
+  100%{transform:translateX(45%) rotate(18deg);opacity:0}
+}
+.avatar-card-rarity{
+  position:relative;
+  z-index:4;
+  width:max-content;
+  margin:0 auto 8px;
+  padding:5px 30px;
+  background:linear-gradient(180deg,#ffe98d 0%,#b87718 100%);
+  color:#08090b;
+  border:1px solid rgba(255,255,255,.5);
+  border-radius:0 0 10px 10px;
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:1.3rem;
+  line-height:1;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  box-shadow:0 0 18px rgba(247,212,92,.45);
+}
+.avatar-card-topline{
+  position:relative;
+  z-index:6;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  min-height:54px;
+}
+.avatar-ovr strong{
+  display:block;
+  font-family:'Bebas Neue',Impact,sans-serif;
+  color:#f8fafc;
+  font-size:2.65rem;
+  line-height:.82;
+  letter-spacing:1px;
+  text-shadow:0 2px 0 rgba(0,0,0,.7),0 0 14px rgba(255,255,255,.25);
+}
+.avatar-ovr span,.avatar-country{
+  color:var(--gold);
+  font-weight:1000;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.avatar-country{
+  max-width:128px;
+  text-align:right;
+  color:#f8fafc;
+  font-size:.78rem;
+  line-height:1.2;
+}
+.avatar-portrait-stage{
+  position:relative;
+  z-index:5;
+  height:238px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 0 2px;
+  overflow:hidden;
+  border-radius:14px;
+  background:
+    radial-gradient(circle at 50% 40%, var(--aura), transparent 38%),
+    radial-gradient(circle at 50% 78%, rgba(247,212,92,.22), transparent 32%),
+    linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.36));
+}
+.avatar-portrait-stage::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(circle,rgba(247,212,92,.33) 0 1px,transparent 2px),
+    radial-gradient(circle,rgba(255,255,255,.16) 0 1px,transparent 2px);
+  background-size:44px 44px,61px 61px;
+  opacity:.32;
+  pointer-events:none;
+}
+#creator-avatar-preview{
+  position:relative;
+  z-index:2;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.creator-aura-img{
+  position:absolute;
+  inset:-16%;
+  width:132%;
+  height:132%;
+  object-fit:cover;
+  pointer-events:none;
+  z-index:1;
+  opacity:.88;
+  mix-blend-mode:screen;
+}
+.creator-boxer-img{
+  position:relative;
+  z-index:2;
+  height:120%;
+  max-width:112%;
+  object-fit:contain;
+  object-position:center bottom;
+  transform:translateY(8%);
+  filter:drop-shadow(0 18px 22px rgba(0,0,0,.58));
+}
+.creator-svg-fallback{
+  position:absolute;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2;
+}
+.premium-boxer-avatar{
+  width:250px;
+  max-width:96%;
+  height:268px;
+  display:block;
+  overflow:visible;
+  --skin:#b8794f;
+  --hair:#17110d;
+  --beard:#17110d;
+  --gloves:#b91c1c;
+  --shorts:#1d4ed8;
+  --boots:#111827;
+  --robe:#07080c;
+  --accent:#f7d45c;
+}
+.premium-boxer-avatar .svg-skin{fill:var(--skin)}
+.premium-boxer-avatar .svg-skin-shadow{fill:rgba(0,0,0,.2)}
+.premium-boxer-avatar .svg-line{stroke:rgba(0,0,0,.36);stroke-width:2.2;stroke-linecap:round;fill:none}
+.premium-boxer-avatar .svg-muscle{stroke:rgba(255,255,255,.17);stroke-width:2;stroke-linecap:round;fill:none}
+.premium-boxer-avatar .svg-hair,.premium-boxer-avatar .svg-beard{fill:var(--hair)}
+.premium-boxer-avatar .svg-gloves{fill:var(--gloves)}
+.premium-boxer-avatar .svg-shorts{fill:var(--shorts)}
+.premium-boxer-avatar .svg-boots{fill:var(--boots)}
+.premium-boxer-avatar .svg-robe{fill:var(--robe);stroke:var(--accent);stroke-width:2;opacity:0}
+.premium-boxer-avatar .svg-tattoo{fill:none;stroke:#1f130c;stroke-width:2.4;stroke-linecap:round;opacity:0}
+.premium-boxer-avatar .svg-highlight{fill:rgba(255,255,255,.18)}
+.premium-boxer-avatar.has-robe .svg-robe{opacity:.96}
+.premium-boxer-avatar.has-tattoo .svg-tattoo{opacity:.72}
+.premium-boxer-avatar.hair-bald .svg-hair{display:none}
+.premium-boxer-avatar.facial-none .svg-beard{display:none}
+.premium-boxer-avatar.facial-stubble .svg-beard{opacity:.38}
+.premium-boxer-avatar.facial-goatee .svg-beard-full{display:none}
+.premium-boxer-avatar.facial-goatee .svg-goatee{display:block}
+.premium-boxer-avatar:not(.facial-goatee) .svg-goatee{display:none}
+.premium-boxer-avatar.hair-afro .svg-hair-main{transform:scale(1.13) translate(-12px,-7px)}
+.premium-boxer-avatar.hair-buzz .svg-hair-main{transform:scaleY(.48) translate(0,26px)}
+.premium-boxer-avatar.hair-crop .svg-hair-main{transform:scaleY(.78) translate(0,10px)}
+.premium-boxer-avatar.cosmetic-gloves-gold{--gloves:#ffd166}
+.premium-boxer-avatar.cosmetic-aura-champion{--accent:#38bdf8}
+.premium-boxer-avatar.cosmetic-aura-diamond{--accent:#7dd3fc}
+.premium-boxer-avatar.cosmetic-aura-immortal{--accent:#f7e7a1}
+.avatar-card-identity{
+  position:relative;
+  z-index:7;
+  text-align:center;
+  margin-top:-4px;
+  padding:6px 8px 5px;
+  border-radius:9px;
+  background:linear-gradient(90deg,rgba(0,0,0,.18),rgba(0,0,0,.62),rgba(0,0,0,.18));
+}
+.avatar-card-name{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  color:#f8fafc;
+  font-size:clamp(1.12rem,4.5vw,1.48rem);
+  line-height:1;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  text-shadow:0 2px 0 #000,0 0 16px rgba(255,255,255,.22);
+  overflow-wrap:anywhere;
+}
+.avatar-card-nickname{
+  color:var(--gold);
+  font-size:1rem;
+  font-weight:1000;
+  line-height:1.2;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-top:2px;
+  overflow-wrap:anywhere;
+}
+.avatar-card-stats{
+  position:relative;
+  z-index:7;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  margin:6px 0 8px;
+  border:1px solid rgba(247,212,92,.4);
+  border-radius:10px;
+  overflow:hidden;
+  background:rgba(0,0,0,.64);
+  backdrop-filter:blur(4px);
+}
+.avatar-card-stats div{padding:6px 4px;text-align:center}
+.avatar-card-stats span,.avatar-card-cosmetics span{
+  display:block;
+  color:var(--gold);
+  font-size:.58rem;
+  font-weight:1000;
+  letter-spacing:.9px;
+  text-transform:uppercase;
+}
+.avatar-card-stats strong{
+  display:block;
+  color:#f8fafc;
+  font-size:1rem;
+  margin-top:2px;
+  font-variant-numeric:tabular-nums;
+}
+.avatar-card-cosmetics{
+  position:relative;
+  z-index:7;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  margin-top:6px;
+}
+.cosmetic-slot{
+  min-height:38px;
+  border:1px solid rgba(247,212,92,.34);
+  border-radius:8px;
+  background:rgba(0,0,0,.58);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  color:#f8fafc;
+  font-size:.58rem;
+  font-weight:900;
+  text-align:center;
+  text-transform:uppercase;
+}
+.cosmetic-slot.locked{opacity:.7;filter:grayscale(.15)}
+.cosmetic-slot::before{content:'+';color:rgba(247,212,92,.75);font-size:1rem;line-height:1}
+.cosmetic-slot.equipped::before{content:'✓';color:#7ee0ad}
+.avatar-card-achievements{
+  position:relative;
+  z-index:7;
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-top:7px;
+}
+.achievement-slot{
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  border:2px dashed rgba(247,212,92,.32);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:rgba(247,212,92,.55);
+  background:rgba(0,0,0,.22);
+  font-weight:1000;
+  opacity:.8;
+}
+@media(max-width:430px){
+  .avatar-card-frame{padding:10px;border-radius:19px}
+  .avatar-card-creator{width:min(100%,300px)}
+  .avatar-portrait-stage{height:218px;margin-top:0}
+  .premium-boxer-avatar{width:206px;height:226px}
+  .avatar-card-name{font-size:1.72rem}
+  .avatar-card-rarity{font-size:1.1rem;padding:4px 24px}
+}
+@media(max-width:340px){
+  .avatar-card-cosmetics{gap:4px}
+  .cosmetic-slot{font-size:.52rem;min-height:46px}
+  .avatar-ovr strong{font-size:2.55rem}
+  .avatar-card-name{font-size:1.48rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .avatar-card-frame::after{animation:none}
+}
 .fighter-card{
   position:relative;overflow:hidden;border-radius:18px;padding:14px 12px 12px;
   border:2px solid rgba(255,255,255,.16);box-shadow:0 18px 40px -18px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.16);
@@ -1002,7 +1350,9 @@ h2::before{
 
 <section id="boxer-creator-screen" class="screen">
   <h2>Boxer Creator</h2>
-  <div class="avatar-stage"><div id="creator-avatar-preview"></div></div>
+  <div class="avatar-stage creator-premium-stage">
+    <div class="avatar-card-creator rarity-mythic" id="creator-avatar-card"></div>
+  </div>
   <div class="creator-grid">
     <div class="field wide"><label for="creator-username">Username</label><input id="creator-username" type="text" maxlength="20" placeholder="Iron Jack" oninput="handleCreatorInput()" /></div>
     <div class="field"><label for="creator-first-name">First Name</label><input id="creator-first-name" type="text" maxlength="20" placeholder="Jack" oninput="handleCreatorInput()" /></div>
@@ -5098,12 +5448,107 @@ function boxerDisplayName(profile){
 }
 function avatarStyleVars(avatar){
   const a=createAvatarConfig(avatar);
-  return '--skin:'+AVATAR_COLOURS.skinTone[a.skinTone]+';--hair:'+AVATAR_COLOURS.hairColour[a.hairColour]+';--gloves:'+AVATAR_COLOURS.gloves[a.gloves]+';--shorts:'+AVATAR_COLOURS.shorts[a.shorts]+';--boots:'+AVATAR_COLOURS.boots[a.boots]+';';
+  return '--skin:'+AVATAR_COLOURS.skinTone[a.skinTone]+';--hair:'+AVATAR_COLOURS.hairColour[a.hairColour]+';--beard:'+AVATAR_COLOURS.hairColour[a.hairColour]+';--gloves:'+AVATAR_COLOURS.gloves[a.gloves]+';--shorts:'+AVATAR_COLOURS.shorts[a.shorts]+';--boots:'+AVATAR_COLOURS.boots[a.boots]+';';
 }
 function avatarMarkup(avatar, equipped={}){
   const a=avatarWithEquippedCosmetics(avatar, equipped);
   const classes=['boxer-avatar','hair-'+a.hairStyle,'facial-'+a.facialHair,cosmeticAvatarClasses(equipped)].filter(Boolean).join(' ');
   return '<div class="'+classes+'" style="'+avatarStyleVars(a)+'"><div class="hair"></div><div class="head"></div><div class="eye l"></div><div class="eye r"></div><div class="beard"></div><div class="neck"></div><div class="torso"></div><div class="arm l"></div><div class="arm r"></div><div class="glove l"></div><div class="glove r"></div><div class="shorts"></div><div class="leg l"></div><div class="leg r"></div><div class="boot l"></div><div class="boot r"></div><div class="badge">'+(cosmeticBadgeText(equipped)||'')+'</div></div>';
+}
+function htmlEscape(value){
+  return String(value??'').replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function creatorCountryLabel(country=''){
+  const map={'United Kingdom':'UK','United States':'USA','New Zealand':'NZ','Philippines':'PHI','Australia':'AUS','Mexico':'MEX','Canada':'CAN','Ireland':'IRE','Nigeria':'NGA','Ghana':'GHA','Jamaica':'JAM','Brazil':'BRA','Cuba':'CUB','Ukraine':'UKR','Japan':'JPN'};
+  return map[country]||String(country||'Local').slice(0,3).toUpperCase();
+}
+function creatorCosmeticState(profile, slot){
+  const equipped=equippedCosmetic(profile, slot);
+  const isDefault=equipped?.id===DEFAULT_EQUIPPED_COSMETICS[slot];
+  return {name:isDefault?slot:equipped?.name||slot, equipped:!!equipped&&!isDefault};
+}
+function creatorPremiumClasses(profile){
+  const avatar=createAvatarConfig(profile.avatar);
+  const equipped=profile.equippedCosmetics||{};
+  const classes=['premium-boxer-avatar','hair-'+avatar.hairStyle,'facial-'+avatar.facialHair];
+  if(avatar.gloves==='gold') classes.push('cosmetic-gloves-gold');
+  const robe=getCosmeticDefinition(equipped.robe), tattoo=getCosmeticDefinition(equipped.tattoo), aura=getCosmeticDefinition(equipped.aura);
+  if(robe&&robe.id!==DEFAULT_EQUIPPED_COSMETICS.robe) classes.push('has-robe');
+  if(tattoo&&tattoo.id!==DEFAULT_EQUIPPED_COSMETICS.tattoo) classes.push('has-tattoo');
+  if(aura?.visual?.className){
+    classes.push(aura.visual.className.replace('cos-aura_','cosmetic-aura-').replace('_','-'));
+  }
+  return classes.join(' ');
+}
+function creatorSkinAsset(avatar){
+  const tone=createAvatarConfig(avatar).skinTone;
+  if(tone==='dark' || tone==='brown') return 'assets/avatar/boxer_base_dark.png';
+  if(tone==='medium' || tone==='tan') return 'assets/avatar/boxer_base_medium.png';
+  return 'assets/avatar/boxer_base_light.png';
+}
+function creatorCardFrameAsset(){
+  return 'assets/avatar/card_immortal.png';
+}
+function creatorAuraAsset(){
+  return 'assets/avatar/aura_gold_flame.png';
+}
+function premiumAvatarSvgMarkup(profile){
+  const avatar=createAvatarConfig(profile.avatar);
+  const style=avatarStyleVars(avatar);
+  const classes=creatorPremiumClasses(profile);
+  return '<svg class="'+classes+'" style="'+style+'" viewBox="0 0 240 268" role="img" aria-label="Boxer avatar" xmlns="http://www.w3.org/2000/svg">'+
+    '<defs>'+
+      '<linearGradient id="creatorSkinGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient>'+
+      '<linearGradient id="creatorGoldTrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3a8"/><stop offset=".45" stop-color="var(--accent)"/><stop offset="1" stop-color="#8a5a13"/></linearGradient>'+
+      '<radialGradient id="creatorGloveShine" cx=".32" cy=".2" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".32" stop-color="var(--gloves)"/><stop offset="1" stop-color="#111" stop-opacity=".34"/></radialGradient>'+
+    '</defs>'+
+    '<ellipse cx="120" cy="260" rx="72" ry="10" fill="#000" opacity=".45"/>'+
+    '<path class="svg-robe" d="M48 105 C32 130 30 196 43 264 L89 264 C78 205 83 148 105 113 Z"/>'+
+    '<path class="svg-robe" d="M192 105 C208 130 210 196 197 264 L151 264 C162 205 157 148 135 113 Z"/>'+
+    '<path class="svg-skin" d="M68 118 C82 99 99 91 120 91 C141 91 158 99 172 118 C187 151 187 207 171 239 C147 251 93 251 69 239 C53 207 53 151 68 118 Z"/>'+
+    '<path d="M79 118 C97 136 143 136 161 118 C157 159 145 202 120 239 C95 202 83 159 79 118 Z" fill="url(#creatorSkinGlow)" opacity=".58"/>'+
+    '<path class="svg-skin-shadow" d="M84 136 C99 146 111 149 120 149 C129 149 141 146 156 136 C151 173 139 204 120 232 C101 204 89 173 84 136 Z"/>'+
+    '<path class="svg-muscle" d="M84 136 C98 128 111 130 119 141 M156 136 C142 128 129 130 121 141 M95 163 L145 163 M100 184 L140 184 M106 205 L134 205"/>'+
+    '<path class="svg-skin" d="M70 122 C49 137 35 161 33 190 C41 200 56 201 67 190 C70 166 80 146 96 132 Z"/>'+
+    '<path class="svg-skin" d="M170 122 C191 137 205 161 207 190 C199 200 184 201 173 190 C170 166 160 146 144 132 Z"/>'+
+    '<path class="svg-shorts" d="M65 222 C86 235 154 235 175 222 L171 263 L69 263 Z"/>'+
+    '<path fill="url(#creatorGoldTrim)" d="M69 219 C91 229 149 229 171 219 L173 231 C149 241 91 241 67 231 Z"/>'+
+    '<path fill="rgba(0,0,0,.27)" d="M120 231 L133 263 L107 263 Z"/>'+
+    '<path class="svg-skin" d="M100 59 L140 59 L143 94 C132 104 108 104 97 94 Z"/>'+
+    '<path class="svg-skin" d="M94 31 C88 51 92 73 104 84 C113 92 127 92 136 84 C148 73 152 51 146 31 C136 20 104 20 94 31 Z"/>'+
+    '<path class="svg-hair svg-hair-main" d="M87 34 C93 12 147 10 153 34 C143 29 132 26 120 26 C107 26 97 29 87 34 Z" transform-origin="120 28"/>'+
+    '<path class="svg-line" d="M98 52 C105 49 112 49 117 52 M123 52 C128 49 135 49 142 52"/>'+
+    '<path class="svg-line" d="M120 58 C116 68 117 72 123 75"/>'+
+    '<path d="M108 81 C116 84 124 84 132 81" stroke="rgba(0,0,0,.5)" stroke-width="3" stroke-linecap="round" fill="none"/>'+
+    '<path class="svg-beard svg-beard-full" d="M96 71 C106 93 134 93 144 71 C144 90 134 103 120 103 C106 103 96 90 96 71 Z"/>'+
+    '<path class="svg-beard svg-goatee" d="M112 82 C117 87 123 87 128 82 L126 99 L114 99 Z"/>'+
+    '<path class="svg-tattoo" d="M99 145 C111 135 129 135 141 145 M107 158 L133 158 M120 134 L120 172"/>'+
+    '<path class="svg-gloves" fill="url(#creatorGloveShine)" d="M36 176 C27 154 42 137 66 140 C89 143 95 163 84 185 C70 203 45 198 36 176 Z"/>'+
+    '<path class="svg-gloves" fill="url(#creatorGloveShine)" d="M204 176 C213 154 198 137 174 140 C151 143 145 163 156 185 C170 203 195 198 204 176 Z"/>'+
+    '<path class="svg-line" d="M50 151 C62 147 75 153 79 166 M190 151 C178 147 165 153 161 166"/>'+
+    '<path class="svg-highlight" d="M45 151 C55 145 68 149 74 160 C62 155 51 157 41 165 Z"/>'+
+    '<path class="svg-highlight" d="M195 151 C185 145 172 149 166 160 C178 155 189 157 199 165 Z"/>'+
+  '</svg>';
+}
+function creatorAvatarCardMarkup(profile){
+  const displayName=boxerDisplayName(profile);
+  const nickname=profile.nickname?'"'+profile.nickname+'"':'"The Contender"';
+  const slots=['gloves','robe','shorts','aura'].map(slot=>creatorCosmeticState(profile, slot));
+  const avatar=createAvatarConfig(profile.avatar);
+  return '<div class="avatar-card-frame">'+
+    '<img class="creator-card-frame-asset" src="'+creatorCardFrameAsset()+'" alt="" aria-hidden="true">'+
+    '<div class="avatar-card-rarity">Mythic</div>'+
+    '<div class="avatar-card-topline"><div class="avatar-ovr"><strong>50</strong><span>OVR</span></div><div class="avatar-country">'+htmlEscape(creatorCountryLabel(profile.country))+'</div></div>'+
+    '<div class="avatar-portrait-stage"><div id="creator-avatar-preview">'+
+      '<img class="creator-aura-img" src="'+creatorAuraAsset()+'" alt="" aria-hidden="true">'+
+      '<img class="creator-boxer-img" src="'+creatorSkinAsset(avatar)+'" alt="Boxer preview" onerror="this.style.display=&quot;none&quot;;this.nextElementSibling.style.display=&quot;flex&quot;">'+
+      '<div class="creator-svg-fallback">'+premiumAvatarSvgMarkup(profile)+'</div>'+
+    '</div></div>'+
+    '<div class="avatar-card-identity"><div class="avatar-card-name">'+htmlEscape(displayName)+'</div><div class="avatar-card-nickname">'+htmlEscape(nickname)+'</div></div>'+
+    '<div class="avatar-card-stats"><div><span>Record</span><strong>0-0</strong></div><div><span>Legacy</span><strong>0</strong></div><div><span>KO Rate</span><strong>0%</strong></div></div>'+
+    '<div class="avatar-card-cosmetics">'+slots.map(s=>'<div class="cosmetic-slot '+(s.equipped?'equipped':'locked')+'"><span>'+htmlEscape(s.name)+'</span></div>').join('')+'</div>'+
+    '<div class="avatar-card-achievements"><div class="achievement-slot">+</div><div class="achievement-slot">+</div><div class="achievement-slot">+</div></div>'+
+  '</div>';
 }
 function readCreatorProfile(){
   const current=loadProfileFoundation();
@@ -5137,9 +5582,9 @@ function validateCreatorProfile(profile){
   return checks.find(c=>!c.ok)||{ok:true,msg:''};
 }
 function renderCreatorAvatar(){
-  const box=$('creator-avatar-preview');
+  const box=$('creator-avatar-card');
   if(!box) return;
-  box.innerHTML=avatarMarkup(readCreatorProfile().avatar);
+  box.innerHTML=creatorAvatarCardMarkup(readCreatorProfile());
 }
 function handleCreatorInput(){
   const profile=readCreatorProfile();
