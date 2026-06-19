@@ -1287,7 +1287,12 @@ body.final-card-open{overflow:hidden}
   .account-actions{gap:7px}
   #menu-screen.active{display:flex;flex-direction:column}
   #menu-screen>*{order:20}
+  #menu-screen>.worldwide-stats-title,#menu-screen>.global-stats{order:1}
+  #menu-screen>.worldwide-stats-title{margin-top:2px}
   #menu-screen>.menu-actions{order:2;margin-top:2px!important;padding-top:0!important}
+}
+@media(max-width:520px){
+  #menu-screen>.worldwide-stats-title,#menu-screen>.global-stats{order:-1}
 }
 @media(min-width:521px){
   body{padding:24px 12px}
@@ -1367,7 +1372,7 @@ body.final-card-open{overflow:hidden}
     <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Hall Of Fame</button>
     <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save">Delete Current Save</button>
   </div>
-  <h2>Worldwide Stats</h2>
+  <h2 class="worldwide-stats-title">Worldwide Stats</h2>
   <div class="global-stats">
     <div class="stat-pill">
       <div class="label"><span class="ico">🥊</span><span>Fighters Created Worldwide</span></div>
@@ -7149,7 +7154,10 @@ function showScreen(targetId){
   if(!target) return false;
   document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
   target.classList.add('active');
-  if(targetId==='menu-screen') loadGlobalStats();
+  if(targetId==='menu-screen'){
+    target.scrollTop=0;
+    loadGlobalStats();
+  }
   return true;
 }
 function screen(id){ return showScreen(id); }
