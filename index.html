@@ -136,7 +136,7 @@ header p{
 h2{
   font-family:'Bebas Neue',Impact,sans-serif;
   font-size:1rem;color:var(--gold);
-  margin:18px 0 12px;padding-bottom:8px;
+  margin:14px 0 8px;padding-bottom:6px;
   border-bottom:1px solid var(--line);
   text-transform:uppercase;letter-spacing:2.5px;
   font-weight:400;
@@ -152,8 +152,8 @@ h2::before{
   background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
   border:1px solid var(--line);
   border-radius:var(--radius);
-  padding:14px;
-  margin-bottom:14px;
+  padding:12px;
+  margin-bottom:10px;
   box-shadow:var(--shadow-card), var(--shadow-inset);
 }
 .spin-card,.trait-spin-card{
@@ -162,19 +162,14 @@ h2::before{
   text-align:center;
   padding:18px 14px;
 }
-.hero{
-  text-align:center;font-size:clamp(3.5rem, 12vw, 4.6rem);
-  margin:8px 0 4px;
-  filter:drop-shadow(0 4px 16px rgba(230,194,71,.2));
-  animation:bob 4s ease-in-out infinite;
-}
+.hero{display:none}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .global-stats{
   background:linear-gradient(135deg,#1a1d24 0%,#101216 100%);
   border:1px solid var(--line);
   border-radius:var(--radius);
-  padding:4px;
-  margin-bottom:14px;
+  padding:2px;
+  margin-bottom:10px;
   box-shadow:var(--shadow-card);
   position:relative;
   overflow:hidden;
@@ -186,30 +181,30 @@ h2::before{
 }
 .stat-pill{
   display:flex;justify-content:space-between;align-items:center;
-  padding:13px 14px;
+  padding:9px 10px;
   border-radius:10px;
   font-size:.88rem;
   position:relative;
 }
 .stat-pill + .stat-pill{border-top:1px solid rgba(255,255,255,.04)}
-.stat-pill .label{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-weight:500}
-.stat-pill .label .ico{font-size:1.15rem;width:24px;text-align:center}
+.stat-pill .label{display:flex;align-items:center;gap:8px;color:var(--text-dim);font-weight:500}
+.stat-pill .label .ico{font-size:1rem;width:20px;text-align:center}
 .stat-pill .value{
   font-family:'Bebas Neue',Impact,sans-serif;
-  font-size:1.3rem;color:var(--gold);font-weight:400;letter-spacing:1px;
+  font-size:1.12rem;color:var(--gold);font-weight:400;letter-spacing:1px;
   text-shadow:0 0 14px rgba(230,194,71,.25);
 }
 .stat-pill .value.loading{color:var(--muted);font-size:.85rem;font-family:'Inter',sans-serif;letter-spacing:0;text-shadow:none}
 .row{
   display:flex;justify-content:space-between;gap:14px;align-items:center;
-  margin-bottom:10px;font-size:.88rem;
+  margin-bottom:7px;font-size:.84rem;
 }
 .row:last-child{margin-bottom:0}
 .row > span:first-child{color:var(--text-dim);font-weight:500}
 .row > span:last-child{color:var(--gold);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
 .btn{
   width:100%;min-height:var(--tap);
-  padding:13px 14px;
+  padding:11px 13px;
   border-radius:12px;
   border:1px solid var(--line-2);
   background:linear-gradient(180deg,#2a2e38 0%,#1a1d24 100%);
@@ -218,7 +213,7 @@ h2::before{
   font-size:.92rem;font-weight:800;
   text-transform:uppercase;letter-spacing:1.2px;
   cursor:pointer;
-  margin-bottom:10px;
+  margin-bottom:7px;
   transition:transform .08s ease, filter .15s ease, box-shadow .15s ease;
   box-shadow:0 2px 0 rgba(0,0,0,.4), var(--shadow-inset);
   position:relative;
@@ -278,6 +273,37 @@ h2::before{
 }
 .mode-title{font-size:1rem;font-weight:900;color:#fff;margin-bottom:4px;letter-spacing:.2px}
 .mode-sub{font-size:.78rem;color:var(--text-dim);line-height:1.5}
+.standard-mode-card{
+  background:linear-gradient(180deg,rgba(230,194,71,.08) 0%,rgba(255,255,255,.025) 100%);
+  border:1px solid rgba(230,194,71,.32);
+  border-radius:10px;
+  padding:10px 11px;
+  margin-bottom:9px;
+  box-shadow:var(--shadow-card), var(--shadow-inset);
+}
+.standard-mode-card .mode-title{margin-bottom:3px}
+.standard-mode-card .mode-sub{font-size:.75rem;line-height:1.35}
+.menu-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:4px 0 10px;padding:0}
+.menu-actions .btn{margin-bottom:0;font-size:.78rem;letter-spacing:.8px;padding:10px 8px}
+#draft-fighter-btn{font-size:.92rem;letter-spacing:1.2px}
+#continue-btn,#draft-fighter-btn,#delete-save-btn{grid-column:1 / -1}
+.compact-panel{padding:9px 10px;margin-bottom:9px}
+.compact-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:9px}
+.compact-group{
+  background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:9px 10px;
+  box-shadow:var(--shadow-card), var(--shadow-inset);
+}
+.compact-group-title{
+  color:var(--gold);
+  font-size:.68rem;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
 .name-input{
   width:100%;min-height:var(--tap);
   padding:14px;
@@ -635,10 +661,10 @@ h2::before{
 .cosmetic-swatch{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.18);background:var(--swatch,#444);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
 .cosmetic-row{display:flex;align-items:center;gap:10px}
 .cosmetic-card .btn{margin-top:10px;min-height:38px;font-size:.72rem}
-.wallet-strip{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
-.wallet-pill{background:linear-gradient(180deg,#101218 0%,#07080a 100%);border:1px solid var(--line);border-radius:10px;padding:10px}
+.wallet-strip{display:grid;grid-template-columns:1fr;gap:7px;margin-bottom:8px}
+.wallet-pill{background:linear-gradient(180deg,#101218 0%,#07080a 100%);border:1px solid var(--line);border-radius:9px;padding:8px 9px}
 .wallet-pill span{display:block;color:var(--text-dim);font-size:.65rem;text-transform:uppercase;font-weight:900;letter-spacing:.8px}
-.wallet-pill strong{display:block;color:var(--gold);font-size:1rem;margin-top:3px;font-variant-numeric:tabular-nums}
+.wallet-pill strong{display:block;color:var(--gold);font-size:.94rem;margin-top:2px;font-variant-numeric:tabular-nums}
 .store-card{background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:10px;padding:12px;box-shadow:var(--shadow-card)}
 .store-card.owned{border-color:rgba(35,167,107,.45)}
 .store-card.affordable{border-color:rgba(230,194,71,.36)}
@@ -834,7 +860,6 @@ h2::before{
   .screen{padding:12px}
   .panel,.account-panel,.store-card,.cloud-profile-card{padding:10px}
   h2{font-size:.84rem;margin:12px 0 8px;padding-bottom:6px}
-  .hero{font-size:2.2rem;margin:4px 0 8px}
   .btn{margin-bottom:8px}
   header h1{letter-spacing:2px}
   .stats-grid{grid-template-columns:1fr}
@@ -851,8 +876,7 @@ h2::before{
   .account-actions{gap:7px}
   #menu-screen.active{display:flex;flex-direction:column}
   #menu-screen>*{order:20}
-  #menu-screen>.menu-actions{order:2;margin-top:4px!important;padding-top:4px!important}
-  #menu-screen>.hero{order:3;height:46px;font-size:34px}
+  #menu-screen>.menu-actions{order:2;margin-top:2px!important;padding-top:0!important}
 }
 @media(min-width:521px){
   body{padding:24px 12px}
@@ -873,7 +897,7 @@ h2::before{
   <button id="account-settings-toggle" class="account-settings-toggle hidden" type="button" onclick="openAccountSettings()" aria-label="Account settings">&#9881;</button>
   <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()" aria-label="Toggle sound">🔊</button>
   <h1>UNBEATEN: 50-0</h1>
-  <p>Heavyweight Management Loop</p>
+  <p>Boxing Career Management</p>
   <div class="version">Final Release v1.1</div>
 </header>
 
@@ -921,7 +945,17 @@ h2::before{
 </section>
 
 <section id="menu-screen" class="screen">
-  <div class="hero">🥊</div>
+  <div class="menu-actions">
+    <button id="continue-btn" type="button" class="btn blue hidden" data-screen-target="hub-screen">Continue Career</button>
+    <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">Draft New Boxer</button>
+    <button id="store-menu-btn" type="button" class="btn blue" data-screen-target="store-screen">Cosmetic Store</button>
+    <button id="collection-menu-btn" type="button" class="btn ghost" data-screen-target="collection-screen">Achievements</button>
+    <button id="retired-menu-btn" type="button" class="btn ghost" data-screen-target="retired-careers-screen">Retired Careers</button>
+    <button id="profiles-menu-btn" type="button" class="btn ghost" data-screen-target="public-profiles-screen">Public Profiles</button>
+    <button id="leaderboards-menu-btn" type="button" class="btn ghost" data-screen-target="cloud-leaderboards-screen">Leaderboards</button>
+    <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Hall Of Fame</button>
+    <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save">Delete Current Save</button>
+  </div>
   <h2>Worldwide Stats</h2>
   <div class="global-stats">
     <div class="stat-pill">
@@ -937,41 +971,31 @@ h2::before{
       <div class="value loading" id="global-total-50">Loading...</div>
     </div>
   </div>
-  <h2>Choose Game Mode</h2>
-  <div class="mode-grid">
-    <div class="mode-card selected" id="mode-card-easy" onclick="selectMode('easy')"><div class="mode-title">Four-Rounder</div><div class="mode-sub">Easy • 2 draft re-rolls • softer opponents • better legend odds • slightly better purses</div></div>
-    <div class="mode-card" id="mode-card-normal" onclick="selectMode('normal')"><div class="mode-title">Title Distance</div><div class="mode-sub">Medium • 1 draft re-roll • balanced legend odds • standard career balance</div></div>
-    <div class="mode-card" id="mode-card-hard" onclick="selectMode('hard')"><div class="mode-title">Championship Gauntlet</div><div class="mode-sub">Hard • no draft re-rolls • elite legends rarer • tougher opponents • slightly lower purses</div></div>
+  <div class="standard-mode-card">
+    <div class="mode-title">Standard Career</div>
+    <div class="mode-sub">2 draft re-rolls • standard rewards • standard opponent scaling • eligible for achievements, leaderboards and profile tracking</div>
   </div>
   <h2>All-Time Personal Records</h2>
-  <div class="wallet-strip">
-    <div class="wallet-pill"><span>Wallet Balance</span><strong id="menu-wallet">$0</strong></div>
-    <div class="wallet-pill"><span>Lifetime Earnings</span><strong id="menu-lifetime">$0</strong></div>
-    <div class="wallet-pill"><span>Current Career Earnings</span><strong id="menu-career-earnings">$0</strong></div>
-  </div>
-  <div class="panel">
-    <div class="row"><span>Best Record Streak:</span><span id="rec-streak">0-0</span></div>
-    <div class="row"><span>Most Career Earnings:</span><span id="rec-money">$0</span></div>
-    <div class="row"><span>Most Total Knockouts:</span><span id="rec-kos">0 KO</span></div>
-    <div class="row"><span>Highest HOF Tier:</span><span id="rec-tier">None</span></div>
+  <div class="compact-grid">
+    <div class="compact-group">
+      <div class="compact-group-title">Career Records</div>
+      <div class="row"><span>Best Record:</span><span id="rec-streak">0-0</span></div>
+      <div class="row"><span>Most Earnings:</span><span id="rec-money">$0</span></div>
+      <div class="row"><span>Most KOs:</span><span id="rec-kos">0 KO</span></div>
+      <div class="row"><span>Highest HOF Tier:</span><span id="rec-tier">None</span></div>
+    </div>
+    <div class="compact-group">
+      <div class="compact-group-title">Financial Summary</div>
+      <div class="row"><span>Wallet Balance:</span><span id="menu-wallet">$0</span></div>
+      <div class="row"><span>Lifetime Earnings:</span><span id="menu-lifetime">$0</span></div>
+      <div class="row"><span>Current Career Earnings:</span><span id="menu-career-earnings">$0</span></div>
+    </div>
   </div>
   <h2>Current Save</h2>
-  <div class="panel">
+  <div class="panel compact-panel">
     <div class="row"><span>Status:</span><span id="save-status">No active career</span></div>
     <div class="row"><span>Fighter:</span><span id="save-fighter">-</span></div>
     <div class="row"><span>Progress:</span><span id="save-progress">-</span></div>
-  </div>
-  <div class="menu-actions" style="margin-top:auto;padding-top:16px">
-    <button id="continue-btn" type="button" class="btn blue hidden" data-screen-target="hub-screen">Continue Career</button>
-    <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">Draft New Boxer</button>
-    <button id="store-menu-btn" type="button" class="btn blue" data-screen-target="store-screen">Cosmetic Store</button>
-    <button id="collection-menu-btn" type="button" class="btn ghost" data-screen-target="collection-screen">Achievements &amp; Collection</button>
-    <button id="trophy-menu-btn" type="button" class="btn ghost" data-screen-target="trophy-cabinet-screen">Trophy Cabinet</button>
-    <button id="retired-menu-btn" type="button" class="btn ghost" data-screen-target="retired-careers-screen">Retired Careers</button>
-    <button id="profiles-menu-btn" type="button" class="btn ghost" data-screen-target="public-profiles-screen">Public Profiles</button>
-    <button id="leaderboards-menu-btn" type="button" class="btn ghost" data-screen-target="cloud-leaderboards-screen">Cloud Leaderboards</button>
-    <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Hall Of Fame</button>
-    <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save">Delete Current Save</button>
   </div>
 </section>
 
@@ -1000,7 +1024,7 @@ h2::before{
 <section id="draft-screen" class="screen">
   <h2>Fighter Generation</h2>
   <p class="subtle">Spin the legend wheel. Good sources still appear most of the time, but bad-roll fighters, spoilers and prospects can now shake up drafts.</p>
-  <div class="panel"><div class="row"><span>Mode:</span><span id="draft-mode-label">Title Distance</span></div><div class="row"><span>Draft Re-Rolls Left:</span><span id="draft-rerolls-left">1</span></div></div>
+  <div class="panel compact-panel"><div class="row"><span>Mode:</span><span id="draft-mode-label">Standard Career</span></div><div class="row"><span>Draft Re-Rolls Left:</span><span id="draft-rerolls-left">2</span></div></div>
   <div class="overall-banner"><div class="label">Live Overall Rating</div><div id="overall-rating-draft" class="value">50</div></div>
   <div class="spin-card"><div class="slot"><div class="slot-item" id="slot-top">Mike Tyson</div><div class="slot-item win" id="slot-mid">???</div><div class="slot-item" id="slot-bottom">Muhammad Ali</div></div><div id="legend-pill-wrap"></div><div id="perfect-banner" class="perfect"></div></div>
   <div class="two-col"><button id="spin-btn" class="btn gold" onclick="spinWheel()">Spin Wheel</button><button id="reroll-btn" class="btn blue" onclick="useReroll()" disabled>Use Re-Roll</button></div>
@@ -4713,7 +4737,13 @@ TRAITS.push(...EXPANSION_TRAITS);
 SYNERGY.push(...EXPANSION_SYNERGIES);
 
 const STATS = ['Power','Chin','Speed','Footwork','Ring IQ','Heart','Defence','Stamina','Accuracy','Recovery'];
-const MODE = {easy:{id:'easy',name:'Four-Rounder',rerolls:2,oppMod:-2,purse:1.08,elite:1.18,ultra:1.08},normal:{id:'normal',name:'Title Distance',rerolls:1,oppMod:0,purse:1,elite:.92,ultra:.82},hard:{id:'hard',name:'Championship Gauntlet',rerolls:0,oppMod:2,purse:.92,elite:.60,ultra:.36}};
+const STANDARD_MODE = {id:'standard',name:'Standard Career',rerolls:2,oppMod:-2,purse:1.08,elite:1.18,ultra:1.08};
+const MODE = {
+  standard:{...STANDARD_MODE},
+  easy:{...STANDARD_MODE,id:'easy',legacyName:'Four-Rounder'},
+  normal:{...STANDARD_MODE,id:'normal',legacyName:'Title Distance'},
+  hard:{...STANDARD_MODE,id:'hard',legacyName:'Championship Gauntlet'}
+};
 const TRAIT_W = {common:42,uncommon:28,rare:16,epic:7,legendary:2,cursed:11};
 const OPPF = ['Razor','Hammer','Iron','Big','Shadow','Thunder','The Real','Gatling','Sniper','Titan','Flash','Sugar','Pretty','Bonecrusher','Steel','Blackout'];
 const OPPL = ['Evans','Miller','Johnson','Slater','Grimes','Alvarez','Fury','Klitschko','Rodriguez','Mercer','Briggs','Joshua','Wilder','Ruiz','Walker','Monroe'];
@@ -4800,7 +4830,7 @@ const ACHIEVEMENT_DEFINITIONS = {
 };
 const KEYS = {records:'unbeaten_final_records_v10',career:'unbeaten_final_career_v10',profile:'unbeaten_profile_foundation_v1',retired:'unbeaten_retired_careers_v1',cloudStamp:'unbeaten_cloud_stamp_v1',migration:'unbeaten_auth_migration_v1',migrationBackups:'unbeaten_migration_backups_v1'};
 const NIL = {bestRecord:'0-0',mostMoney:0,mostKOs:0,bestTier:'None'};
-const S = {mode:'easy',player:null,career:null,opponent:null,legend:null,fight:null,traitsRolled:0,awaiting:false,perfect:false,batch:false,pendingHof:false,fast:false,spinTraitBusy:false};
+const S = {mode:'standard',player:null,career:null,opponent:null,legend:null,fight:null,traitsRolled:0,awaiting:false,perfect:false,batch:false,pendingHof:false,fast:false,spinTraitBusy:false};
 const $ = id => document.getElementById(id), rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, choice=arr=>arr[Math.floor(Math.random()*arr.length)], clamp=(n,a,b)=>Math.max(a,Math.min(b,n)), cash=v=>'$'+Math.floor(v).toLocaleString(), deep=o=>JSON.parse(JSON.stringify(o)), sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function hasTrait(id){ return (S.player?.Traits || []).some(t=>t.id===id); }
 function createAchievementState(existing={}){
@@ -4817,6 +4847,9 @@ function createEquippedCosmetics(existing={}){
 }
 function safeMoney(value){ return Number.isFinite(value)?Math.max(0,Math.floor(value)):0; }
 function getCosmeticDefinition(id){ return COSMETIC_DEFINITIONS[id]||null; }
+function normaliseModeId(id){ return ['easy','normal','hard','standard'].includes(id)?'standard':'standard'; }
+function standardModeCfg(){ return MODE.standard||STANDARD_MODE; }
+function modeDisplayName(id){ return MODE[normaliseModeId(id)]?.name||STANDARD_MODE.name; }
 function unlockCosmetic(player, cosmeticId){
   ensurePlayerFoundation(player);
   if(!getCosmeticDefinition(cosmeticId)) return false;
@@ -4952,6 +4985,11 @@ function ensurePlayerFoundation(player){
 }
 function migrateCareerSave(data){
   if(!data) return null;
+  data.mode=normaliseModeId(data.mode);
+  if(data.career){
+    data.career.mode=normaliseModeId(data.career.mode||data.mode);
+    if(!Number.isFinite(data.career.draftRerolls)) data.career.draftRerolls=STANDARD_MODE.rerolls;
+  }
   if(data.player){
     const needsFoundation=!data.player.playerId||!data.player.avatar||!data.player.unlockedCosmetics||!data.player.equippedCosmetics||!data.player.achievements;
     if(needsFoundation){
@@ -5268,7 +5306,28 @@ function equipCollectionCosmetic(cosmeticId){
   renderCollectionScreen();
   if(S.player&&S.career) renderProfileFoundation();
 }
-function refreshMenu(){ updateWalletDisplays(); const r=getRecords(); $('rec-streak').innerText=r.bestRecord; $('rec-money').innerText=cash(r.mostMoney); $('rec-kos').innerText=r.mostKOs+' KO'; $('rec-tier').innerText=r.bestTier; const save=loadCareer(); if(save&&save.player&&save.career){ $('continue-btn').classList.remove('hidden'); $('delete-save-btn').classList.remove('hidden'); $('save-status').innerText='Career in progress'; $('save-fighter').innerText=save.player.Name||'Unnamed Fighter'; $('save-progress').innerText='Bout '+save.career.currentFight+'/50 • '+(MODE[save.career.mode]?.name||'Mode')+' • Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:''); } else { $('continue-btn').classList.add('hidden'); $('delete-save-btn').classList.add('hidden'); $('save-status').innerText='No active career'; $('save-fighter').innerText='-'; $('save-progress').innerText='-'; } }
+function refreshMenu(){
+  updateWalletDisplays();
+  const r=getRecords();
+  $('rec-streak').innerText=r.bestRecord;
+  $('rec-money').innerText=cash(r.mostMoney);
+  $('rec-kos').innerText=r.mostKOs+' KO';
+  $('rec-tier').innerText=r.bestTier;
+  const save=loadCareer();
+  if(save&&save.player&&save.career){
+    $('continue-btn').classList.remove('hidden');
+    $('delete-save-btn').classList.remove('hidden');
+    $('save-status').innerText='Career in progress';
+    $('save-fighter').innerText=save.player.Name||'Unnamed Fighter';
+    $('save-progress').innerText='Bout '+save.career.currentFight+'/50 • '+modeDisplayName(save.career.mode)+' • Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:'');
+  } else {
+    $('continue-btn').classList.add('hidden');
+    $('delete-save-btn').classList.add('hidden');
+    $('save-status').innerText='No active career';
+    $('save-fighter').innerText='-';
+    $('save-progress').innerText='-';
+  }
+}
 let storeReturnScreen = 'menu-screen';
 function storeProfile(){
   if(S.player){ ensurePlayerFoundation(S.player); return createProfileFoundation(S.player); }
@@ -5314,21 +5373,21 @@ function equipStoreCosmetic(cosmeticId){
   mutateProfileForStore(target=>equipCosmetic(target, item.slot, item.id));
   showToast('Equipped', item.name); renderStoreScreen(); if(S.player&&S.career) renderProfileFoundation();
 }
-function selectMode(id){ S.mode=id; document.querySelectorAll('.mode-card').forEach(el=>el.classList.remove('selected')); $('mode-card-'+id).classList.add('selected'); }
+function selectMode(id){ S.mode=normaliseModeId(id); }
 function valCls(v){ if(v==null)return'stat-tier-bad'; if(v>=99)return'stat-tier-ultra'; if(v>=95)return'stat-tier-legendary'; if(v>=90)return'stat-tier-mythic'; if(v>=85)return'stat-tier-epic'; if(v>=80)return'stat-tier-rare'; if(v>=75)return'stat-tier-uncommon'; if(v>=70)return'stat-tier-common'; if(v>=65)return'stat-tier-low'; if(v>=60)return'stat-tier-poor'; return'stat-tier-bad'; }
-function modeCfg(){ return MODE[S.career?.mode || S.mode || 'normal']; }
-function fresh(){ const profile=loadProfileFoundation(); S.player=applyProfileFoundation({Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}, profile); STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:S.mode,currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:MODE[S.mode].rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0,achievementStartIds:Object.keys(S.player.achievements?.unlocked||{}), firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false, profile50Counted: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
+function modeCfg(){ return standardModeCfg(); }
+function fresh(){ const profile=loadProfileFoundation(); S.mode='standard'; S.player=applyProfileFoundation({Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}, profile); STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:'standard',currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:STANDARD_MODE.rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0,achievementStartIds:Object.keys(S.player.achievements?.unlocked||{}), firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false, profile50Counted: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
 function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?'('+(S.player.StatSources[st]||'Unknown')+')'+(S.player.PerfectSpinStats[st]?' • Perfect Spin':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
 function updateDraftTop(){ const cfg=modeCfg(); $('draft-mode-label').innerText=cfg.name; $('draft-rerolls-left').innerText=S.career.draftRerolls; $('reroll-btn').innerText='Use Re-Roll ('+S.career.draftRerolls+')'; $('reroll-btn').disabled=!S.awaiting || S.career.draftRerolls<=0; }
 function avgLegend(l){ return STATS.reduce((s,st)=>s+l[st],0)/STATS.length; }
 function weightedPick(list,fn){ const arr=list.map(item=>({item,weight:Math.max(0,fn(item))})); const total=arr.reduce((s,e)=>s+e.weight,0); let roll=Math.random()*total; for(const e of arr){ roll-=e.weight; if(roll<=0) return e.item; } return arr[arr.length-1].item; }
-function poolWeight(l){ const avg=avgLegend(l); let w=1; switch(l.Pool||'standard'){ case 'prospect': w*=0.82; break; case 'gatekeeper': w*=0.62; break; case 'spoiler': w*=0.52; break; case 'low': w*=0.42; break; case 'cult': w*=0.48; break; case 'crossover': w*=l.Name==='Francis Ngannou'?0.32:0.22; break; default: w*=1; } if(avg>=95) w*=MODE[S.mode].ultra; else if(avg>=90) w*=MODE[S.mode].elite; else if(avg<78) w*=0.85; else if(avg<84) w*=0.92; return Math.max(.03,w); }
-function randomLegend(reroll=false){ return weightedPick(LEGENDS, l=>{ let w=poolWeight(l); if(S.mode==='easy'&&reroll&&avgLegend(l)>=90) w*=avgLegend(l)>=95?0.48:0.64; return w; }); }
+function poolWeight(l){ const avg=avgLegend(l), cfg=modeCfg(); let w=1; switch(l.Pool||'standard'){ case 'prospect': w*=0.82; break; case 'gatekeeper': w*=0.62; break; case 'spoiler': w*=0.52; break; case 'low': w*=0.42; break; case 'cult': w*=0.48; break; case 'crossover': w*=l.Name==='Francis Ngannou'?0.32:0.22; break; default: w*=1; } if(avg>=95) w*=cfg.ultra; else if(avg>=90) w*=cfg.elite; else if(avg<78) w*=0.85; else if(avg<84) w*=0.92; return Math.max(.03,w); }
+function randomLegend(reroll=false){ return weightedPick(LEGENDS, l=>{ let w=poolWeight(l); if(reroll&&avgLegend(l)>=90) w*=avgLegend(l)>=95?0.48:0.64; return w; }); }
 function perfectChance(l){ const avg=avgLegend(l), elite=STATS.filter(st=>l[st]>=97).length; let c=.02; if(avg>=95) c+=.06; if(elite>=3) c+=.05; if((l.Pool||'standard')==='crossover') c+=.03; return Math.random()<clamp(c,.02,.16); }
 function pillHTML(pool){ if(pool==='crossover') return '<span class="legend-pill crossover">Crossover Chaos</span>'; if(pool==='cult') return '<span class="legend-pill cult">Cult Icon</span>'; if(pool==='prospect') return '<span class="legend-pill prospect">Future Star</span>'; if(pool==='gatekeeper') return '<span class="legend-pill gatekeeper">Gatekeeper</span>'; if(pool==='low') return '<span class="legend-pill low">Bad Roll</span>'; if(pool==='spoiler') return '<span class="legend-pill spoiler">Spoiler</span>'; return '<span class="legend-pill standard">Legend Source</span>'; }
 function beginNewCareerDraft(){ fresh(); $('trait-list').innerHTML=''; $('trait-result').innerText='???'; $('trait-spin-btn').disabled=false; $('trait-spin-btn').innerText='Spin Trait #1'; $('fighter-name-input').value=boxerDisplayName(loadProfileFoundation()); $('draft-archetype').innerText='Undetermined'; $('synergy-panel').innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; $('slot-mid').innerText='???'; $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('spin-btn').disabled=false; $('reroll-btn').disabled=true; buildDraft(); updateDraftTop(); saveCareer(); screen('draft-screen'); }
 function startNewCareer(){ const profile=loadProfileFoundation(); if(!profile.profileSetupComplete){ openBoxerCreator('menu-screen', beginNewCareerDraft); return; } beginNewCareerDraft(); }
-function continueCareer(){ const d=loadCareer(); if(!d){ refreshMenu(); return; } S.mode=d.mode||d.career.mode||'normal'; S.player=d.player; S.career=d.career; S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; S.awaiting=false; S.perfect=false; selectMode(S.mode); if(!S.opponent&&S.career.currentFight<=50) generateOpponent(); checkAchievements(false); updateSynergyPanel(); updateHub(); screen('hub-screen'); }
+function continueCareer(){ const d=loadCareer(); if(!d){ refreshMenu(); return; } S.mode=normaliseModeId(d.mode||d.career.mode); S.player=d.player; S.career=d.career; S.career.mode=normaliseModeId(S.career.mode||S.mode); S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; S.awaiting=false; S.perfect=false; if(!S.opponent&&S.career.currentFight<=50) generateOpponent(); checkAchievements(false); updateSynergyPanel(); updateHub(); screen('hub-screen'); }
 function deleteSave(){ clearCareer(); }
 function restartDraft(){ if(confirm('Restart this boxer draft and roll again from scratch?')) startNewCareer(); }
 function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=a.Name; $('slot-mid').innerText=b.Name; $('slot-bottom').innerText=c.Name; ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=S.legend.Name; $('slot-bottom').innerText=LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' • '+S.legend.Pool; if(S.perfect) txt+=' • Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
@@ -5641,6 +5700,8 @@ function antiCheatProfile(profile){
 function antiCheatCareerData(data){
   if(!data||!data.career) return null;
   const copy=deep(data);
+  copy.mode=normaliseModeId(copy.mode);
+  copy.career.mode=normaliseModeId(copy.career.mode||copy.mode);
   copy.career.wins=clamp(safeMoney(copy.career.wins),0,50);
   copy.career.losses=clamp(safeMoney(copy.career.losses),0,50);
   copy.career.draws=clamp(safeMoney(copy.career.draws),0,50);
