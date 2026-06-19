@@ -949,6 +949,7 @@ h2::before{
     <button id="continue-btn" type="button" class="btn blue hidden" data-screen-target="hub-screen">Continue Career</button>
     <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">Draft New Boxer</button>
     <button id="store-menu-btn" type="button" class="btn blue" data-screen-target="store-screen">Cosmetic Store</button>
+    <button id="customize-avatar-btn" type="button" class="btn blue" onclick="openBoxerCreator('menu-screen')">Customize Avatar</button>
     <button id="collection-menu-btn" type="button" class="btn ghost" data-screen-target="collection-screen">Achievements</button>
     <button id="retired-menu-btn" type="button" class="btn ghost" data-screen-target="retired-careers-screen">Retired Careers</button>
     <button id="profiles-menu-btn" type="button" class="btn ghost" data-screen-target="public-profiles-screen">Public Profiles</button>
@@ -1116,9 +1117,6 @@ h2::before{
     <div class="row"><span>Achievements:</span><span id="profile-achievements">0 unlocked</span></div>
     <div class="row"><span>50-0 Careers:</span><span id="profile-50-count">0</span></div>
   </div>
-  <button class="btn ghost" onclick="openBoxerCreator('hub-screen')">Edit Boxer</button>
-  <button class="btn blue" onclick="openStore('hub-screen')">Cosmetic Store</button>
-  <button class="btn ghost" onclick="openCollection('hub-screen')">Achievements &amp; Collection</button>
   <h2>Next Fight Schedule</h2>
   <div class="opponent-card">
     <div class="row"><span id="opp-bout">BOUT 1/50</span><span id="opp-tier" style="font-size:.74rem;color:var(--gold);font-weight:900;text-transform:uppercase;letter-spacing:1px">Journeyman</span></div>
