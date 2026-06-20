@@ -1332,9 +1332,85 @@ body.final-card-open{overflow:hidden}
 .screen::-webkit-scrollbar,.log::-webkit-scrollbar,.sim-body::-webkit-scrollbar{width:6px}
 .screen::-webkit-scrollbar-thumb,.log::-webkit-scrollbar-thumb,.sim-body::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 .screen::-webkit-scrollbar-track,.log::-webkit-scrollbar-track,.sim-body::-webkit-scrollbar-track{background:transparent}
+
+/* Build Your Card: isolated editor/store UI. It does not appear in career gameplay. */
+.play-money-hud{
+  position:fixed;top:max(7px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));z-index:1400;
+  display:flex;align-items:center;gap:4px;max-width:46vw;padding:5px 8px;border:1px solid rgba(230,194,71,.42);
+  border-radius:7px;background:rgba(8,9,11,.92);box-shadow:0 5px 18px rgba(0,0,0,.34);color:#f6d768;
+  font-size:.66rem;font-weight:900;line-height:1;letter-spacing:0;white-space:nowrap;pointer-events:none;
+}
+.play-money-hud strong{color:#fff;font-variant-numeric:tabular-nums}
+#card-editor-menu-btn{background:linear-gradient(135deg,#0f766e,#14b8a6);border-color:#55e6d3;color:#fff;box-shadow:0 8px 22px rgba(20,184,166,.2)}
+#card-store-menu-btn{background:linear-gradient(135deg,#5b21b6,#a855f7 58%,#d4af37);border-color:#d8b4fe;color:#fff;box-shadow:0 8px 22px rgba(168,85,247,.2)}
+.card-screen-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.card-screen-head h2{margin:0}
+.play-money-inline{flex:0 0 auto;padding:6px 8px;border:1px solid rgba(230,194,71,.35);border-radius:7px;background:#090a0d;color:#f6d768;font-size:.68rem;font-weight:900;white-space:nowrap}
+.play-money-inline strong{color:#fff;font-variant-numeric:tabular-nums}
+.modular-card{
+  position:relative;width:min(100%,386px);aspect-ratio:1006 / 1564;margin:0 auto;overflow:hidden;
+  container-type:inline-size;background:#050506;isolation:isolate;filter:drop-shadow(0 18px 24px rgba(0,0,0,.48));
+}
+.modular-card img{position:absolute;display:block;pointer-events:none;user-select:none}
+.modular-card-background,.modular-card-frame{inset:0;width:100%;height:100%}
+.modular-card-background{z-index:0;object-fit:cover}
+.modular-card-aura,.modular-card-character{left:0;top:7%;width:100%;height:69%;object-fit:contain;object-position:center bottom}
+.modular-card-aura{z-index:1;opacity:.88}.modular-card-character{z-index:2}.modular-card-frame{z-index:3}
+.modular-card-copy{position:absolute;z-index:4;color:#f8fafc;text-align:center;text-shadow:0 2px 4px #000;pointer-events:none}
+.modular-card-ovr{left:6.7%;top:78.6%;width:21.5%;height:13.4%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.modular-card-ovr strong{font-family:'Bebas Neue',Impact,sans-serif;font-size:2rem;line-height:.82;color:#f6d768}
+.modular-card-ovr span{font-size:.48rem;font-weight:1000;letter-spacing:0;text-transform:uppercase}
+.modular-card-name{left:31%;top:79.2%;width:60%;height:7.3%;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:0 4px}
+.modular-card-name strong{max-width:100%;font-family:'Bebas Neue',Impact,sans-serif;font-size:.98rem;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modular-card-name span{max-width:100%;margin-top:2px;color:#d8b77a;font-size:.48rem;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modular-card-stats{position:absolute;z-index:4;left:30.4%;top:88.4%;width:61.5%;height:6.2%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));align-items:center;color:#fff;text-shadow:0 1px 3px #000;pointer-events:none}
+.modular-card-stat{text-align:center;min-width:0;padding:0 2px}
+.modular-card-stat strong,.modular-card-stat span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modular-card-stat strong{font-size:.54rem;line-height:1;color:#fff}.modular-card-stat span{margin-top:2px;color:#d6b56f;font-size:.34rem;font-weight:1000;text-transform:uppercase;letter-spacing:0}
+.card-editor-layout{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+.card-editor-layout>.modular-card,.card-editor-layout>#card-editor-preview .modular-card{width:min(100%,386px)}
+.card-editor-controls{min-width:0;border-top:1px solid var(--line)}
+.card-editor-group{padding:12px 0;border-bottom:1px solid var(--line)}
+.card-editor-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.card-editor-group-head strong{font-size:.72rem;text-transform:uppercase;color:var(--text-dim)}
+.card-editor-group-head span{font-size:.62rem;color:#79e3ad;font-weight:900}
+.card-owned-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.card-owned-option{min-height:48px;padding:8px;border:1px solid var(--line-2);border-radius:7px;background:#0c0d11;color:#fff;text-align:left;cursor:pointer}
+.card-owned-option strong,.card-owned-option span{display:block;overflow-wrap:anywhere}.card-owned-option strong{font-size:.72rem}.card-owned-option span{margin-top:3px;color:var(--muted);font-size:.58rem;text-transform:uppercase}
+.card-owned-option.equipped{border-color:#4ade80;box-shadow:0 0 14px rgba(74,222,128,.18)}
+.card-editor-actions{margin-top:12px}.card-editor-actions .btn{margin-bottom:7px}
+.card-store-top{display:grid;grid-template-columns:210px minmax(0,1fr);gap:16px;align-items:center;margin-bottom:14px}
+.card-store-top .modular-card{width:210px}
+.card-store-summary{min-width:0}.card-store-summary strong{display:block;color:#fff;font-size:1.05rem}.card-store-summary span{display:block;margin-top:4px;color:var(--text-dim);font-size:.7rem}
+.card-store-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 10px}
+.card-store-tab{min-height:42px;padding:7px 4px;border:1px solid var(--line-2);border-radius:7px;background:#0c0d11;color:var(--text-dim);font-size:.66rem;font-weight:1000;text-transform:uppercase;cursor:pointer}
+.card-store-tab.active{border-color:var(--gold);background:#17140a;color:#fff}
+.card-rarity-rail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:12px}
+.card-rarity-key{padding:6px 2px;border:1px solid var(--line);border-radius:6px;background:#090a0d;text-align:center;font-size:.52rem;font-weight:1000;text-transform:uppercase;overflow:hidden}
+.card-store-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.card-store-item{position:relative;display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px;min-height:110px;padding:10px;border:1px solid var(--line-2);border-radius:8px;background:#0c0d11;overflow:hidden}
+.card-store-thumb{width:82px;height:90px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#050608;border:1px solid var(--line);border-radius:6px}
+.card-store-thumb img{width:100%;height:100%;object-fit:contain}.card-store-thumb.background img{object-fit:cover}
+.card-store-meta{min-width:0}.card-store-meta strong{display:block;color:#fff;font-size:.8rem;overflow-wrap:anywhere}.card-store-meta .sub{margin-top:3px;color:var(--muted);font-size:.6rem;text-transform:uppercase}.card-store-meta .status{display:inline-block;margin-top:7px;color:#79e3ad;font-size:.62rem;font-weight:1000;text-transform:uppercase}
+.card-store-meta .price{display:block;margin-top:6px;color:#f6d768;font-size:.68rem;font-weight:1000}.card-store-meta .btn{margin:8px 0 0;padding:7px 8px;font-size:.62rem}
+.rarity-common{box-shadow:0 0 16px rgba(156,163,175,.28)}.rarity-uncommon{box-shadow:0 0 17px rgba(74,222,128,.32)}.rarity-rare{box-shadow:0 0 18px rgba(59,130,246,.38)}.rarity-luxury{box-shadow:0 0 20px rgba(168,85,247,.42)}.rarity-premium{box-shadow:0 0 26px rgba(250,204,21,.62);border-color:#d4af37}
+.card-rarity-key.rarity-common{color:#cbd5e1}.card-rarity-key.rarity-uncommon{color:#86efac}.card-rarity-key.rarity-rare{color:#60a5fa}.card-rarity-key.rarity-luxury{color:#c084fc}.card-rarity-key.rarity-premium{color:#fde68a}
+.card-coming-soon{padding:14px 10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;color:var(--text-dim);font-size:.72rem;font-weight:900;text-transform:uppercase}
+.card-premium-later{margin:10px 0 12px;padding:10px;border:1px solid rgba(212,175,55,.45);border-radius:7px;background:#120f07;color:#f6d768;text-align:center;font-size:.68rem;font-weight:1000;text-transform:uppercase;box-shadow:0 0 22px rgba(212,175,55,.2)}
+@media(max-width:680px){
+  .card-editor-layout{grid-template-columns:1fr}.card-editor-layout>.modular-card{width:min(100%,330px)}
+  .card-store-top{grid-template-columns:140px minmax(0,1fr)}.card-store-top .modular-card{width:140px}
+  .card-store-grid{grid-template-columns:1fr}.card-store-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .modular-card-ovr strong{font-size:1.65rem}.modular-card-name strong{font-size:.82rem}.modular-card-stat strong{font-size:.46rem}.modular-card-stat span{font-size:.29rem}
+}
+@media(max-width:350px){
+  .play-money-hud{font-size:.58rem}.card-owned-options{grid-template-columns:1fr}.card-rarity-key{font-size:.46rem}
+  .card-store-top{grid-template-columns:110px minmax(0,1fr)}.card-store-top .modular-card{width:110px}
+}
 </style>
 </head>
 <body>
+<div class="play-money-hud" aria-live="polite"><span aria-hidden="true">&#x1FA99;</span><span>Play Money</span><strong data-play-money>0</strong></div>
 <div class="app">
 <header>
   <button id="account-settings-toggle" class="account-settings-toggle hidden" type="button" onclick="openAccountSettings()" aria-label="Account settings">&#9881;</button>
@@ -1389,6 +1465,8 @@ body.final-card-open{overflow:hidden}
 
 <section id="menu-screen" class="screen">
   <div class="menu-actions">
+    <button id="card-editor-menu-btn" type="button" class="btn" data-screen-target="card-editor-screen">Card Editor</button>
+    <button id="card-store-menu-btn" type="button" class="btn" data-screen-target="card-store-screen">Store</button>
     <button id="continue-btn" type="button" class="btn blue hidden" data-screen-target="hub-screen">Continue Career</button>
     <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">Draft New Boxer</button>
     <!-- Character creation, cosmetic store, and achievements are temporarily disabled and may return later as Build Your Card. -->
@@ -1439,6 +1517,52 @@ body.final-card-open{overflow:hidden}
     <div class="row"><span>Fighter:</span><span id="save-fighter">-</span></div>
     <div class="row"><span>Progress:</span><span id="save-progress">-</span></div>
   </div>
+</section>
+
+<section id="card-editor-screen" class="screen">
+  <div class="card-screen-head">
+    <h2>Card Editor</h2>
+    <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
+  </div>
+  <div class="card-editor-layout">
+    <div id="card-editor-preview"></div>
+    <div>
+      <div id="card-editor-controls" class="card-editor-controls"></div>
+      <div class="card-editor-actions">
+        <button type="button" class="btn blue" onclick="shareEditedCard()">Share Card</button>
+        <button type="button" class="btn ghost" onclick="openCardStore('card-editor-screen')">Open Store</button>
+        <button type="button" class="btn gold" onclick="closeCardEditor()">Back</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="card-store-screen" class="screen">
+  <div class="card-screen-head">
+    <h2>Store</h2>
+    <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
+  </div>
+  <div class="card-store-top">
+    <div id="card-store-preview"></div>
+    <div class="card-store-summary"><strong id="card-store-category-title">Characters</strong><span id="card-store-category-count">1 owned</span></div>
+  </div>
+  <div class="card-store-tabs" role="tablist" aria-label="Card store categories">
+    <button type="button" class="card-store-tab active" data-card-category="character" onclick="selectCardStoreCategory('character')">Character</button>
+    <button type="button" class="card-store-tab" data-card-category="aura" onclick="selectCardStoreCategory('aura')">Aura</button>
+    <button type="button" class="card-store-tab" data-card-category="background" onclick="selectCardStoreCategory('background')">Background</button>
+    <button type="button" class="card-store-tab" data-card-category="frame" onclick="selectCardStoreCategory('frame')">Frame</button>
+  </div>
+  <div class="card-rarity-rail" aria-label="Item rarities">
+    <div class="card-rarity-key rarity-common">Common</div>
+    <div class="card-rarity-key rarity-uncommon">Uncommon</div>
+    <div class="card-rarity-key rarity-rare">Rare</div>
+    <div class="card-rarity-key rarity-luxury">Luxury</div>
+    <div class="card-rarity-key rarity-premium">Premium</div>
+  </div>
+  <div id="card-store-items" class="card-store-grid"></div>
+  <div class="card-coming-soon">New items coming soon</div>
+  <div class="card-premium-later">Premium items coming later</div>
+  <button type="button" class="btn gold" onclick="closeCardStore()">Back</button>
 </section>
 
 <section id="boxer-creator-screen" class="screen">
@@ -5200,7 +5324,7 @@ const OPPL = ['Evans','Miller','Johnson','Slater','Grimes','Alvarez','Fury','Kli
 const OPPSTYLE = [{id:'slugger',name:'Slugger',power:5,speed:-2,defence:-1,chin:2},{id:'outboxer',name:'Outboxer',power:-2,speed:4,defence:4,footwork:4},{id:'pressure',name:'Pressure Fighter',power:2,stamina:4,heart:4,defence:-2},{id:'technician',name:'Technician',ringIQ:5,accuracy:4,defence:3,power:-1},{id:'tank',name:'Tank',chin:5,heart:5,speed:-4,footwork:-3}];
 const HOF = [{min:900,t:'Untouchable Legend',p:.4},{min:850,t:'Immortal Champion',p:.8},{min:800,t:'Transcendent Great',p:1.2},{min:760,t:'All-Time Ring Legend',p:2.0},{min:720,t:'Undisputed Great',p:2.8},{min:680,t:'Hall of Fame Icon',p:4.0},{min:640,t:'First Ballot Hall of Famer',p:6.0},{min:590,t:'Elite Champion',p:9.0},{min:540,t:'Multi-Belt Champion',p:12.0},{min:490,t:'World Champion Class',p:16.0},{min:440,t:'Championship Contender',p:22.0},{min:390,t:'Top Ranked Contender',p:30.0},{min:330,t:'Veteran Gatekeeper',p:42.0},{min:270,t:'Durable Veteran',p:55.0},{min:210,t:'Journeyman Pro',p:68.0},{min:150,t:'Fading Fighter',p:81.0},{min:100,t:'Lost Prospect',p:90.0},{min:0,t:'Forgotten Fighter',p:97.0}];
 const MILESTONES = [10, 25, 35, 50];
-const PROFILE_MODEL_VERSION = 1;
+const PROFILE_MODEL_VERSION = 2;
 const AVATAR_DEFAULT = {base:'classic',skinTone:'medium',hairStyle:'crop',hairColour:'black',facialHair:'none',gloves:'red',shorts:'blue',boots:'black',robe:'default',stance:'orthodox',badge:null};
 const COUNTRY_OPTIONS = ['United Kingdom','United States','Mexico','Canada','Ireland','Nigeria','Ghana','Jamaica','Brazil','Cuba','Ukraine','New Zealand','Australia','Japan','Philippines'];
 const AVATAR_OPTIONS = {
@@ -5266,6 +5390,16 @@ const COSMETIC_DEFINITIONS = {
 };
 const DEFAULT_UNLOCKED_COSMETICS = ['robe_default','gloves_default','shorts_default','boots_default','tattoo_default','aura_default','entrance_default','badge_default'];
 const DEFAULT_EQUIPPED_COSMETICS = {robe:'robe_default',gloves:'gloves_default',shorts:'shorts_default',boots:'boots_default',tattoo:'tattoo_default',aura:'aura_default',entrance:'entrance_default',badge:'badge_default'};
+const CARD_CATEGORIES = ['character','aura','background','frame'];
+const CARD_CATEGORY_LABELS = {character:'Characters',aura:'Auras',background:'Backgrounds',frame:'Frames'};
+const CARD_ITEM_DEFINITIONS = {
+  character_standard_contender:{id:'character_standard_contender',category:'character',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/character_standard_contender.png'},
+  aura_corner_smoke:{id:'aura_corner_smoke',category:'aura',name:'Corner Smoke',rarity:'common',price:0,base:true,asset:'assets/card/aura_corner_smoke.png'},
+  background_standard_fight_night:{id:'background_standard_fight_night',category:'background',name:'Standard Fight Night',rarity:'common',price:0,base:true,asset:'assets/card/background_standard_fight_night.png'},
+  frame_standard_contender:{id:'frame_standard_contender',category:'frame',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/frame_standard_contender.png'}
+};
+const DEFAULT_OWNED_CARD_ITEMS = Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.base).map(item=>item.id);
+const DEFAULT_EQUIPPED_CARD_ITEMS = {character:'character_standard_contender',aura:'aura_corner_smoke',background:'background_standard_fight_night',frame:'frame_standard_contender'};
 const ACHIEVEMENT_DEFINITIONS = {
   first_win:{id:'first_win',name:'First Win',desc:'Win your first professional bout.',reward:'gloves_red_reward',check:c=>c.wins>=1},
   prospect_10_0:{id:'prospect_10_0',name:'10-0 Prospect',desc:'Reach 10 wins with no losses or draws.',reward:'gloves_bronze',check:c=>c.wins>=10&&c.losses===0&&c.draws===0},
@@ -5296,6 +5430,19 @@ function createEquippedCosmetics(existing={}){
   return {...DEFAULT_EQUIPPED_COSMETICS, ...(existing||{})};
 }
 function safeMoney(value){ return Number.isFinite(value)?Math.max(0,Math.floor(value)):0; }
+function getCardItem(id){ return CARD_ITEM_DEFINITIONS[id]||null; }
+function createOwnedCardItems(existing=[]){
+  const valid=(Array.isArray(existing)?existing:[]).filter(id=>getCardItem(id));
+  return Array.from(new Set([...DEFAULT_OWNED_CARD_ITEMS,...valid]));
+}
+function createEquippedCardItems(existing={}, owned=createOwnedCardItems()){
+  const next={...DEFAULT_EQUIPPED_CARD_ITEMS,...(existing||{})};
+  CARD_CATEGORIES.forEach(category=>{
+    const item=getCardItem(next[category]);
+    if(!item||item.category!==category||!owned.includes(item.id)) next[category]=DEFAULT_EQUIPPED_CARD_ITEMS[category];
+  });
+  return next;
+}
 function getCosmeticDefinition(id){ return COSMETIC_DEFINITIONS[id]||null; }
 function normaliseModeId(id){ return ['easy','normal','hard','standard'].includes(id)?'standard':'standard'; }
 function standardModeCfg(){ return MODE.standard||STANDARD_MODE; }
@@ -5375,6 +5522,7 @@ function careerWalletReward(career=S.career){
   const earnings=safeMoney(career?.earnings||0);
   return Math.floor(earnings*(isPerfectCareer(career)?0.08:0.02));
 }
+function careerPlayMoneyReward(career=S.career){ return Math.floor(safeMoney(career?.earnings||0)/1000000); }
 const MULTI_50_REWARDS = [
   {count:1, cosmetic:'tattoo_50'},
   {count:2, cosmetic:'store_gloves_gold'},
@@ -5394,14 +5542,17 @@ function grantMulti50Rewards(player, showNotifications=true){
   });
 }
 function awardCareerCompletionEconomy(showNotifications=true){
-  if(!S.player||!S.career||S.career.economyRewarded) return {reward:0, already:true};
+  if(!S.player||!S.career||S.career.economyRewarded) return {reward:0,playMoneyReward:0,already:true};
   ensurePlayerFoundation(S.player);
   const earnings=safeMoney(S.career.earnings||0);
   const reward=careerWalletReward(S.career);
+  const playMoneyReward=careerPlayMoneyReward(S.career);
   S.career.economyRewarded=true;
+  S.career.playMoneyRewarded=true;
   S.player.careerEarnings=earnings;
   S.player.lifetimeEarnings=safeMoney(S.player.lifetimeEarnings)+earnings;
   S.player.walletBalance=safeMoney(S.player.walletBalance)+reward;
+  S.player.playMoney=safeMoney(S.player.playMoney)+playMoneyReward;
   if(isPerfectCareer(S.career)&&!S.career.profile50Counted){
     S.career.profile50Counted=true;
     S.player.completed50And0Careers=(S.player.completed50And0Careers||0)+1;
@@ -5409,7 +5560,8 @@ function awardCareerCompletionEconomy(showNotifications=true){
   grantMulti50Rewards(S.player, showNotifications);
   saveProfileFromPlayer(S.player);
   if(showNotifications) showToast('Wallet Reward', '+'+cash(reward)+' cosmetic wallet');
-  return {reward, already:false};
+  if(showNotifications&&playMoneyReward>0) showToast('Play Money','\uD83E\uDE99 +'+playMoneyReward.toLocaleString());
+  return {reward,playMoneyReward,already:false};
 }
 function ensurePlayerFoundation(player){
   if(!player) return player;
@@ -5430,6 +5582,9 @@ function ensurePlayerFoundation(player){
   player.careerEarnings=safeMoney(player.careerEarnings);
   player.lifetimeEarnings=safeMoney(player.lifetimeEarnings);
   player.walletBalance=safeMoney(player.walletBalance);
+  player.playMoney=safeMoney(player.playMoney);
+  player.ownedCardItems=createOwnedCardItems(player.ownedCardItems);
+  player.equippedCardItems=createEquippedCardItems(player.equippedCardItems,player.ownedCardItems);
   player.profileSetupComplete=!!player.profileSetupComplete||!!fullName;
   return player;
 }
@@ -5454,6 +5609,7 @@ function migrateCareerSave(data){
 }
 function createProfileFoundation(existing={}){
   const nameParts=cleanName(existing.Name||'').split(' ').filter(Boolean);
+  const ownedCardItems=createOwnedCardItems(existing.ownedCardItems);
   const profile={
     profileModelVersion:PROFILE_MODEL_VERSION,
     playerId:existing.playerId||makeId('player'),
@@ -5470,6 +5626,9 @@ function createProfileFoundation(existing={}){
     careerEarnings:safeMoney(existing.careerEarnings),
     lifetimeEarnings:safeMoney(existing.lifetimeEarnings),
     walletBalance:safeMoney(existing.walletBalance),
+    playMoney:safeMoney(existing.playMoney),
+    ownedCardItems,
+    equippedCardItems:createEquippedCardItems(existing.equippedCardItems,ownedCardItems),
     profileSetupComplete:!!existing.profileSetupComplete
   };
   return profile;
@@ -5500,6 +5659,9 @@ function applyProfileFoundation(player, profile=loadProfileFoundation()){
   player.careerEarnings=safeMoney(profile.careerEarnings);
   player.lifetimeEarnings=safeMoney(profile.lifetimeEarnings);
   player.walletBalance=safeMoney(profile.walletBalance);
+  player.playMoney=safeMoney(profile.playMoney);
+  player.ownedCardItems=createOwnedCardItems(profile.ownedCardItems);
+  player.equippedCardItems=createEquippedCardItems(profile.equippedCardItems,player.ownedCardItems);
   player.profileModelVersion=PROFILE_MODEL_VERSION;
   return player;
 }
@@ -5520,6 +5682,9 @@ function saveProfileFromPlayer(player){
     careerEarnings:safeMoney(S.career?.earnings||player.careerEarnings),
     lifetimeEarnings:player.lifetimeEarnings,
     walletBalance:player.walletBalance,
+    playMoney:player.playMoney,
+    ownedCardItems:player.ownedCardItems,
+    equippedCardItems:player.equippedCardItems,
     profileSetupComplete:player.profileSetupComplete
   });
 }
@@ -5913,6 +6078,232 @@ function updateWalletDisplays(){
   [['menu-wallet',profile.walletBalance],['hub-wallet',profile.walletBalance]].forEach(([id,val])=>{ if($(id)) $(id).innerText=cash(val||0); });
   [['menu-lifetime',profile.lifetimeEarnings],['hub-lifetime',profile.lifetimeEarnings]].forEach(([id,val])=>{ if($(id)) $(id).innerText=cash(val||0); });
   [['menu-career-earnings',careerEarnings],['hub-career-earnings',careerEarnings]].forEach(([id,val])=>{ if($(id)) $(id).innerText=cash(val||0); });
+  document.querySelectorAll('[data-play-money]').forEach(el=>{ el.innerText=safeMoney(profile.playMoney).toLocaleString(); });
+}
+
+let cardEditorReturnScreen='menu-screen';
+let cardStoreReturnScreen='menu-screen';
+let activeCardStoreCategory='character';
+function activeCardProfile(){
+  if(S.player){ ensurePlayerFoundation(S.player); return createProfileFoundation(S.player); }
+  return loadProfileFoundation();
+}
+function activeCardSave(){
+  if(S.player&&S.career) return {player:S.player,career:S.career};
+  try{ return JSON.parse(localStorage.getItem(KEYS.career)||'null'); }catch{ return null; }
+}
+function cardOverall(player){
+  const values=STATS.map(stat=>player?.Stats?.[stat]).filter(value=>Number.isFinite(value)&&value>0);
+  return values.length?clamp(Math.round(values.reduce((sum,value)=>sum+value,0)/values.length),1,99):50;
+}
+function compactCardMoney(value){
+  const amount=safeMoney(value);
+  if(amount>=1000000000) return '$'+(amount/1000000000).toFixed(amount>=10000000000?0:1)+'B';
+  if(amount>=1000000) return '$'+(amount/1000000).toFixed(amount>=10000000?0:1)+'M';
+  if(amount>=1000) return '$'+Math.floor(amount/1000)+'K';
+  return '$'+amount;
+}
+function cardDisplayData(profile=activeCardProfile()){
+  const save=activeCardSave(), player=save?.player||S.player||null, career=save?.career||S.career||null;
+  const record=career?(safeMoney(career.wins)+'-'+safeMoney(career.losses)+(safeMoney(career.draws)>0?'-'+safeMoney(career.draws):'')):'0-0';
+  return {
+    name:cleanName(player?.Name||boxerDisplayName(profile)||'Custom Contender'),
+    nickname:cleanName(profile.nickname||player?.Nickname||'The Contender'),
+    ovr:cardOverall(player),
+    stats:[
+      {label:'Record',value:record},
+      {label:'KOs',value:String(safeMoney(career?.kos||0))},
+      {label:'Rank',value:career?'#'+safeMoney(career.worldRank||60):'#60'},
+      {label:'Belts',value:String((career?.belts||[]).length)},
+      {label:'Earned',value:compactCardMoney(career?.earnings||0)},
+      {label:'Fights',value:String(Math.max(0,safeMoney(career?.currentFight||1)-1))}
+    ]
+  };
+}
+function equippedCardAssets(profile=activeCardProfile()){
+  const owned=createOwnedCardItems(profile.ownedCardItems), equipped=createEquippedCardItems(profile.equippedCardItems,owned);
+  return CARD_CATEGORIES.reduce((items,category)=>{ items[category]=getCardItem(equipped[category])||getCardItem(DEFAULT_EQUIPPED_CARD_ITEMS[category]); return items; },{});
+}
+function modularCardMarkup(profile=activeCardProfile()){
+  const assets=equippedCardAssets(profile), data=cardDisplayData(profile);
+  return '<div class="modular-card" role="img" aria-label="'+htmlEscape(data.name)+' fighter card">'+
+    '<img class="modular-card-background" src="'+assets.background.asset+'" alt="">'+
+    '<img class="modular-card-aura" src="'+assets.aura.asset+'" alt="">'+
+    '<img class="modular-card-character" src="'+assets.character.asset+'" alt="">'+
+    '<img class="modular-card-frame" src="'+assets.frame.asset+'" alt="">'+
+    '<div class="modular-card-copy modular-card-ovr"><strong>'+data.ovr+'</strong><span>OVR</span></div>'+
+    '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(data.name)+'</strong><span>'+htmlEscape(data.nickname)+'</span></div>'+
+    '<div class="modular-card-stats">'+data.stats.map(stat=>'<div class="modular-card-stat"><strong>'+htmlEscape(stat.value)+'</strong><span>'+htmlEscape(stat.label)+'</span></div>').join('')+'</div>'+
+  '</div>';
+}
+function mutateCardProfile(mutator){
+  let result;
+  if(S.player){
+    ensurePlayerFoundation(S.player);
+    result=mutator(S.player);
+    saveProfileFromPlayer(S.player);
+  }else{
+    const profile=loadProfileFoundation();
+    result=mutator(profile);
+    saveProfileFoundation(profile);
+  }
+  updateWalletDisplays();
+  return result;
+}
+function equipCardItem(itemId){
+  const item=getCardItem(itemId);
+  if(!item) return false;
+  const changed=mutateCardProfile(profile=>{
+    profile.ownedCardItems=createOwnedCardItems(profile.ownedCardItems);
+    if(!profile.ownedCardItems.includes(item.id)) return false;
+    profile.equippedCardItems=createEquippedCardItems(profile.equippedCardItems,profile.ownedCardItems);
+    profile.equippedCardItems[item.category]=item.id;
+    return true;
+  });
+  if(!changed) return false;
+  renderCardEditor();
+  renderCardStore();
+  showToast('Card Updated',item.name+' equipped.');
+  return true;
+}
+function renderCardEditor(){
+  const profile=activeCardProfile(), owned=createOwnedCardItems(profile.ownedCardItems), equipped=createEquippedCardItems(profile.equippedCardItems,owned);
+  if($('card-editor-preview')) $('card-editor-preview').innerHTML=modularCardMarkup(profile);
+  const controls=$('card-editor-controls');
+  if(controls){
+    controls.innerHTML=CARD_CATEGORIES.map(category=>{
+      const items=owned.map(getCardItem).filter(item=>item?.category===category);
+      return '<div class="card-editor-group"><div class="card-editor-group-head"><strong>'+CARD_CATEGORY_LABELS[category]+'</strong><span>'+items.length+' owned</span></div><div class="card-owned-options">'+items.map(item=>{
+        const isEquipped=equipped[category]===item.id;
+        return '<button type="button" class="card-owned-option '+(isEquipped?'equipped':'')+'" onclick="equipCardItem(\''+item.id+'\')"><strong>'+htmlEscape(item.name)+'</strong><span>'+(isEquipped?'Equipped':item.rarity)+'</span></button>';
+      }).join('')+'</div></div>';
+    }).join('');
+  }
+  updateWalletDisplays();
+}
+function openCardEditor(returnScreen='menu-screen'){
+  cardEditorReturnScreen=returnScreen;
+  renderCardEditor();
+  screen('card-editor-screen');
+}
+function closeCardEditor(){ refreshMenu(); screen(cardEditorReturnScreen||'menu-screen'); }
+function cardStoreItemState(item,profile){
+  const owned=createOwnedCardItems(profile.ownedCardItems), equipped=createEquippedCardItems(profile.equippedCardItems,owned);
+  if(equipped[item.category]===item.id) return 'equipped';
+  if(owned.includes(item.id)) return 'owned';
+  if(item.rarity==='premium') return 'premium';
+  return safeMoney(profile.playMoney)>=safeMoney(item.price)?'affordable':'unaffordable';
+}
+function cardStoreThumb(item){ return '<div class="card-store-thumb '+item.category+'"><img loading="lazy" src="'+item.asset+'" alt=""></div>'; }
+function renderCardStore(){
+  const profile=activeCardProfile(), items=Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.category===activeCardStoreCategory), owned=createOwnedCardItems(profile.ownedCardItems);
+  if($('card-store-preview')) $('card-store-preview').innerHTML=modularCardMarkup(profile);
+  if($('card-store-category-title')) $('card-store-category-title').innerText=CARD_CATEGORY_LABELS[activeCardStoreCategory];
+  if($('card-store-category-count')) $('card-store-category-count').innerText=items.filter(item=>owned.includes(item.id)).length+' owned';
+  document.querySelectorAll('[data-card-category]').forEach(button=>button.classList.toggle('active',button.dataset.cardCategory===activeCardStoreCategory));
+  const list=$('card-store-items');
+  if(list){
+    list.innerHTML=items.map(item=>{
+      const state=cardStoreItemState(item,profile), status=state==='equipped'?'Equipped':state==='owned'?'Owned':state==='premium'?'Coming Later':state==='affordable'?'Available':'Not Enough Play Money';
+      const action=state==='owned'?'<button type="button" class="btn blue" onclick="equipCardItem(\''+item.id+'\')">Equip</button>':state==='affordable'?'<button type="button" class="btn gold" onclick="purchaseCardItem(\''+item.id+'\')">Buy</button>':'';
+      const price=item.base?'Free':item.rarity==='premium'?'Premium':safeMoney(item.price).toLocaleString()+' Play Money';
+      return '<article class="card-store-item rarity-'+item.rarity+'">'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+htmlEscape(item.rarity)+'</div><span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
+    }).join('');
+  }
+  updateWalletDisplays();
+}
+function selectCardStoreCategory(category){
+  if(!CARD_CATEGORIES.includes(category)) return;
+  activeCardStoreCategory=category;
+  renderCardStore();
+}
+function purchaseCardItem(itemId){
+  const item=getCardItem(itemId);
+  if(!item||item.base||item.rarity==='premium') return;
+  const profile=activeCardProfile();
+  if(cardStoreItemState(item,profile)!=='affordable') return;
+  if(!confirm('Buy '+item.name+' for '+safeMoney(item.price).toLocaleString()+' Play Money?')) return;
+  mutateCardProfile(target=>{
+    target.playMoney=safeMoney(target.playMoney)-safeMoney(item.price);
+    target.ownedCardItems=createOwnedCardItems([...(target.ownedCardItems||[]),item.id]);
+    target.equippedCardItems=createEquippedCardItems({...target.equippedCardItems,[item.category]:item.id},target.ownedCardItems);
+  });
+  renderCardEditor();
+  renderCardStore();
+  showToast('Purchased',item.name);
+}
+function openCardStore(returnScreen='menu-screen'){
+  cardStoreReturnScreen=returnScreen;
+  renderCardStore();
+  screen('card-store-screen');
+}
+function closeCardStore(){
+  if(cardStoreReturnScreen==='card-editor-screen'){ renderCardEditor(); screen('card-editor-screen'); return; }
+  refreshMenu();
+  screen(cardStoreReturnScreen||'menu-screen');
+}
+function loadCardCanvasImage(src){
+  return new Promise((resolve,reject)=>{ const img=new Image(); img.onload=()=>resolve(img); img.onerror=reject; img.src=src; });
+}
+function drawContainedCardImage(ctx,img,x,y,width,height){
+  const scale=Math.min(width/img.naturalWidth,height/img.naturalHeight), drawWidth=img.naturalWidth*scale, drawHeight=img.naturalHeight*scale;
+  ctx.drawImage(img,x+(width-drawWidth)/2,y+height-drawHeight,drawWidth,drawHeight);
+}
+function drawCoveredCardImage(ctx,img,x,y,width,height){
+  const scale=Math.max(width/img.naturalWidth,height/img.naturalHeight), drawWidth=img.naturalWidth*scale, drawHeight=img.naturalHeight*scale;
+  ctx.drawImage(img,x+(width-drawWidth)/2,y+(height-drawHeight)/2,drawWidth,drawHeight);
+}
+async function renderCardShareBlob(profile=activeCardProfile()){
+  const assets=equippedCardAssets(profile), data=cardDisplayData(profile);
+  const [background,aura,character,frame]=await Promise.all([assets.background,assets.aura,assets.character,assets.frame].map(item=>loadCardCanvasImage(item.asset)));
+  if(document.fonts?.ready) await document.fonts.ready;
+  const canvas=document.createElement('canvas'); canvas.width=1006; canvas.height=1564;
+  const ctx=canvas.getContext('2d');
+  drawCoveredCardImage(ctx,background,0,0,1006,1564);
+  drawContainedCardImage(ctx,aura,0,110,1006,1080);
+  drawContainedCardImage(ctx,character,0,110,1006,1080);
+  ctx.drawImage(frame,0,0,1006,1564);
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.shadowColor='rgba(0,0,0,.9)'; ctx.shadowBlur=7;
+  ctx.fillStyle='#f6d768'; ctx.font='72px "Bebas Neue", Impact, sans-serif'; ctx.fillText(String(data.ovr),175,1290);
+  ctx.fillStyle='#fff'; ctx.font='900 20px Inter, sans-serif'; ctx.fillText('OVR',175,1337);
+  ctx.fillStyle='#fff'; ctx.font='42px "Bebas Neue", Impact, sans-serif'; ctx.fillText(data.name.toUpperCase().slice(0,24),615,1275);
+  ctx.fillStyle='#d8b77a'; ctx.font='900 18px Inter, sans-serif'; ctx.fillText(data.nickname.toUpperCase().slice(0,28),615,1320);
+  const startX=350, step=102;
+  data.stats.forEach((stat,index)=>{
+    const x=startX+(step*index);
+    ctx.fillStyle='#fff'; ctx.font='900 19px Inter, sans-serif'; ctx.fillText(String(stat.value).slice(0,8),x,1421);
+    ctx.fillStyle='#d6b56f'; ctx.font='900 11px Inter, sans-serif'; ctx.fillText(stat.label.toUpperCase(),x,1452);
+  });
+  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Card image could not be created.')),'image/png'));
+}
+function saveSharedCardImage(blob){
+  const url=URL.createObjectURL(blob), link=document.createElement('a');
+  link.href=url; link.download='unbeaten-fighter-card.png'; document.body.appendChild(link); link.click(); link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function shareCardWithText(text,title='UNBEATEN: 50-0 - My Fighter Card'){
+  try{
+    const blob=await renderCardShareBlob(), file=new File([blob],'unbeaten-fighter-card.png',{type:'image/png'}), url=window.location.href.split('#')[0];
+    const withFile={title,text,url,files:[file]};
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share(withFile);
+      return;
+    }
+    saveSharedCardImage(blob);
+    const fullText=text+'\n'+url;
+    if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(fullText);
+    else prompt('Copy this to share:',fullText);
+    showToast('Card Ready','Card image saved and share text copied.');
+  }catch(error){
+    if(error?.name==='AbortError') return;
+    console.error(error);
+    showToast('Share Unavailable','The card could not be shared on this device.');
+  }
+}
+function shareEditedCard(){
+  const data=cardDisplayData();
+  const text='\uD83E\uDD4A UNBEATEN: 50-0\n\n'+data.name+' - "'+data.nickname+'"\nOVR: '+data.ovr+'\n\nCan you build a better fighter card? Play now!';
+  shareCardWithText(text);
 }
 let collectionReturnScreen = 'menu-screen';
 function activeProfileForCollection(){
@@ -6074,7 +6465,7 @@ function equipStoreCosmetic(cosmeticId){
 function selectMode(id){ S.mode=normaliseModeId(id); }
 function valCls(v){ if(v==null)return'stat-tier-bad'; if(v>=99)return'stat-tier-ultra'; if(v>=95)return'stat-tier-legendary'; if(v>=90)return'stat-tier-mythic'; if(v>=85)return'stat-tier-epic'; if(v>=80)return'stat-tier-rare'; if(v>=75)return'stat-tier-uncommon'; if(v>=70)return'stat-tier-common'; if(v>=65)return'stat-tier-low'; if(v>=60)return'stat-tier-poor'; return'stat-tier-bad'; }
 function modeCfg(){ return standardModeCfg(); }
-function fresh(){ const profile=loadProfileFoundation(); S.mode='standard'; S.player=applyProfileFoundation({Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}, profile); STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:'standard',currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:STANDARD_MODE.rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0,achievementStartIds:Object.keys(S.player.achievements?.unlocked||{}), firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false, profile50Counted: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
+function fresh(){ const profile=loadProfileFoundation(); S.mode='standard'; S.player=applyProfileFoundation({Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}, profile); STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:'standard',currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:STANDARD_MODE.rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0,achievementStartIds:Object.keys(S.player.achievements?.unlocked||{}), firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false, profile50Counted: false, playMoneyRewarded: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
 function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?'('+(S.player.StatSources[st]||'Unknown')+')'+(S.player.PerfectSpinStats[st]?' • Perfect Spin':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
 function updateDraftTop(){ const cfg=modeCfg(); $('draft-mode-label').innerText=cfg.name; $('draft-rerolls-left').innerText=S.career.draftRerolls; $('reroll-btn').innerText='Use Re-Roll ('+S.career.draftRerolls+')'; $('reroll-btn').disabled=!S.awaiting || S.career.draftRerolls<=0; }
 function avgLegend(l){ return STATS.reduce((s,st)=>s+l[st],0)/STATS.length; }
@@ -6467,7 +6858,10 @@ function antiCheatProfile(profile){
   const clean=createProfileFoundation(profile||{});
   clean.walletBalance=clamp(safeMoney(clean.walletBalance),0,25000000000);
   clean.lifetimeEarnings=clamp(safeMoney(clean.lifetimeEarnings),0,999999999999);
+  clean.playMoney=clamp(safeMoney(clean.playMoney),0,999999999);
   clean.completed50And0Careers=clamp(safeMoney(clean.completed50And0Careers),0,999);
+  clean.ownedCardItems=createOwnedCardItems(clean.ownedCardItems);
+  clean.equippedCardItems=createEquippedCardItems(clean.equippedCardItems,clean.ownedCardItems);
   clean.unlockedCosmetics=(clean.unlockedCosmetics||[]).filter(id=>COSMETIC_DEFINITIONS[id]);
   clean.equippedCosmetics=createEquippedCosmetics(clean.equippedCosmetics);
   Object.keys(clean.equippedCosmetics).forEach(slot=>{
@@ -6558,6 +6952,7 @@ function localSaveSummary(data){
     ['Record',saveRecordText(active)],
     ['Current Fight',currentFight],
     ['Wallet Balance',cash(p.walletBalance||0)],
+    ['Play Money','\uD83E\uDE99 '+safeMoney(p.playMoney||0).toLocaleString()],
     ['Lifetime Earnings',cash(p.lifetimeEarnings||0)],
     ['Retired Careers',retired.length],
     ['50-0 Careers',p.completed50And0Careers||0],
@@ -6607,6 +7002,11 @@ function hasBetterThanDefaultRecords(records={}){
 function hasNonDefaultCosmetics(profile){
   return (profile?.unlockedCosmetics||[]).some(id=>!DEFAULT_UNLOCKED_COSMETICS.includes(id));
 }
+function hasNonDefaultCardItems(profile){
+  const owned=createOwnedCardItems(profile?.ownedCardItems);
+  const equipped=createEquippedCardItems(profile?.equippedCardItems,owned);
+  return owned.some(id=>!DEFAULT_OWNED_CARD_ITEMS.includes(id)) || CARD_CATEGORIES.some(category=>equipped[category]!==DEFAULT_EQUIPPED_CARD_ITEMS[category]);
+}
 function hasUnlockedAchievements(profile){
   return Object.keys(profile?.achievements?.unlocked||{}).length>0;
 }
@@ -6616,8 +7016,8 @@ function hasNonTrivialLocalProgress(payload){
   const profile=payload?.profile||{};
   if(c&&((c.currentFight||1)>1 || (c.wins||0)>0 || (c.losses||0)>0 || (c.draws||0)>0)) return true;
   if((payload?.retiredCareers||[]).length>0) return true;
-  if(safeMoney(profile.walletBalance)>0 || safeMoney(profile.lifetimeEarnings)>0) return true;
-  if(hasUnlockedAchievements(profile) || hasNonDefaultCosmetics(profile)) return true;
+  if(safeMoney(profile.walletBalance)>0 || safeMoney(profile.lifetimeEarnings)>0 || safeMoney(profile.playMoney)>0) return true;
+  if(hasUnlockedAchievements(profile) || hasNonDefaultCosmetics(profile) || hasNonDefaultCardItems(profile)) return true;
   if(hasBetterThanDefaultRecords(payload?.records)) return true;
   return false;
 }
@@ -6629,9 +7029,12 @@ function payloadFingerprint(data){
     username:p.username||'',
     wallet:safeMoney(p.walletBalance),
     lifetime:safeMoney(p.lifetimeEarnings),
+    playMoney:safeMoney(p.playMoney),
     fifty:safeMoney(p.completed50And0Careers),
     achievements:Object.keys(p.achievements?.unlocked||{}).sort(),
     cosmetics:(p.unlockedCosmetics||[]).slice().sort(),
+    cardItems:createOwnedCardItems(p.ownedCardItems).slice().sort(),
+    equippedCard:createEquippedCardItems(p.equippedCardItems,createOwnedCardItems(p.ownedCardItems)),
     active:active?{fight:active.currentFight||1,wins:active.wins||0,losses:active.losses||0,draws:active.draws||0,kos:active.kos||0,earnings:active.earnings||0}:null,
     retiredCount:retired.length,
     highestLegacy:payloadHighestLegacy(data),
@@ -7219,13 +7622,7 @@ function triggerHof(){
 function showHistory(){ const p=$('full-history'); p.innerHTML=''; if(!S.career.fullHistory.length) p.innerHTML='<div style="color:var(--muted);text-align:center">No fight history recorded.</div>'; else S.career.fullHistory.forEach(line=>{ const d=document.createElement('div'); d.innerText=line; p.appendChild(d); }); screen('history-screen'); }
 function backToHof(){ screen('hof-screen'); }
 function shareCareer(){ const l = leg(); const wealth = getWealthInfo(S.career.earnings); const record = S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); const txt = `🥊 UNBEATEN: 50-0\n\n📊 Record: ${record}\n💥 KOs: ${S.career.kos}\n🏆 HOF: ${l.t}\n💰 Earnings: ${cash(S.career.earnings)}\n🎖️ Wealth: ${wealth[0]}\n🏅 Belts: ${S.career.belts.length}/4\n\nCan you go 50-0? Play now!`;
-  const url = window.location.href;
-  if(navigator.share){
-    navigator.share({title: 'UNBEATEN: 50-0 - My Career', text: txt, url: url}).catch(()=>{});
-  } else {
-    const fullText = txt + '\n' + url;
-    navigator.clipboard.writeText(fullText).then(()=>{ alert('Career stats copied to clipboard! Paste to share.'); }).catch(()=>{ prompt('Copy this to share:', fullText); });
-  }
+  shareCardWithText(txt,'UNBEATEN: 50-0 - My Career');
 }
 function openAccountSettings(){ updateAuthUI(); screen('account-settings-screen'); }
 function backToMenu(fromHof=false){ if(!fromHof&&S.career&&S.player&&S.player.Name&&S.career.currentFight<=50) saveCareer(); refreshMenu(); screen('menu-screen'); }
@@ -7305,6 +7702,7 @@ function showScreen(targetId){
   if(targetId==='menu-screen'){
     target.scrollTop=0;
     loadGlobalStats();
+    updateWalletDisplays();
   }
   return true;
 }
@@ -7318,6 +7716,8 @@ function openMenuTarget(targetId, button){
   const intent=button?.getAttribute('data-menu-intent')||'';
   if(intent==='delete-save'){ deleteSave(); return true; }
   if(TEMP_DISABLED_BUILD_YOUR_CARD_SCREENS.has(targetId)){ showScreen('menu-screen'); return true; }
+  if(targetId==='card-editor-screen'){ openCardEditor('menu-screen'); return true; }
+  if(targetId==='card-store-screen'){ openCardStore('menu-screen'); return true; }
   if(targetId==='hub-screen'){ continueCareer(); return true; }
   if(targetId==='draft-screen'){ startNewCareer(); return true; }
   if(targetId==='store-screen'){ openStore('menu-screen'); return true; }
