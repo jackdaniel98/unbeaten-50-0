@@ -1392,7 +1392,7 @@ body.final-card-open{overflow:hidden}
 .card-store-bucket-art img{width:100%;height:100%;object-fit:contain}.card-store-bucket-art.background img{object-fit:cover}
 .card-store-bucket>strong,.card-store-bucket>.card-store-bucket-count{display:block;overflow-wrap:anywhere}.card-store-bucket>strong{font-size:.76rem;text-transform:uppercase}.card-store-bucket>.card-store-bucket-count{margin-top:3px;color:var(--muted);font-size:.58rem;font-weight:900;text-transform:uppercase}
 .card-store-browser-head{display:flex;align-items:center;gap:9px;margin:0 0 10px}.card-store-browser-head strong{font-size:.8rem;text-transform:uppercase}.card-store-browser-head .icon-btn{width:36px;height:36px;flex:0 0 36px}
-.card-rarity-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin-bottom:12px}
+.card-rarity-rail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-bottom:12px}
 .card-rarity-key{min-height:34px;padding:6px 2px;border:1px solid var(--line);border-radius:6px;background:#090a0d;text-align:center;font-size:.52rem;font-weight:1000;text-transform:uppercase;overflow:hidden;cursor:pointer}
 .card-rarity-key.active{border-color:currentColor;background:#17140a}.card-rarity-key.rarity-all{color:#fff}
 .card-store-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
@@ -1401,8 +1401,8 @@ body.final-card-open{overflow:hidden}
 .card-store-thumb img{width:100%;height:100%;object-fit:contain}.card-store-thumb.background img{object-fit:cover}
 .card-store-meta{min-width:0}.card-store-meta strong{display:block;color:#fff;font-size:.8rem;overflow-wrap:anywhere}.card-store-meta .sub{margin-top:3px;color:var(--muted);font-size:.6rem;text-transform:uppercase}.card-store-meta .status{display:inline-block;margin-top:7px;color:#79e3ad;font-size:.62rem;font-weight:1000;text-transform:uppercase}
 .card-store-meta .price{display:block;margin-top:6px;color:#f6d768;font-size:.68rem;font-weight:1000}.card-store-meta .btn{margin:8px 0 0;padding:7px 8px;font-size:.62rem}
-.rarity-common{box-shadow:0 0 16px rgba(156,163,175,.28)}.rarity-uncommon{box-shadow:0 0 17px rgba(74,222,128,.32)}.rarity-rare{box-shadow:0 0 18px rgba(59,130,246,.38)}.rarity-luxury{box-shadow:0 0 20px rgba(168,85,247,.42)}.rarity-premium{box-shadow:0 0 26px rgba(250,204,21,.62);border-color:#d4af37}
-.card-rarity-key.rarity-common{color:#cbd5e1}.card-rarity-key.rarity-uncommon{color:#86efac}.card-rarity-key.rarity-rare{color:#60a5fa}.card-rarity-key.rarity-luxury{color:#c084fc}.card-rarity-key.rarity-premium{color:#fde68a}
+.rarity-common{box-shadow:0 0 16px rgba(156,163,175,.28)}.rarity-uncommon{box-shadow:0 0 17px rgba(74,222,128,.32)}.rarity-rare{box-shadow:0 0 18px rgba(59,130,246,.38)}.rarity-luxury{box-shadow:0 0 20px rgba(168,85,247,.42)}.rarity-legendary{box-shadow:0 0 24px rgba(249,115,22,.5);border-color:#f97316}.rarity-premium{box-shadow:0 0 26px rgba(250,204,21,.62);border-color:#d4af37}
+.card-rarity-key.rarity-common{color:#cbd5e1}.card-rarity-key.rarity-uncommon{color:#86efac}.card-rarity-key.rarity-rare{color:#60a5fa}.card-rarity-key.rarity-luxury{color:#c084fc}.card-rarity-key.rarity-legendary{color:#fb923c}.card-rarity-key.rarity-premium{color:#fde68a}
 .card-coming-soon{padding:14px 10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;color:var(--text-dim);font-size:.72rem;font-weight:900;text-transform:uppercase}
 .card-premium-later{margin:10px 0 12px;padding:10px;border:1px solid rgba(212,175,55,.45);border-radius:7px;background:#120f07;color:#f6d768;text-align:center;font-size:.68rem;font-weight:1000;text-transform:uppercase;box-shadow:0 0 22px rgba(212,175,55,.2)}
 @media(max-width:680px){
@@ -1573,6 +1573,7 @@ body.final-card-open{overflow:hidden}
       <button type="button" class="card-rarity-key rarity-uncommon" data-card-rarity="uncommon" onclick="selectCardStoreRarity('uncommon')">Uncommon</button>
       <button type="button" class="card-rarity-key rarity-rare" data-card-rarity="rare" onclick="selectCardStoreRarity('rare')">Rare</button>
       <button type="button" class="card-rarity-key rarity-luxury" data-card-rarity="luxury" onclick="selectCardStoreRarity('luxury')">Luxury</button>
+      <button type="button" class="card-rarity-key rarity-legendary" data-card-rarity="legendary" onclick="selectCardStoreRarity('legendary')">Legendary</button>
       <button type="button" class="card-rarity-key rarity-premium" data-card-rarity="premium" onclick="selectCardStoreRarity('premium')">Premium</button>
     </div>
     <div id="card-store-items" class="card-store-grid"></div>
@@ -5410,7 +5411,7 @@ const DEFAULT_EQUIPPED_COSMETICS = {robe:'robe_default',gloves:'gloves_default',
 const CARD_CATEGORIES = ['character','aura','background','frame'];
 const CARD_STORE_CATEGORIES = ['aura','background','character','frame'];
 const CARD_CATEGORY_LABELS = {character:'Skins',aura:'Aura',background:'Backgrounds',frame:'Frames'};
-const CARD_RARITY_MINIMUM_PRICES = {common:300,uncommon:2000,rare:8000,luxury:10000};
+const CARD_RARITY_MINIMUM_PRICES = {common:300,uncommon:2000,rare:8000,luxury:10000,legendary:5000000};
 const CARD_ITEM_DEFINITIONS = {
   character_standard_contender:{id:'character_standard_contender',category:'character',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/character_standard_contender.png'},
   character_dragon_man:{id:'character_dragon_man',category:'character',name:'Dragon Man',rarity:'rare',price:8000,asset:'assets/card/character_dragon_man.png'},
@@ -5422,6 +5423,7 @@ const CARD_ITEM_DEFINITIONS = {
   character_basic_barry:{id:'character_basic_barry',category:'character',name:'Basic Barry',rarity:'uncommon',price:2000,asset:'assets/card/character_basic_barry.png'},
   aura_corner_smoke:{id:'aura_corner_smoke',category:'aura',name:'Corner Smoke',rarity:'common',price:0,base:true,asset:'assets/card/aura_corner_smoke.png'},
   background_standard_fight_night:{id:'background_standard_fight_night',category:'background',name:'Standard Fight Night',rarity:'common',price:0,base:true,asset:'assets/card/background_standard_fight_night.png'},
+  background_underworld_arena:{id:'background_underworld_arena',category:'background',name:'Underworld Arena',rarity:'legendary',price:5000000,asset:'assets/card/background_underworld_arena.png'},
   frame_standard_contender:{id:'frame_standard_contender',category:'frame',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/frame_standard_contender.png'}
 };
 const DEFAULT_OWNED_CARD_ITEMS = Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.base).map(item=>item.id);
@@ -6298,7 +6300,7 @@ function showCardStoreBuckets(){
   renderCardStore();
 }
 function selectCardStoreRarity(rarity){
-  if(!['all','common','uncommon','rare','luxury','premium'].includes(rarity)) return;
+  if(!['all','common','uncommon','rare','luxury','legendary','premium'].includes(rarity)) return;
   activeCardStoreRarity=rarity;
   renderCardStore();
 }
