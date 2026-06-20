@@ -1369,6 +1369,9 @@ body.final-card-open{overflow:hidden}
 .modular-card-stat strong{font-size:.54rem;line-height:1;color:#fff}.modular-card-stat span{margin-top:2px;color:#d6b56f;font-size:.34rem;font-weight:1000;text-transform:uppercase;letter-spacing:0}
 .card-editor-layout{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
 .card-editor-layout>.modular-card,.card-editor-layout>#card-editor-preview .modular-card{width:min(100%,386px)}
+.card-identity-editor{padding:0 0 12px;border-bottom:1px solid var(--line)}
+.card-identity-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.card-identity-editor .btn{margin:0}
 .card-editor-controls{min-width:0;border-top:1px solid var(--line)}
 .card-editor-group{padding:12px 0;border-bottom:1px solid var(--line)}
 .card-editor-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
@@ -1409,7 +1412,7 @@ body.final-card-open{overflow:hidden}
   .modular-card-ovr strong{font-size:1.65rem}.modular-card-name strong{font-size:.82rem}.modular-card-stat strong{font-size:.46rem}.modular-card-stat span{font-size:.29rem}
 }
 @media(max-width:350px){
-  .play-money-hud{font-size:.58rem}.card-owned-options{grid-template-columns:1fr}.card-rarity-key{font-size:.46rem}
+  .play-money-hud{font-size:.58rem}.card-identity-fields,.card-owned-options{grid-template-columns:1fr}.card-rarity-key{font-size:.46rem}
   .card-store-top{grid-template-columns:110px minmax(0,1fr)}.card-store-top .modular-card{width:110px}
 }
 </style>
@@ -1532,6 +1535,13 @@ body.final-card-open{overflow:hidden}
   <div class="card-editor-layout">
     <div id="card-editor-preview"></div>
     <div>
+      <div class="card-identity-editor">
+        <div class="card-identity-fields">
+          <div class="field"><label for="card-editor-name">Fighter Name</label><input id="card-editor-name" type="text" maxlength="24" placeholder="Custom Contender" oninput="previewCardIdentity()"></div>
+          <div class="field"><label for="card-editor-nickname">Nickname</label><input id="card-editor-nickname" type="text" maxlength="20" placeholder="The Contender" oninput="previewCardIdentity()"></div>
+        </div>
+        <button type="button" class="btn blue" onclick="saveCardIdentity()">Update Card Text</button>
+      </div>
       <div id="card-editor-controls" class="card-editor-controls"></div>
       <div class="card-editor-actions">
         <button type="button" class="btn blue" onclick="shareEditedCard()">Share Card</button>
@@ -5400,15 +5410,16 @@ const DEFAULT_EQUIPPED_COSMETICS = {robe:'robe_default',gloves:'gloves_default',
 const CARD_CATEGORIES = ['character','aura','background','frame'];
 const CARD_STORE_CATEGORIES = ['aura','background','character','frame'];
 const CARD_CATEGORY_LABELS = {character:'Skins',aura:'Aura',background:'Backgrounds',frame:'Frames'};
+const CARD_RARITY_MINIMUM_PRICES = {common:300,uncommon:2000,rare:8000,luxury:10000};
 const CARD_ITEM_DEFINITIONS = {
   character_standard_contender:{id:'character_standard_contender',category:'character',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/character_standard_contender.png'},
-  character_dragon_man:{id:'character_dragon_man',category:'character',name:'Dragon Man',rarity:'rare',price:2,asset:'assets/card/character_dragon_man.png'},
-  character_mr_bliss:{id:'character_mr_bliss',category:'character',name:'Mr Bliss',rarity:'luxury',price:3,asset:'assets/card/character_mr_bliss.png'},
-  character_mr_showtime:{id:'character_mr_showtime',category:'character',name:'Mr Showtime',rarity:'luxury',price:3,asset:'assets/card/character_mr_showtime.png'},
-  character_nordic_warrior:{id:'character_nordic_warrior',category:'character',name:'Nordic Warrior',rarity:'rare',price:2,asset:'assets/card/character_nordic_warrior.png'},
-  character_roxanne:{id:'character_roxanne',category:'character',name:'Roxanne',rarity:'luxury',price:3,asset:'assets/card/character_roxanne.png'},
-  character_tyroid:{id:'character_tyroid',category:'character',name:'Tyroid',rarity:'rare',price:2,asset:'assets/card/character_tyroid.png'},
-  character_basic_barry:{id:'character_basic_barry',category:'character',name:'Basic Barry',rarity:'uncommon',price:1,asset:'assets/card/character_basic_barry.png'},
+  character_dragon_man:{id:'character_dragon_man',category:'character',name:'Dragon Man',rarity:'rare',price:8000,asset:'assets/card/character_dragon_man.png'},
+  character_mr_bliss:{id:'character_mr_bliss',category:'character',name:'Mr Bliss',rarity:'luxury',price:10000,asset:'assets/card/character_mr_bliss.png'},
+  character_mr_showtime:{id:'character_mr_showtime',category:'character',name:'Mr Showtime',rarity:'luxury',price:10000,asset:'assets/card/character_mr_showtime.png'},
+  character_nordic_warrior:{id:'character_nordic_warrior',category:'character',name:'Nordic Warrior',rarity:'rare',price:8000,asset:'assets/card/character_nordic_warrior.png'},
+  character_roxanne:{id:'character_roxanne',category:'character',name:'Roxanne',rarity:'luxury',price:10000,asset:'assets/card/character_roxanne.png'},
+  character_tyroid:{id:'character_tyroid',category:'character',name:'Tyroid',rarity:'rare',price:8000,asset:'assets/card/character_tyroid.png'},
+  character_basic_barry:{id:'character_basic_barry',category:'character',name:'Basic Barry',rarity:'uncommon',price:2000,asset:'assets/card/character_basic_barry.png'},
   aura_corner_smoke:{id:'aura_corner_smoke',category:'aura',name:'Corner Smoke',rarity:'common',price:0,base:true,asset:'assets/card/aura_corner_smoke.png'},
   background_standard_fight_night:{id:'background_standard_fight_night',category:'background',name:'Standard Fight Night',rarity:'common',price:0,base:true,asset:'assets/card/background_standard_fight_night.png'},
   frame_standard_contender:{id:'frame_standard_contender',category:'frame',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/frame_standard_contender.png'}
@@ -5446,6 +5457,10 @@ function createEquippedCosmetics(existing={}){
 }
 function safeMoney(value){ return Number.isFinite(value)?Math.max(0,Math.floor(value)):0; }
 function getCardItem(id){ return CARD_ITEM_DEFINITIONS[id]||null; }
+function cardItemPrice(item){
+  if(!item||item.base||item.rarity==='premium') return 0;
+  return Math.max(safeMoney(item.price),safeMoney(CARD_RARITY_MINIMUM_PRICES[item.rarity]));
+}
 function createOwnedCardItems(existing=[]){
   const valid=(Array.isArray(existing)?existing:[]).filter(id=>getCardItem(id));
   return Array.from(new Set([...DEFAULT_OWNED_CARD_ITEMS,...valid]));
@@ -5598,6 +5613,8 @@ function ensurePlayerFoundation(player){
   player.lifetimeEarnings=safeMoney(player.lifetimeEarnings);
   player.walletBalance=safeMoney(player.walletBalance);
   player.playMoney=safeMoney(player.playMoney);
+  player.cardName=cleanName(player.cardName||'');
+  player.cardNickname=cleanName(player.cardNickname||'');
   player.ownedCardItems=createOwnedCardItems(player.ownedCardItems);
   player.equippedCardItems=createEquippedCardItems(player.equippedCardItems,player.ownedCardItems);
   player.profileSetupComplete=!!player.profileSetupComplete||!!fullName;
@@ -5642,6 +5659,8 @@ function createProfileFoundation(existing={}){
     lifetimeEarnings:safeMoney(existing.lifetimeEarnings),
     walletBalance:safeMoney(existing.walletBalance),
     playMoney:safeMoney(existing.playMoney),
+    cardName:cleanName(existing.cardName||''),
+    cardNickname:cleanName(existing.cardNickname||''),
     ownedCardItems,
     equippedCardItems:createEquippedCardItems(existing.equippedCardItems,ownedCardItems),
     profileSetupComplete:!!existing.profileSetupComplete
@@ -5675,6 +5694,8 @@ function applyProfileFoundation(player, profile=loadProfileFoundation()){
   player.lifetimeEarnings=safeMoney(profile.lifetimeEarnings);
   player.walletBalance=safeMoney(profile.walletBalance);
   player.playMoney=safeMoney(profile.playMoney);
+  player.cardName=profile.cardName;
+  player.cardNickname=profile.cardNickname;
   player.ownedCardItems=createOwnedCardItems(profile.ownedCardItems);
   player.equippedCardItems=createEquippedCardItems(profile.equippedCardItems,player.ownedCardItems);
   player.profileModelVersion=PROFILE_MODEL_VERSION;
@@ -5698,6 +5719,8 @@ function saveProfileFromPlayer(player){
     lifetimeEarnings:player.lifetimeEarnings,
     walletBalance:player.walletBalance,
     playMoney:player.playMoney,
+    cardName:player.cardName,
+    cardNickname:player.cardNickname,
     ownedCardItems:player.ownedCardItems,
     equippedCardItems:player.equippedCardItems,
     profileSetupComplete:player.profileSetupComplete
@@ -6123,8 +6146,8 @@ function cardDisplayData(profile=activeCardProfile()){
   const save=activeCardSave(), player=save?.player||S.player||null, career=save?.career||S.career||null;
   const record=career?(safeMoney(career.wins)+'-'+safeMoney(career.losses)+(safeMoney(career.draws)>0?'-'+safeMoney(career.draws):'')):'0-0';
   return {
-    name:cleanName(player?.Name||boxerDisplayName(profile)||'Custom Contender'),
-    nickname:cleanName(profile.nickname||player?.Nickname||'The Contender'),
+    name:cleanName(profile.cardName||player?.Name||boxerDisplayName(profile)||'Custom Contender'),
+    nickname:cleanName(profile.cardNickname||profile.nickname||player?.Nickname||'The Contender'),
     ovr:cardOverall(player),
     stats:[
       {label:'Record',value:record},
@@ -6182,9 +6205,30 @@ function equipCardItem(itemId){
   showToast('Card Updated',item.name+' equipped.');
   return true;
 }
+function previewCardIdentity(){
+  const preview=$('card-editor-preview');
+  if(!preview) return;
+  const profile=activeCardProfile(), name=cleanName($('card-editor-name')?.value||''), nickname=cleanName($('card-editor-nickname')?.value||'');
+  preview.innerHTML=modularCardMarkup({...profile,cardName:name||profile.cardName,cardNickname:nickname||profile.cardNickname});
+}
+function saveCardIdentity(){
+  const name=cleanName($('card-editor-name')?.value||''), nickname=cleanName($('card-editor-nickname')?.value||'');
+  const nameCheck=validateIdentityText(name,'Fighter name',2,24,true), nicknameCheck=validateIdentityText(nickname,'Nickname',2,20,true);
+  if(!nameCheck.ok){ showToast('Card Text',nameCheck.msg); return false; }
+  if(!nicknameCheck.ok){ showToast('Card Text',nicknameCheck.msg); return false; }
+  mutateCardProfile(profile=>{ profile.cardName=name; profile.cardNickname=nickname; });
+  if(S.player&&S.career) saveCareer();
+  renderCardEditor();
+  renderCardStore();
+  showToast('Card Updated',name+' / '+nickname);
+  return true;
+}
 function renderCardEditor(){
   const profile=activeCardProfile(), owned=createOwnedCardItems(profile.ownedCardItems), equipped=createEquippedCardItems(profile.equippedCardItems,owned);
   if($('card-editor-preview')) $('card-editor-preview').innerHTML=modularCardMarkup(profile);
+  const display=cardDisplayData(profile);
+  if($('card-editor-name')) $('card-editor-name').value=profile.cardName||display.name;
+  if($('card-editor-nickname')) $('card-editor-nickname').value=profile.cardNickname||display.nickname;
   const controls=$('card-editor-controls');
   if(controls){
     controls.innerHTML=CARD_CATEGORIES.map(category=>{
@@ -6208,7 +6252,7 @@ function cardStoreItemState(item,profile){
   if(equipped[item.category]===item.id) return 'equipped';
   if(owned.includes(item.id)) return 'owned';
   if(item.rarity==='premium') return 'premium';
-  return safeMoney(profile.playMoney)>=safeMoney(item.price)?'affordable':'unaffordable';
+  return safeMoney(profile.playMoney)>=cardItemPrice(item)?'affordable':'unaffordable';
 }
 function cardStoreThumb(item){ return '<div class="card-store-thumb '+item.category+'"><img loading="lazy" src="'+item.asset+'" alt=""></div>'; }
 function renderCardStore(){
@@ -6234,7 +6278,7 @@ function renderCardStore(){
     list.innerHTML=items.map(item=>{
       const state=cardStoreItemState(item,profile), status=state==='equipped'?'Equipped':state==='owned'?'Owned':state==='premium'?'Coming Later':state==='affordable'?'Available':'Not Enough Play Money';
       const action=state==='owned'?'<button type="button" class="btn blue" onclick="equipCardItem(\''+item.id+'\')">Equip</button>':state==='affordable'?'<button type="button" class="btn gold" onclick="purchaseCardItem(\''+item.id+'\')">Buy</button>':'';
-      const price=item.base?'Free':item.rarity==='premium'?'Premium':safeMoney(item.price).toLocaleString()+' Play Money';
+      const price=item.base?'Free':item.rarity==='premium'?'Premium':cardItemPrice(item).toLocaleString()+' Play Money';
       return '<article class="card-store-item rarity-'+item.rarity+'">'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+htmlEscape(item.rarity)+'</div><span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
     }).join('');
     if($('card-store-coming-soon')) $('card-store-coming-soon').innerText=items.length?'More '+CARD_CATEGORY_LABELS[activeCardStoreCategory]+' coming soon':'No '+(activeCardStoreRarity==='all'?'':activeCardStoreRarity+' ')+CARD_CATEGORY_LABELS[activeCardStoreCategory]+' yet';
@@ -6263,9 +6307,10 @@ function purchaseCardItem(itemId){
   if(!item||item.base||item.rarity==='premium') return;
   const profile=activeCardProfile();
   if(cardStoreItemState(item,profile)!=='affordable') return;
-  if(!confirm('Buy '+item.name+' for '+safeMoney(item.price).toLocaleString()+' Play Money?')) return;
+  const price=cardItemPrice(item);
+  if(!confirm('Buy '+item.name+' for '+price.toLocaleString()+' Play Money?')) return;
   mutateCardProfile(target=>{
-    target.playMoney=safeMoney(target.playMoney)-safeMoney(item.price);
+    target.playMoney=safeMoney(target.playMoney)-price;
     target.ownedCardItems=createOwnedCardItems([...(target.ownedCardItems||[]),item.id]);
     target.equippedCardItems=createEquippedCardItems({...target.equippedCardItems,[item.category]:item.id},target.ownedCardItems);
   });
@@ -7070,6 +7115,8 @@ function payloadFingerprint(data){
   const retired=data?.retiredCareers||[];
   return JSON.stringify({
     username:p.username||'',
+    cardName:p.cardName||'',
+    cardNickname:p.cardNickname||'',
     wallet:safeMoney(p.walletBalance),
     lifetime:safeMoney(p.lifetimeEarnings),
     playMoney:safeMoney(p.playMoney),
