@@ -1382,11 +1382,16 @@ body.final-card-open{overflow:hidden}
 .card-store-top{display:grid;grid-template-columns:210px minmax(0,1fr);gap:16px;align-items:center;margin-bottom:14px}
 .card-store-top .modular-card{width:210px}
 .card-store-summary{min-width:0}.card-store-summary strong{display:block;color:#fff;font-size:1.05rem}.card-store-summary span{display:block;margin-top:4px;color:var(--text-dim);font-size:.7rem}
-.card-store-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 10px}
-.card-store-tab{min-height:42px;padding:7px 4px;border:1px solid var(--line-2);border-radius:7px;background:#0c0d11;color:var(--text-dim);font-size:.66rem;font-weight:1000;text-transform:uppercase;cursor:pointer}
-.card-store-tab.active{border-color:var(--gold);background:#17140a;color:#fff}
-.card-rarity-rail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:12px}
-.card-rarity-key{padding:6px 2px;border:1px solid var(--line);border-radius:6px;background:#090a0d;text-align:center;font-size:.52rem;font-weight:1000;text-transform:uppercase;overflow:hidden}
+.card-store-buckets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.card-store-bucket{min-width:0;padding:10px;border:1px solid var(--line-2);border-radius:8px;background:#0c0d11;color:#fff;text-align:left;cursor:pointer;overflow:hidden}
+.card-store-bucket:hover,.card-store-bucket:focus-visible{border-color:var(--gold);background:#17140a}
+.card-store-bucket-art{height:112px;display:flex;align-items:center;justify-content:center;margin-bottom:9px;overflow:hidden;border:1px solid var(--line);border-radius:6px;background:#050608}
+.card-store-bucket-art img{width:100%;height:100%;object-fit:contain}.card-store-bucket-art.background img{object-fit:cover}
+.card-store-bucket>strong,.card-store-bucket>.card-store-bucket-count{display:block;overflow-wrap:anywhere}.card-store-bucket>strong{font-size:.76rem;text-transform:uppercase}.card-store-bucket>.card-store-bucket-count{margin-top:3px;color:var(--muted);font-size:.58rem;font-weight:900;text-transform:uppercase}
+.card-store-browser-head{display:flex;align-items:center;gap:9px;margin:0 0 10px}.card-store-browser-head strong{font-size:.8rem;text-transform:uppercase}.card-store-browser-head .icon-btn{width:36px;height:36px;flex:0 0 36px}
+.card-rarity-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin-bottom:12px}
+.card-rarity-key{min-height:34px;padding:6px 2px;border:1px solid var(--line);border-radius:6px;background:#090a0d;text-align:center;font-size:.52rem;font-weight:1000;text-transform:uppercase;overflow:hidden;cursor:pointer}
+.card-rarity-key.active{border-color:currentColor;background:#17140a}.card-rarity-key.rarity-all{color:#fff}
 .card-store-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
 .card-store-item{position:relative;display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px;min-height:110px;padding:10px;border:1px solid var(--line-2);border-radius:8px;background:#0c0d11;overflow:hidden}
 .card-store-thumb{width:82px;height:90px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#050608;border:1px solid var(--line);border-radius:6px}
@@ -1400,7 +1405,7 @@ body.final-card-open{overflow:hidden}
 @media(max-width:680px){
   .card-editor-layout{grid-template-columns:1fr}.card-editor-layout>.modular-card{width:min(100%,330px)}
   .card-store-top{grid-template-columns:140px minmax(0,1fr)}.card-store-top .modular-card{width:140px}
-  .card-store-grid{grid-template-columns:1fr}.card-store-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .card-store-grid{grid-template-columns:1fr}.card-store-buckets{grid-template-columns:repeat(2,minmax(0,1fr))}.card-rarity-rail{grid-template-columns:repeat(3,minmax(0,1fr))}
   .modular-card-ovr strong{font-size:1.65rem}.modular-card-name strong{font-size:.82rem}.modular-card-stat strong{font-size:.46rem}.modular-card-stat span{font-size:.29rem}
 }
 @media(max-width:350px){
@@ -1544,24 +1549,26 @@ body.final-card-open{overflow:hidden}
   </div>
   <div class="card-store-top">
     <div id="card-store-preview"></div>
-    <div class="card-store-summary"><strong id="card-store-category-title">Characters</strong><span id="card-store-category-count">1 owned</span></div>
+    <div class="card-store-summary"><strong id="card-store-category-title">Art Shop</strong><span id="card-store-category-count">Choose a collection</span></div>
   </div>
-  <div class="card-store-tabs" role="tablist" aria-label="Card store categories">
-    <button type="button" class="card-store-tab active" data-card-category="character" onclick="selectCardStoreCategory('character')">Character</button>
-    <button type="button" class="card-store-tab" data-card-category="aura" onclick="selectCardStoreCategory('aura')">Aura</button>
-    <button type="button" class="card-store-tab" data-card-category="background" onclick="selectCardStoreCategory('background')">Background</button>
-    <button type="button" class="card-store-tab" data-card-category="frame" onclick="selectCardStoreCategory('frame')">Frame</button>
+  <div id="card-store-buckets" class="card-store-buckets"></div>
+  <div id="card-store-browser" class="hidden">
+    <div class="card-store-browser-head">
+      <button type="button" class="icon-btn" onclick="showCardStoreBuckets()" aria-label="Back to store collections" title="Back to store collections">&#8592;</button>
+      <strong id="card-store-browser-title">Skins</strong>
+    </div>
+    <div class="card-rarity-rail" role="tablist" aria-label="Filter items by rarity">
+      <button type="button" class="card-rarity-key rarity-all active" data-card-rarity="all" onclick="selectCardStoreRarity('all')">All</button>
+      <button type="button" class="card-rarity-key rarity-common" data-card-rarity="common" onclick="selectCardStoreRarity('common')">Common</button>
+      <button type="button" class="card-rarity-key rarity-uncommon" data-card-rarity="uncommon" onclick="selectCardStoreRarity('uncommon')">Uncommon</button>
+      <button type="button" class="card-rarity-key rarity-rare" data-card-rarity="rare" onclick="selectCardStoreRarity('rare')">Rare</button>
+      <button type="button" class="card-rarity-key rarity-luxury" data-card-rarity="luxury" onclick="selectCardStoreRarity('luxury')">Luxury</button>
+      <button type="button" class="card-rarity-key rarity-premium" data-card-rarity="premium" onclick="selectCardStoreRarity('premium')">Premium</button>
+    </div>
+    <div id="card-store-items" class="card-store-grid"></div>
+    <div id="card-store-coming-soon" class="card-coming-soon">New items coming soon</div>
+    <div id="card-store-premium-later" class="card-premium-later">Premium items coming later</div>
   </div>
-  <div class="card-rarity-rail" aria-label="Item rarities">
-    <div class="card-rarity-key rarity-common">Common</div>
-    <div class="card-rarity-key rarity-uncommon">Uncommon</div>
-    <div class="card-rarity-key rarity-rare">Rare</div>
-    <div class="card-rarity-key rarity-luxury">Luxury</div>
-    <div class="card-rarity-key rarity-premium">Premium</div>
-  </div>
-  <div id="card-store-items" class="card-store-grid"></div>
-  <div class="card-coming-soon">New items coming soon</div>
-  <div class="card-premium-later">Premium items coming later</div>
   <button type="button" class="btn gold" onclick="closeCardStore()">Back</button>
 </section>
 
@@ -5391,7 +5398,8 @@ const COSMETIC_DEFINITIONS = {
 const DEFAULT_UNLOCKED_COSMETICS = ['robe_default','gloves_default','shorts_default','boots_default','tattoo_default','aura_default','entrance_default','badge_default'];
 const DEFAULT_EQUIPPED_COSMETICS = {robe:'robe_default',gloves:'gloves_default',shorts:'shorts_default',boots:'boots_default',tattoo:'tattoo_default',aura:'aura_default',entrance:'entrance_default',badge:'badge_default'};
 const CARD_CATEGORIES = ['character','aura','background','frame'];
-const CARD_CATEGORY_LABELS = {character:'Characters',aura:'Auras',background:'Backgrounds',frame:'Frames'};
+const CARD_STORE_CATEGORIES = ['aura','background','character','frame'];
+const CARD_CATEGORY_LABELS = {character:'Skins',aura:'Aura',background:'Backgrounds',frame:'Frames'};
 const CARD_ITEM_DEFINITIONS = {
   character_standard_contender:{id:'character_standard_contender',category:'character',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/character_standard_contender.png'},
   character_dragon_man:{id:'character_dragon_man',category:'character',name:'Dragon Man',rarity:'rare',price:2,asset:'assets/card/character_dragon_man.png'},
@@ -6090,7 +6098,8 @@ function updateWalletDisplays(){
 
 let cardEditorReturnScreen='menu-screen';
 let cardStoreReturnScreen='menu-screen';
-let activeCardStoreCategory='character';
+let activeCardStoreCategory=null;
+let activeCardStoreRarity='all';
 function activeCardProfile(){
   if(S.player){ ensurePlayerFoundation(S.player); return createProfileFoundation(S.player); }
   return loadProfileFoundation();
@@ -6203,25 +6212,50 @@ function cardStoreItemState(item,profile){
 }
 function cardStoreThumb(item){ return '<div class="card-store-thumb '+item.category+'"><img loading="lazy" src="'+item.asset+'" alt=""></div>'; }
 function renderCardStore(){
-  const profile=activeCardProfile(), items=Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.category===activeCardStoreCategory), owned=createOwnedCardItems(profile.ownedCardItems);
+  const profile=activeCardProfile(), allItems=Object.values(CARD_ITEM_DEFINITIONS), owned=createOwnedCardItems(profile.ownedCardItems);
   if($('card-store-preview')) $('card-store-preview').innerHTML=modularCardMarkup(profile);
-  if($('card-store-category-title')) $('card-store-category-title').innerText=CARD_CATEGORY_LABELS[activeCardStoreCategory];
-  if($('card-store-category-count')) $('card-store-category-count').innerText=items.filter(item=>owned.includes(item.id)).length+' owned';
-  document.querySelectorAll('[data-card-category]').forEach(button=>button.classList.toggle('active',button.dataset.cardCategory===activeCardStoreCategory));
+  const buckets=$('card-store-buckets'), browser=$('card-store-browser'), browsing=!!activeCardStoreCategory;
+  if(buckets){
+    buckets.classList.toggle('hidden',browsing);
+    buckets.innerHTML=CARD_STORE_CATEGORIES.map(category=>{
+      const categoryItems=allItems.filter(item=>item.category===category), representative=categoryItems.find(item=>item.base)||categoryItems[0], ownedCount=categoryItems.filter(item=>owned.includes(item.id)).length;
+      const art=representative?'<span class="card-store-bucket-art '+category+'"><img loading="lazy" src="'+representative.asset+'" alt=""></span>':'';
+      return '<button type="button" class="card-store-bucket" onclick="selectCardStoreCategory(\''+category+'\')">'+art+'<strong>'+CARD_CATEGORY_LABELS[category]+'</strong><span class="card-store-bucket-count">'+ownedCount+' owned &bull; '+categoryItems.length+' items</span></button>';
+    }).join('');
+  }
+  if(browser) browser.classList.toggle('hidden',!browsing);
+  if($('card-store-category-title')) $('card-store-category-title').innerText=browsing?CARD_CATEGORY_LABELS[activeCardStoreCategory]:'Art Shop';
+  if($('card-store-category-count')) $('card-store-category-count').innerText=browsing?allItems.filter(item=>item.category===activeCardStoreCategory&&owned.includes(item.id)).length+' owned / '+allItems.filter(item=>item.category===activeCardStoreCategory).length+' items':owned.length+' owned / '+allItems.length+' items';
+  if($('card-store-browser-title')&&browsing) $('card-store-browser-title').innerText=CARD_CATEGORY_LABELS[activeCardStoreCategory];
+  document.querySelectorAll('[data-card-rarity]').forEach(button=>button.classList.toggle('active',button.dataset.cardRarity===activeCardStoreRarity));
   const list=$('card-store-items');
-  if(list){
+  if(list&&browsing){
+    const categoryItems=allItems.filter(item=>item.category===activeCardStoreCategory), items=categoryItems.filter(item=>activeCardStoreRarity==='all'||item.rarity===activeCardStoreRarity);
     list.innerHTML=items.map(item=>{
       const state=cardStoreItemState(item,profile), status=state==='equipped'?'Equipped':state==='owned'?'Owned':state==='premium'?'Coming Later':state==='affordable'?'Available':'Not Enough Play Money';
       const action=state==='owned'?'<button type="button" class="btn blue" onclick="equipCardItem(\''+item.id+'\')">Equip</button>':state==='affordable'?'<button type="button" class="btn gold" onclick="purchaseCardItem(\''+item.id+'\')">Buy</button>':'';
       const price=item.base?'Free':item.rarity==='premium'?'Premium':safeMoney(item.price).toLocaleString()+' Play Money';
       return '<article class="card-store-item rarity-'+item.rarity+'">'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+htmlEscape(item.rarity)+'</div><span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
     }).join('');
+    if($('card-store-coming-soon')) $('card-store-coming-soon').innerText=items.length?'More '+CARD_CATEGORY_LABELS[activeCardStoreCategory]+' coming soon':'No '+(activeCardStoreRarity==='all'?'':activeCardStoreRarity+' ')+CARD_CATEGORY_LABELS[activeCardStoreCategory]+' yet';
+    if($('card-store-premium-later')) $('card-store-premium-later').classList.toggle('hidden',activeCardStoreRarity!=='all'&&activeCardStoreRarity!=='premium');
   }
   updateWalletDisplays();
 }
 function selectCardStoreCategory(category){
   if(!CARD_CATEGORIES.includes(category)) return;
   activeCardStoreCategory=category;
+  activeCardStoreRarity='all';
+  renderCardStore();
+}
+function showCardStoreBuckets(){
+  activeCardStoreCategory=null;
+  activeCardStoreRarity='all';
+  renderCardStore();
+}
+function selectCardStoreRarity(rarity){
+  if(!['all','common','uncommon','rare','luxury','premium'].includes(rarity)) return;
+  activeCardStoreRarity=rarity;
   renderCardStore();
 }
 function purchaseCardItem(itemId){
@@ -6241,6 +6275,8 @@ function purchaseCardItem(itemId){
 }
 function openCardStore(returnScreen='menu-screen'){
   cardStoreReturnScreen=returnScreen;
+  activeCardStoreCategory=null;
+  activeCardStoreRarity='all';
   renderCardStore();
   screen('card-store-screen');
 }
