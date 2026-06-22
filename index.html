@@ -5637,11 +5637,16 @@ function migrateCareerSave(data){
     if(!Number.isFinite(data.career.draftRerolls)) data.career.draftRerolls=STANDARD_MODE.rerolls;
   }
   if(data.player){
+    const profile=loadProfileFoundation();
+    const mergedOwnedCards=createOwnedCardItems([...(profile.ownedCardItems||[]),...(data.player.ownedCardItems||[])]);
+    const mergedCosmetics=createCosmeticUnlocks([...(profile.unlockedCosmetics||[]),...(data.player.unlockedCosmetics||[])]);
     const needsFoundation=!data.player.playerId||!data.player.avatar||!data.player.unlockedCosmetics||!data.player.equippedCosmetics||!data.player.achievements;
     if(needsFoundation){
-      const profile=loadProfileFoundation();
       applyProfileFoundation(data.player, profile.profileSetupComplete?profile:createProfileFoundation(data.player));
     }
+    data.player.ownedCardItems=mergedOwnedCards;
+    data.player.unlockedCosmetics=mergedCosmetics;
+    data.player.equippedCardItems=createEquippedCardItems(data.player.equippedCardItems,data.player.ownedCardItems);
     ensurePlayerFoundation(data.player);
     saveProfileFromPlayer(data.player);
   }
@@ -6190,6 +6195,7 @@ function mutateCardProfile(mutator){
     ensurePlayerFoundation(S.player);
     result=mutator(S.player);
     saveProfileFromPlayer(S.player);
+    if(S.career && localStorage.getItem(KEYS.career)) saveCareer();
   }else{
     const profile=loadProfileFoundation();
     result=mutator(profile);
@@ -7844,4 +7850,3 @@ window.onload=function(event){
 </script>
 </body>
 </html>
-
