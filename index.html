@@ -11,98 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script>
-/* ============================================================
-   CLAUDE PLAYABLE SHIM
-   Runs the game fully self-contained inside the Claude artifact
-   sandbox. Replaces browser storage (blocked in artifacts) with
-   an in-memory store, and replaces Firebase (auth wall + shared
-   cloud DB) with harmless no-op mocks so the game boots straight
-   into single-player with all cloud features degrading gracefully.
-============================================================ */
-(function(){
-  // ---- In-memory storage shim (localStorage/sessionStorage) ----
-  function makeStore(){
-    var mem = Object.create(null);
-    return {
-      getItem: function(k){ k=String(k); return Object.prototype.hasOwnProperty.call(mem,k)? mem[k] : null; },
-      setItem: function(k,v){ mem[String(k)] = String(v); },
-      removeItem: function(k){ delete mem[String(k)]; },
-      clear: function(){ mem = Object.create(null); },
-      key: function(i){ return Object.keys(mem)[i] || null; },
-      get length(){ return Object.keys(mem).length; }
-    };
-  }
-  try { Object.defineProperty(window,'localStorage',{value:makeStore(),configurable:true,writable:false}); }
-  catch(e){ try{ window.localStorage = makeStore(); }catch(_){} }
-  try { Object.defineProperty(window,'sessionStorage',{value:makeStore(),configurable:true,writable:false}); }
-  catch(e){ try{ window.sessionStorage = makeStore(); }catch(_){} }
-
-  // ---- Firebase mock (firestore + auth, all no-op) ----
-  function fsQuery(){
-    return {
-      where:    function(){ return fsQuery(); },
-      orderBy:  function(){ return fsQuery(); },
-      limit:    function(){ return fsQuery(); },
-      startAfter:function(){ return fsQuery(); },
-      get:      function(){ return Promise.resolve({ empty:true, size:0, docs:[], forEach:function(){} }); }
-    };
-  }
-  function fsDoc(){
-    var id = 'mock_' + Math.random().toString(36).slice(2,10);
-    return {
-      id: id,
-      get:    function(){ return Promise.resolve({ exists:false, id:id, data:function(){ return undefined; } }); },
-      set:    function(){ return Promise.resolve(); },
-      update: function(){ return Promise.resolve(); },
-      delete: function(){ return Promise.resolve(); },
-      collection: function(){ return fsCollection(); },
-      onSnapshot: function(){ return function(){}; }
-    };
-  }
-  function fsCollection(){
-    var c = fsQuery();
-    c.doc = function(){ return fsDoc(); };
-    c.add = function(){ return Promise.resolve(fsDoc()); };
-    return c;
-  }
-  var mockDb = { collection:function(){ return fsCollection(); }, doc:function(){ return fsDoc(); } };
-
-  var mockAuth = {
-    currentUser: null,
-    useDeviceLanguage: function(){},
-    setPersistence:    function(){ return Promise.resolve(); },
-    getRedirectResult: function(){ return Promise.resolve({ user:null }); },
-    signInWithRedirect:function(){ return Promise.resolve(); },
-    signInWithPopup:   function(){ return Promise.resolve({ user:null }); },
-    signInAnonymously: function(){ return Promise.resolve({ user:null }); },
-    signOut:           function(){ return Promise.resolve(); },
-    onAuthStateChanged:function(cb){ try{ cb(null); }catch(e){} return function(){}; }
-  };
-
-  function firestoreFn(){ return mockDb; }
-  firestoreFn.FieldValue = {
-    increment:       function(n){ return { __op:'increment', n:n }; },
-    serverTimestamp: function(){ return { __op:'serverTimestamp' }; },
-    arrayUnion:      function(){ return { __op:'arrayUnion' }; },
-    arrayRemove:     function(){ return { __op:'arrayRemove' }; },
-    delete:          function(){ return { __op:'delete' }; }
-  };
-  firestoreFn.Timestamp = { now:function(){ return { toMillis:function(){ return Date.now(); }, toDate:function(){ return new Date(); } }; } };
-
-  function authFn(){ return mockAuth; }
-  function GoogleAuthProvider(){ this.addScope=function(){}; this.setCustomParameters=function(){}; }
-  authFn.GoogleAuthProvider = GoogleAuthProvider;
-  authFn.Auth = { Persistence:{ LOCAL:'LOCAL', SESSION:'SESSION', NONE:'NONE' } };
-
-  window.firebase = {
-    initializeApp: function(){ return {}; },
-    firestore: firestoreFn,
-    auth: authFn,
-    apps: [{}]
-  };
-})();
-</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
 /* ============================================================
@@ -2504,7 +2415,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
-const AUTH_REQUIRED = false;
+const AUTH_REQUIRED = true;
 const SEASON_MS = 3 * 24 * 60 * 60 * 1000;
 let currentSeason = null;
 let seasonTimer = null;
@@ -5916,7 +5827,7 @@ const DEFAULT_EQUIPPED_COSMETICS = {robe:'robe_default',gloves:'gloves_default',
 const CARD_CATEGORIES = ['character','aura','background','frame'];
 const CARD_STORE_CATEGORIES = ['aura','background','character','frame'];
 const CARD_CATEGORY_LABELS = {character:'Skins',aura:'Aura',background:'Backgrounds',frame:'Frames'};
-const CARD_RARITY_MINIMUM_PRICES = {common:50,uncommon:2000,rare:8000,luxury:10000,legendary:5000000};
+const CARD_RARITY_MINIMUM_PRICES = {common:300,uncommon:2000,rare:8000,luxury:10000,legendary:5000000};
 const CARD_ITEM_DEFINITIONS = {
   character_standard_contender:{id:'character_standard_contender',category:'character',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/character_standard_contender.png'},
   character_dragon_man:{id:'character_dragon_man',category:'character',name:'Dragon Man',rarity:'rare',price:8000,asset:'assets/card/character_dragon_man.png'},
@@ -5936,14 +5847,6 @@ const CARD_ITEM_DEFINITIONS = {
   character_lizard_warrior:{id:'character_lizard_warrior',category:'character',name:'Lizard Warrior',rarity:'legendary',price:50000,asset:'character_Lizard_Warrior.png'},
   character_ironclad:{id:'character_ironclad',category:'character',name:'Ironclad',rarity:'luxury',price:10000,asset:'character_ironclad.png'},
   aura_corner_smoke:{id:'aura_corner_smoke',category:'aura',name:'Corner Smoke',rarity:'common',price:0,base:true,asset:'assets/card/aura_corner_smoke.png'},
-  aura_crystal_shards:{id:'aura_crystal_shards',category:'aura',name:'Crystal Shards',rarity:'common',price:50,asset:'assets/card/aura_crystal_shards.png'},
-  aura_egger:{id:'aura_egger',category:'aura',name:'Egger',rarity:'common',price:50,asset:'assets/card/aura_egger.png'},
-  aura_flames:{id:'aura_flames',category:'aura',name:'Flames',rarity:'common',price:50,asset:'assets/card/aura_flames.png'},
-  aura_purple_haze:{id:'aura_purple_haze',category:'aura',name:'Purple Haze',rarity:'common',price:50,asset:'assets/card/aura_purple_haze.png'},
-  aura_shatter:{id:'aura_shatter',category:'aura',name:'Shatter',rarity:'common',price:50,asset:'assets/card/aura_shatter.png'},
-  aura_shocking:{id:'aura_shocking',category:'aura',name:'Shocking',rarity:'common',price:50,asset:'assets/card/aura_shocking.png'},
-  aura_showtime:{id:'aura_showtime',category:'aura',name:'Showtime',rarity:'common',price:50,asset:'assets/card/aura_showtime.png'},
-  aura_smokey:{id:'aura_smokey',category:'aura',name:'Smokey',rarity:'common',price:50,asset:'assets/card/aura_smokey.png'},
   aura_crystal_shards:{id:'aura_crystal_shards',category:'aura',name:'Crystal Shards',rarity:'common',price:0,base:true,asset:'assets/card/aura_crystal_shards.png'},
   aura_egger:{id:'aura_egger',category:'aura',name:'Egger',rarity:'common',price:0,base:true,asset:'assets/card/aura_egger.png'},
   aura_flames:{id:'aura_flames',category:'aura',name:'Flames',rarity:'common',price:0,base:true,asset:'assets/card/aura_flames.png'},
@@ -5961,14 +5864,6 @@ const CARD_ITEM_DEFINITIONS = {
   background_virt:{id:'background_virt',category:'background',name:'Virt',rarity:'uncommon',price:3000,asset:'Virt.png'},
   background_wavy:{id:'background_wavy',category:'background',name:'Wavy',rarity:'common',price:300,asset:'Wavy.png'},
   frame_standard_contender:{id:'frame_standard_contender',category:'frame',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/frame_standard_contender.png'},
-  frame_coral:{id:'frame_coral',category:'frame',name:'Coral',rarity:'common',price:50,asset:'assets/card/frame_coral.png'},
-  frame_gringe:{id:'frame_gringe',category:'frame',name:'Gringe',rarity:'common',price:50,asset:'assets/card/frame_gringe.png'},
-  frame_haven:{id:'frame_haven',category:'frame',name:'Haven',rarity:'common',price:50,asset:'assets/card/frame_haven.png'},
-  frame_meany:{id:'frame_meany',category:'frame',name:'Meany',rarity:'common',price:50,asset:'assets/card/frame_meany.png'},
-  frame_purpaz:{id:'frame_purpaz',category:'frame',name:'Purpaz',rarity:'common',price:50,asset:'assets/card/frame_purpaz.png'},
-  frame_tekky:{id:'frame_tekky',category:'frame',name:'Tekky',rarity:'common',price:50,asset:'assets/card/frame_tekky.png'},
-  frame_gliss:{id:'frame_gliss',category:'frame',name:'Gliss',rarity:'common',price:50,asset:'assets/card/frame_gliss.png'},
-  frame_sandstone:{id:'frame_sandstone',category:'frame',name:'Sandstone',rarity:'common',price:50,asset:'assets/card/frame_sandstone.png'},
   frame_coral:{id:'frame_coral',category:'frame',name:'Coral',rarity:'common',price:0,base:true,asset:'assets/card/frame_coral.png'},
   frame_gringe:{id:'frame_gringe',category:'frame',name:'Gringe',rarity:'common',price:0,base:true,asset:'assets/card/frame_gringe.png'},
   frame_haven:{id:'frame_haven',category:'frame',name:'Haven',rarity:'common',price:0,base:true,asset:'assets/card/frame_haven.png'},
@@ -7339,9 +7234,7 @@ function renderAttributeValue(value){ return '<strong class="'+getAttributeClass
 function valCls(v){ return (v==null)?'attr-low':getAttributeClass(v); }
 function modeCfg(){ return standardModeCfg(); }
 function fresh(){ const profile=loadProfileFoundation(); S.mode='standard'; S.player=applyProfileFoundation({Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}, profile); STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:'standard',currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:STANDARD_MODE.rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0,achievementStartIds:Object.keys(S.player.achievements?.unlocked||{}), firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false, profile50Counted: false, playMoneyRewarded: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
-const FIGHTER_FLAGS={"Muhammad Ali":"🇺🇸","Mike Tyson":"🇺🇸","Tyson Fury":"🇬🇧","Oleksandr Usyk":"🇺🇦","Lennox Lewis":"🇬🇧","Evander Holyfield":"🇺🇸","George Foreman":"🇺🇸","Joe Frazier":"🇺🇸","Larry Holmes":"🇺🇸","Vitali Klitschko":"🇺🇦","Riddick Bowe":"🇺🇸","David Tua":"🇼🇸","Ken Norton":"🇺🇸","Earnie Shavers":"🇺🇸","Shannon Briggs":"🇺🇸","Butterbean":"🇺🇸","Jake Paul":"🇺🇸","Eddie Hall":"🇬🇧","Hafthor Bjornsson":"🇮🇸","Francis Ngannou":"🇨🇲","Moses Itauma":"🇬🇧","Leo Atang":"🇬🇧","Jared Anderson":"🇺🇸","Justis Huni":"🇦🇺","Filip Hrgovic":"🇭🇷","Frank Sanchez":"🇨🇺","Arslanbek Makhmudov":"🇷🇺","Zhilei Zhang":"🇨🇳","Dereck Chisora":"🇬🇧","Dillian Whyte":"🇬🇧","Joseph Parker":"🇳🇿","Andy Ruiz Jr.":"🇲🇽","Carlos Takam":"🇨🇲","Otto Wallin":"🇸🇪","Michael Hunter":"🇺🇸","Kubrat Pulev":"🇧🇬","Hughie Fury":"🇬🇧","Chris Byrd":"🇺🇸","Tony Thompson":"🇺🇸","John Ruiz":"🇺🇸","Kevin Johnson":"🇺🇸","Audley Harrison":"🇬🇧","Nikolai Valuev":"🇷🇺","David Price":"🇬🇧","Lucas Browne":"🇦🇺","Amir Mansour":"🇺🇸","Gerald Washington":"🇺🇸","Dave Allen":"🇬🇧","Amir Khan":"🇬🇧","George Groves":"🇬🇧","Lawrence Okolie":"🇬🇧","Chris Billam-Smith":"🇬🇧","Fabio Wardley":"🇬🇧","Martin Bakole":"🇨🇩","Agit Kabayel":"🇩🇪","Alexander Povetkin":"🇷🇺","Tony Yoka":"🇫🇷","Jai Opetaia":"🇦🇺","Murat Gassiev":"🇷🇺","Krzysztof Glowacki":"🇵🇱","Badou Jack":"🇸🇪","Jean Pascal":"🇨🇦","Gilberto Ramirez":"🇲🇽","Callum Smith":"🇬🇧","David Benavidez":"🇺🇸","Caleb Plant":"🇺🇸","Billy Joe Saunders":"🇬🇧","Demetrius Andrade":"🇺🇸","David Lemieux":"🇨🇦","Felix Sturm":"🇩🇪","Arthur Abraham":"🇩🇪","Julio Cesar Chavez Jr":"🇲🇽","Liam Smith":"🇬🇧","Josh Taylor":"🇬🇧","Regis Prograis":"🇺🇸","Jose Ramirez":"🇺🇸","Danny Garcia":"🇺🇸","Shawn Porter":"🇺🇸","Keith Thurman":"🇺🇸","Jaron Ennis":"🇺🇸","Vergil Ortiz Jr":"🇺🇸","Tim Tszyu":"🇦🇺","Sebastian Fundora":"🇺🇸","Liam Paro":"🇦🇺","Adrien Broner":"🇺🇸","Jessie Vargas":"🇺🇸","Victor Ortiz":"🇺🇸","Brandon Rios":"🇺🇸","Jorge Linares":"🇻🇪","Yuriorkis Gamboa":"🇨🇺","Abner Mares":"🇲🇽","Buster Douglas":"🇺🇸","Chris Eubank Jr":"🇬🇧","Conor Benn":"🇬🇧","James DeGale":"🇬🇧","Anthony Crolla":"🇬🇧","Scott Quigg":"🇬🇧","Josh Warrington":"🇬🇧","Errol Spence Jr":"🇺🇸","Miguel Cotto":"🇵🇷","Marco Antonio Barrera":"🇲🇽","Erik Morales":"🇲🇽","Juan Manuel Marquez":"🇲🇽","Nonito Donaire":"🇵🇭","Roman Gonzalez":"🇳🇮","Conor McGregor":"🇮🇪","Anderson Silva":"🇧🇷","Nate Diaz":"🇺🇸","Anthony Joshua":"🇬🇧","Wladimir Klitschko":"🇺🇦","Roy Jones Jr.":"🇺🇸","Joe Calzaghe":"🇬🇧","Carl Froch":"🇬🇧","Kell Brook":"🇬🇧","Chris Eubank":"🇬🇧","Nigel Benn":"🇬🇧","Andre Ward":"🇺🇸","Floyd Mayweather Jr.":"🇺🇸","Manny Pacquiao":"🇵🇭","Canelo Alvarez":"🇲🇽","Gennady Golovkin":"🇰🇿","Terence Crawford":"🇺🇸","Vasyl Lomachenko":"🇺🇦","Bernard Hopkins":"🇺🇸","James Toney":"🇺🇸","Pernell Whitaker":"🇺🇸","Sugar Ray Leonard":"🇺🇸","Roberto Duran":"🇵🇦","Oscar De La Hoya":"🇺🇸","Julio Cesar Chavez":"🇲🇽","Naseem Hamed":"🇬🇧","Ricky Hatton":"🇬🇧","Carl Frampton":"🇬🇧","Barry McGuigan":"🇮🇪","Arturo Gatti":"🇨🇦","Antonio Margarito":"🇲🇽","Winky Wright":"🇺🇸","Kostya Tszyu":"🇷🇺","Mairis Briedis":"🇱🇻","Marco Huck":"🇩🇪","Tony Bellew":"🇬🇧","Paul Williams":"🇺🇸"};
-function fighterFlag(name){ const f=FIGHTER_FLAGS[name]; return f?f+' ':''; }
-function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?'('+fighterFlag(S.player.StatSources[st])+(S.player.StatSources[st]||'Unknown')+')'+(S.player.PerfectSpinStats[st]?' • Perfect Spin':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
+function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?'('+(S.player.StatSources[st]||'Unknown')+')'+(S.player.PerfectSpinStats[st]?' • Perfect Spin':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
 function updateDraftTop(){ const cfg=modeCfg(); $('draft-mode-label').innerText=cfg.name; $('draft-rerolls-left').innerText=S.career.draftRerolls; $('reroll-btn').innerText='Use Re-Roll ('+S.career.draftRerolls+')'; $('reroll-btn').disabled=!S.awaiting || S.career.draftRerolls<=0; }
 function avgLegend(l){ return STATS.reduce((s,st)=>s+l[st],0)/STATS.length; }
 function weightedPick(list,fn){ const arr=list.map(item=>({item,weight:Math.max(0,fn(item))})); const total=arr.reduce((s,e)=>s+e.weight,0); let roll=Math.random()*total; for(const e of arr){ roll-=e.weight; if(roll<=0) return e.item; } return arr[arr.length-1].item; }
@@ -7375,7 +7268,7 @@ function restartDraft(){
     startNewCareer();
   }
 }
-function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=fighterFlag(a.Name)+a.Name; $('slot-mid').innerText=fighterFlag(b.Name)+b.Name; $('slot-bottom').innerText=fighterFlag(c.Name)+c.Name; ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=fighterFlag(LEGENDS[(idx+1)%LEGENDS.length].Name)+LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=fighterFlag(S.legend.Name)+S.legend.Name; $('slot-bottom').innerText=fighterFlag(LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name)+LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+fighterFlag(S.legend.Name)+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' • '+S.legend.Pool; if(S.perfect) txt+=' • Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
+function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=a.Name; $('slot-mid').innerText=b.Name; $('slot-bottom').innerText=c.Name; ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=S.legend.Name; $('slot-bottom').innerText=LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' • '+S.legend.Pool; if(S.perfect) txt+=' • Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
 function useReroll(){ if(!S.awaiting||S.career.draftRerolls<=0) return; S.career.draftRerolls--; saveCareer(); spinWheel(true,true); }
 function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} • ${t.rarity.toUpperCase()}\n\n${t.desc}`; }
 function checkSynergy(){ const unlocked=[]; SYNERGY.forEach(sy=>{ const ok=Object.entries(sy.requirements).every(([st,name])=>S.player.StatSources[st]===name); if(ok) unlocked.push(sy); }); S.player.HiddenBonuses=unlocked; updateOverallDisplays(); }
