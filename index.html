@@ -6922,6 +6922,9 @@ try{ if(typeof window!=='undefined'){ window.openArtPack=openArtPack; window.clo
 
 // ===== Daily Login Wheel =====
 const DAILY_WHEEL_COOLDOWN = 24*60*60*1000;
+const DAILY_WHEEL_LOCAL_KEY = 'unbeaten_daily_wheel_spin_v1';
+function localWheelSpinAt(){ try{ return Number(localStorage.getItem(DAILY_WHEEL_LOCAL_KEY))||0; }catch(e){ return 0; } }
+function markWheelSpun(ts){ try{ localStorage.setItem(DAILY_WHEEL_LOCAL_KEY, String(ts)); }catch(e){} }
 const WHEEL_SEGMENTS = [
   {label:'1',  type:'money', amount:1,  weight:22, color:'#ef6f5e'},
   {label:'5',  type:'money', amount:5,  weight:10, color:'#60a5fa'},
@@ -6933,7 +6936,7 @@ const WHEEL_SEGMENTS = [
   {label:'5',  type:'money', amount:5,  weight:10, color:'#f5d76b'}
 ];
 let wheelSpinning=false, wheelRotation=0, wheelCountdownTimer=null;
-function dailyWheelReadyAt(profile){ profile=profile||activeCardProfile(); const last=Number(profile&&profile.lastDailyWheelSpin)||0; return last+DAILY_WHEEL_COOLDOWN; }
+function dailyWheelReadyAt(profile){ profile=profile||activeCardProfile(); const last=Math.max(Number(profile&&profile.lastDailyWheelSpin)||0, localWheelSpinAt()); return last+DAILY_WHEEL_COOLDOWN; }
 function dailyWheelReady(profile){ return Date.now() >= dailyWheelReadyAt(profile); }
 function formatCountdown(ms){ if(ms<0) ms=0; const s=Math.floor(ms/1000), h=Math.floor(s/3600), m=Math.floor((s%3600)/60), ss=s%60; const p=n=>String(n).padStart(2,'0'); return p(h)+':'+p(m)+':'+p(ss); }
 function polarPt(cx,cy,r,deg){ const a=(deg-90)*Math.PI/180; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
@@ -6976,8 +6979,8 @@ function spinDailyWheel(){
   setTimeout(()=>finishWheelSpin(WHEEL_SEGMENTS[idx]), 4750);
 }
 function finishWheelSpin(seg){
-  wheelSpinning=false; const isPack=seg.type==='pack';
-  mutateCardProfile(t=>{ t.lastDailyWheelSpin=Date.now(); if(!isPack){ t.playMoney=safeMoney(t.playMoney)+seg.amount; } });
+  wheelSpinning=false; const isPack=seg.type==='pack'; const now=Date.now(); markWheelSpun(now);
+  mutateCardProfile(t=>{ t.lastDailyWheelSpin=now; if(!isPack){ t.playMoney=safeMoney(t.playMoney)+seg.amount; } });
   if(isPack) playPackRevealSound('legendary'); else playWheelWin(seg.amount);
   const result=$('wheel-result');
   if(result){ result.innerHTML = isPack
