@@ -1505,6 +1505,18 @@ body.final-card-open{overflow:hidden}
 .card-rarity-key.rarity-common{color:#cbd5e1}.card-rarity-key.rarity-uncommon{color:#86efac}.card-rarity-key.rarity-rare{color:#60a5fa}.card-rarity-key.rarity-luxury{color:#c084fc}.card-rarity-key.rarity-legendary{color:#fb923c}.card-rarity-key.rarity-premium{color:#fde68a}
 .card-coming-soon{padding:14px 10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;color:var(--text-dim);font-size:.72rem;font-weight:900;text-transform:uppercase}
 .card-premium-later{margin:10px 0 12px;padding:10px;border:1px solid rgba(212,175,55,.45);border-radius:7px;background:#120f07;color:#f6d768;text-align:center;font-size:.68rem;font-weight:1000;text-transform:uppercase;box-shadow:0 0 22px rgba(212,175,55,.2)}
+/* ===== Featured Weekly Store ===== */
+.featured-weekly{margin-bottom:14px}
+.featured-weekly-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.featured-weekly-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.05rem;letter-spacing:.08em;color:var(--gold)}
+.featured-weekly-refresh{font-size:.62rem;color:rgba(255,255,255,.35);line-height:1.4;text-align:right}
+.featured-weekly-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.featured-store-item{position:relative;display:grid;grid-template-columns:72px minmax(0,1fr);gap:9px;min-height:100px;padding:9px;border:1.5px solid rgba(227,178,60,.38);border-radius:9px;background:linear-gradient(135deg,rgba(227,178,60,.06) 0%,#0c0d11 65%);overflow:hidden}
+.featured-store-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(227,178,60,.55),transparent);pointer-events:none}
+.featured-badge{position:absolute;top:6px;right:6px;padding:2px 7px;border-radius:999px;background:rgba(227,178,60,.15);border:1px solid rgba(227,178,60,.4);color:var(--gold);font-size:.47rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.featured-store-item .card-store-thumb{width:72px;height:80px}
+.featured-store-item .card-store-meta strong{font-size:.75rem}
+.featured-all-owned{padding:14px;text-align:center;color:rgba(255,255,255,.38);font-size:.74rem;border:1px dashed rgba(255,255,255,.1);border-radius:8px;background:rgba(0,0,0,.15)}
 @media(max-width:680px){
   .card-editor-layout{grid-template-columns:1fr}.card-editor-layout>.modular-card{width:min(100%,330px)}
   .card-store-top{grid-template-columns:140px minmax(0,1fr)}.card-store-top .modular-card{width:140px}
@@ -1990,6 +2002,7 @@ body.final-card-open{overflow:hidden}
     <div class="card-store-summary"><strong id="card-store-category-title">Art Shop</strong><span id="card-store-category-count">Choose a collection</span></div>
   </div>
   <div id="card-pack-panel" class="card-pack-panel"></div>
+  <div id="featured-weekly-section"></div>
   <div id="card-store-buckets" class="card-store-buckets"></div>
   <div id="card-store-browser" class="hidden">
     <div class="card-store-browser-head">
@@ -7245,6 +7258,52 @@ function cardStoreItemState(item,profile){
   return safeMoney(profile.playMoney)>=cardItemPrice(item)?'affordable':'unaffordable';
 }
 function cardStoreThumb(item){ return '<div class="card-store-thumb '+item.category+'"><img loading="lazy" src="'+item.asset+'" alt=""></div>'; }
+function getWeekSeed(){const d=new Date(),start=new Date(d.getFullYear(),0,1);return d.getFullYear()*100+Math.floor((d-start)/(7*24*3600*1000));}
+function seededShuffle(arr,seed){const a=arr.slice();let s=seed>>>0;for(let i=a.length-1;i>0;i--){s=(s*1664525+1013904223)>>>0;const j=s%(i+1);const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function getFeaturedWeeklyItems(){
+  const seed=getWeekSeed();
+  const all=Object.values(CARD_ITEM_DEFINITIONS).filter(it=>it&&!it.base&&it.rarity!=='premium'&&it.asset);
+  const picks=[];
+  CARD_STORE_CATEGORIES.forEach((cat,i)=>{
+    const pool=seededShuffle(all.filter(it=>it.category===cat),seed+(i*997));
+    if(pool.length) picks.push(pool[0]);
+  });
+  return picks;
+}
+function featuredWeeklyRefreshMs(){
+  const now=new Date(),day=now.getDay(),daysUntil=day===1?7:(8-day)%7;
+  const next=new Date(now);next.setDate(now.getDate()+daysUntil);next.setHours(0,0,0,0);
+  return Math.max(0,next.getTime()-Date.now());
+}
+function formatWeekCountdown(ms){
+  if(ms<=0) return 'Refreshing now';
+  const h=Math.floor(ms/3600000),d=Math.floor(h/24),rh=h%24;
+  return d>=1?(rh>0?'Refreshes in '+d+'d '+rh+'h':'Refreshes in '+d+'d'):'Refreshes in '+h+'h';
+}
+function renderFeaturedWeekly(){
+  const section=$('featured-weekly-section'); if(!section) return;
+  const browsing=!!activeCardStoreCategory;
+  section.classList.toggle('hidden',browsing);
+  if(browsing){section.innerHTML=''; return;}
+  const profile=activeCardProfile(),owned=createOwnedCardItems(profile.ownedCardItems);
+  const items=getFeaturedWeeklyItems(); if(!items.length){section.innerHTML=''; return;}
+  const allOwned=items.every(it=>owned.includes(it.id));
+  const countdown=formatWeekCountdown(featuredWeeklyRefreshMs());
+  let html='<div class="featured-weekly"><div class="featured-weekly-head"><span class="featured-weekly-title">Featured This Week</span><span class="featured-weekly-refresh">'+countdown+'</span></div>';
+  if(allOwned){
+    html+='<div class="featured-all-owned">You own all this week\'s featured items — check back next Monday!</div>';
+  } else {
+    html+='<div class="featured-weekly-grid">'+items.map(item=>{
+      const state=cardStoreItemState(item,profile);
+      const status=state==='equipped'?'Equipped':state==='owned'?'Owned':state==='affordable'?'Available':'Not Enough PM';
+      const price=item.rarity==='premium'?'Premium':cardItemPrice(item).toLocaleString()+' PM';
+      const action=state==='owned'?'<button type="button" class="btn blue" onclick="equipCardItem(\''+item.id+'\')">Equip</button>':state==='affordable'?'<button type="button" class="btn gold" onclick="purchaseCardItem(\''+item.id+'\')">Buy</button>':'';
+      return '<article class="featured-store-item rarity-'+item.rarity+'"><div class="featured-badge">Featured</div>'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+CARD_CATEGORY_LABELS[item.category]+' &bull; '+item.rarity+'</div><span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
+    }).join('')+'</div>';
+  }
+  html+='</div>';
+  section.innerHTML=html;
+}
 function renderCardStore(){
   const profile=activeCardProfile(), allItems=Object.values(CARD_ITEM_DEFINITIONS), owned=createOwnedCardItems(profile.ownedCardItems);
   if($('card-store-preview')) $('card-store-preview').innerHTML=modularCardMarkup(profile);
@@ -7258,6 +7317,7 @@ function renderCardStore(){
     }).join('');
   }
   renderPackPanel();
+  renderFeaturedWeekly();
   if(browser) browser.classList.toggle('hidden',!browsing);
   if($('card-store-category-title')) $('card-store-category-title').innerText=browsing?CARD_CATEGORY_LABELS[activeCardStoreCategory]:'Art Shop';
   if($('card-store-category-count')) $('card-store-category-count').innerText=browsing?allItems.filter(item=>item.category===activeCardStoreCategory&&owned.includes(item.id)).length+' owned / '+allItems.filter(item=>item.category===activeCardStoreCategory).length+' items':owned.length+' owned / '+allItems.length+' items';
