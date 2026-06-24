@@ -1172,6 +1172,43 @@ body.final-card-open{overflow:hidden}
 .achievement-card,.cosmetic-card{background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:10px;padding:12px;box-shadow:var(--shadow-card)}
 .achievement-card.unlocked,.cosmetic-card.unlocked{border-color:rgba(230,194,71,.42);box-shadow:0 0 22px rgba(230,194,71,.08)}
 .achievement-card.locked,.cosmetic-card.locked{opacity:.68}
+/* ===== Trophy Cabinet ===== */
+.trophy-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.trophy-summary-stat{text-align:center;padding:9px 6px;background:#0c0d11;border:1px solid rgba(255,255,255,.07);border-radius:8px}
+.trophy-summary-stat strong{display:block;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.35rem;color:var(--gold);line-height:1}
+.trophy-summary-stat span{display:block;margin-top:2px;color:rgba(255,255,255,.35);font-size:.52rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.trophy-section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;margin-bottom:8px;user-select:none;width:100%;text-align:left}
+.trophy-section-head h3{margin:0;font-size:.76rem;letter-spacing:.07em;text-transform:uppercase;color:var(--gold);font-family:'Bebas Neue',Impact,sans-serif}
+.trophy-section-head .tc-count{font-size:.62rem;font-weight:900;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.trophy-section-body{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:14px}
+.trophy-section-body.collapsed{display:none}
+.trophy-card{position:relative;background:linear-gradient(180deg,var(--panel-2) 0%,var(--panel) 100%);border:1px solid var(--line);border-radius:10px;padding:11px 12px;overflow:hidden}
+.trophy-card.unlocked{border-color:rgba(230,194,71,.42);box-shadow:0 0 22px rgba(230,194,71,.09)}
+.trophy-card.locked{opacity:.68}
+.trophy-card-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:4px}
+.trophy-icon{font-size:1.3rem;line-height:1.15;flex-shrink:0;width:26px;text-align:center}
+.trophy-card-title{flex:1;min-width:0}
+.trophy-card-title strong{display:block;color:#fff;font-size:.88rem;overflow-wrap:anywhere;line-height:1.2}
+.trophy-card-title span{display:block;margin-top:2px;color:var(--text-dim);font-size:.71rem;line-height:1.4}
+.trophy-status-badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;font-size:.56rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.trophy-status-badge.unlocked{background:rgba(35,167,107,.18);color:#7ee0ad}
+.trophy-status-badge.locked{background:rgba(255,255,255,.07);color:rgba(255,255,255,.35)}
+.trophy-tier-badge{display:inline-block;margin-bottom:4px;padding:2px 8px;border-radius:999px;font-size:.52rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.trophy-tier-bronze{background:rgba(205,127,50,.18);color:#cd7f32;border:1px solid rgba(205,127,50,.35)}
+.trophy-tier-silver{background:rgba(192,192,192,.14);color:#c0c0c0;border:1px solid rgba(192,192,192,.3)}
+.trophy-tier-gold{background:rgba(230,194,71,.16);color:var(--gold);border:1px solid rgba(230,194,71,.35)}
+.trophy-tier-platinum{background:rgba(125,211,252,.14);color:#7dd3fc;border:1px solid rgba(125,211,252,.3)}
+.trophy-tier-legendary{background:rgba(251,146,60,.16);color:#fb923c;border:1px solid rgba(251,146,60,.35)}
+.trophy-reward{margin-top:5px;color:rgba(255,255,255,.35);font-size:.67rem}
+.trophy-reward strong{color:rgba(255,255,255,.6)}
+.trophy-progress-wrap{margin-top:8px}
+.trophy-progress-label{display:flex;justify-content:space-between;font-size:.62rem;font-weight:900;color:rgba(255,255,255,.4);margin-bottom:4px;letter-spacing:.02em}
+.trophy-progress-bar{height:5px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.trophy-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,rgba(227,178,60,.55),var(--gold))}
+.trophy-unlock-date{margin-top:5px;font-size:.6rem;color:rgba(255,255,255,.26);text-align:right}
+/* Achievement toast variant */
+.toast.toast-achievement{border-left-color:#fb923c!important;border-color:rgba(251,146,60,.45)!important;background:linear-gradient(180deg,#1a1007 0%,#0d0e12 100%)!important}
+.toast.toast-achievement strong{color:#fb923c!important}
 .collection-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
 .collection-title strong{color:#fff;font-size:.95rem;overflow-wrap:anywhere}
 .collection-status{font-size:.62rem;text-transform:uppercase;letter-spacing:.8px;font-weight:1000;border-radius:999px;padding:4px 7px;background:rgba(255,255,255,.08);white-space:nowrap}
@@ -2267,12 +2304,12 @@ body.final-card-open{overflow:hidden}
 </section>
 
 <section id="trophy-cabinet-screen" class="screen">
-  <h2>Trophy Cabinet</h2>
-  <div class="collection-summary">
-    <div class="mini-stat"><strong id="trophy-count">0/0</strong><span>Unlocked</span></div>
-    <div class="mini-stat"><strong id="trophy-50-count">0</strong><span>50-0 Careers</span></div>
+  <div class="card-screen-head">
+    <h2>Trophy Cabinet</h2>
+    <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
   </div>
-  <div id="trophy-list" class="collection-list"></div>
+  <div id="trophy-summary" class="trophy-summary"></div>
+  <div id="trophy-list"></div>
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
@@ -6463,7 +6500,7 @@ function checkAchievements(showNotifications=true){
       const cosmetic=getCosmeticDefinition(id);
       if(unlockCosmetic(S.player, id)&&showNotifications&&cosmetic) showToast('Cosmetic Unlocked', cosmetic.name);
     });
-    if(showNotifications) showToast('Achievement Unlocked', achievement.name);
+    if(showNotifications) showAchievementToast(achievement);
   });
   if(unlocked.length){
     saveProfileFromPlayer(S.player);
@@ -7978,20 +8015,97 @@ function renderCollectionScreen(){
     });
   }
 }
+const ACHIEVEMENT_META={
+  first_win:      {category:'Career Records', tier:'bronze',   icon:'🥊', progressFn:c=>c?{current:Math.min(c.wins||0,1),max:1}:null},
+  prospect_10_0:  {category:'Career Records', tier:'silver',   icon:'⭐', progressFn:c=>c&&(c.losses||0)===0&&(c.draws||0)===0?{current:Math.min(c.wins||0,10),max:10}:null},
+  contender_25_0: {category:'Career Records', tier:'gold',     icon:'🌟', progressFn:c=>c&&(c.losses||0)===0&&(c.draws||0)===0?{current:Math.min(c.wins||0,25),max:25}:null},
+  champion_40_0:  {category:'Career Records', tier:'platinum', icon:'💎', progressFn:c=>c&&(c.losses||0)===0&&(c.draws||0)===0?{current:Math.min(c.wins||0,40),max:40}:null},
+  reach_50_0:     {category:'Career Records', tier:'legendary',icon:'🏆', progressFn:c=>c&&(c.losses||0)===0&&(c.draws||0)===0?{current:Math.min(c.wins||0,50),max:50}:null},
+  first_title:    {category:'Championship',   tier:'silver',   icon:'🥇', progressFn:c=>c?{current:Math.min((c.belts||[]).length,1),max:1}:null},
+  undisputed:     {category:'Championship',   tier:'gold',     icon:'👑', progressFn:c=>c?{current:Math.min((c.belts||[]).length,4),max:4}:null},
+  ko_10:          {category:'Fight Stats',    tier:'silver',   icon:'💥', progressFn:c=>c?{current:Math.min(c.kos||0,10),max:10}:null},
+  ko_25:          {category:'Fight Stats',    tier:'gold',     icon:'💥', progressFn:c=>c?{current:Math.min(c.kos||0,25),max:25}:null},
+  earn_1m:        {category:'Economy',        tier:'gold',     icon:'💰', progressFn:c=>c?{current:Math.min(c.earnings||0,1000000),max:1000000}:null},
+};
+const ACHIEVEMENT_CATEGORY_ORDER=['Career Records','Championship','Fight Stats','Economy'];
+function formatShortDate(iso){try{const d=new Date(iso);return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});}catch(e){return '';}}
+function showAchievementToast(achievement){
+  const meta=ACHIEVEMENT_META[achievement.id]||{};
+  const icon=meta.icon||'🏅';
+  const reward=getCosmeticDefinition(achievement.reward);
+  const stack=$('toast-stack'); if(!stack) return;
+  const toast=document.createElement('div');
+  toast.className='toast toast-achievement';
+  toast.innerHTML='<strong>'+icon+' Achievement Unlocked</strong><span>'+htmlEscape(achievement.name)+'</span>'+(reward?'<span style="display:block;margin-top:3px;opacity:.7;font-size:.74rem">Reward: '+htmlEscape(reward.name)+'</span>':'');
+  stack.appendChild(toast);
+  setTimeout(()=>toast.remove(),5500);
+}
 function openTrophyCabinet(){
   const profile=activeProfileForCollection();
-  const unlocked=Object.keys(profile.achievements?.unlocked||{});
+  const career=S.career||null;
+  const unlockedMap=profile.achievements?.unlocked||{};
+  const unlockedIds=Object.keys(unlockedMap);
   const total=Object.keys(ACHIEVEMENT_DEFINITIONS).length;
-  if($('trophy-count')) $('trophy-count').innerText=unlocked.length+'/'+total;
-  if($('trophy-50-count')) $('trophy-50-count').innerText=String(profile.completed50And0Careers||0);
-  const box=$('trophy-list');
-  if(box){
-    box.innerHTML=Object.values(ACHIEVEMENT_DEFINITIONS).map(a=>{
-      const isOn=unlocked.includes(a.id);
-      const reward=getCosmeticDefinition(a.reward);
-      return '<div class="achievement-card '+(isOn?'unlocked':'locked')+'"><div class="collection-title"><strong>'+a.name+'</strong><span class="collection-status '+(isOn?'on':'')+'">'+(isOn?'Unlocked':'Locked')+'</span></div><div class="collection-desc">'+a.desc+'</div><div class="collection-desc" style="margin-top:6px">Reward: '+(reward?reward.name:'None')+'</div></div>';
-    }).join('');
+  const fifty=profile.completed50And0Careers||0;
+  const legendaryCount=unlockedIds.filter(id=>(ACHIEVEMENT_META[id]?.tier||'')==='legendary').length;
+  const summaryEl=$('trophy-summary');
+  if(summaryEl){
+    summaryEl.innerHTML=
+      '<div class="trophy-summary-stat"><strong>'+unlockedIds.length+'/'+total+'</strong><span>Achievements</span></div>'+
+      '<div class="trophy-summary-stat"><strong>'+fifty+'</strong><span>50-0 Careers</span></div>'+
+      '<div class="trophy-summary-stat"><strong>'+legendaryCount+'</strong><span>Legendary</span></div>';
   }
+  const listEl=$('trophy-list');
+  if(!listEl){screen('trophy-cabinet-screen');return;}
+  listEl.innerHTML='';
+  const byCategory={};
+  ACHIEVEMENT_CATEGORY_ORDER.forEach(cat=>{byCategory[cat]=[];});
+  Object.values(ACHIEVEMENT_DEFINITIONS).forEach(a=>{
+    const cat=ACHIEVEMENT_META[a.id]?.category||'Other';
+    if(!byCategory[cat]) byCategory[cat]=[];
+    byCategory[cat].push(a);
+  });
+  ACHIEVEMENT_CATEGORY_ORDER.forEach(cat=>{
+    const achievements=byCategory[cat]; if(!achievements||!achievements.length) return;
+    const catUnlocked=achievements.filter(a=>unlockedIds.includes(a.id)).length;
+    const secHead=document.createElement('button');
+    secHead.type='button';
+    secHead.className='trophy-section-head';
+    secHead.innerHTML='<h3>'+cat+'</h3><span class="tc-count">'+catUnlocked+'/'+achievements.length+'</span>';
+    listEl.appendChild(secHead);
+    const secBody=document.createElement('div');
+    secBody.className='trophy-section-body';
+    achievements.forEach(a=>{
+      const isOn=unlockedIds.includes(a.id);
+      const meta=ACHIEVEMENT_META[a.id]||{icon:'🏅',tier:'silver'};
+      const reward=getCosmeticDefinition(a.reward);
+      const unlockedAt=unlockedMap[a.id]?.unlockedAt;
+      const prog=!isOn&&meta.progressFn?.(career);
+      const tierLabel=meta.tier?(meta.tier.charAt(0).toUpperCase()+meta.tier.slice(1)):'';
+      const tierHtml='<span class="trophy-tier-badge trophy-tier-'+(meta.tier||'silver')+'">'+tierLabel+'</span>';
+      let progressHtml='';
+      if(prog&&prog.max>0){
+        const pct=Math.min(100,Math.round((prog.current/prog.max)*100));
+        const label=prog.max>=1000000?cash(prog.current)+' / '+cash(prog.max):prog.current+' / '+prog.max;
+        progressHtml='<div class="trophy-progress-wrap"><div class="trophy-progress-label"><span>Progress</span><span>'+label+'</span></div><div class="trophy-progress-bar"><div class="trophy-progress-fill" style="width:'+pct+'%"></div></div></div>';
+      }
+      const unlockDateHtml=isOn&&unlockedAt?'<div class="trophy-unlock-date">Unlocked '+formatShortDate(unlockedAt)+'</div>':'';
+      const card=document.createElement('div');
+      card.className='trophy-card '+(isOn?'unlocked':'locked');
+      card.innerHTML=
+        '<div class="trophy-card-head">'+
+          '<div class="trophy-icon">'+(isOn?meta.icon:'🔒')+'</div>'+
+          '<div class="trophy-card-title">'+tierHtml+'<strong>'+htmlEscape(a.name)+'</strong><span>'+htmlEscape(a.desc)+'</span></div>'+
+          '<span class="trophy-status-badge '+(isOn?'unlocked':'locked')+'">'+(isOn?'✓ Done':'Locked')+'</span>'+
+        '</div>'+
+        (reward?'<div class="trophy-reward">Reward: <strong>'+htmlEscape(reward.name)+'</strong></div>':'')+
+        progressHtml+unlockDateHtml;
+      secBody.appendChild(card);
+    });
+    secHead.onclick=()=>secBody.classList.toggle('collapsed');
+    listEl.appendChild(secBody);
+  });
+  updateWalletDisplays();
   screen('trophy-cabinet-screen');
 }
 function equipCollectionCosmetic(cosmeticId){
@@ -9536,7 +9650,7 @@ function simRound(){ const r=S.fight.round,p1=roundStrength('p1',r),p2=roundStre
 function scoreDecision(){ S.fight.done=true; const diff=S.fight.p1.score-S.fight.p2.score, ad=Math.abs(diff); let winner=S.fight.intendedWinner||'p1'; if(winner==='p2'&&ad<=2&&(hasTrait('ring_general')||hasTrait('ice_in_veins'))&&Math.random()<.28) winner='p1'; S.fight.winner=winner; if(ad===0) S.fight.method='MD'; else if(ad===1) S.fight.method='SD'; else if(ad<=3) S.fight.method=Math.random()<.55?'SD':'MD'; else S.fight.method='UD'; S.fight.detail=choice(ad>=7?['Comfortable On The Cards','Took The Championship Rounds']:ad>=4?['Controlled The Fight','Clear Decision']:['Razor-Close Cards','Narrow But Fair']); if(winner==='p2'&&!S.fight.lossReason){ if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.22) S.fight.lossReason='gassed'; else if((S.fight.balance?.styleMatchup||0)<=-3) S.fight.lossReason='style'; else S.fight.lossReason='decision'; } }
 function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) extra.push('The cleaner work and control dominated the rounds.'); if(S.fight.p1Dmg>S.fight.p2Dmg+35) extra.push('The damage output was clearly tilting the fight.'); if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.28) extra.push('The opponent faded badly as stamina drained.'); if(['TKO','RTD'].includes(S.fight.method)) extra.push('Sustained punishment forced the stoppage.'); const dom=choice(extra.length?extra:['The style edge kept stacking up over the rounds.']); if(kind==='win') return sourceText()+'. '+weakText().charAt(0).toUpperCase()+weakText().slice(1)+' was exposed. '+dom; if(kind==='loss'){ const reason=S.fight.lossReason||'decision'; const copy={decision:'Lost close cards after the fight drifted away late.',accumulation:'Sustained damage built up until the danger became real.',gassed:'Stamina collapsed after the middle rounds and the opponent took over.',caught:'A clean caught-shot opened the door, then recovery failed the count.',style:'The opponent style countered this build and stole the key exchanges.'}; return copy[reason]||copy.decision; } return 'Neither fighter truly separated from the other over 12 rounds.'; }
 // Character creation, cosmetic store, and achievements are temporarily disabled and may return later as Build Your Card.
-const TEMP_DISABLED_BUILD_YOUR_CARD_SCREENS=new Set(['boxer-creator-screen','store-screen','collection-screen','trophy-cabinet-screen']);
+const TEMP_DISABLED_BUILD_YOUR_CARD_SCREENS=new Set(['boxer-creator-screen','store-screen','collection-screen']);
 function showScreen(targetId){
   if(TEMP_DISABLED_BUILD_YOUR_CARD_SCREENS.has(targetId)) targetId='menu-screen';
   if(!isAuthScreenAllowed(targetId)) targetId='login-screen';
