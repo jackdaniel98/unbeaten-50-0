@@ -1800,12 +1800,6 @@ body.final-card-open{overflow:hidden}
       <div class="row"><span>Current Career Earnings:</span><span id="menu-career-earnings">$0</span></div>
     </div>
   </div>
-  <h2>Current Save</h2>
-  <div class="panel compact-panel">
-    <div class="row"><span>Status:</span><span id="save-status">No active career</span></div>
-    <div class="row"><span>Fighter:</span><span id="save-fighter">-</span></div>
-    <div class="row"><span>Progress:</span><span id="save-progress">-</span></div>
-  </div>
 </section>
 
 <section id="card-editor-screen" class="screen">
@@ -2051,7 +2045,6 @@ body.final-card-open{overflow:hidden}
   </div>
   
   <button id="share-btn" class="btn share" onclick="shareCareer()">📤 Share Career</button>
-  <button id="show-final-card-btn" class="btn gold" onclick="openFinalFighterCard()">Show Final Fighter Card</button>
   <button class="btn ghost" onclick="toggleLegacyBreakdown()">How Was This Calculated?</button>
   <div id="legacy-breakdown" class="panel breakdown-panel"></div>
   <button class="btn blue" onclick="showHistory()">View Full Fight History</button>
@@ -7172,15 +7165,15 @@ function refreshMenu(){
   if(save&&save.player&&save.career){
     $('continue-btn').classList.remove('hidden');
     $('delete-save-btn').classList.remove('hidden');
-    $('save-status').innerText='Career in progress';
-    $('save-fighter').innerText=save.player.Name||'Unnamed Fighter';
-    $('save-progress').innerText='Bout '+save.career.currentFight+'/50 • '+modeDisplayName(save.career.mode)+' • Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:'');
+    const ss=$('save-status'); if(ss) ss.innerText='Career in progress';
+    const sf=$('save-fighter'); if(sf) sf.innerText=save.player.Name||'Unnamed Fighter';
+    const sp=$('save-progress'); if(sp) sp.innerText='Bout '+save.career.currentFight+'/50 • '+modeDisplayName(save.career.mode)+' • Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:'');
   } else {
     $('continue-btn').classList.add('hidden');
     $('delete-save-btn').classList.add('hidden');
-    $('save-status').innerText='No active career';
-    $('save-fighter').innerText='-';
-    $('save-progress').innerText='-';
+    const ss=$('save-status'); if(ss) ss.innerText='No active career';
+    const sf=$('save-fighter'); if(sf) sf.innerText='-';
+    const sp=$('save-progress'); if(sp) sp.innerText='-';
   }
 }
 let storeReturnScreen = 'menu-screen';
@@ -8389,8 +8382,10 @@ function openHallOfFame(){
   loadSeasonHistory();
 }
 function better(cand,rec){ const parse=r=>{ const p=(r||'0-0').split('-').map(n=>parseInt(n,10)||0); return {w:p[0]||0,l:p[1]||0,d:p[2]||0}; }; const b=parse(rec), c={w:cand.wins,l:cand.losses,d:cand.draws}; if(rec==='0-0'&&c.w>0) return true; if(c.l<b.l) return true; if(c.l>b.l) return false; if(c.w>b.w) return true; if(c.w<b.w) return false; return c.d<b.d; }
-function triggerHof(){ 
-  screen('hof-screen'); 
+function triggerHof(){
+  screen('hof-screen');
+  const hofEl=$('hof-screen'); if(hofEl) hofEl.scrollTop=0;
+  window.scrollTo(0,0);
   checkAchievements(true);
   const economyAward=awardCareerCompletionEconomy(true);
   saveRetiredCareerSnapshot(economyAward);
