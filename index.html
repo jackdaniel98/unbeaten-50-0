@@ -1047,6 +1047,21 @@ h2:first-child{margin-top:6px}
 .career-cosmetic-label::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(230,194,71,.45)}
 .career-summary-panel .tag-row{margin-top:9px}
 .career-summary-panel .belt-row{margin-top:8px}
+.hub-card-hero{display:flex;flex-direction:column;align-items:center;padding:14px 0 16px;gap:12px;background:linear-gradient(180deg,rgba(227,178,60,.06) 0%,transparent 100%);margin-bottom:4px}
+.hub-hero-label{font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(227,178,60,.6)}
+.hub-card-hero .modular-card{width:min(100%,260px)!important}
+.hub-hero-tags{justify-content:center;flex-wrap:wrap}
+.hub-section{border-bottom:1px solid var(--line)}
+.hub-section>summary{display:flex;align-items:center;justify-content:space-between;padding:13px 0;cursor:pointer;list-style:none;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--text);user-select:none;-webkit-tap-highlight-color:transparent}
+.hub-section>summary::-webkit-details-marker{display:none}
+.hub-section>summary::after{content:'▾';color:var(--muted);font-size:.75rem;transition:transform .2s;display:inline-block;flex-shrink:0}
+.hub-section[open]>summary::after{transform:rotate(180deg)}
+.hub-section-body{padding-bottom:12px}
+.hub-wallet-body .row{border-bottom:1px solid var(--line);padding:8px 0}.hub-wallet-body .row:last-child{border-bottom:none}
+.hub-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.hub-metric{min-width:0;padding:10px 6px;border:1px solid var(--line);border-radius:8px;background:#0a0b0e;text-align:center}
+.hub-metric span{display:block;color:var(--text-dim);font-size:.54rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.hub-metric strong{display:block;color:#fff;font-size:.92rem;font-family:'Bebas Neue',Impact,sans-serif;line-height:1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .final-card-modal{
   position:fixed;inset:0;z-index:2700;display:flex;align-items:flex-start;justify-content:center;
   padding:max(14px,var(--safe-top)) 12px max(14px,var(--safe-bottom));overflow-y:auto;
@@ -1939,24 +1954,11 @@ body.final-card-open{overflow:hidden}
 </section>
 
 <section id="hub-screen" class="screen">
-  <div class="career-summary-panel" aria-label="Active career summary">
-    <div class="career-summary-head">
-      <div style="min-width:0">
-        <span class="career-summary-kicker">Active Career</span>
-        <h2 id="fighter-card-name" class="career-summary-name">Custom Contender</h2>
-        <div id="fighter-card-nickname" class="career-summary-nickname">The Contender</div>
-      </div>
-      <div class="career-summary-ovr"><strong id="fighter-card-ovr">50</strong><span>OVR</span></div>
-    </div>
-    <div class="career-summary-grid">
-      <div class="career-summary-metric"><span>Record</span><strong id="fighter-card-record">0-0</strong></div>
-      <div class="career-summary-metric"><span>KOs</span><strong id="fighter-card-kos">0</strong></div>
-      <div class="career-summary-metric"><span>Belts</span><strong id="fighter-card-belts">0/4</strong></div>
-      <div class="career-summary-metric"><span>Rank</span><strong id="fighter-card-rank">#60</strong></div>
-      <div class="career-summary-metric"><span>Earnings</span><strong id="fighter-card-earnings">$0</strong></div>
-      <div class="career-summary-metric"><span>Legacy</span><strong id="fighter-card-legacy">0</strong></div>
-    </div>
-    <div class="tag-row">
+  <!-- Fighter Card Hero -->
+  <div class="hub-card-hero">
+    <div class="hub-hero-label">⚡ Active Career</div>
+    <div id="hub-card-preview"></div>
+    <div class="tag-row hub-hero-tags">
       <span class="tag gold" id="hub-arch">Archetype</span>
       <span class="tag" id="hub-streak">Streak 0</span>
       <span class="tag purple" id="hub-mode">Mode</span>
@@ -1968,21 +1970,45 @@ body.final-card-open{overflow:hidden}
       <span class="belt" id="belt-IBF">IBF</span>
       <span class="belt" id="belt-WBO">WBO</span>
     </div>
-    <div class="career-summary-group">
-      <span class="career-summary-label">Traits &amp; Synergies</span>
+  </div>
+  <!-- Career Summary -->
+  <details class="hub-section" open>
+    <summary>Career Summary</summary>
+    <div class="hub-section-body">
+      <div class="hub-metrics">
+        <div class="hub-metric"><span>Record</span><strong id="fighter-card-record">0-0</strong></div>
+        <div class="hub-metric"><span>KOs</span><strong id="fighter-card-kos">0</strong></div>
+        <div class="hub-metric"><span>Rank</span><strong id="fighter-card-rank">#60</strong></div>
+        <div class="hub-metric"><span>Belts</span><strong id="fighter-card-belts">0/4</strong></div>
+        <div class="hub-metric"><span>Earnings</span><strong id="fighter-card-earnings">$0</strong></div>
+        <div class="hub-metric"><span>Legacy</span><strong id="fighter-card-legacy">0</strong></div>
+      </div>
+    </div>
+  </details>
+  <!-- Traits & Synergies -->
+  <details class="hub-section">
+    <summary>Traits &amp; Synergies</summary>
+    <div class="hub-section-body">
       <div id="hub-traits" class="career-summary-chips"></div>
     </div>
-    <div class="career-summary-group">
-      <span class="career-summary-label">Equipped Cosmetics</span>
+  </details>
+  <!-- Equipped Cosmetics -->
+  <details class="hub-section">
+    <summary>Equipped Cosmetics</summary>
+    <div class="hub-section-body">
       <div id="hub-equipped-cosmetics" class="career-summary-cosmetics"></div>
     </div>
-  </div>
-  <div class="panel">
-    <div class="row"><span>Wallet Balance:</span><span id="hub-wallet">$0</span></div>
-    <div class="row"><span>Lifetime Earnings:</span><span id="hub-lifetime">$0</span></div>
-    <div class="row"><span>Best World Ranking:</span><span id="hub-best-rank-line">#60</span></div>
-    <div class="row"><span>Title Defenses:</span><span id="hub-title-def-line">0</span></div>
-  </div>
+  </details>
+  <!-- Wallet & Lifetime Stats -->
+  <details class="hub-section">
+    <summary>Wallet &amp; Lifetime Stats</summary>
+    <div class="hub-section-body hub-wallet-body">
+      <div class="row"><span>Wallet Balance:</span><span id="hub-wallet">$0</span></div>
+      <div class="row"><span>Lifetime Earnings:</span><span id="hub-lifetime">$0</span></div>
+      <div class="row"><span>Best World Ranking:</span><span id="hub-best-rank-line">#60</span></div>
+      <div class="row"><span>Title Defenses:</span><span id="hub-title-def-line">0</span></div>
+    </div>
+  </details>
   <h2>Your Fighter Attributes</h2>
   <div id="stats-grid" class="stats-grid"></div>
   <h2>Profile Foundation</h2>
@@ -7734,6 +7760,7 @@ function renderProfileFoundation(){
   if($('hub-profile-name')) $('hub-profile-name').innerText=boxerDisplayName(profile);
   if($('hub-profile-country')) $('hub-profile-country').innerText=(profile.nickname?'"'+profile.nickname+'" • ':'')+profile.country;
   renderFighterCard(profile);
+  if($('hub-card-preview')) $('hub-card-preview').innerHTML=modularCardMarkup();
   if($('profile-username')) $('profile-username').innerText=S.player.username||'-';
   if($('profile-player-id')) $('profile-player-id').innerText=S.player.playerId||'-';
   if($('profile-avatar-style')) $('profile-avatar-style').innerText=[S.player.avatar?.skinTone,S.player.avatar?.hairStyle,S.player.avatar?.gloves].filter(Boolean).join(' / ')||'classic';
