@@ -1781,6 +1781,24 @@ body.final-card-open{overflow:hidden}
 .wheel-prize strong{font-family:'Bebas Neue',Impact,sans-serif;font-size:2rem;color:var(--gold);letter-spacing:.5px}
 .wheel-prize.pack{border-color:var(--gold);box-shadow:0 0 34px -10px var(--gold-glow)}
 
+/* ===== Daily Streak Track ===== */
+.wheel-streak-panel{margin:0 0 14px;padding:14px 12px 12px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(255,255,255,.06)}
+.wheel-streak-track{display:flex;gap:5px;justify-content:center;margin-bottom:10px}
+.wheel-streak-day{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;max-width:42px}
+.wheel-streak-day-num{font-size:.44rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28)}
+.wheel-streak-day-icon{width:34px;height:34px;border-radius:8px;border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .22s}
+.wheel-streak-day.done .wheel-streak-day-icon{border-color:rgba(227,178,60,.5);background:rgba(227,178,60,.1);font-size:.8rem}
+.wheel-streak-day.done .wheel-streak-day-num{color:rgba(227,178,60,.6)}
+.wheel-streak-day.current .wheel-streak-day-icon{border-color:var(--gold);background:rgba(227,178,60,.18);box-shadow:0 0 12px rgba(227,178,60,.3);transform:scale(1.08)}
+.wheel-streak-day.current .wheel-streak-day-num{color:var(--gold);font-size:.48rem}
+.wheel-streak-day.day7 .wheel-streak-day-icon{border-color:rgba(227,178,60,.35);background:rgba(227,178,60,.07)}
+.wheel-streak-info{text-align:center;font-size:.76rem;color:rgba(255,255,255,.42);line-height:1.55}
+.wheel-streak-info strong{color:#fff}
+.streak-day7-tease{color:#f6d768;font-weight:700}
+.wheel-prize.day7{border-color:#f6d768;box-shadow:0 0 40px -8px rgba(227,178,60,.55);background:linear-gradient(160deg,rgba(227,178,60,.13) 0%,var(--panel) 60%)}
+.wheel-prize.day7 .wheel-prize-label{color:#f6d768}
+.wheel-prize.day7 strong{color:#f6d768;text-shadow:0 0 18px rgba(227,178,60,.45)}
+
 /* ===== HOF world rank lines + profile card artwork ===== */
 .rank-hero{position:relative;padding:18px 16px 14px;margin-bottom:10px;border-radius:14px;background:linear-gradient(160deg,#0c0b12 0%,#100d08 100%);border:1.5px solid rgba(227,178,60,.3);text-align:center;overflow:hidden}
 .rank-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(227,178,60,.12) 0%,transparent 100%);pointer-events:none}
@@ -2323,7 +2341,11 @@ body.final-card-open{overflow:hidden}
     <h2>Daily Spin</h2>
     <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
   </div>
-  <p class="subtle">Spin once every 24 hours to win Play Money &mdash; or hit the jackpot for a free Mystery Art Pack.</p>
+  <p class="subtle">Spin once every 24 hours to win Play Money. Hit <strong>7 days in a row</strong> to earn a bonus <strong>Free Mystery Pack</strong>!</p>
+  <div id="wheel-streak-panel" class="wheel-streak-panel">
+    <div id="wheel-streak-track" class="wheel-streak-track"></div>
+    <div id="wheel-streak-info" class="wheel-streak-info"></div>
+  </div>
   <div class="wheel-wrap">
     <div class="wheel-pointer" aria-hidden="true"></div>
     <div id="wheel-spinner" class="wheel-spinner"></div>
@@ -7370,15 +7392,51 @@ const DAILY_WHEEL_COOLDOWN = 24*60*60*1000;
 const DAILY_WHEEL_LOCAL_KEY = 'unbeaten_daily_wheel_spin_v1';
 function localWheelSpinAt(){ try{ return Number(localStorage.getItem(DAILY_WHEEL_LOCAL_KEY))||0; }catch(e){ return 0; } }
 function markWheelSpun(ts){ try{ localStorage.setItem(DAILY_WHEEL_LOCAL_KEY, String(ts)); }catch(e){} }
+const DAILY_STREAK_KEY='unbeaten_daily_streak';
+const DAILY_STREAK_WINDOW=48*60*60*1000;
+const STREAK_TRACK=[
+  {day:1,icon:'🥊'},{day:2,icon:'💰'},{day:3,icon:'💰'},{day:4,icon:'⭐'},
+  {day:5,icon:'⭐'},{day:6,icon:'💎'},{day:7,icon:'🎁'}
+];
+function getDailyStreak(){ try{ return Math.max(0,Math.min(7,Number(localStorage.getItem(DAILY_STREAK_KEY))||0)); }catch(e){ return 0; } }
+function saveDailyStreak(n){ try{ localStorage.setItem(DAILY_STREAK_KEY,String(n)); }catch(e){} }
+function computeNextStreakDay(){
+  const last=localWheelSpinAt(); if(!last) return 1;
+  const gap=Date.now()-last; if(gap>DAILY_STREAK_WINDOW) return 1;
+  const cur=getDailyStreak(); return (cur<=0||cur>=7)?1:cur+1;
+}
+function renderWheelStreakPanel(){
+  const track=$('wheel-streak-track'),info=$('wheel-streak-info'); if(!track||!info) return;
+  const ready=dailyWheelReady(activeCardProfile());
+  const curDay=getDailyStreak();
+  const nextDay=ready?computeNextStreakDay():null;
+  const effectiveDone=(nextDay!==null&&nextDay<curDay)?0:curDay;
+  track.innerHTML=STREAK_TRACK.map(s=>{
+    let cls='wheel-streak-day'+(s.day===7?' day7':'');
+    const done=s.day<=effectiveDone;
+    if(done) cls+=' done';
+    else if(nextDay!==null&&s.day===nextDay) cls+=' current';
+    return '<div class="'+cls+'"><div class="wheel-streak-day-num">Day '+s.day+'</div><div class="wheel-streak-day-icon">'+(done?'✓':s.icon)+'</div></div>';
+  }).join('');
+  if(ready){
+    if(nextDay===7) info.innerHTML='<strong>Day 7 Bonus!</strong> — <span class="streak-day7-tease">🎁 Spin now to claim a FREE Mystery Pack!</span>';
+    else if(curDay===0) info.innerHTML='Start your daily streak! <span class="streak-day7-tease">7 days in a row = Free Pack 🎁</span>';
+    else info.innerHTML='<strong>Day '+nextDay+' of 7</strong> — Spin now to continue your streak';
+  } else {
+    if(curDay===7) info.innerHTML='<span class="streak-day7-tease">🎁 7-day streak complete!</span> New cycle starts tomorrow.';
+    else if(curDay>0){ const n=curDay+1; info.innerHTML='<strong>Day '+curDay+'/7 done</strong> — Come back tomorrow for Day '+n+(n===7?' <span class="streak-day7-tease">🎁 Free Pack!</span>':''); }
+    else info.innerHTML='Spin daily to build your streak. <span class="streak-day7-tease">Day 7 = Free Pack 🎁</span>';
+  }
+}
 const WHEEL_SEGMENTS = [
-  {label:'1',  type:'money', amount:1,  weight:22, color:'#ef6f5e'},
-  {label:'5',  type:'money', amount:5,  weight:10, color:'#60a5fa'},
-  {label:'2',  type:'money', amount:2,  weight:20, color:'#86efac'},
-  {label:'10', type:'money', amount:10, weight:6,  color:'#fb923c'},
-  {label:'FREE PACK', type:'pack', weight:3, color:'#ffdf7e'},
-  {label:'2',  type:'money', amount:2,  weight:20, color:'#c084fc'},
-  {label:'3',  type:'money', amount:3,  weight:13, color:'#5fe3d2'},
-  {label:'5',  type:'money', amount:5,  weight:10, color:'#f5d76b'}
+  {label:'50',       type:'money', amount:50,  weight:22, color:'#ef6f5e'},
+  {label:'200',      type:'money', amount:200, weight:8,  color:'#60a5fa'},
+  {label:'100',      type:'money', amount:100, weight:18, color:'#86efac'},
+  {label:'500',      type:'money', amount:500, weight:4,  color:'#fb923c'},
+  {label:'FREE PACK',type:'pack',              weight:3,  color:'#ffdf7e'},
+  {label:'100',      type:'money', amount:100, weight:18, color:'#c084fc'},
+  {label:'150',      type:'money', amount:150, weight:11, color:'#5fe3d2'},
+  {label:'200',      type:'money', amount:200, weight:8,  color:'#f5d76b'}
 ];
 let wheelSpinning=false, wheelRotation=0, wheelCountdownTimer=null;
 function dailyWheelReadyAt(profile){ profile=profile||activeCardProfile(); const last=Math.max(Number(profile&&profile.lastDailyWheelSpin)||0, localWheelSpinAt()); return last+DAILY_WHEEL_COOLDOWN; }
@@ -7395,7 +7453,20 @@ function buildWheelSvg(){
   }
   return '<svg viewBox="0 0 300 300" class="wheel-svg" aria-hidden="true"><circle cx="150" cy="150" r="147" fill="#0a0b0d" stroke="#33363f" stroke-width="3"/>'+paths+labels+'<circle cx="150" cy="150" r="29" fill="#0c0e12" stroke="#e3b23c" stroke-width="3"/><text x="150" y="156" text-anchor="middle" font-family="Bebas Neue, Impact, sans-serif" font-size="15" fill="#e3b23c" letter-spacing="1">SPIN</text></svg>';
 }
-function updateDailyWheelButton(){ const btn=$('daily-wheel-btn'); if(!btn) return; const ready=dailyWheelReady(activeCardProfile()); btn.innerHTML = ready ? '\uD83C\uDFA1 Daily Spin \u2022 Ready!' : '\uD83C\uDFA1 Daily Spin'; btn.classList.toggle('wheel-ready', ready); }
+function updateDailyWheelButton(){
+  const btn=$('daily-wheel-btn'); if(!btn) return;
+  const ready=dailyWheelReady(activeCardProfile());
+  if(ready){
+    const nextDay=computeNextStreakDay();
+    btn.innerHTML=nextDay===7?'\uD83C\uDFA1 Daily Spin \u2022 Ready! \uD83C\uDF81 Day 7!':'\uD83C\uDFA1 Daily Spin \u2022 Ready! \u2022 Day '+nextDay+'/7';
+  } else {
+    const ms=Math.max(0,dailyWheelReadyAt(activeCardProfile())-Date.now());
+    const curDay=getDailyStreak();
+    const timeHint=ms<120000?'Almost ready!':Math.ceil(ms/3600000)+'h';
+    btn.innerHTML='\uD83C\uDFA1 Daily Spin \u2022 '+timeHint+(curDay>0?' (Day '+curDay+'/7)':'');
+  }
+  btn.classList.toggle('wheel-ready', ready);
+}
 function stopWheelCountdown(){ if(wheelCountdownTimer){ clearInterval(wheelCountdownTimer); wheelCountdownTimer=null; } }
 function refreshWheelAvailability(){
   const ready=dailyWheelReady(activeCardProfile()), btn=$('wheel-spin-btn'), status=$('wheel-status');
@@ -7424,19 +7495,36 @@ function spinDailyWheel(){
   setTimeout(()=>finishWheelSpin(WHEEL_SEGMENTS[idx]), 4750);
 }
 function finishWheelSpin(seg){
-  wheelSpinning=false; const isPack=seg.type==='pack'; const now=Date.now(); markWheelSpun(now);
+  wheelSpinning=false;
+  const isPack=seg.type==='pack';
+  const now=Date.now();
+  const newStreakDay=computeNextStreakDay();
+  saveDailyStreak(newStreakDay);
+  const isDay7=newStreakDay===7;
+  markWheelSpun(now);
   mutateCardProfile(t=>{ t.lastDailyWheelSpin=now; if(!isPack){ t.playMoney=safeMoney(t.playMoney)+seg.amount; } });
-  if(isPack) playPackRevealSound('legendary'); else playWheelWin(seg.amount);
+  if(isPack||isDay7) playPackRevealSound('legendary'); else playWheelWin(seg.amount);
   const result=$('wheel-result');
-  if(result){ result.innerHTML = isPack
-      ? '<div class="wheel-prize pack"><span class="wheel-prize-label">Jackpot</span><strong>Free Pack!</strong></div>'
-      : '<div class="wheel-prize"><span class="wheel-prize-label">You won</span><strong>+'+seg.amount+' Play Money</strong></div>';
-    result.classList.remove('hidden'); }
-  updateDailyWheelButton(); refreshWheelAvailability();
-  if(isPack){ showToast('Daily Spin','Jackpot \u2014 free pack!'); setTimeout(grantFreePack,650); }
-  else showToast('Daily Spin','+'+seg.amount+' Play Money');
+  if(result){
+    let html;
+    if(isDay7&&isPack){
+      html='<div class="wheel-prize day7"><span class="wheel-prize-label">\ud83c\udf81 Epic Day 7!</span><strong>Double Pack!</strong><br><small style="color:rgba(255,255,255,.4);font-size:.68rem">Streak resets tomorrow</small></div>';
+    } else if(isDay7){
+      html='<div class="wheel-prize day7"><span class="wheel-prize-label">\ud83c\udf81 Day 7 Complete!</span><strong>Free Pack + +'+seg.amount+' PM</strong><br><small style="color:rgba(255,255,255,.4);font-size:.68rem">Streak resets tomorrow</small></div>';
+    } else if(isPack){
+      html='<div class="wheel-prize pack"><span class="wheel-prize-label">Jackpot</span><strong>Free Pack!</strong></div>';
+    } else {
+      html='<div class="wheel-prize'+(seg.amount>=300?' pack':'')+'"><span class="wheel-prize-label">Day '+newStreakDay+' reward</span><strong>+'+seg.amount+' Play Money</strong></div>';
+    }
+    result.innerHTML=html; result.classList.remove('hidden');
+  }
+  updateDailyWheelButton(); refreshWheelAvailability(); renderWheelStreakPanel();
+  if(isDay7&&isPack){ showToast('Epic Day 7!','\ud83c\udf81 \xD7 2 \u2014 Double Pack!'); setTimeout(grantFreePack,650); setTimeout(grantFreePack,2200); }
+  else if(isDay7){ showToast('Day 7 Streak Complete!','\ud83c\udf81 Free Pack bonus incoming!'); setTimeout(grantFreePack,650); }
+  else if(isPack){ showToast('Daily Spin','Jackpot \u2014 free pack!'); setTimeout(grantFreePack,650); }
+  else showToast('Daily Spin \u2022 Day '+newStreakDay,'+'+seg.amount+' Play Money');
 }
-function renderDailyWheel(){ const wrap=$('wheel-spinner'); if(wrap && wrap.dataset.built!=='1'){ wrap.innerHTML=buildWheelSvg(); wrap.dataset.built='1'; } updateWalletDisplays(); refreshWheelAvailability(); }
+function renderDailyWheel(){ const wrap=$('wheel-spinner'); if(wrap && wrap.dataset.built!=='1'){ wrap.innerHTML=buildWheelSvg(); wrap.dataset.built='1'; } updateWalletDisplays(); refreshWheelAvailability(); renderWheelStreakPanel(); }
 function openDailyWheel(){ renderDailyWheel(); screen('wheel-screen'); }
 function closeDailyWheel(){ stopWheelCountdown(); refreshMenu(); screen('menu-screen'); }
 try{ if(typeof window!=='undefined'){ window.openDailyWheel=openDailyWheel; window.closeDailyWheel=closeDailyWheel; window.spinDailyWheel=spinDailyWheel; } }catch(e){}
