@@ -1047,10 +1047,14 @@ h2:first-child{margin-top:6px}
 .career-cosmetic-label::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(230,194,71,.45)}
 .career-summary-panel .tag-row{margin-top:9px}
 .career-summary-panel .belt-row{margin-top:8px}
-.hub-card-hero{display:flex;flex-direction:column;align-items:center;padding:14px 0 16px;gap:12px;background:linear-gradient(180deg,rgba(227,178,60,.06) 0%,transparent 100%);margin-bottom:4px}
-.hub-hero-label{font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(227,178,60,.6)}
-.hub-card-hero .modular-card{width:min(100%,260px)!important}
-.hub-hero-tags{justify-content:center;flex-wrap:wrap}
+.hub-card-hero{display:flex;flex-direction:column;align-items:center;padding:22px 0 18px;gap:14px;position:relative;overflow:hidden;margin-bottom:8px}
+.hub-card-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 110% 80% at 50% 30%,rgba(227,178,60,.14) 0%,rgba(0,0,0,0) 68%);pointer-events:none;z-index:0}
+.hub-card-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(227,178,60,.25),transparent);pointer-events:none;z-index:0}
+.hub-hero-label{font-size:.58rem;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:rgba(227,178,60,.55);position:relative;z-index:1}
+.hub-card-hero #hub-card-preview{position:relative;z-index:1}
+.hub-card-hero .modular-card{width:min(100%,300px)!important;filter:drop-shadow(0 6px 28px rgba(227,178,60,.22)) drop-shadow(0 12px 40px rgba(0,0,0,.75))}
+.hub-hero-tags{justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.hub-card-hero .belt-row{position:relative;z-index:1}
 .hub-section{border-bottom:1px solid var(--line)}
 .hub-section>summary{display:flex;align-items:center;justify-content:space-between;padding:13px 0;cursor:pointer;list-style:none;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--text);user-select:none;-webkit-tap-highlight-color:transparent}
 .hub-section>summary::-webkit-details-marker{display:none}
@@ -1990,13 +1994,6 @@ body.final-card-open{overflow:hidden}
     <summary>Traits &amp; Synergies</summary>
     <div class="hub-section-body">
       <div id="hub-traits" class="career-summary-chips"></div>
-    </div>
-  </details>
-  <!-- Equipped Cosmetics -->
-  <details class="hub-section">
-    <summary>Equipped Cosmetics</summary>
-    <div class="hub-section-body">
-      <div id="hub-equipped-cosmetics" class="career-summary-cosmetics"></div>
     </div>
   </details>
   <!-- Wallet & Lifetime Stats -->
@@ -7743,13 +7740,6 @@ function renderFighterCard(profile){
   if($('fighter-card-kos')) $('fighter-card-kos').innerText=String(S.career.kos||0);
   if($('fighter-card-rank')) $('fighter-card-rank').innerText='#'+(S.career.worldRank||60);
   if($('fighter-card-legacy')) $('fighter-card-legacy').innerText=String(leg().score);
-  const slotBox=$('hub-equipped-cosmetics');
-  if(slotBox){
-    slotBox.innerHTML=['gloves','shorts','boots','robe','tattoo'].map(slot=>{
-      const cosmetic=equippedCosmetic(profile, slot);
-      return '<span class="career-cosmetic-label">'+htmlEscape(cosmetic.name)+'</span>';
-    }).join('');
-  }
 }
 function renderProfileFoundation(){
   if(!S.player) return;
