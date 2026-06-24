@@ -1106,6 +1106,8 @@ h2:first-child{margin-top:6px}
 .leaderboard-build-chips{display:flex;gap:6px;flex-wrap:wrap}
 .leaderboard-build-chip{padding:5px 7px;border:1px solid var(--line);border-radius:999px;background:#050608;color:#d6d8de;font-size:.58rem;font-weight:900}
 .leaderboard-build-chip.synergy{border-color:rgba(230,194,71,.42);color:var(--gold)}
+.lb-profile-card{display:flex;justify-content:center;margin:0 auto 14px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.lb-profile-card .profile-card-art{margin:0;max-width:240px}
 .final-showcase-card .avatar-portrait-stage{height:205px}
 .final-showcase-card .creator-boxer-img{height:116%}
 .final-avatar-preview{position:relative;z-index:2;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
@@ -2436,7 +2438,7 @@ body.final-card-open{overflow:hidden}
 <section id="public-profile-detail-screen" class="screen">
   <h2 id="public-profile-title">Player Profile</h2>
   <div id="public-profile-content"></div>
-  <button class="btn blue" onclick="openPublicProfiles()">Back To Search</button>
+  <button class="btn blue" onclick="closePublicProfileDetail()">Back</button>
 </section>
 
 <section id="cloud-leaderboards-screen" class="screen">
@@ -6920,12 +6922,13 @@ function leaderboardBuildMarkup(entry, cacheKey){
   const synergies=Array.isArray(build.synergies)?build.synergies:[];
   const cosmeticNames=Object.values(data.equippedCosmetics).map(id=>COSMETIC_DEFINITIONS[id]?.name||id).filter(Boolean);
   const cardStats=[{label:'Record',value:data.record},{label:'KOs',value:String(data.kos)},{label:'Legacy',value:String(data.legacy)},{label:'Rank',value:data.peakWorldRank?'#'+data.peakWorldRank:'-'},{label:'Belts',value:String(data.belts)},{label:'Earned',value:compactCardMoney(data.earnings)}];
-  const cardHtml=data.equippedCardItems?'<div class="profile-card-art" style="max-width:220px">'+modularCardMarkupFrom({name:data.cardName||data.name,nickname:data.nickname,ovr:data.ovr,equippedCardItems:data.equippedCardItems,ownedCardItems:data.ownedCardItems,stats:cardStats})+'</div>':'<span class="career-summary-empty">Full fighter build data is not available for this older entry.</span>';
+  const cardHtml=data.equippedCardItems?'<div class="lb-profile-card"><div class="profile-card-art">'+modularCardMarkupFrom({name:data.cardName||data.name,nickname:data.nickname,ovr:data.ovr,equippedCardItems:data.equippedCardItems,ownedCardItems:data.ownedCardItems,stats:cardStats})+'</div></div>':'';
   const cached=leaderboardBuildCache.get(cacheKey);
   const profileButton=cached?.profileUid?'<button class="btn ghost" onclick="openLeaderboardBuildProfile(\''+cacheKey+'\')">View Player Profile</button>':'';
-  return '<div class="leaderboard-build-hero"><div class="leaderboard-build-avatar">'+avatarMarkup(data.avatar,data.equippedCosmetics)+'</div><div><div class="leaderboard-build-name">'+htmlEscape(data.name)+'</div><div class="leaderboard-build-sub">'+htmlEscape('"'+data.nickname+'"')+(data.country?' / '+htmlEscape(data.country):'')+'<br>'+htmlEscape(data.username)+(data.mode?' / '+htmlEscape(data.mode):'')+'<br>'+htmlEscape(data.identity)+'</div></div></div>'+
+  return cardHtml+
+    '<div class="leaderboard-build-hero"><div class="leaderboard-build-avatar">'+avatarMarkup(data.avatar,data.equippedCosmetics)+'</div><div><div class="leaderboard-build-name">'+htmlEscape(data.name)+'</div><div class="leaderboard-build-sub">'+htmlEscape('"'+data.nickname+'"')+(data.country?' / '+htmlEscape(data.country):'')+'<br>'+htmlEscape(data.username)+(data.mode?' / '+htmlEscape(data.mode):'')+'<br>'+htmlEscape(data.identity)+'</div></div></div>'+
     '<div class="leaderboard-build-metrics"><div class="leaderboard-build-metric"><span>OVR</span><strong>'+htmlEscape(data.ovr)+'</strong></div><div class="leaderboard-build-metric"><span>Record</span><strong>'+htmlEscape(data.record)+'</strong></div><div class="leaderboard-build-metric"><span>KOs</span><strong>'+htmlEscape(data.kos)+'</strong></div><div class="leaderboard-build-metric"><span>Legacy</span><strong>'+htmlEscape(data.legacy)+'</strong></div><div class="leaderboard-build-metric"><span>Traits</span><strong>'+traits.length+'</strong></div><div class="leaderboard-build-metric"><span>Synergies</span><strong>'+synergies.length+'</strong></div></div>'+
-    '<div class="leaderboard-build-section"><h3>Fighter Card</h3>'+cardHtml+'</div>'+
+    (data.equippedCardItems?'':'<div class="leaderboard-build-section"><h3>Fighter Card</h3><span class="career-summary-empty">Full fighter build data is not available for this older entry.</span></div>')+
     '<div class="leaderboard-build-section"><h3>Final Attributes And Sources</h3><div class="leaderboard-build-stats">'+statsHtml+'</div></div>'+
     '<div class="leaderboard-build-section"><h3>Traits</h3><div class="leaderboard-build-chips">'+(traits.length?traits.map(t=>'<span class="leaderboard-build-chip">'+htmlEscape(t.name||t.id||'Trait')+'</span>').join(''):'<span class="career-summary-empty">No trait data saved.</span>')+'</div></div>'+
     '<div class="leaderboard-build-section"><h3>Synergies</h3><div class="leaderboard-build-chips">'+(synergies.length?synergies.map(s=>'<span class="leaderboard-build-chip synergy">'+htmlEscape(s.name||s.id||'Synergy')+'</span>').join(''):'<span class="career-summary-empty">No synergy data saved.</span>')+'</div></div>'+
@@ -6940,6 +6943,8 @@ function openLeaderboardBuild(cacheKey){
     console.error('Fighter build render error',e);
     content.innerHTML='<div class="empty-state">Unable to display this fighter build.</div>';
   }
+  const titleEl=$('leaderboard-build-title');
+  if(titleEl) titleEl.innerText=cached.entry?.equippedCardItems?'Fighter Profile':'Fighter Build';
   modal.classList.remove('hidden');
   modal.scrollTop=0;
   document.body.classList.add('final-card-open');
@@ -6949,10 +6954,12 @@ function closeLeaderboardBuild(){
   $('leaderboard-build-modal')?.classList.add('hidden');
   document.body.classList.remove('final-card-open');
 }
+let profileDetailReturnScreen='public-profiles-screen';
+function closePublicProfileDetail(){ screen(profileDetailReturnScreen||'public-profiles-screen'); }
 function openLeaderboardBuildProfile(cacheKey){
   const uid=leaderboardBuildCache.get(cacheKey)?.profileUid;
   closeLeaderboardBuild();
-  if(uid) openPublicProfileDetail(uid);
+  if(uid) openPublicProfileDetail(uid,'cloud-leaderboards-screen');
 }
 document.addEventListener('keydown',event=>{ if(event.key==='Escape') closeLeaderboardBuild(); });
 function readCreatorProfile(){
@@ -9295,7 +9302,8 @@ function publicRetiredBuildCard(entry){
   const key=cacheLeaderboardBuild(entry), tierId=entry.finalCardTierId||'bronze';
   return '<div class="retired-card"><div class="fighter-card retired-fut '+tierId+'"><div class="fighter-card-top"><div class="fighter-card-ovr"><strong>'+(entry.overallRating||entry.finalRating||50)+'</strong><span>OVR</span></div><div class="fighter-card-tier">'+htmlEscape(entry.finalCardTier||'Retired')+'</div></div><div class="fighter-card-avatar">'+avatarMarkup(entry.avatar,entry.equippedCosmetics)+'</div><div class="fighter-card-name">'+htmlEscape(entry.boxerName||entry.fighterName||'Retired Fighter')+'</div><div class="fighter-card-nick">'+htmlEscape(entry.username||'Player')+'</div><div class="fighter-card-stats"><div class="fighter-card-stat"><span>Record</span><strong>'+htmlEscape(entry.finalRecord||entry.record||'0-0')+'</strong></div><div class="fighter-card-stat"><span>Score</span><strong>'+(entry.legacyScore||entry.careerLegacyScore||0)+'</strong></div><div class="fighter-card-stat"><span>KOs</span><strong>'+(entry.koCount||entry.koWins||0)+'</strong></div></div></div><button class="btn blue" onclick="openLeaderboardBuild(\''+key+'\')">View Fighter Build</button></div>';
 }
-async function openPublicProfileDetail(uid){
+async function openPublicProfileDetail(uid, returnScreen='public-profiles-screen'){
+  profileDetailReturnScreen=returnScreen;
   try{
     const snap=await db.collection('public_profiles').doc(uid).get();
     if(!snap.exists){ showToast('Profile Missing','This profile is no longer available.'); return; }
