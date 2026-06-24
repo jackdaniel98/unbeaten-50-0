@@ -1417,7 +1417,7 @@ body.final-card-open{overflow:hidden}
 .modular-card-background,.modular-card-frame{inset:0;width:100%;height:100%}
 .modular-card-background{z-index:0;object-fit:cover}
 .modular-card-aura,.modular-card-character{left:0;top:7%;width:100%;height:69%;object-fit:contain;object-position:center bottom}
-.modular-card-aura{z-index:1;opacity:.88}.modular-card-character{z-index:2}.modular-card-frame{z-index:3}
+.modular-card-aura{z-index:1;opacity:.88;mix-blend-mode:screen}.modular-card-character{z-index:2}.modular-card-frame{z-index:3}
 .modular-card-copy{position:absolute;z-index:4;color:#f8fafc;text-align:center;text-shadow:0 2px 4px #000;pointer-events:none}
 .modular-card-ovr{left:6.7%;top:78.6%;width:21.5%;height:13.4%;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .modular-card-ovr strong{font-family:'Bebas Neue',Impact,sans-serif;font-size:2rem;line-height:.82;color:#f6d768}
@@ -6854,8 +6854,8 @@ function modularCardMarkup(profile=activeCardProfile()){
   return '<div class="modular-card" role="img" aria-label="'+htmlEscape(data.name)+' fighter card">'+
     '<img class="modular-card-background" src="'+assets.background.asset+'" alt="">'+
     '<img class="modular-card-aura" src="'+assets.aura.asset+'" alt="">'+
-    '<img class="modular-card-character" src="'+assets.character.asset+'" alt="">'+
-    '<img class="modular-card-frame" src="'+assets.frame.asset+'" alt="">'+
+    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this)" alt="">'+
+    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" alt="">'+
     '<div class="modular-card-copy modular-card-ovr"><strong>'+data.ovr+'</strong><span>OVR</span></div>'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(data.name)+'</strong><span>'+htmlEscape(data.nickname)+'</span></div>'+
     '<div class="modular-card-stats">'+data.stats.map(stat=>'<div class="modular-card-stat"><strong>'+htmlEscape(stat.value)+'</strong><span>'+htmlEscape(stat.label)+'</span></div>').join('')+'</div>'+
@@ -6869,6 +6869,27 @@ function gatherRankPool(){ const pool=[]; const selfId=S.career&&S.career.retire
 function computeCareerRanks(myScore){ const pool=gatherRankPool(), myKey=rankSeasonKey(Date.now()); const allTotal=pool.length+1, allRank=1+pool.filter(c=>c.score>myScore).length; const seasonPool=pool.filter(c=>rankSeasonKey(c.date)===myKey); const seasonTotal=seasonPool.length+1, seasonRank=1+seasonPool.filter(c=>c.score>myScore).length; return {allRank,allTotal,seasonRank,seasonTotal}; }
 function renderCareerWorldRanks(score){ const ranks=computeCareerRanks(score); const a=$('hof-rank-alltime'), s=$('hof-rank-season'); if(a){ a.innerHTML = ranks.allRank===1 ? '\uD83C\uDF0D This attempt ranked <strong>#1 in the world!</strong>' : 'All-Time: this attempt ranked <strong>'+rankOrdinal(ranks.allRank)+'</strong> in the world'; } if(s){ s.innerHTML = ranks.seasonRank===1 ? 'This Season: ranked <strong>#1</strong> &mdash; season leader!' : 'This Season: ranked <strong>'+rankOrdinal(ranks.seasonRank)+'</strong> of '+ranks.seasonTotal; } return ranks; }
 // ---- Modular card render from explicit data (other players / snapshots) ----
+const _bgCache=new Map();
+function bgRemove(img){
+  if(img.dataset.bgr) return;
+  img.dataset.bgr='1';
+  const orig=img.src;
+  if(_bgCache.has(orig)){img.src=_bgCache.get(orig);return;}
+  try{
+    const c=document.createElement('canvas');
+    c.width=img.naturalWidth;c.height=img.naturalHeight;
+    const x=c.getContext('2d');
+    x.drawImage(img,0,0);
+    const d=x.getImageData(0,0,c.width,c.height),p=d.data;
+    for(let i=0;i<p.length;i+=4){
+      if(p[i]>235&&p[i+1]>235&&p[i+2]>235) p[i+3]=0;
+    }
+    x.putImageData(d,0,0);
+    const url=c.toDataURL('image/png');
+    _bgCache.set(orig,url);
+    img.src=url;
+  }catch(e){console.warn('bgRemove:',e);}
+}
 function modularCardMarkupFrom(opts){
   opts=opts||{};
   const owned=createOwnedCardItems(opts.ownedCardItems), equipped=createEquippedCardItems(opts.equippedCardItems, owned);
@@ -6877,8 +6898,8 @@ function modularCardMarkupFrom(opts){
   return '<div class="modular-card" role="img" aria-label="'+htmlEscape(name)+' fighter card">'+
     '<img class="modular-card-background" src="'+assets.background.asset+'" alt="">'+
     '<img class="modular-card-aura" src="'+assets.aura.asset+'" alt="">'+
-    '<img class="modular-card-character" src="'+assets.character.asset+'" alt="">'+
-    '<img class="modular-card-frame" src="'+assets.frame.asset+'" alt="">'+
+    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this)" alt="">'+
+    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" alt="">'+
     '<div class="modular-card-copy modular-card-ovr"><strong>'+htmlEscape(ovr)+'</strong><span>OVR</span></div>'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(name)+'</strong><span>'+htmlEscape(nickname)+'</span></div>'+
     '<div class="modular-card-stats">'+stats.map(s=>'<div class="modular-card-stat"><strong>'+htmlEscape(s.value)+'</strong><span>'+htmlEscape(s.label)+'</span></div>').join('')+'</div>'+
