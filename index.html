@@ -1614,6 +1614,38 @@ body.final-card-open{overflow:hidden}
 .sim-main{font-size:.98rem;color:var(--text);font-weight:600;margin-bottom:4px}
 .sim-milestone-badge{background:var(--gold);color:#16120a;font-weight:700;border-radius:5px}
 
+/* --- Sim Overlay Enhancements --- */
+.sim-live-record{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;padding:9px 13px;background:rgba(0,0,0,.45);border-radius:8px;border:1px solid rgba(255,255,255,.07);align-items:center}
+.sim-rec-chunk{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:44px}
+.sim-rec-chunk strong{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.15rem;color:#fff;line-height:1}
+.sim-rec-chunk span{font-size:.46rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.sim-rec-chunk.perfect strong{color:#e3b23c;text-shadow:0 0 10px rgba(227,178,60,.4)}
+.sim-rec-divider{width:1px;height:26px;background:rgba(255,255,255,.08)}
+@keyframes koBadgePop{0%{transform:scale(1.6);opacity:.5}100%{transform:scale(1);opacity:1}}
+.sim-item.ko{border-left:5px solid #ef4444;background:linear-gradient(120deg,rgba(239,68,68,.09) 0%,var(--panel) 55%)}
+.sim-ko-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;background:#ef4444;color:#fff;font-size:.55rem;font-weight:900;letter-spacing:.6px;text-transform:uppercase;margin-left:6px;animation:koBadgePop .45s ease-out;flex-shrink:0;vertical-align:middle}
+.sim-item.title-won{border-left:5px solid #e3b23c;background:linear-gradient(120deg,rgba(227,178,60,.11) 0%,var(--panel) 65%);box-shadow:0 0 0 1px rgba(227,178,60,.28),0 0 22px rgba(227,178,60,.1)}
+.sim-belt-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.sim-belt-chip{font-size:.58rem;font-weight:900;padding:3px 8px;border-radius:4px;border:1px solid rgba(227,178,60,.5);background:rgba(227,178,60,.12);color:#f6d768;letter-spacing:.5px;text-transform:uppercase}
+.sim-item.first-loss{border-left:5px solid #ef4444;background:linear-gradient(120deg,rgba(239,68,68,.13) 0%,var(--panel) 65%);box-shadow:0 0 0 1px rgba(239,68,68,.22),0 0 18px rgba(239,68,68,.08)}
+.sim-loss-headline{font-size:.65rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:#ff6b6b;margin-bottom:5px}
+.sim-career-summary{margin:10px 0 0;padding:18px;border-radius:12px;border:1px solid rgba(227,178,60,.3);background:linear-gradient(180deg,rgba(227,178,60,.06) 0%,rgba(0,0,0,.35) 100%);position:relative;overflow:hidden}
+.sim-career-summary.fifty-zero{border-color:rgba(227,178,60,.65);box-shadow:0 0 0 1px rgba(227,178,60,.3),0 0 40px rgba(227,178,60,.18)}
+.sim-summary-hl{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.6rem;color:#e3b23c;line-height:1;text-align:center;margin-bottom:3px;letter-spacing:.04em}
+.sim-summary-hl.fifty-zero{font-size:2.6rem;color:#f6d768;text-shadow:0 0 28px rgba(227,178,60,.55),0 0 56px rgba(227,178,60,.22)}
+.sim-summary-sub{font-size:.74rem;color:rgba(255,255,255,.45);text-align:center;margin-bottom:14px;line-height:1.4}
+.sim-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.sim-summary-cell{background:rgba(0,0,0,.4);border-radius:8px;padding:9px 8px;text-align:center}
+.sim-summary-cell strong{display:block;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.2rem;color:#fff;line-height:1;margin-bottom:2px}
+.sim-summary-cell span{font-size:.46rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.sim-summary-card-wrap{display:flex;justify-content:center;margin:12px 0}
+.sim-summary-card-wrap .modular-card{width:min(100%,210px)!important;filter:drop-shadow(0 6px 22px rgba(227,178,60,.2)) drop-shadow(0 10px 30px rgba(0,0,0,.7))}
+.sim-summary-story{font-size:.78rem;color:#c8ccd6;text-align:center;line-height:1.5;padding-top:10px;border-top:1px solid rgba(255,255,255,.07);margin-top:10px}
+.sim-summary-share{width:100%;margin-top:10px}
+.sim-confetti-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(-20px) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(160px) rotate(540deg) scale(.6)}}
+.confetti-bit{position:absolute;width:7px;height:7px;border-radius:2px;animation:confettiFall linear forwards}
+
 /* Trading-card (FUT-style) — refine frame only, keep identity */
 .fighter-card{border-radius:var(--radius-lg)}
 
@@ -2350,6 +2382,7 @@ body.final-card-open{overflow:hidden}
     <div class="sim-header">
       <h2>Career Simulation</h2>
       <p class="subtle" id="sim-subtitle" style="margin-bottom:0">Running bouts...</p>
+      <div id="sim-live-record" class="sim-live-record" style="display:none"></div>
     </div>
     <div class="sim-body fight-results-box">
       <div id="sim-list" class="sim-list"></div>
@@ -7850,14 +7883,112 @@ function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) e
 function histLine(bout,opp,icon,res,purseAmt,rank,arrow){ let line='Bout '+bout+': '+icon+' '+res+' vs '+opp; if(S.fight.method) line+=' ('+S.fight.method+(S.fight.detail?' • '+S.fight.detail:'')+')'; line+=' +'+cash(purseAmt)+' • World Rank #'+rank+' '+arrow; return line; }
 function finishBout(batch=false){ const isWin=S.fight.winner==='p1', isDraw=S.fight.winner==='draw', purseAmt=purse(), prev=S.career.worldRank, bout=S.career.currentFight, opp=S.opponent.Name, title=S.opponent.TitleOnLine; S.career.bestPurse=Math.max(S.career.bestPurse||0, purseAmt); if(isWin){ S.career.wins++; S.career.winStreak++; S.career.bestWinStreak=Math.max(S.career.bestWinStreak,S.career.winStreak); if(['KO','TKO','RTD'].includes(S.fight.method)) S.career.kos++; S.career.earnings+=purseAmt; if(title&&!S.career.belts.includes(title)) S.career.belts.push(title); if(title&&S.career.belts.includes(title)) S.career.titleDef++; S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-3); } else if(isDraw){ S.career.draws++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.45); S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-2); } else { S.career.losses++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.18); if(S.career.belts.length>0&&title) S.career.belts.pop(); S.career.recentLossPenalty+=2; if(S.career.worldRank===1) S.career.recentLossPenalty+=2; } S.career.currentFight++; recalcRank(); if(prev===1&&!isWin) S.career.worldRank=Math.max(2,Math.min(6,S.career.worldRank+rand(1,2))); const arrow=S.career.worldRank<prev?'⬆️':S.career.worldRank>prev?'⬇️':'➡️'; let line=''; if(isWin){ line=histLine(bout,opp,'✅','W',purseAmt,S.career.worldRank,arrow); if(title) line+=' 👑 '+title; } else if(isDraw) line=histLine(bout,opp,'🤝','D',Math.floor(purseAmt*.45),S.career.worldRank,arrow); else line=histLine(bout,opp,'❌','L',Math.floor(purseAmt*.18),S.career.worldRank,arrow); S.career.history.unshift(line); if(S.career.history.length>6) S.career.history.pop(); S.career.fullHistory.unshift(line); if(S.career.fullHistory.length>200) S.career.fullHistory=S.career.fullHistory.slice(0,200); if(S.career.currentFight>50){ clearCareer(); S.opponent=null; updateHub(); if(batch) S.pendingHof=true; else triggerHof(); } else { generateOpponent(); updateHub(); saveCareer(); if(!batch) screen('hub-screen'); } }
 function simResult(){ if(!S.opponent) generateOpponent(); const bout=S.career.currentFight, opp=S.opponent.Name, tier=S.opponent.Tier, title=S.opponent.TitleOnLine; S.fight=makeFight(); while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); const p=purse(), method=S.fight.method, detail=S.fight.detail||(method==='Draw'?'Even After 12':'Official Result'), pre=S.career.worldRank, kind=S.fight.winner==='p1'?'win':S.fight.winner==='p2'?'loss':'draw', ins=fightInsight(kind); const isMilestone = MILESTONES.includes(bout); finishBout(true); const post=S.career.worldRank, rankText='World Rank #'+post+' '+(post<pre?'⬆️':post>pre?'⬇️':'➡️'); if(kind==='win') return {bout,type:'win',outcome:(['KO','TKO','RTD'].includes(method)?'WIN • '+method:'WIN • DEC'),main:S.player.Name+' beat '+opp,method:method+(detail?' '+detail:''),sub:tier+(title?' • Won '+title:'')+' • '+cash(p)+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; if(kind==='loss') return {bout,type:'loss',outcome:(['KO','TKO','RTD'].includes(method)?'LOSS • '+method:'LOSS • DEC'),main:S.player.Name+' lost to '+opp,method:method+(detail?' • '+detail:''),sub:tier+(title?' • '+title+' slipped away':'')+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; return {bout,type:'draw',outcome:'DRAW',main:S.player.Name+' drew with '+opp,method:method+(detail?' • '+detail:''),sub:tier+' • Tough, close fight • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone}; }
-function openOverlay(title){ $('sim-overlay').classList.remove('hidden'); $('sim-list').innerHTML=''; $('sim-subtitle').innerText=title||'Running bouts...'; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; $('sim-close-btn').classList.add('hidden'); $('sim-next-tease').classList.add('hidden'); }
+function openOverlay(title){ $('sim-overlay').classList.remove('hidden'); $('sim-list').innerHTML=''; $('sim-subtitle').innerText=title||'Running bouts...'; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; $('sim-close-btn').classList.add('hidden'); $('sim-next-tease').classList.add('hidden'); const _slr=$('sim-live-record'); if(_slr){_slr.style.display='none'; _slr.innerHTML='';} }
 function closeOverlay(){ $('sim-overlay').classList.add('hidden'); if(S.pendingHof){ S.pendingHof=false; triggerHof(); } else { updateHub(); screen('hub-screen'); } }
 function toggleFast(){ S.fast=!S.fast; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; }
-function addSimCard(r){ const item=document.createElement('div'); item.className='sim-item '+r.type+(r.titleFight?' title':'')+(r.milestone?' milestone':''); let milestoneHtml = r.milestone ? '<span class="sim-milestone-badge">Milestone</span>' : ''; item.innerHTML='<div class="sim-top"><div class="sim-bout">Bout '+r.bout+'/50'+milestoneHtml+'</div><div class="sim-outcome '+r.type+'">'+r.outcome+'</div></div><div class="sim-main">'+r.main+'</div><div class="sim-method">'+r.method+'</div><div class="sim-sub">'+r.sub+'</div><div class="sim-insight">'+r.insight+'</div>'; const list=$('sim-list'); list.appendChild(item); list.parentElement.scrollTop=list.parentElement.scrollHeight; }
+function addSimCard(r){
+  const isKO=r.type==='win'&&(r.outcome.includes('• KO')||r.outcome.includes('• TKO')||r.outcome.includes('• RTD'));
+  const isTitleWin=r.titleFight&&r.type==='win';
+  const isFirstLoss=r.firstLoss===true;
+  let classes='sim-item '+r.type;
+  if(isKO) classes+=' ko';
+  if(isTitleWin) classes+=' title-won';
+  else if(r.titleFight) classes+=' title';
+  if(r.milestone) classes+=' milestone';
+  if(isFirstLoss) classes+=' first-loss';
+  const koType=isKO?(r.outcome.split('• ')[1]||'KO'):'';
+  const milestoneHtml=r.milestone?'<span class="sim-milestone-badge">Milestone</span>':'';
+  const koBadgeHtml=isKO?'<span class="sim-ko-badge">'+htmlEscape(koType)+'</span>':'';
+  let beltRowHtml='';
+  if(isTitleWin){
+    const bm=r.sub.match(/Won (\w+)/);
+    const bn=bm?bm[1]:'';
+    beltRowHtml='<div class="sim-belt-row"><span class="sim-belt-chip">🏆 '+htmlEscape(bn)+' WORLD CHAMPION</span></div>';
+  }
+  const lossHtml=isFirstLoss?'<div class="sim-loss-headline">⚠ Unbeaten run ended</div>':'';
+  const item=document.createElement('div');
+  item.className=classes;
+  item.innerHTML=lossHtml+
+    '<div class="sim-top"><div class="sim-bout">Bout '+r.bout+'/50'+milestoneHtml+'</div><div class="sim-outcome '+r.type+'">'+r.outcome+koBadgeHtml+'</div></div>'+
+    '<div class="sim-main">'+r.main+'</div>'+
+    '<div class="sim-method">'+r.method+'</div>'+
+    '<div class="sim-sub">'+r.sub+'</div>'+
+    beltRowHtml+
+    '<div class="sim-insight">'+r.insight+'</div>';
+  const list=$('sim-list');
+  list.appendChild(item);
+  list.parentElement.scrollTop=list.parentElement.scrollHeight;
+}
 function showNextTease(){ const tease = $('sim-next-tease'); if(S.career.currentFight <= 50 && S.opponent){ tease.innerHTML = '⚡ <strong>Next up:</strong> '+S.opponent.Name+' ('+S.opponent.Tier+')'; tease.classList.remove('hidden'); } else { tease.classList.add('hidden'); } }
 function disableHub(dis){ $('enter-ring-btn').disabled=dis; document.querySelectorAll('.sim-btn').forEach(b=>b.disabled=dis); }
-async function simMany(count){ if(S.career.currentFight>50||S.batch) return; S.batch=true; S.pendingHof=false; openOverlay('Simulating '+count+' bout'+(count>1?'s':'')+'...'); disableHub(true); let shown=0; try{ for(let i=0;i<count;i++){ if(S.career.currentFight>50) break; const r=simResult(); addSimCard(r); shown++; const delay=S.fast?80:(r.outcome.includes('KO')||r.outcome.includes('TKO')||r.outcome.includes('RTD'))?600:350; await sleep(delay); } }catch(e){ console.error(e); $('sim-subtitle').innerText='Simulation error: '+e.message; } $('sim-subtitle').innerText='Simulation complete • '+shown+' result'+(shown!==1?'s':'')+' shown'; showNextTease(); $('sim-close-btn').classList.remove('hidden'); $('sim-close-btn').innerText=S.pendingHof?'View Hall of Fame':'Return To Hub'; disableHub(false); S.batch=false; }
+async function simMany(count){ if(S.career.currentFight>50||S.batch) return; S.batch=true; S.pendingHof=false; openOverlay('Simulating '+count+' bout'+(count>1?'s':'')+'...'); disableHub(true); let shown=0; try{ for(let i=0;i<count;i++){ if(S.career.currentFight>50) break; const prevUnbeaten=S.career.losses===0; const r=simResult(); if(prevUnbeaten&&r.type==='loss') r.firstLoss=true; addSimCard(r); shown++; updateSimLiveRecord(); const delay=S.fast?80:(r.outcome.includes('KO')||r.outcome.includes('TKO')||r.outcome.includes('RTD'))?600:350; await sleep(delay); } }catch(e){ console.error(e); $('sim-subtitle').innerText='Simulation error: '+e.message; } $('sim-subtitle').innerText='Simulation complete • '+shown+' result'+(shown!==1?'s':'')+' shown'; showNextTease(); $('sim-close-btn').classList.remove('hidden'); $('sim-close-btn').innerText=S.pendingHof?'View Hall of Fame':'Return To Hub'; renderSimCareerSummary(); disableHub(false); S.batch=false; }
 async function simAll(){ if(S.career.currentFight>50||S.batch) return; await simMany(51-S.career.currentFight); }
+function updateSimLiveRecord(){
+  const el=$('sim-live-record'); if(!el||!S.career) return;
+  const c=S.career, isPerfect=c.losses===0&&c.draws===0&&c.wins>0;
+  const nextFight=c.currentFight<=50?c.currentFight:null;
+  const rec=c.wins+'-'+c.losses+(c.draws>0?'-'+c.draws:'');
+  el.style.display='flex';
+  el.innerHTML=
+    '<div class="sim-rec-chunk'+(isPerfect?' perfect':'')+'"><strong>'+rec+'</strong><span>Record</span></div>'+
+    '<div class="sim-rec-divider"></div>'+
+    '<div class="sim-rec-chunk"><strong>'+c.kos+'</strong><span>KOs</span></div>'+
+    (c.belts.length?'<div class="sim-rec-divider"></div><div class="sim-rec-chunk"><strong>'+c.belts.length+'/4</strong><span>Belts</span></div>':'')+
+    (nextFight?'<div class="sim-rec-divider"></div><div class="sim-rec-chunk"><strong>#'+nextFight+'</strong><span>Next Fight</span></div>':'');
+}
+function generateSimNarrative(wins,losses,kos,belts){
+  const total=wins+losses, koPct=total>0?Math.round(kos/total*100):0, bc=belts.length;
+  if(wins===50&&losses===0) return 'An unblemished 50-0. Every round. Every belt. A fighter for the ages.';
+  if(losses===0&&wins>=40) return 'An almost perfect '+wins+'-0. The division had no answer.';
+  if(losses===0) return 'A flawless '+wins+'-0 — unbeaten and building toward legend.';
+  if(koPct>=60&&bc>=3) return bc+' belts and a '+koPct+'% KO rate. Opponents feared the power every night.';
+  if(koPct>=60) return kos+' stoppages — a '+koPct+'% finish rate that kept divisions on notice.';
+  if(bc===4) return 'Undisputed. Four belts and a '+wins+'-'+losses+' ledger that defines a generation.';
+  if(bc>=2) return wins+'-'+losses+' with '+bc+' world titles. A genuine champion who left a mark.';
+  if(losses>=5) return 'A '+wins+'-'+losses+' career of highs and lows — the ring giveth and taketh away.';
+  return wins+'-'+losses+'. '+kos+' KOs, '+bc+' belt'+(bc!==1?'s':'')+' — a career that left its mark.';
+}
+function renderSimCareerSummary(){
+  const list=$('sim-list'); if(!list||!S.career||!S.player) return;
+  const c=S.career, wins=c.wins, losses=c.losses, draws=c.draws, kos=c.kos;
+  const total=wins+losses+draws, koPct=total>0?Math.round(kos/total*100):0;
+  const careerDone=S.pendingHof||(c.currentFight>50);
+  const is50=careerDone&&wins===50&&losses===0&&draws===0;
+  let legData={score:0,t:'—',p:100}; try{ legData=leg(); }catch(e){}
+  const rec=wins+'-'+losses+(draws>0?'-'+draws:'');
+  const headline=is50?'LEGENDARY RUN — 50-0':(careerDone?rec+' — CAREER COMPLETE':rec+' — SIM COMPLETE');
+  const subline=is50?'Unbeaten. Undisputed. Untouchable.':generateSimNarrative(wins,losses,kos,c.belts);
+  let confettiHtml='';
+  if(is50){
+    const cols=['#e3b23c','#f6d768','#fff','#fb923c','#60a5fa','#86efac'];
+    confettiHtml='<div class="sim-confetti-wrap" aria-hidden="true">';
+    for(let i=0;i<30;i++){
+      const l=(Math.random()*100).toFixed(1), dl=(Math.random()*1.4).toFixed(2), du=(1+Math.random()*.9).toFixed(2), col=cols[i%cols.length];
+      confettiHtml+='<div class="confetti-bit" style="left:'+l+'%;background:'+col+';animation-duration:'+du+'s;animation-delay:'+dl+'s"></div>';
+    }
+    confettiHtml+='</div>';
+  }
+  const cardHtml=careerDone?'<div class="sim-summary-card-wrap">'+modularCardMarkup()+'</div>':'';
+  const wrap=document.createElement('div');
+  wrap.id='sim-career-summary';
+  wrap.className='sim-career-summary'+(is50?' fifty-zero':'');
+  wrap.innerHTML=confettiHtml+
+    '<div class="sim-summary-hl'+(is50?' fifty-zero':'')+'">'+headline+'</div>'+
+    '<div class="sim-summary-sub">'+htmlEscape(subline)+'</div>'+
+    cardHtml+
+    '<div class="sim-summary-grid">'+
+      '<div class="sim-summary-cell"><strong>'+rec+'</strong><span>Record</span></div>'+
+      '<div class="sim-summary-cell"><strong>'+kos+'</strong><span>KOs</span></div>'+
+      '<div class="sim-summary-cell"><strong>'+koPct+'%</strong><span>KO Rate</span></div>'+
+      '<div class="sim-summary-cell"><strong>'+c.belts.length+'/4</strong><span>Belts</span></div>'+
+      '<div class="sim-summary-cell"><strong>#'+(c.bestWorldRank||c.worldRank||'—')+'</strong><span>Best Rank</span></div>'+
+      '<div class="sim-summary-cell"><strong>'+cash(c.earnings)+'</strong><span>Earnings</span></div>'+
+    '</div>'+
+    '<div class="sim-summary-story">'+htmlEscape(legData.t)+' • Top '+legData.p+'% • Legacy: '+legData.score+'</div>'+
+    (careerDone?'<button class="btn ghost sim-summary-share" onclick="shareCareer()">📤 Share Career</button>':'');
+  list.appendChild(wrap);
+  list.parentElement.scrollTop=list.parentElement.scrollHeight;
+}
 function leg(){ const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?(S.career.kos/total):0; let score=0; score+=S.career.wins*7; score-=S.career.losses*22; score-=S.career.draws*6; score+=S.career.kos*5; score+=S.career.belts.length*30; score+=Math.max(0,calculateOverall()-50)*2.5; score+=Math.floor(S.career.earnings/1000000)*0.9; score+=S.career.bestWinStreak*1.0; score+=(61-(S.career.bestWorldRank||60))*1.8; score+=Math.floor(koPct*55); score+=S.career.titleDef*8; if(S.career.losses===0&&S.career.wins>=30)score+=18; if(S.career.losses===0&&S.career.wins>=45)score+=28; if(S.career.wins===50&&S.career.losses===0&&S.career.draws===0)score+=52; if(S.career.belts.length===4)score+=24; if(S.career.bestWorldRank===1)score+=10; score=Math.max(0,Math.round(score)); const _lb=getEquippedCharacterBoosts(); if(_lb.legacy_builder) score=Math.round(score*(1+(_lb.legacy_builder.value||0.10))); if(S.career.wins===50&&S.career.losses===0&&S.career.draws===0&&S.career.belts.length===4) return {score,t:'GOAT (50-0 UNDISPUTED)',p:.2}; const x=HOF.find(h=>score>=h.min)||HOF[HOF.length-1]; return {score,t:x.t,p:x.p}; }
 function legacyBreakdownRows(){
   const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?(S.career.kos/total):0, ovr=calculateOverall();
