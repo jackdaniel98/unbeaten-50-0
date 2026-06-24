@@ -1411,8 +1411,9 @@ body.final-card-open{overflow:hidden}
 .play-money-inline strong{color:#fff;font-variant-numeric:tabular-nums}
 .modular-card{
   position:relative;width:min(100%,386px);aspect-ratio:1006 / 1564;margin:0 auto;overflow:hidden;
-  container-type:inline-size;background:#050506;isolation:isolate;filter:drop-shadow(0 18px 24px rgba(0,0,0,.48));
+  container-type:inline-size;background:#050506;filter:drop-shadow(0 18px 24px rgba(0,0,0,.48));
 }
+.modular-card-art{position:absolute;inset:0;overflow:hidden;z-index:0;background:#050506;isolation:isolate}
 .modular-card img{position:absolute;display:block;pointer-events:none;user-select:none}
 .modular-card-background,.modular-card-frame{inset:0;width:100%;height:100%}
 .modular-card-background{z-index:0;object-fit:cover}
@@ -6853,9 +6854,11 @@ function equippedCardAssets(profile=activeCardProfile()){
 function modularCardMarkup(profile=activeCardProfile()){
   const assets=equippedCardAssets(profile), data=cardDisplayData(profile);
   return '<div class="modular-card" role="img" aria-label="'+htmlEscape(data.name)+' fighter card">'+
+    '<div class="modular-card-art">'+
     '<img class="modular-card-background" src="'+assets.background.asset+'" alt="">'+
-    '<img class="modular-card-aura" src="'+assets.aura.asset+'" alt="">'+
+    '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" alt="">'+
     '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this)" alt="">'+
+    '</div>'+
     '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" alt="">'+
     '<div class="modular-card-copy modular-card-ovr"><strong>'+data.ovr+'</strong><span>OVR</span></div>'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(data.name)+'</strong><span>'+htmlEscape(data.nickname)+'</span></div>'+
@@ -6871,11 +6874,12 @@ function computeCareerRanks(myScore){ const pool=gatherRankPool(), myKey=rankSea
 function renderCareerWorldRanks(score){ const ranks=computeCareerRanks(score); const a=$('hof-rank-alltime'), s=$('hof-rank-season'); if(a){ a.innerHTML = ranks.allRank===1 ? '\uD83C\uDF0D This attempt ranked <strong>#1 in the world!</strong>' : 'All-Time: this attempt ranked <strong>'+rankOrdinal(ranks.allRank)+'</strong> in the world'; } if(s){ s.innerHTML = ranks.seasonRank===1 ? 'This Season: ranked <strong>#1</strong> &mdash; season leader!' : 'This Season: ranked <strong>'+rankOrdinal(ranks.seasonRank)+'</strong> of '+ranks.seasonTotal; } return ranks; }
 // ---- Modular card render from explicit data (other players / snapshots) ----
 const _bgCache=new Map();
-function bgRemove(img){
+function bgRemove(img,aura){
   if(img.dataset.bgr) return;
   img.dataset.bgr='1';
   const orig=img.src;
-  if(_bgCache.has(orig)){img.src=_bgCache.get(orig);return;}
+  const key=orig+(aura?'|a':'');
+  if(_bgCache.has(key)){img.src=_bgCache.get(key);return;}
   try{
     const c=document.createElement('canvas');
     c.width=img.naturalWidth;c.height=img.naturalHeight;
@@ -6883,11 +6887,17 @@ function bgRemove(img){
     x.drawImage(img,0,0);
     const d=x.getImageData(0,0,c.width,c.height),p=d.data;
     for(let i=0;i<p.length;i+=4){
-      if(p[i]>235&&p[i+1]>235&&p[i+2]>235) p[i+3]=0;
+      const r=p[i],g=p[i+1],b=p[i+2];
+      if(r>235&&g>235&&b>235){p[i+3]=0;continue;}
+      if(aura){
+        const dark=r<25&&g<25&&b<25;
+        const checker=Math.abs(r-g)<8&&Math.abs(r-b)<8&&Math.abs(g-b)<8&&r>130&&r<220;
+        if(dark||checker) p[i+3]=0;
+      }
     }
     x.putImageData(d,0,0);
     const url=c.toDataURL('image/png');
-    _bgCache.set(orig,url);
+    _bgCache.set(key,url);
     img.src=url;
   }catch(e){console.warn('bgRemove:',e);}
 }
@@ -6897,9 +6907,11 @@ function modularCardMarkupFrom(opts){
   const assets=CARD_CATEGORIES.reduce((a,cat)=>{ a[cat]=getCardItem(equipped[cat])||getCardItem(DEFAULT_EQUIPPED_CARD_ITEMS[cat]); return a; },{});
   const name=cleanName(opts.name||'Fighter')||'Fighter', nickname=cleanName(opts.nickname||'The Contender')||'The Contender', ovr=opts.ovr||50, stats=opts.stats||[];
   return '<div class="modular-card" role="img" aria-label="'+htmlEscape(name)+' fighter card">'+
+    '<div class="modular-card-art">'+
     '<img class="modular-card-background" src="'+assets.background.asset+'" alt="">'+
-    '<img class="modular-card-aura" src="'+assets.aura.asset+'" alt="">'+
+    '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" alt="">'+
     '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this)" alt="">'+
+    '</div>'+
     '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" alt="">'+
     '<div class="modular-card-copy modular-card-ovr"><strong>'+htmlEscape(ovr)+'</strong><span>OVR</span></div>'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(name)+'</strong><span>'+htmlEscape(nickname)+'</span></div>'+
