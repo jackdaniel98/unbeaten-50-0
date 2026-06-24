@@ -1377,7 +1377,7 @@ body.final-card-open{overflow:hidden}
   #menu-screen>.worldwide-stats-title,#menu-screen>.global-stats{order:1}
   #menu-screen>.worldwide-stats-title{margin-top:2px}
   #menu-screen>.menu-actions{order:2;margin-top:2px!important;padding-top:0!important}
-  #menu-screen>.current-rank-title,#menu-screen>.current-rank-panel{order:3}
+  #menu-screen>.current-rank-panel{order:3}
 }
 @media(max-width:520px){
   #menu-screen>.worldwide-stats-title,#menu-screen>.global-stats{order:-1}
@@ -1441,6 +1441,16 @@ body.final-card-open{overflow:hidden}
 .card-editor-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
 .card-editor-group-head strong{font-size:.72rem;text-transform:uppercase;color:var(--text-dim)}
 .card-editor-group-head span{font-size:.62rem;color:#79e3ad;font-weight:900}
+.ce-category{border-bottom:1px solid var(--line)}
+.ce-category>summary{display:flex;align-items:center;gap:8px;padding:13px 0;cursor:pointer;list-style:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.ce-category>summary::-webkit-details-marker{display:none}
+.ce-cat-label{font-size:.72rem;text-transform:uppercase;font-weight:900;color:var(--text-dim);flex:1}
+.ce-cat-count{font-size:.62rem;color:#79e3ad;font-weight:900}
+.ce-chevron{color:var(--muted);font-size:.75rem;transition:transform .2s;display:inline-block;line-height:1}
+.ce-category[open]>.ce-chevron,.ce-category[open]>summary .ce-chevron{transform:rotate(180deg)}
+.ce-cat-body{padding-bottom:10px}
+.ce-rarity-group{margin-bottom:4px}
+.ce-rarity-head{font-size:.54rem;font-weight:900;text-transform:uppercase;color:var(--muted);letter-spacing:.14em;padding:6px 2px 4px;border-bottom:1px solid var(--line)}
 .card-owned-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .card-owned-option{min-height:48px;padding:8px;border:1px solid var(--line-2);border-radius:7px;background:#0c0d11;color:#fff;text-align:left;cursor:pointer}
 .card-owned-option strong,.card-owned-option span{display:block;overflow-wrap:anywhere}.card-owned-option strong{font-size:.72rem}.card-owned-option span{margin-top:3px;color:var(--muted);font-size:.58rem;text-transform:uppercase}
@@ -1690,6 +1700,13 @@ body.final-card-open{overflow:hidden}
 .wheel-prize.pack{border-color:var(--gold);box-shadow:0 0 34px -10px var(--gold-glow)}
 
 /* ===== HOF world rank lines + profile card artwork ===== */
+.rank-hero{position:relative;padding:18px 16px 14px;margin-bottom:10px;border-radius:14px;background:linear-gradient(160deg,#0c0b12 0%,#100d08 100%);border:1.5px solid rgba(227,178,60,.3);text-align:center;overflow:hidden}
+.rank-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(227,178,60,.12) 0%,transparent 100%);pointer-events:none}
+.rank-hero-label{font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(227,178,60,.65);margin-bottom:6px}
+.rank-hero-number{font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(2.4rem,14cqw,5rem);line-height:1;color:#f6d768;text-shadow:0 0 32px rgba(246,215,104,.55),0 0 8px rgba(246,215,104,.3),0 3px 10px rgba(0,0,0,.9);letter-spacing:-.01em;word-break:break-word}
+.rank-hero-sub{font-size:.75rem;color:var(--text-dim);margin-top:6px}
+.rank-hero-sub strong{color:var(--platinum);font-weight:700}
+.rank-hero-cta{margin-top:10px;font-size:.67rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(227,178,60,.5)}
 .hof-rank{position:relative;margin-top:11px;color:var(--text);font-size:.92rem;font-weight:600;line-height:1.45}
 .hof-rank:empty{display:none}
 .hof-rank strong{color:var(--gold);font-variant-numeric:tabular-nums}
@@ -1787,10 +1804,11 @@ body.final-card-open{overflow:hidden}
     <div class="mode-title">Standard Career</div>
     <div class="mode-sub">2 draft re-rolls • standard rewards • standard opponent scaling • eligible for achievements, leaderboards and profile tracking</div>
   </div>
-  <h2 class="current-rank-title">Current Rank</h2>
-  <div class="panel compact-panel current-rank-panel" id="current-rank-panel">
-    <div class="row"><span>All-Time Rank:</span><span id="rank-alltime">Loading...</span></div>
-    <div class="row"><span>Seasonal Rank:</span><span id="rank-seasonal">Loading...</span></div>
+  <div class="rank-hero current-rank-panel" id="current-rank-panel">
+    <div class="rank-hero-label">⚡ World Ranking</div>
+    <div class="rank-hero-number" id="rank-alltime">--</div>
+    <div class="rank-hero-sub">This Season: <strong id="rank-seasonal">--</strong></div>
+    <div class="rank-hero-cta">Every fight counts — climb to #1 🏆</div>
   </div>
   <h2>All-Time Personal Records</h2>
   <div class="compact-grid">
@@ -6071,6 +6089,9 @@ const CARD_ITEM_DEFINITIONS = {
   frame_purpaz:{id:'frame_purpaz',category:'frame',name:'Purpaz',rarity:'common',price:0,base:true,asset:'assets/card/frame.purpaz.png'},
   frame_tekky:{id:'frame_tekky',category:'frame',name:'Tekky',rarity:'common',price:0,base:true,asset:'assets/card/frame.tekky.png'},
   frame_gliss:{id:'frame_gliss',category:'frame',name:'Gliss',rarity:'common',price:0,base:true,asset:'assets/card/frame_gliss.png'},
+  // New freebies
+  aura_cosmos:{id:'aura_cosmos',category:'aura',name:'Cosmos',rarity:'rare',price:0,base:false,asset:'assets/card/aura_cosmos.png'},
+  character_aqua:{id:'character_aqua',category:'character',name:'Aqua',rarity:'rare',price:0,base:false,darkBg:true,asset:'assets/card/character_aqua.png'},
 };
 const DEFAULT_OWNED_CARD_ITEMS = Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.base).map(item=>item.id);
 const DEFAULT_EQUIPPED_CARD_ITEMS = {character:'character_standard_contender',aura:'aura_corner_smoke',background:'background_standard_fight_night',frame:'frame_standard_contender'};
@@ -6857,7 +6878,7 @@ function modularCardMarkup(profile=activeCardProfile()){
     '<div class="modular-card-art">'+
     '<img class="modular-card-background" src="'+assets.background.asset+'" alt="">'+
     '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" alt="">'+
-    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this)" alt="">'+
+    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" alt="">'+
     '</div>'+
     '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" alt="">'+
     '<div class="modular-card-copy modular-card-ovr"><strong>'+data.ovr+'</strong><span>OVR</span></div>'+
@@ -6874,11 +6895,11 @@ function computeCareerRanks(myScore){ const pool=gatherRankPool(), myKey=rankSea
 function renderCareerWorldRanks(score){ const ranks=computeCareerRanks(score); const a=$('hof-rank-alltime'), s=$('hof-rank-season'); if(a){ a.innerHTML = ranks.allRank===1 ? '\uD83C\uDF0D This attempt ranked <strong>#1 in the world!</strong>' : 'All-Time: this attempt ranked <strong>'+rankOrdinal(ranks.allRank)+'</strong> in the world'; } if(s){ s.innerHTML = ranks.seasonRank===1 ? 'This Season: ranked <strong>#1</strong> &mdash; season leader!' : 'This Season: ranked <strong>'+rankOrdinal(ranks.seasonRank)+'</strong> of '+ranks.seasonTotal; } return ranks; }
 // ---- Modular card render from explicit data (other players / snapshots) ----
 const _bgCache=new Map();
-function bgRemove(img,aura){
+function bgRemove(img,aura,darkBg){
   if(img.dataset.bgr) return;
   img.dataset.bgr='1';
   const orig=img.src;
-  const key=orig+(aura?'|a':'');
+  const key=orig+(aura?'|a':darkBg?'|d':'');
   if(_bgCache.has(key)){img.src=_bgCache.get(key);return;}
   try{
     const c=document.createElement('canvas');
@@ -6892,7 +6913,10 @@ function bgRemove(img,aura){
       if(aura){
         const dark=r<25&&g<25&&b<25;
         const checker=Math.abs(r-g)<8&&Math.abs(r-b)<8&&Math.abs(g-b)<8&&r>130&&r<220;
-        if(dark||checker) p[i+3]=0;
+        const greenScreen=g>180&&r<80&&b<80;
+        if(dark||checker||greenScreen) p[i+3]=0;
+      } else if(darkBg){
+        if(r<8&&g<8&&b<8) p[i+3]=0;
       }
     }
     x.putImageData(d,0,0);
@@ -6910,7 +6934,7 @@ function modularCardMarkupFrom(opts){
     '<div class="modular-card-art">'+
     '<img class="modular-card-background" src="'+assets.background.asset+'" alt="">'+
     '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" alt="">'+
-    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this)" alt="">'+
+    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" alt="">'+
     '</div>'+
     '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" alt="">'+
     '<div class="modular-card-copy modular-card-ovr"><strong>'+htmlEscape(ovr)+'</strong><span>OVR</span></div>'+
@@ -6975,12 +6999,23 @@ function renderCardEditor(){
   if($('card-editor-nickname')) $('card-editor-nickname').value=profile.cardNickname||display.nickname;
   const controls=$('card-editor-controls');
   if(controls){
+    const RARITY_ORDER=['common','uncommon','rare','luxury','legendary','premium'];
     controls.innerHTML=CARD_CATEGORIES.map(category=>{
       const items=owned.map(getCardItem).filter(item=>item?.category===category);
-      return '<div class="card-editor-group"><div class="card-editor-group-head"><strong>'+CARD_CATEGORY_LABELS[category]+'</strong><span>'+items.length+' owned</span></div><div class="card-owned-options">'+items.map(item=>{
-        const isEquipped=equipped[category]===item.id;
-        return '<button type="button" class="card-owned-option '+(isEquipped?'equipped':'')+'" onclick="equipCardItem(\''+item.id+'\')"><strong>'+htmlEscape(item.name)+'</strong><span>'+(isEquipped?'Equipped':item.rarity)+'</span></button>';
-      }).join('')+'</div></div>';
+      const equippedId=equipped[category];
+      const isActiveCategory=items.some(item=>item.id===equippedId);
+      const byRarity={};
+      items.forEach(item=>{ const r=item.rarity||'common'; if(!byRarity[r]) byRarity[r]=[]; byRarity[r].push(item); });
+      const rarityHTML=RARITY_ORDER.filter(r=>byRarity[r]?.length).map(r=>{
+        return '<div class="ce-rarity-group"><div class="ce-rarity-head">'+r+'</div><div class="card-owned-options">'+byRarity[r].map(item=>{
+          const isEquipped=equippedId===item.id;
+          return '<button type="button" class="card-owned-option '+(isEquipped?'equipped':'')+'" onclick="equipCardItem(\''+item.id+'\')"><strong>'+htmlEscape(item.name)+'</strong><span>'+(isEquipped?'Equipped':item.rarity)+'</span></button>';
+        }).join('')+'</div></div>';
+      }).join('');
+      return '<details class="ce-category"'+(isActiveCategory?' open':'')+'>'+
+        '<summary><span class="ce-cat-label">'+CARD_CATEGORY_LABELS[category]+'</span><span class="ce-cat-count">'+items.length+' owned</span><span class="ce-chevron">▾</span></summary>'+
+        '<div class="ce-cat-body">'+rarityHTML+'</div>'+
+        '</details>';
     }).join('');
   }
   updateWalletDisplays();
