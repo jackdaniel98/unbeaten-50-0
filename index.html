@@ -1517,6 +1517,23 @@ body.final-card-open{overflow:hidden}
 .featured-store-item .card-store-thumb{width:72px;height:80px}
 .featured-store-item .card-store-meta strong{font-size:.75rem}
 .featured-all-owned{padding:14px;text-align:center;color:rgba(255,255,255,.38);font-size:.74rem;border:1px dashed rgba(255,255,255,.1);border-radius:8px;background:rgba(0,0,0,.15)}
+/* ===== My Profile Screen ===== */
+.my-profile-card-wrap{display:flex;justify-content:center;margin:0 auto 18px}
+.my-profile-card-wrap .modular-card{width:min(100%,280px);filter:drop-shadow(0 6px 28px rgba(227,178,60,.25)) drop-shadow(0 12px 40px rgba(0,0,0,.8))}
+.my-profile-name{text-align:center;margin-bottom:16px}
+.my-profile-name strong{display:block;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;letter-spacing:.06em;color:#fff;line-height:1}
+.my-profile-name span{display:block;margin-top:3px;color:rgba(255,255,255,.4);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.my-profile-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.my-profile-stat{padding:9px 6px;text-align:center;background:#0c0d11;border:1px solid rgba(255,255,255,.07);border-radius:8px}
+.my-profile-stat strong{display:block;font-size:.9rem;color:#fff;line-height:1.1;overflow-wrap:anywhere}
+.my-profile-stat span{display:block;margin-top:3px;color:rgba(255,255,255,.35);font-size:.52rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.my-profile-stat.gold{border-color:rgba(227,178,60,.35);background:rgba(227,178,60,.06)}
+.my-profile-stat.gold strong{color:var(--gold)}
+.my-profile-section-head{margin:0 0 8px;color:var(--gold);font-size:.68rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.my-profile-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.my-profile-chip{padding:4px 10px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:#0c0d11;color:rgba(255,255,255,.3);font-size:.6rem;font-weight:800;letter-spacing:.04em}
+.my-profile-chip.on{border-color:rgba(227,178,60,.45);color:var(--gold);background:rgba(227,178,60,.07)}
+.my-profile-actions{display:flex;flex-direction:column;gap:8px;margin-top:4px}
 @media(max-width:680px){
   .card-editor-layout{grid-template-columns:1fr}.card-editor-layout>.modular-card{width:min(100%,330px)}
   .card-store-top{grid-template-columns:140px minmax(0,1fr)}.card-store-top .modular-card{width:140px}
@@ -1918,6 +1935,7 @@ body.final-card-open{overflow:hidden}
     <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">Draft New Boxer</button>
     <!-- Character creation, cosmetic store, and achievements are temporarily disabled and may return later as Build Your Card. -->
     <button id="settings-menu-btn" type="button" class="btn ghost" onclick="openAccountSettings()">Settings</button>
+    <button id="my-profile-menu-btn" type="button" class="btn ghost" onclick="openMyProfile()">My Profile</button>
     <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
     <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Hall Of Fame</button>
     <button id="help-menu-btn" type="button" class="btn ghost" onclick="openHelp()">Help</button>
@@ -2235,6 +2253,15 @@ body.final-card-open{overflow:hidden}
   <h2>Cosmetics</h2>
   <div id="cosmetic-list" class="collection-list"></div>
   <button id="collection-back-btn" class="btn gold" onclick="closeCollection()">Back</button>
+</section>
+
+<section id="my-profile-screen" class="screen">
+  <div class="card-screen-head">
+    <h2>My Profile</h2>
+    <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
+  </div>
+  <div id="my-profile-content"></div>
+  <button class="btn gold" style="margin-top:8px" onclick="closeMyProfile()">Back</button>
 </section>
 
 <section id="trophy-cabinet-screen" class="screen">
@@ -7813,6 +7840,77 @@ function shareEditedCard(){
   const data=cardDisplayData();
   const text='\uD83E\uDD4A UNBEATEN: 50-0\n\n'+data.name+' - "'+data.nickname+'"\nOVR: '+data.ovr+'\n\nCan you build a better fighter card? Play now!';
   shareCardWithText(text);
+}
+// ===== My Profile =====
+function openMyProfile(){
+  renderMyProfile();
+  screen('my-profile-screen');
+}
+function closeMyProfile(){ screen('menu-screen'); }
+function renderMyProfile(){
+  const container=$('my-profile-content'); if(!container) return;
+  const profile=activeCardProfile();
+  const records=getRecords();
+  const retired=loadRetiredCareers();
+  const legacy=highestLocalLegacy(retired);
+  const data=cardDisplayData(profile);
+  const displayName=cleanName(profile.cardName||data.name)||profile.username||'Fighter';
+  const displayNick=cleanName(profile.cardNickname||data.nickname)||'The Contender';
+  const unlockedIds=Object.keys(profile.achievements?.unlocked||{});
+  const achievementTotal=Object.keys(ACHIEVEMENT_DEFINITIONS).length;
+  const cardHtml='<div class="my-profile-card-wrap">'+modularCardMarkup(profile)+'</div>';
+  const nameHtml='<div class="my-profile-name"><strong>'+htmlEscape(displayName)+'</strong><span>'+htmlEscape('"'+displayNick+'"')+'</span></div>';
+  const statsHtml='<div class="my-profile-stats">'
+    +'<div class="my-profile-stat gold"><strong>'+htmlEscape(records.bestRecord)+'</strong><span>Best Record</span></div>'
+    +'<div class="my-profile-stat"><strong>'+records.mostKOs+'</strong><span>Career KOs</span></div>'
+    +'<div class="my-profile-stat"><strong>'+(profile.completed50And0Careers||0)+'</strong><span>50-0 Careers</span></div>'
+    +'<div class="my-profile-stat"><strong>'+(legacy>0?legacy.toLocaleString():'-')+'</strong><span>Best Legacy</span></div>'
+    +'<div class="my-profile-stat"><strong>'+retired.length+'</strong><span>Careers</span></div>'
+    +'<div class="my-profile-stat"><strong>'+unlockedIds.length+'/'+achievementTotal+'</strong><span>Achievements</span></div>'
+    +'</div>';
+  const chipsHtml='<div class="my-profile-section-head">Achievements</div>'
+    +'<div class="my-profile-chips">'
+    +Object.values(ACHIEVEMENT_DEFINITIONS).map(a=>'<span class="my-profile-chip'+(unlockedIds.includes(a.id)?' on':'')+'">'+htmlEscape(a.name)+'</span>').join('')
+    +'</div>';
+  const actionsHtml='<div class="my-profile-actions">'
+    +'<button class="btn gold" onclick="shareMyProfileCard()">Share Fighter Card</button>'
+    +'<button class="btn ghost" onclick="copyProfileSummary()">Copy Profile Summary</button>'
+    +'</div>';
+  container.innerHTML=cardHtml+nameHtml+statsHtml+chipsHtml+actionsHtml;
+  updateWalletDisplays();
+}
+function buildProfileSummaryText(){
+  const profile=activeCardProfile();
+  const records=getRecords();
+  const retired=loadRetiredCareers();
+  const legacy=highestLocalLegacy(retired);
+  const data=cardDisplayData(profile);
+  const name=cleanName(profile.cardName||data.name)||profile.username||'Fighter';
+  const nick=cleanName(profile.cardNickname||data.nickname)||'The Contender';
+  const unlockedCount=Object.keys(profile.achievements?.unlocked||{}).length;
+  const lines=[
+    '\uD83E\uDD4A UNBEATEN: 50-0',
+    '',
+    'Fighter: '+name+' \u2014 "'+nick+'"',
+    'Best Career: '+records.bestRecord,
+    'KOs: '+records.mostKOs,
+    '50-0 Careers: '+(profile.completed50And0Careers||0),
+    legacy>0?'Best Legacy Score: '+legacy.toLocaleString():'',
+    'Achievements: '+unlockedCount+'/'+Object.keys(ACHIEVEMENT_DEFINITIONS).length,
+    'Play Money: '+(safeMoney(profile.playMoney)||0).toLocaleString()+' PM',
+  ].filter(Boolean);
+  return lines.join('\n');
+}
+async function shareMyProfileCard(){
+  const text=buildProfileSummaryText();
+  shareCardWithText(text,'UNBEATEN: 50-0 \u2014 My Fighter Card');
+}
+async function copyProfileSummary(){
+  const text=buildProfileSummaryText();
+  try{
+    if(navigator.clipboard?.writeText){ await navigator.clipboard.writeText(text); showToast('Copied','Profile summary copied to clipboard.'); }
+    else{ prompt('Copy your profile summary:',text); }
+  }catch(e){ prompt('Copy your profile summary:',text); }
 }
 let collectionReturnScreen = 'menu-screen';
 function activeProfileForCollection(){
