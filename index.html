@@ -1762,8 +1762,35 @@ body.final-card-open{overflow:hidden}
 .pack-reveal-rarity{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;color:var(--pack-final,#cbd5e1)}
 .pack-reveal-name{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.7rem;letter-spacing:1px;color:#fff;line-height:1}
 .pack-reveal-cat{color:var(--text-dim);font-size:.76rem;margin-top:3px}
-.pack-reveal-new{margin-top:11px;color:var(--green);font-size:.82rem;font-weight:600}
-.pack-reveal-dup{margin-top:11px;color:var(--gold);font-size:.82rem;font-weight:600}
+.pack-reveal-new{display:inline-block;margin-top:11px;padding:4px 14px;border-radius:999px;background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.4);color:#4ade80;font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.pack-reveal-dup{display:inline-block;margin-top:11px;padding:4px 14px;border-radius:999px;background:rgba(227,178,60,.12);border:1px solid rgba(227,178,60,.35);color:var(--gold);font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+/* Rarity-coloured reveal borders */
+.pack-reveal-card.rarity-uncommon{border-color:rgba(134,239,172,.55)}
+.pack-reveal-card.rarity-rare{border-color:rgba(96,165,250,.6);box-shadow:0 0 22px rgba(96,165,250,.2)}
+.pack-reveal-card.rarity-luxury{border-color:rgba(192,132,252,.65);box-shadow:0 0 28px rgba(192,132,252,.28)}
+.pack-reveal-card.rarity-legendary{border-color:rgba(251,146,60,.75);box-shadow:0 0 38px rgba(251,146,60,.38),0 0 80px rgba(251,146,60,.14)}
+.pack-pull-headline{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.25rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;color:var(--pack-final,#fff);text-shadow:0 0 18px currentColor}
+/* Spark particles */
+.pack-spark-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:10}
+@keyframes packSparkFly{0%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(0)}}
+.pack-spark{position:absolute;left:50%;top:42%;width:7px;height:7px;border-radius:50%;animation:packSparkFly var(--dur,.65s) ease-out var(--del,0s) forwards}
+/* 10-pack grid */
+.pack-ten-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px;width:100%}
+.pack-ten-item{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 3px 4px;border-radius:8px;border:1.5px solid rgba(255,255,255,.08);background:rgba(0,0,0,.4)}
+.pack-ten-item.rarity-uncommon{border-color:rgba(134,239,172,.4)}
+.pack-ten-item.rarity-rare{border-color:rgba(96,165,250,.5)}
+.pack-ten-item.rarity-luxury{border-color:rgba(192,132,252,.6)}
+.pack-ten-item.rarity-legendary{border-color:rgba(251,146,60,.7);box-shadow:0 0 10px rgba(251,146,60,.3)}
+.pack-ten-item img{width:46px;height:46px;object-fit:contain;border-radius:5px;display:block}
+.pack-ten-item-label{font-size:.42rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-align:center;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px}
+.pack-ten-item-label.new{color:#4ade80}
+.pack-ten-item-label.dup{color:rgba(255,255,255,.35)}
+.pack-ten-item.dup{opacity:.6}
+.pack-ten-summary{text-align:center;font-size:.76rem;color:rgba(255,255,255,.45);margin-bottom:12px;line-height:1.55}
+.pack-ten-summary strong{color:#fff}
+/* Store dual-button layout */
+.pack-btn-pair{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.pack-need-more{font-size:.7rem;color:rgba(255,255,255,.35);text-align:center;margin-top:4px}
 
 /* ===== Daily Spin Wheel ===== */
 #daily-wheel-btn.wheel-ready{box-shadow:0 1px 0 rgba(255,255,255,.25) inset, 0 0 0 1px var(--gold-soft), 0 0 18px -5px var(--gold-glow);animation:wheelReadyPulse 2s var(--ease) infinite}
@@ -7355,17 +7382,27 @@ function playPackAnimation(item, isDuplicate, refundAmt){
 }
 function finishPackReveal(item, isDuplicate, refundAmt, color){
   const reveal=$('pack-reveal'); if(!reveal) return;
-  reveal.style.setProperty('--pack-final', color||PACK_RARITY_COLORS[item.rarity]||'#cbd5e1');
-  const note = isDuplicate
-    ? '<div class="pack-reveal-dup">Duplicate \u2014 refunded '+refundAmt+' Play Money</div>'
-    : '<div class="pack-reveal-new">New item added to your collection!</div>';
+  const finalColor=color||PACK_RARITY_COLORS[item.rarity]||'#cbd5e1';
+  reveal.style.setProperty('--pack-final', finalColor);
+  const isTop=['luxury','legendary'].includes(item.rarity);
+  const isMid=item.rarity==='rare';
+  if(isTop) spawnPackSparks(finalColor, item.rarity==='legendary'?32:22);
+  else if(isMid) spawnPackSparks(finalColor, 12);
+  const pullHl=item.rarity==='legendary'
+    ?'<div class="pack-pull-headline">Legendary Pull!</div>'
+    :item.rarity==='luxury'
+    ?'<div class="pack-pull-headline">Luxury Pull!</div>':'';
+  const note=isDuplicate
+    ?'<div class="pack-reveal-dup">Duplicate \u2014 +'+refundAmt+' PM refund</div>'
+    :'<div class="pack-reveal-new">New item!</div>';
   reveal.innerHTML='<div class="pack-reveal-card rarity-'+item.rarity+'">'
-    +'<div class="pack-reveal-thumb '+item.category+'"><img src="'+item.asset+'" alt=""></div>'
+    +pullHl
+    +'<div class="pack-reveal-thumb '+item.category+'"><img src="'+item.asset+'" alt="" loading="lazy"></div>'
     +'<div class="pack-reveal-rarity">'+String(item.rarity).toUpperCase()+'</div>'
     +'<div class="pack-reveal-name">'+htmlEscape(item.name)+'</div>'
     +'<div class="pack-reveal-cat">'+(CARD_CATEGORY_LABELS[item.category]||item.category)+'</div>'
     +note
-    +'<button class="btn gold" onclick="closePackModal()" style="margin-top:14px">Continue</button>'
+    +'<button class="btn gold" onclick="closePackModal()" style="margin-top:14px;width:100%">Continue</button>'
     +'</div>';
   reveal.classList.remove('hidden');
 }
@@ -7374,18 +7411,132 @@ function renderPackPanel(){
   const panel=$('card-pack-panel'); if(!panel) return;
   const browsing=!!activeCardStoreCategory; panel.classList.toggle('hidden', browsing);
   if(browsing){ panel.innerHTML=''; return; }
-  const profile=activeCardProfile(), bal=safeMoney(profile.playMoney), cost=PACK_CONFIG.cost, canAfford=bal>=cost;
+  const profile=activeCardProfile(), bal=safeMoney(profile.playMoney);
+  const cost=PACK_CONFIG.cost, tenCost=PACK_TEN_COST;
+  const canAfford1=bal>=cost, canAfford10=bal>=tenCost;
   const odds=Object.entries(PACK_RARITY_WEIGHTS), totalW=odds.reduce((s,e)=>s+e[1],0);
   const oddsHtml=odds.map(e=>'<span class="pack-odd rarity-'+e[0]+'">'+e[0]+' '+Math.round((e[1]/totalW)*100)+'%</span>').join('');
+  const needMore1=!canAfford1?'<div class="pack-need-more">Need '+(cost-bal)+' more PM</div>':'';
+  const needMore10=!canAfford10?'<div class="pack-need-more">Need '+(tenCost-bal)+' more PM for 10</div>':'';
   panel.innerHTML='<div class="card-pack">'
     +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">?</span></div>'
     +'<div class="card-pack-info"><strong>Mystery Art Pack</strong><span>One random frame, aura, character or background.</span>'
     +'<div class="pack-odds">'+oddsHtml+'</div>'
-    +'<div class="pack-refund">Duplicate? You get '+Math.floor(cost*PACK_CONFIG.refundPct)+' Play Money back.</div>'
-    +'<button class="btn gold" '+(canAfford?'':'disabled')+' onclick="openArtPack()">Open Pack \u2022 '+cost+' Play Money</button>'
+    +'<div class="pack-refund">Duplicate? You get '+Math.floor(cost*PACK_CONFIG.refundPct)+' PM back. 10-pack guarantees 1 Uncommon+.</div>'
+    +'<div class="pack-btn-pair">'
+    +'<button class="btn gold" '+(canAfford1?'':'disabled')+' onclick="openArtPack()">Open Pack \u2022 '+cost+' PM</button>'
+    +'<button class="btn blue" '+(canAfford10?'':'disabled')+' onclick="openArtPackTen()" title="10% discount">Open 10 Packs \u2022 '+tenCost+' PM</button>'
+    +'</div>'
+    +needMore1+needMore10
     +'</div></div>';
 }
 try{ if(typeof window!=='undefined'){ window.openArtPack=openArtPack; window.closePackModal=closePackModal; window.rollPackItem=rollPackItem; window.getPackPool=getPackPool; } }catch(e){}
+
+// ===== 10-Pack & Spark Effects =====
+const PACK_TEN_COST=90;
+function rollPackItemMinRarity(pool,minRarity){
+  const order=['common','uncommon','rare','luxury','legendary'];
+  const minIdx=order.indexOf(minRarity);
+  const sub=pool.filter(it=>order.indexOf(it.rarity)>=minIdx);
+  return rollPackItem(sub.length?sub:pool);
+}
+function spawnPackSparks(color,count){
+  const stage=document.querySelector('.pack-stage'); if(!stage) return;
+  let wrap=stage.querySelector('.pack-spark-wrap');
+  if(wrap) wrap.remove();
+  wrap=document.createElement('div'); wrap.className='pack-spark-wrap'; stage.appendChild(wrap);
+  for(let i=0;i<count;i++){
+    const sp=document.createElement('div'); sp.className='pack-spark';
+    const angle=(i/count)*360+(Math.random()*24-12);
+    const dist=55+Math.random()*90;
+    const rad=angle*Math.PI/180;
+    const tx=Math.round(Math.cos(rad)*dist), ty=Math.round(Math.sin(rad)*dist);
+    sp.style.cssText='background:'+color+';--tx:'+tx+'px;--ty:'+ty+'px;--dur:'+(0.5+Math.random()*0.45).toFixed(2)+'s;--del:'+(Math.random()*0.18).toFixed(2)+'s';
+    wrap.appendChild(sp);
+  }
+  setTimeout(()=>{ if(wrap.parentNode) wrap.remove(); },1400);
+}
+function openArtPackTen(){
+  const profile=activeCardProfile();
+  if(safeMoney(profile.playMoney)<PACK_TEN_COST){ showToast('Not Enough Play Money','You need '+PACK_TEN_COST+' PM for 10 packs.'); return; }
+  const pool=getPackPool();
+  if(!pool.length){ showToast('Pack Unavailable','No pack items available.'); return; }
+  const items=Array.from({length:10},()=>rollPackItem(pool));
+  const hasGood=items.some(it=>['uncommon','rare','luxury','legendary'].includes(it.rarity));
+  if(!hasGood) items[0]=rollPackItemMinRarity(pool,'uncommon');
+  const ownedArr=createOwnedCardItems(profile.ownedCardItems);
+  const results=items.map(item=>{
+    const dup=ownedArr.includes(item.id);
+    if(!dup) ownedArr.push(item.id);
+    return {item,dup,refund:dup?Math.floor(PACK_CONFIG.refundPct*(PACK_TEN_COST/10)):0};
+  });
+  mutateCardProfile(t=>{
+    let bal=safeMoney(t.playMoney)-PACK_TEN_COST;
+    const newIds=[];
+    results.forEach(r=>{ if(r.dup) bal+=r.refund; else newIds.push(r.item.id); });
+    if(newIds.length) t.ownedCardItems=createOwnedCardItems([...(t.ownedCardItems||[]),...newIds]);
+    t.playMoney=Math.max(0,bal);
+  });
+  playTenPackAnimation(results);
+}
+function playTenPackAnimation(results){
+  const modal=$('pack-modal'),orb=$('pack-orb'),reveal=$('pack-reveal');
+  if(!modal||!orb||!reveal){ finishTenPackReveal(results); return; }
+  reveal.classList.add('hidden'); reveal.innerHTML='';
+  modal.classList.remove('hidden'); document.body.classList.add('final-card-open');
+  const order=['common','uncommon','rare','luxury','legendary'];
+  const bestRarity=results.reduce((best,r)=>order.indexOf(r.item.rarity)>order.indexOf(best)?r.item.rarity:best,'common');
+  const finalColor=PACK_RARITY_COLORS[bestRarity]||'#cbd5e1';
+  orb.className='pack-orb spinning'; orb.style.removeProperty('--pack-final');
+  orb.style.setProperty('--pack-glow',PACK_RARITY_COLORS.common);
+  try{ initAudio(); }catch(e){}
+  let idx=0,ticks=0,speed=95; const maxTicks=14;
+  const cycle=()=>{
+    if(modal.classList.contains('hidden')) return;
+    orb.style.setProperty('--pack-glow',PACK_RARITY_COLORS[order[idx%order.length]]);
+    try{ if(typeof isMuted==='undefined'||!isMuted) playTone(420+(idx%order.length)*95,'sine',0.05,0.03); }catch(e){}
+    idx++; ticks++;
+    if(ticks<maxTicks){ speed=ticks<8?Math.max(50,speed*0.87):speed*1.15; setTimeout(cycle,speed); }
+    else{
+      orb.style.setProperty('--pack-final',finalColor);
+      orb.style.setProperty('--pack-glow',finalColor);
+      orb.className='pack-orb burst rarity-'+bestRarity;
+      playPackRevealSound(bestRarity);
+      if(['luxury','legendary'].includes(bestRarity)) spawnPackSparks(finalColor,bestRarity==='legendary'?30:20);
+      else if(bestRarity==='rare') spawnPackSparks(finalColor,12);
+      setTimeout(()=>finishTenPackReveal(results),620);
+    }
+  };
+  setTimeout(cycle,200);
+}
+function finishTenPackReveal(results){
+  const reveal=$('pack-reveal'); if(!reveal) return;
+  const order=['common','uncommon','rare','luxury','legendary'];
+  const bestRarity=results.reduce((best,r)=>order.indexOf(r.item.rarity)>order.indexOf(best)?r.item.rarity:best,'common');
+  const finalColor=PACK_RARITY_COLORS[bestRarity]||'#cbd5e1';
+  reveal.style.setProperty('--pack-final',finalColor);
+  const newCount=results.filter(r=>!r.dup).length;
+  const dupCount=results.filter(r=>r.dup).length;
+  const totalRefund=results.reduce((s,r)=>s+r.refund,0);
+  const summaryLine=newCount===10?'<strong>10 new items!</strong>':
+    newCount>0?'<strong>'+newCount+' new</strong>'+(dupCount?' + '+dupCount+' duplicate'+(dupCount>1?'s':''):'')+(totalRefund?' • <strong>+'+totalRefund+' PM</strong> back':''):
+    'All duplicates • <strong>+'+totalRefund+' PM</strong> refunded';
+  const gridHtml=results.map(r=>{
+    const cls='pack-ten-item rarity-'+r.item.rarity+(r.dup?' dup':'');
+    const lbl=r.dup?'<div class="pack-ten-item-label dup">DUP</div>':'<div class="pack-ten-item-label new">NEW</div>';
+    return '<div class="'+cls+'" title="'+htmlEscape(r.item.name)+'">'
+      +'<img src="'+r.item.asset+'" alt="" loading="lazy">'
+      +'<div class="pack-ten-item-label" style="color:'+PACK_RARITY_COLORS[r.item.rarity]+'">'+htmlEscape(r.item.rarity.slice(0,3).toUpperCase())+'</div>'
+      +lbl+'</div>';
+  }).join('');
+  reveal.innerHTML='<div class="pack-reveal-card" style="padding:14px 12px;width:min(340px,100%)">'
+    +'<div class="pack-reveal-rarity" style="margin-bottom:10px;font-size:.8rem">10 Pack Opening</div>'
+    +'<div class="pack-ten-grid">'+gridHtml+'</div>'
+    +'<div class="pack-ten-summary">'+summaryLine+'</div>'
+    +'<button class="btn gold" onclick="closePackModal()" style="width:100%">Done</button>'
+    +'</div>';
+  reveal.classList.remove('hidden');
+}
 
 // ===== Daily Login Wheel =====
 const DAILY_WHEEL_COOLDOWN = 24*60*60*1000;
