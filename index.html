@@ -1646,6 +1646,30 @@ body.final-card-open{overflow:hidden}
 @keyframes confettiFall{0%{opacity:1;transform:translateY(-20px) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(160px) rotate(540deg) scale(.6)}}
 .confetti-bit{position:absolute;width:7px;height:7px;border-radius:2px;animation:confettiFall linear forwards}
 
+/* ---- Onboarding Modal ---- */
+.onb-dialog{
+  width:min(380px,100%);margin:auto;
+  background:linear-gradient(180deg,#13151c 0%,#09090d 100%);
+  border:1px solid rgba(227,178,60,.42);border-radius:18px;
+  padding:30px 24px 24px;
+  display:flex;flex-direction:column;
+  box-shadow:0 0 60px rgba(227,178,60,.15),0 24px 64px rgba(0,0,0,.85);
+}
+.onb-icon-wrap{text-align:center;margin-bottom:14px}
+.onb-icon{font-size:2.8rem;line-height:1;display:inline-block}
+.onb-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.75rem;color:#e3b23c;text-align:center;margin:0 0 12px;letter-spacing:.04em;line-height:1.1;border:none;padding:0}
+.onb-title::before{display:none}
+.onb-body{font-size:.88rem;color:rgba(255,255,255,.68);text-align:center;line-height:1.65;margin-bottom:22px}
+.onb-body strong{color:#fff}
+.onb-dots{display:flex;justify-content:center;gap:8px;margin-bottom:22px}
+.onb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.16);transition:background .22s,transform .22s}
+.onb-dot.active{background:#e3b23c;transform:scale(1.3)}
+.onb-actions{display:flex;align-items:center;gap:10px}
+.onb-skip{font-size:.78rem;color:rgba(255,255,255,.32);padding:8px 2px;background:none;border:none;cursor:pointer;flex-shrink:0;transition:color .18s}
+.onb-skip:hover{color:rgba(255,255,255,.6)}
+.onb-nav{display:flex;gap:8px;margin-left:auto}
+.onb-nav .btn{min-width:80px}
+
 /* Trading-card (FUT-style) — refine frame only, keep identity */
 .fighter-card{border-radius:var(--radius-lg)}
 
@@ -2221,6 +2245,7 @@ body.final-card-open{overflow:hidden}
       <button type="button" class="final-card-close" aria-label="Close help" onclick="closeHelp()">x</button>
     </div>
     <div class="final-card-content help-body">
+      <button class="btn ghost" onclick="closeHelp();openOnboarding()" style="width:100%;margin-bottom:16px">▶ Replay Tutorial</button>
       <h3>What is UNBEATEN: 50-0?</h3>
       <p>A boxing career roguelite. You build a fighter from the attributes of boxing legends, add traits, then try to run an unbeaten 50-0 career against escalating opposition.</p>
       <h3>Building a fighter / card</h3>
@@ -2265,6 +2290,22 @@ body.final-card-open{overflow:hidden}
           <label for="bug-output">Copy this and send it to the developer</label>
           <textarea id="bug-output" rows="8" readonly></textarea>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="onboarding-modal" class="final-card-modal hidden" role="dialog" aria-modal="true" aria-labelledby="onb-title">
+  <div class="onb-dialog">
+    <div class="onb-icon-wrap"><span id="onb-icon" class="onb-icon" aria-hidden="true">🥊</span></div>
+    <h2 id="onb-title" class="onb-title"></h2>
+    <div id="onb-body" class="onb-body"></div>
+    <div id="onb-dots" class="onb-dots"></div>
+    <div class="onb-actions">
+      <button type="button" class="onb-skip" onclick="closeOnboarding()">Skip</button>
+      <div class="onb-nav">
+        <button type="button" id="onb-back-btn" class="btn ghost" onclick="stepOnb(-1)" style="display:none">Back</button>
+        <button type="button" id="onb-next-btn" class="btn gold" onclick="stepOnb(1)">Next</button>
       </div>
     </div>
   </div>
@@ -2343,6 +2384,7 @@ body.final-card-open{overflow:hidden}
   <div id="account-auth-error" class="auth-error"></div>
   <button id="account-sync-now-btn" type="button" class="btn blue" onclick="syncNow(true)">Update Profile Now</button>
   <button id="account-sign-out-btn" type="button" class="btn ghost" onclick="signOutCloud()">Sign Out</button>
+  <button type="button" class="btn ghost" onclick="openOnboarding()">▶ Replay Tutorial</button>
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
@@ -6259,6 +6301,49 @@ function bugCareerSummary(){ try{ if(typeof S==='undefined' || !S || !S.player) 
 function buildBugTechInfo(){ return ['Screen: '+currentScreenId(),'Logged in: '+bugLoggedInStatus(),'Version: '+GAME_VERSION,'Fighter: '+bugCareerSummary(),'Viewport: '+window.innerWidth+'x'+window.innerHeight,'Local time: '+new Date().toLocaleString(),'User agent: '+navigator.userAgent].join('\n'); }
 function openHelp(){ const m=$('help-modal'); if(!m) return; m.classList.remove('hidden'); document.body.classList.add('final-card-open'); }
 function closeHelp(){ const m=$('help-modal'); if(!m) return; m.classList.add('hidden'); document.body.classList.remove('final-card-open'); }
+const ONB_KEY='unbeaten_onboarding_complete';
+const ONB_STEPS=[
+  {icon:'🥊',title:'Welcome to UNBEATEN: 50-0',body:'The ultimate boxing career challenge. Build your fighter, create your card, and go <strong>50 fights without a single loss</strong>. Think you can stay unbeaten?'},
+  {icon:'🎨',title:'Build Your Card',body:'Draft your boxer by locking in attributes from boxing legends. Then visit the <strong>Card Editor</strong> to pick your character, frame, aura, and background — make the card yours.'},
+  {icon:'⚡',title:'Traits & Character Boosts',body:'You roll <strong>traits</strong> during your draft — perks and flaws that shape your career. Equip a character in the Card Editor to unlock their unique <strong>Signature Boost</strong> in fights.'},
+  {icon:'🚀',title:'Sim Your Career',body:'On the Active Career screen, hit <strong>Sim All</strong> to auto-run all 50 fights at once. Watch the results roll in and find out if your build can go the distance.'},
+  {icon:'🪙',title:'Earn & Unlock',body:'Every career earns <strong>Play Money</strong>. Spin the Daily Spin, open Art Packs in the Store, and collect new characters, frames, and backgrounds. Then run again with a better card.'}
+];
+let _onbStep=0;
+function maybeShowOnboarding(){
+  try{ if(localStorage.getItem(ONB_KEY)) return; }catch(e){ return; }
+  try{ const r=getRecords(); if(r.bestRecord!=='0-0'||r.mostMoney>0||r.mostKOs>0){ localStorage.setItem(ONB_KEY,'1'); return; } }catch(e){}
+  openOnboarding();
+}
+function openOnboarding(){
+  _onbStep=0;
+  renderOnbStep(0);
+  const m=$('onboarding-modal');
+  if(m){ m.classList.remove('hidden'); document.body.classList.add('final-card-open'); }
+}
+function closeOnboarding(){
+  const m=$('onboarding-modal');
+  if(m){ m.classList.add('hidden'); document.body.classList.remove('final-card-open'); }
+  try{ localStorage.setItem(ONB_KEY,'1'); }catch(e){}
+}
+function stepOnb(dir){
+  const next=_onbStep+dir;
+  if(next<0) return;
+  if(next>=ONB_STEPS.length){ closeOnboarding(); return; }
+  _onbStep=next;
+  renderOnbStep(next);
+}
+function renderOnbStep(n){
+  const s=ONB_STEPS[n]; if(!s) return;
+  const icon=$('onb-icon'); if(icon) icon.innerText=s.icon;
+  const title=$('onb-title'); if(title) title.innerText=s.title;
+  const body=$('onb-body'); if(body) body.innerHTML=s.body;
+  const dots=$('onb-dots');
+  if(dots) dots.innerHTML=ONB_STEPS.map((_,i)=>'<div class="onb-dot'+(i===n?' active':'')+'"></div>').join('');
+  const back=$('onb-back-btn'); if(back) back.style.display=n>0?'':'none';
+  const next=$('onb-next-btn');
+  if(next){ const last=n===ONB_STEPS.length-1; next.innerText=last?'Start Playing':'Next'; }
+}
 function openBugReport(){ const m=$('bug-report-modal'); if(!m) return; const meta=$('bug-auto-meta'); if(meta) meta.value=buildBugTechInfo(); const st=$('bug-status'); if(st){ st.textContent=''; st.className='auth-error'; } const ow=$('bug-output-wrap'); if(ow) ow.classList.add('hidden'); m.classList.remove('hidden'); document.body.classList.add('final-card-open'); }
 function closeBugReport(){ const m=$('bug-report-modal'); if(!m) return; m.classList.add('hidden'); document.body.classList.remove('final-card-open'); }
 function buildBugReport(){ const g=id=>{ const el=$(id); return el?String(el.value||'').trim():''; }; const title=g('bug-title')||'Untitled bug'; const sev=g('bug-severity')||'Medium'; const body=['### What happened?','',g('bug-happened')||'(not provided)','','### What should have happened?','',g('bug-expected')||'(not provided)','','### Steps to reproduce','',g('bug-steps')||'(not provided)','','### Severity','',sev,'','### Contact (optional)','',g('bug-contact')||'(none)','','### Technical info','','```',buildBugTechInfo(),'```'].join('\n'); return { title:'[Bug] '+title, body:body, severity:sev }; }
@@ -8680,6 +8765,7 @@ function finishAuthMigration(source){
   updateAuthUI();
   setAuthMessage('Signed in and synced.', true);
   showScreen('menu-screen');
+  setTimeout(maybeShowOnboarding, 650);
 }
 async function handleSignedIn(user){
   if(authMigrationRunning) return;
