@@ -1377,6 +1377,7 @@ body.final-card-open{overflow:hidden}
   #menu-screen>.worldwide-stats-title,#menu-screen>.global-stats{order:1}
   #menu-screen>.worldwide-stats-title{margin-top:2px}
   #menu-screen>.menu-actions{order:2;margin-top:2px!important;padding-top:0!important}
+  #menu-screen>.current-rank-title,#menu-screen>.current-rank-panel{order:3}
 }
 @media(max-width:520px){
   #menu-screen>.worldwide-stats-title,#menu-screen>.global-stats{order:-1}
@@ -1783,6 +1784,11 @@ body.final-card-open{overflow:hidden}
   <div class="standard-mode-card">
     <div class="mode-title">Standard Career</div>
     <div class="mode-sub">2 draft re-rolls • standard rewards • standard opponent scaling • eligible for achievements, leaderboards and profile tracking</div>
+  </div>
+  <h2 class="current-rank-title">Current Rank</h2>
+  <div class="panel compact-panel current-rank-panel" id="current-rank-panel">
+    <div class="row"><span>All-Time Rank:</span><span id="rank-alltime">Loading...</span></div>
+    <div class="row"><span>Seasonal Rank:</span><span id="rank-seasonal">Loading...</span></div>
   </div>
   <h2>All-Time Personal Records</h2>
   <div class="compact-grid">
@@ -7191,6 +7197,53 @@ function refreshMenu(){
     const sf=$('save-fighter'); if(sf) sf.innerText='-';
     const sp=$('save-progress'); if(sp) sp.innerText='-';
   }
+  refreshCurrentRank();
+}
+let _rankCacheTime=0, _rankCacheAlltime=null, _rankCacheSeasonal=null;
+async function refreshCurrentRank(force=false){
+  const atEl=$('rank-alltime'), seEl=$('rank-seasonal');
+  if(!atEl||!seEl) return;
+  const now=Date.now();
+  if(!force&&_rankCacheAlltime!==null&&_rankCacheSeasonal!==null&&(now-_rankCacheTime)<60000){
+    atEl.innerText=_rankCacheAlltime; seEl.innerText=_rankCacheSeasonal; return;
+  }
+  atEl.innerText='Loading...'; seEl.innerText='Loading...';
+  const profile=loadProfileFoundation();
+  const playerId=profile?.playerId||null;
+  const uid=currentUser?.uid||null;
+  function findRank(docs){
+    if(!playerId&&!uid) return null;
+    for(let i=0;i<docs.length;i++){
+      if(playerId&&docs[i].playerId===playerId) return i+1;
+      if(uid&&docs[i].uid===uid) return i+1;
+    }
+    return null;
+  }
+  // All-Time Rank
+  try{
+    const snap=await db.collection('completed_careers').orderBy('careerLegacyScore','desc').limit(200).get();
+    const docs=snap.docs.map(d=>d.data());
+    const rank=findRank(docs);
+    if(rank!==null){
+      _rankCacheAlltime='#'+rank;
+    } else if(playerId){
+      const pSnap=await db.collection('completed_careers').where('playerId','==',playerId).limit(1).get();
+      _rankCacheAlltime=pSnap.empty?'Complete a Career':'Rank Pending';
+    } else {
+      _rankCacheAlltime='Complete a Career';
+    }
+  }catch(e){ console.error('Rank fetch error (all-time):',e); _rankCacheAlltime='Rank Pending'; }
+  // Seasonal Rank
+  try{
+    const season=await ensureCurrentSeason();
+    const snap=await db.collection('seasonal_hall_of_fame').where('seasonId','==',season.id).get();
+    const docs=snap.docs.map(d=>d.data()).sort((a,b)=>(b.careerLegacyScore||0)-(a.careerLegacyScore||0));
+    const rank=findRank(docs);
+    _rankCacheSeasonal=rank!==null?'#'+rank:'Complete a Career';
+  }catch(e){ console.error('Rank fetch error (seasonal):',e); _rankCacheSeasonal='Rank Pending'; }
+  _rankCacheTime=Date.now();
+  if($('rank-alltime')) $('rank-alltime').innerText=_rankCacheAlltime;
+  if($('rank-seasonal')) $('rank-seasonal').innerText=_rankCacheSeasonal;
 }
 let storeReturnScreen = 'menu-screen';
 function storeProfile(){
