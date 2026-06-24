@@ -5743,6 +5743,206 @@ const BONUS_SYNERGIES = [
 ];
 SYNERGY.push(...BONUS_SYNERGIES);
 
+// ---- Fighter Identity Metadata ----
+// Keys match the existing Name field exactly so game logic is unchanged.
+// displayName=fictional UI name, flag=country emoji, primeYear=peak year,
+// sc=styleCategory (power|pressure|technical|durable|speed|balanced), sd=short style desc
+const FIGHTER_IDENTITY = {
+  "Muhammad Ali":{displayName:"The Phantom",flag:"🇺🇸",primeYear:1971,sc:"technical",sd:"Untouchable dancer with genius ring IQ."},
+  "Mike Tyson":{displayName:"Iron Fury",flag:"🇺🇸",primeYear:1988,sc:"power",sd:"Explosive pressure with frightening knockout power."},
+  "Tyson Fury":{displayName:"The Revenant",flag:"🇬🇧",primeYear:2020,sc:"durable",sd:"Rises from every storm with supernatural recovery."},
+  "Oleksandr Usyk":{displayName:"The Architect",flag:"🇺🇦",primeYear:2022,sc:"technical",sd:"Precise footwork and flawless tactical boxing."},
+  "Lennox Lewis":{displayName:"Stone Commander",flag:"🇬🇧",primeYear:1999,sc:"technical",sd:"Long-range master with a heavy finishing punch."},
+  "Evander Holyfield":{displayName:"Holy Warrior",flag:"🇺🇸",primeYear:1996,sc:"pressure",sd:"Relentless heart and championship-level engine."},
+  "George Foreman":{displayName:"Big Detonator",flag:"🇺🇸",primeYear:1994,sc:"power",sd:"Overwhelming power that bends fights by presence alone."},
+  "Joe Frazier":{displayName:"Smokin Forge",flag:"🇺🇸",primeYear:1971,sc:"pressure",sd:"Iron pressure fighter forged for brutal inside warfare."},
+  "Larry Holmes":{displayName:"The Professor",flag:"🇺🇸",primeYear:1982,sc:"technical",sd:"Clinical jab and ironclad ring intelligence."},
+  "Vitali Klitschko":{displayName:"Steel Titan",flag:"🇺🇦",primeYear:2010,sc:"durable",sd:"Towering endurance and granite chin from Eastern Europe."},
+  "Riddick Bowe":{displayName:"Big Thunder",flag:"🇺🇸",primeYear:1993,sc:"pressure",sd:"Powerful pressure backed by elite championship heart."},
+  "David Tua":{displayName:"Iron Samoa",flag:"🇳🇿",primeYear:1996,sc:"power",sd:"Short-range detonator with a legendary left hook."},
+  "Ken Norton":{displayName:"The Sculptor",flag:"🇺🇸",primeYear:1973,sc:"technical",sd:"Awkward angles and rock-solid structural defence."},
+  "Earnie Shavers":{displayName:"The One Punch",flag:"🇺🇸",primeYear:1977,sc:"power",sd:"Legendary knockout power in a single shot."},
+  "Shannon Briggs":{displayName:"The Banger",flag:"🇺🇸",primeYear:1997,sc:"power",sd:"Heavy-handed brawler with relentless forward march."},
+  "Butterbean":{displayName:"The Wrecking Ball",flag:"🇺🇸",primeYear:1999,sc:"power",sd:"Immovable force with devastating short power."},
+  "Jake Paul":{displayName:"The Disruptor",flag:"🇺🇸",primeYear:2023,sc:"balanced",sd:"Accurate puncher with surprising professional poise."},
+  "Eddie Hall":{displayName:"Mountain Force",flag:"🇬🇧",primeYear:2017,sc:"power",sd:"Strongman power translated into ring destruction."},
+  "Hafthor Bjornsson":{displayName:"The Viking Tower",flag:"🇮🇸",primeYear:2018,sc:"power",sd:"The largest power source in heavyweight history."},
+  "Francis Ngannou":{displayName:"Wild Force",flag:"🇫🇷",primeYear:2021,sc:"power",sd:"Cage-born power that redefines heavyweight danger."},
+  "Moses Itauma":{displayName:"Rising Storm",flag:"🇬🇧",primeYear:2024,sc:"speed",sd:"Elite speed from a new generation of heavyweight."},
+  "Leo Atang":{displayName:"Ghost Weaver",flag:"🇬🇧",primeYear:2023,sc:"technical",sd:"Smooth footwork and deceptive technical craft."},
+  "Jared Anderson":{displayName:"The Nightmare",flag:"🇺🇸",primeYear:2024,sc:"power",sd:"Next-generation knockout power with rapid speed."},
+  "Justis Huni":{displayName:"Pacific Engine",flag:"🇦🇺",primeYear:2023,sc:"speed",sd:"Relentless work rate from the southern hemisphere."},
+  "Filip Hrgovic":{displayName:"The Fortress",flag:"🇭🇷",primeYear:2023,sc:"durable",sd:"Hard Eastern European chin and measured power."},
+  "Frank Sanchez":{displayName:"Precise Ghost",flag:"🇨🇺",primeYear:2023,sc:"technical",sd:"Cuban precision blended with heavyweight fluency."},
+  "Arslanbek Makhmudov":{displayName:"Steppe Crusher",flag:"🇰🇿",primeYear:2019,sc:"power",sd:"Raw Kazakh power puncher hunting stoppages."},
+  "Zhilei Zhang":{displayName:"Big Bang",flag:"🇨🇳",primeYear:2023,sc:"power",sd:"Chinese heavyweight with explosive southpaw power."},
+  "Dereck Chisora":{displayName:"The Grinder",flag:"🇬🇧",primeYear:2018,sc:"pressure",sd:"Tough pressure fighter who grinds every round."},
+  "Dillian Whyte":{displayName:"Black Rhino",flag:"🇬🇧",primeYear:2020,sc:"power",sd:"Heavy-handed brawler with championship-level danger."},
+  "Joseph Parker":{displayName:"Pacific Thunder",flag:"🇳🇿",primeYear:2017,sc:"balanced",sd:"Well-rounded heavyweight from New Zealand."},
+  "Andy Ruiz Jr.":{displayName:"The Machine",flag:"🇲🇽",primeYear:2019,sc:"speed",sd:"Surprisingly fast hands with shocking knockout power."},
+  "Carlos Takam":{displayName:"Iron Horse",flag:"🇨🇲",primeYear:2017,sc:"durable",sd:"Rugged Cameroonian chin built for long campaigns."},
+  "Otto Wallin":{displayName:"Nordic Ghost",flag:"🇸🇪",primeYear:2019,sc:"technical",sd:"Southpaw technician with solid Scandinavian defence."},
+  "Michael Hunter":{displayName:"The Hawk",flag:"🇺🇸",primeYear:2019,sc:"speed",sd:"Cruiserweight speed ported to heavyweight craft."},
+  "Kubrat Pulev":{displayName:"The Cobra",flag:"🇧🇬",primeYear:2020,sc:"technical",sd:"Educated Bulgarian jab and composed ring IQ."},
+  "Hughie Fury":{displayName:"The Mechanic",flag:"🇬🇧",primeYear:2017,sc:"technical",sd:"Calculated spoiler with elusive defensive footwork."},
+  "Chris Byrd":{displayName:"Shadow Dancer",flag:"🇺🇸",primeYear:2002,sc:"technical",sd:"Elusive mover who neutralises power with angles."},
+  "Tony Thompson":{displayName:"The Surgeon",flag:"🇺🇸",primeYear:2008,sc:"technical",sd:"Awkward southpaw style disrupting opponent rhythm."},
+  "John Ruiz":{displayName:"Stone Wall",flag:"🇵🇷",primeYear:2001,sc:"durable",sd:"Smothering clinch specialist with granite durability."},
+  "Kevin Johnson":{displayName:"The Deep Shell",flag:"🇺🇸",primeYear:2009,sc:"durable",sd:"Defensive master who frustrates aggressive opponents."},
+  "Audley Harrison":{displayName:"The Olympian",flag:"🇬🇧",primeYear:2001,sc:"speed",sd:"Olympic gold turned pro with quick movement."},
+  "Nikolai Valuev":{displayName:"The Giant",flag:"🇷🇺",primeYear:2009,sc:"durable",sd:"Seven-foot fortress with a unique defensive shell."},
+  "David Price":{displayName:"The Lottery",flag:"🇬🇧",primeYear:2012,sc:"power",sd:"Huge power with fragile chin in a lottery every night."},
+  "Lucas Browne":{displayName:"Freak Power",flag:"🇦🇺",primeYear:2017,sc:"power",sd:"Australian power puncher with a freakish right hand."},
+  "Amir Mansour":{displayName:"Pitbull",flag:"🇺🇸",primeYear:2014,sc:"pressure",sd:"Relentless pressure fighter hunting early stoppages."},
+  "Gerald Washington":{displayName:"The General",flag:"🇺🇸",primeYear:2017,sc:"balanced",sd:"Disciplined heavyweight with military precision."},
+  "Dave Allen":{displayName:"White Rhino",flag:"🇬🇧",primeYear:2019,sc:"durable",sd:"Beloved British chin who refuses to stay down."},
+  "Amir Khan":{displayName:"Flash Lightning",flag:"🇬🇧",primeYear:2011,sc:"speed",sd:"Blinding hand speed from a world-class British talent."},
+  "George Groves":{displayName:"Sharp Shooter",flag:"🇬🇧",primeYear:2017,sc:"technical",sd:"Accurate puncher with calculated ring intelligence."},
+  "Lawrence Okolie":{displayName:"Silent Force",flag:"🇬🇧",primeYear:2021,sc:"durable",sd:"Tall and rangy with quietly dominant durability."},
+  "Chris Billam-Smith":{displayName:"Iron Resolve",flag:"🇬🇧",primeYear:2023,sc:"durable",sd:"Relentless heart and granite durability from Bournemouth."},
+  "Fabio Wardley":{displayName:"Essex Hammer",flag:"🇬🇧",primeYear:2023,sc:"pressure",sd:"Rising English heavyweight with heavy-handed pressure."},
+  "Martin Bakole":{displayName:"Congo Thunder",flag:"🇨🇩",primeYear:2022,sc:"pressure",sd:"Huge power from Central Africa with warrior heart."},
+  "Agit Kabayel":{displayName:"European Flame",flag:"🇩🇪",primeYear:2024,sc:"balanced",sd:"Balanced European heavyweight with technical polish."},
+  "Alexander Povetkin":{displayName:"Russian Hammer",flag:"🇷🇺",primeYear:2014,sc:"power",sd:"Compact Russian power with a fearless fighting spirit."},
+  "Tony Yoka":{displayName:"French Colossus",flag:"🇫🇷",primeYear:2023,sc:"balanced",sd:"Olympic gold and heavyweight potential from Paris."},
+  "Jai Opetaia":{displayName:"Pacific Storm",flag:"🇦🇺",primeYear:2022,sc:"balanced",sd:"Explosive Pacific Islander with all-around elite tools."},
+  "Murat Gassiev":{displayName:"The Destroyer",flag:"🇷🇺",primeYear:2018,sc:"power",sd:"Heavy-handed Russian knockout artist."},
+  "Krzysztof Glowacki":{displayName:"Polish Bulldog",flag:"🇵🇱",primeYear:2015,sc:"pressure",sd:"Tough Polish pressure fighter with relentless output."},
+  "Badou Jack":{displayName:"Nordic Blade",flag:"🇸🇪",primeYear:2017,sc:"technical",sd:"Swedish-Gambian technical boxer with sharp defence."},
+  "Jean Pascal":{displayName:"Quebec Thunder",flag:"🇨🇦",primeYear:2010,sc:"pressure",sd:"Explosive Canadian pressure with dynamic combinations."},
+  "Gilberto Ramirez":{displayName:"Mexican Eagle",flag:"🇲🇽",primeYear:2021,sc:"pressure",sd:"Rangy Mexican pressure boxer with dangerous power."},
+  "Callum Smith":{displayName:"Scouser Smasher",flag:"🇬🇧",primeYear:2020,sc:"power",sd:"Towering Liverpool power with championship credentials."},
+  "David Benavidez":{displayName:"Desert Beast",flag:"🇺🇸",primeYear:2023,sc:"power",sd:"High-volume Phoenix power bomber with relentless attack."},
+  "Caleb Plant":{displayName:"Neon Prophet",flag:"🇺🇸",primeYear:2021,sc:"technical",sd:"Las Vegas technical master with elusive footwork."},
+  "Billy Joe Saunders":{displayName:"Romany Ghost",flag:"🇬🇧",primeYear:2019,sc:"technical",sd:"Elusive southpaw technician with crafty ring IQ."},
+  "Demetrius Andrade":{displayName:"Providence Shadow",flag:"🇺🇸",primeYear:2020,sc:"technical",sd:"Southpaw ghost with elite defensive technique."},
+  "David Lemieux":{displayName:"Quebec Bomber",flag:"🇨🇦",primeYear:2015,sc:"power",sd:"Pure Canadian knockout power in explosive bursts."},
+  "Felix Sturm":{displayName:"Germanic Craft",flag:"🇩🇪",primeYear:2013,sc:"technical",sd:"German technical master with defensive discipline."},
+  "Arthur Abraham":{displayName:"Concrete King",flag:"🇩🇪",primeYear:2009,sc:"durable",sd:"Armenian-German granite chin and relentless pressure."},
+  "Julio Cesar Chavez Jr":{displayName:"Desert Lion Jr",flag:"🇲🇽",primeYear:2012,sc:"pressure",sd:"Mexican pride and pressure inherited from legend."},
+  "Liam Smith":{displayName:"Liverpool Grit",flag:"🇬🇧",primeYear:2023,sc:"pressure",sd:"Relentless Liverpool pressure with growing world-class wins."},
+  "Josh Taylor":{displayName:"Edinburgh Blade",flag:"🇬🇧",primeYear:2021,sc:"speed",sd:"Scottish undisputed champion with razor-sharp speed."},
+  "Regis Prograis":{displayName:"Bayou Beast",flag:"🇺🇸",primeYear:2021,sc:"power",sd:"New Orleans power with furious offensive output."},
+  "Jose Ramirez":{displayName:"Central Valley Power",flag:"🇺🇸",primeYear:2021,sc:"pressure",sd:"Relentless Californian pressure with granite chin."},
+  "Danny Garcia":{displayName:"Philly Lightning",flag:"🇺🇸",primeYear:2013,sc:"power",sd:"Philadelphia power puncher with championship explosiveness."},
+  "Shawn Porter":{displayName:"Philly Pressure",flag:"🇺🇸",primeYear:2019,sc:"pressure",sd:"Relentless swarming pressure from Philadelphia."},
+  "Keith Thurman":{displayName:"Florida Thunder",flag:"🇺🇸",primeYear:2017,sc:"balanced",sd:"Florida all-rounder with championship-level timing."},
+  "Jaron Ennis":{displayName:"Speed Wizard",flag:"🇺🇸",primeYear:2024,sc:"speed",sd:"Philadelphia speed phenomenon with elite knockout power."},
+  "Vergil Ortiz Jr":{displayName:"Dallas Destroyer",flag:"🇺🇸",primeYear:2023,sc:"power",sd:"Texas power puncher with a perfect finishing record."},
+  "Tim Tszyu":{displayName:"Sydney Pressure",flag:"🇦🇺",primeYear:2023,sc:"pressure",sd:"Australian pressure machine carrying legendary DNA."},
+  "Sebastian Fundora":{displayName:"Lanky Bomber",flag:"🇺🇸",primeYear:2023,sc:"pressure",sd:"Freakishly tall pressure fighter with dangerous reach."},
+  "Liam Paro":{displayName:"Australian Ghost",flag:"🇦🇺",primeYear:2023,sc:"technical",sd:"Brisbane southpaw technician with precise craft."},
+  "Adrien Broner":{displayName:"Cincinnati Flash",flag:"🇺🇸",primeYear:2013,sc:"speed",sd:"Slick speed and punching pop in flashy combinations."},
+  "Jessie Vargas":{displayName:"Vegas Craft",flag:"🇺🇸",primeYear:2016,sc:"balanced",sd:"Las Vegas ring general with smart tactical boxing."},
+  "Victor Ortiz":{displayName:"Garden State Power",flag:"🇺🇸",primeYear:2010,sc:"power",sd:"Mexican-American power with explosive dangerous nights."},
+  "Brandon Rios":{displayName:"Oxnard Bull",flag:"🇺🇸",primeYear:2013,sc:"pressure",sd:"Ferocious California brawler built for war."},
+  "Jorge Linares":{displayName:"Venezuelan Arrow",flag:"🇻🇪",primeYear:2015,sc:"speed",sd:"Lightning Venezuelan speed with deadly counter punch."},
+  "Yuriorkis Gamboa":{displayName:"Cuban Cyclone",flag:"🇨🇺",primeYear:2012,sc:"speed",sd:"Olympic Cuban explosive speed and dangerous combinations."},
+  "Abner Mares":{displayName:"Border Warrior",flag:"🇲🇽",primeYear:2013,sc:"balanced",sd:"Mexican-American well-rounded warrior with heart."},
+  "Buster Douglas":{displayName:"Columbus Upset",flag:"🇺🇸",primeYear:1990,sc:"balanced",sd:"Inspired Ohio giant capable of the impossible night."},
+  "Chris Eubank Jr":{displayName:"Brighton Firestorm",flag:"🇬🇧",primeYear:2023,sc:"pressure",sd:"Brighton pressure fighter channelling generational fire."},
+  "Conor Benn":{displayName:"Essex Blitz",flag:"🇬🇧",primeYear:2022,sc:"speed",sd:"Essex speed and power built on heavyweight potential."},
+  "James DeGale":{displayName:"Olympic Technician",flag:"🇬🇧",primeYear:2016,sc:"technical",sd:"London Olympic gold turned southpaw professional master."},
+  "Anthony Crolla":{displayName:"Manchester Heart",flag:"🇬🇧",primeYear:2016,sc:"pressure",sd:"Never-say-die Manchester heart and relentless effort."},
+  "Scott Quigg":{displayName:"Bury Banger",flag:"🇬🇧",primeYear:2015,sc:"pressure",sd:"Bury pressure fighter with hard-nosed British grit."},
+  "Josh Warrington":{displayName:"Yorkshire Terrier",flag:"🇬🇧",primeYear:2019,sc:"pressure",sd:"Leeds warrior with ferocious heart and relentless output."},
+  "Errol Spence Jr":{displayName:"Texas Surgeon",flag:"🇺🇸",primeYear:2019,sc:"technical",sd:"Clinical Texas technician with jab and inside work."},
+  "Miguel Cotto":{displayName:"Boricua Warrior",flag:"🇵🇷",primeYear:2007,sc:"pressure",sd:"Puerto Rican pressure and inside-game mastery."},
+  "Marco Antonio Barrera":{displayName:"Aztec Technician",flag:"🇲🇽",primeYear:2004,sc:"technical",sd:"Mexican tactical master built for championship wars."},
+  "Erik Morales":{displayName:"Mexican Nightmare",flag:"🇲🇽",primeYear:2006,sc:"pressure",sd:"Ferocious Mexican pressure with championship-level heart."},
+  "Juan Manuel Marquez":{displayName:"Mexican Counter",flag:"🇲🇽",primeYear:2013,sc:"technical",sd:"Counter-punching genius with lethal Mexican precision."},
+  "Nonito Donaire":{displayName:"Cebu Dynamite",flag:"🇵🇭",primeYear:2012,sc:"power",sd:"Filipino explosive power and speed in compact combinations."},
+  "Roman Gonzalez":{displayName:"Nica Maestro",flag:"🇳🇮",primeYear:2016,sc:"technical",sd:"Nicaraguan pound-for-pound maestro with precise power."},
+  "Conor McGregor":{displayName:"Dublin Meteor",flag:"🇮🇪",primeYear:2017,sc:"speed",sd:"Striking speed and timing from the Octagon crossover."},
+  "Anderson Silva":{displayName:"Brazilian Ghost",flag:"🇧🇷",primeYear:2012,sc:"technical",sd:"MMA legend with ghostly precision in striking arts."},
+  "Nate Diaz":{displayName:"Stockton Steel",flag:"🇺🇸",primeYear:2016,sc:"durable",sd:"Stockton toughness and relentless pressure crossover."},
+  "Anthony Joshua":{displayName:"GB Gold",flag:"🇬🇧",primeYear:2019,sc:"power",sd:"Olympic gold turned elite heavyweight with massive power."},
+  "Wladimir Klitschko":{displayName:"Ukrainian Colossus",flag:"🇺🇦",primeYear:2015,sc:"technical",sd:"Dominant jab-and-grab master from Eastern Europe."},
+  "Roy Jones Jr.":{displayName:"Speed Surgeon",flag:"🇺🇸",primeYear:1996,sc:"speed",sd:"Fastest reflexes in boxing history with lethal timing."},
+  "Joe Calzaghe":{displayName:"Valley Dragon",flag:"🇬🇧",primeYear:2007,sc:"pressure",sd:"Welsh volume puncher with unbeaten championship record."},
+  "Carl Froch":{displayName:"Nottingham Hammer",flag:"🇬🇧",primeYear:2013,sc:"durable",sd:"Nottingham warrior who walks through punishment for glory."},
+  "Kell Brook":{displayName:"Sheffield Steel",flag:"🇬🇧",primeYear:2015,sc:"technical",sd:"Sheffield technical boxer with championship-level precision."},
+  "Chris Eubank":{displayName:"Brighton Showman",flag:"🇬🇧",primeYear:1995,sc:"durable",sd:"Eccentric Brighton showman with unbreakable chin."},
+  "Nigel Benn":{displayName:"Essex Warrior",flag:"🇬🇧",primeYear:1993,sc:"pressure",sd:"Ferocious Essex fighter with devastating pressure attack."},
+  "Andre Ward":{displayName:"Oakland Master",flag:"🇺🇸",primeYear:2016,sc:"technical",sd:"Oakland defensive genius with flawless ring IQ."},
+  "Floyd Mayweather Jr.":{displayName:"Precision Maestro",flag:"🇺🇸",primeYear:2013,sc:"technical",sd:"Unbeaten defensive master with surgical precision."},
+  "Manny Pacquiao":{displayName:"Filipino Power",flag:"🇵🇭",primeYear:2010,sc:"speed",sd:"Filipino speed and power across eight weight divisions."},
+  "Canelo Alvarez":{displayName:"Red Flame",flag:"🇲🇽",primeYear:2022,sc:"power",sd:"Mexican red-haired destroyer built for championship glory."},
+  "Gennady Golovkin":{displayName:"Kazakh Storm",flag:"🇰🇿",primeYear:2016,sc:"power",sd:"Kazakh pressure puncher with relentless KO power."},
+  "Terence Crawford":{displayName:"Omaha Genius",flag:"🇺🇸",primeYear:2021,sc:"technical",sd:"Omaha switch-hitter with elite championship intelligence."},
+  "Vasyl Lomachenko":{displayName:"Ukrainian Chess Master",flag:"🇺🇦",primeYear:2019,sc:"technical",sd:"Olympic genius turning boxing into strategic art."},
+  "Bernard Hopkins":{displayName:"Philadelphia Iceman",flag:"🇺🇸",primeYear:2003,sc:"technical",sd:"Philadelphia defensive master who aged like fine steel."},
+  "James Toney":{displayName:"Detroit Shell",flag:"🇺🇸",primeYear:1993,sc:"technical",sd:"Detroit defensive genius who made himself untouchable."},
+  "Pernell Whitaker":{displayName:"Norfolk Ghost",flag:"🇺🇸",primeYear:1994,sc:"technical",sd:"Norfolk elusive master who ghosted through opposition."},
+  "Sugar Ray Leonard":{displayName:"Maryland Flash",flag:"🇺🇸",primeYear:1987,sc:"speed",sd:"Maryland flash with genius timing and championship flair."},
+  "Roberto Duran":{displayName:"Panama Hands",flag:"🇵🇦",primeYear:1980,sc:"pressure",sd:"Panamanian street fighter with legendary stone hands."},
+  "Oscar De La Hoya":{displayName:"East LA Gold",flag:"🇺🇸",primeYear:1999,sc:"balanced",sd:"Golden Boy with all-round championship-level tools."},
+  "Julio Cesar Chavez":{displayName:"Culiacan Legend",flag:"🇲🇽",primeYear:1993,sc:"pressure",sd:"Indestructible Mexican legend with pressure boxing mastery."},
+  "Naseem Hamed":{displayName:"Sheffield Prince",flag:"🇬🇧",primeYear:1998,sc:"speed",sd:"Sheffield flamboyant power puncher with unorthodox genius."},
+  "Ricky Hatton":{displayName:"Mancunian Machine",flag:"🇬🇧",primeYear:2007,sc:"pressure",sd:"Manchester machine built for all-action inside warfare."},
+  "Carl Frampton":{displayName:"North Belfast Warrior",flag:"🇬🇧",primeYear:2016,sc:"technical",sd:"Technical Belfast fighter with two-division glory."},
+  "Barry McGuigan":{displayName:"Irish Cyclone",flag:"🇮🇪",primeYear:1985,sc:"pressure",sd:"Irish cyclone pressure with incredible national pride."},
+  "Arturo Gatti":{displayName:"Jersey Thunder",flag:"🇨🇦",primeYear:2003,sc:"pressure",sd:"Jersey crowd favourite built for unforgettable wars."},
+  "Antonio Margarito":{displayName:"Border Destroyer",flag:"🇲🇽",primeYear:2007,sc:"pressure",sd:"Mexican pressure destroyer who smothers with volume."},
+  "Winky Wright":{displayName:"Tall Technician",flag:"🇺🇸",primeYear:2007,sc:"technical",sd:"Rangy technical boxer who neutralises aggression."},
+  "Kostya Tszyu":{displayName:"Siberian Thunder",flag:"🇦🇺",primeYear:2001,sc:"pressure",sd:"Russian-Australian pressure puncher built for war."},
+  "Mairis Briedis":{displayName:"Latvian Craftsman",flag:"🇱🇻",primeYear:2019,sc:"technical",sd:"Precise Latvian craftsman with championship ring IQ."},
+  "Marco Huck":{displayName:"European Tarzan",flag:"🇩🇪",primeYear:2015,sc:"pressure",sd:"German-Serbian pressure fighter with fierce heart."},
+  "Tony Bellew":{displayName:"Scouse Bomber",flag:"🇬🇧",primeYear:2017,sc:"pressure",sd:"Liverpool pressure bomber who punches above every level."},
+  "Paul Williams":{displayName:"Long Range Punisher",flag:"🇺🇸",primeYear:2009,sc:"pressure",sd:"Tall punishing pressure fighter with long-range power."}
+};
+function getFighterIdentity(name){ return FIGHTER_IDENTITY[name]||null; }
+function formatFighterSource(name){
+  if(!name) return '';
+  const id=FIGHTER_IDENTITY[name];
+  if(!id) return '('+htmlEscape(name)+')';
+  const y=id.primeYear%100;
+  return htmlEscape(id.displayName)+' '+id.flag+' Prime #'+(y<10?'0':'')+y;
+}
+function getFighterDisplayLabel(name){
+  const id=FIGHTER_IDENTITY[name]; return id?id.displayName:name;
+}
+function getFighterPrimeTag(name){
+  const id=FIGHTER_IDENTITY[name]; if(!id||!id.primeYear) return '';
+  const y=id.primeYear%100; return 'Prime #'+(y<10?'0':'')+y;
+}
+
+// ---- Meta Synergies — style, nation, era, build shape, trait combos ----
+// reqType determines how requirements are evaluated in checkSynergy().
+const META_SYNERGIES = [
+  // Style Count Synergies — 3+ stat sources from the same style category
+  {id:"pressure_pack",name:"Pressure Pack",reqType:"style_count",requirements:{style:"pressure",count:3},desc:"Three or more pressure-style sources. +2 Heart, +2 Stamina.",bonuses:{Heart:2,Stamina:2}},
+  {id:"slick_technician",name:"Slick Technician",reqType:"style_count",requirements:{style:"technical",count:3},desc:"Three or more technical/outboxer sources. +2 Ring IQ, +2 Defence.",bonuses:{"Ring IQ":2,Defence:2}},
+  {id:"power_surge",name:"Power Surge",reqType:"style_count",requirements:{style:"power",count:3},desc:"Three or more power-style sources. +2 Power, +1 Accuracy.",bonuses:{Power:2,Accuracy:1}},
+  {id:"speed_demon_meta",name:"Speed Demon",reqType:"style_count",requirements:{style:"speed",count:3},desc:"Three or more speed-style sources. +2 Speed, +2 Accuracy.",bonuses:{Speed:2,Accuracy:2}},
+  {id:"iron_fortress_meta",name:"Iron Fortress",reqType:"style_count",requirements:{style:"durable",count:3},desc:"Three or more durable/tank sources. +2 Chin, +2 Recovery.",bonuses:{Chin:2,Recovery:2}},
+  // Nation / Flag Synergies — multiple sources from the same country
+  {id:"british_bulldog",name:"British Bulldog",reqType:"nation_count",requirements:{flag:"🇬🇧",count:3},desc:"Three or more British sources. +1 Heart, +1 Chin, +1 Stamina.",bonuses:{Heart:1,Chin:1,Stamina:1}},
+  {id:"american_iron",name:"American Iron",reqType:"nation_count",requirements:{flag:"🇺🇸",count:3},desc:"Three or more American sources. +2 Power, +1 Heart.",bonuses:{Power:2,Heart:1}},
+  {id:"ukrainian_school",name:"Ukrainian School",reqType:"nation_count",requirements:{flag:"🇺🇦",count:2},desc:"Two or more Ukrainian sources. +2 Ring IQ, +2 Defence.",bonuses:{"Ring IQ":2,Defence:2}},
+  {id:"latin_fire",name:"Latin Fire",reqType:"nations_any",requirements:{flags:["🇲🇽","🇵🇷","🇨🇺","🇵🇦","🇻🇪","🇳🇮"],count:2},desc:"Two or more Latin American sources. +2 Heart, +2 Power.",bonuses:{Heart:2,Power:2}},
+  {id:"global_warrior",name:"Global Warrior",reqType:"multi_nation",requirements:{count:5},desc:"Sources from five or more different nations. +1 Ring IQ, +1 Accuracy, +1 Footwork.",bonuses:{"Ring IQ":1,Accuracy:1,Footwork:1}},
+  // Era Synergies — based on primeYear of selected sources
+  {id:"old_school_grit",name:"Old School Grit",reqType:"era_old",requirements:{before:1985,count:2},desc:"Two or more pre-1985 prime sources. +2 Heart, +1 Stamina.",bonuses:{Heart:2,Stamina:1}},
+  {id:"modern_athlete",name:"Modern Athlete",reqType:"era_modern",requirements:{from:2015,count:3},desc:"Three or more 2015+ prime sources. +2 Speed, +1 Recovery.",bonuses:{Speed:2,Recovery:1}},
+  {id:"era_clash",name:"Era Clash",reqType:"era_clash",requirements:{before:1985,from:2015},desc:"Mix of pre-1985 and 2015+ prime sources. +2 Ring IQ.",bonuses:{"Ring IQ":2}},
+  {id:"golden_era",name:"Golden Era",reqType:"era_decade",requirements:{decadeStart:1980,count:3},desc:"Three or more 1980s prime sources. +1 Power, +1 Speed, +1 Heart.",bonuses:{Power:1,Speed:1,Heart:1}},
+  // Build Shape Synergies — check raw drafted stat values (S.player.Stats)
+  {id:"immovable_object",name:"Immovable Object",reqType:"build_shape",requirements:{Chin:{min:90},Heart:{min:90}},desc:"Chin 90+ and Heart 90+ drafted. +2 Recovery.",bonuses:{Recovery:2}},
+  {id:"knockout_machine",name:"Knockout Machine",reqType:"build_shape",requirements:{Power:{min:92},Accuracy:{min:86}},desc:"Power 92+ and Accuracy 86+ drafted. +2 Power.",bonuses:{Power:2}},
+  {id:"points_master",name:"Points Master",reqType:"build_shape",requirements:{Footwork:{min:85},Defence:{min:85},"Ring IQ":{min:85}},desc:"Footwork, Defence, and Ring IQ all 85+ drafted. +1 each.",bonuses:{Footwork:1,Defence:1,"Ring IQ":1}},
+  {id:"distance_machine",name:"Distance Machine",reqType:"build_shape",requirements:{Stamina:{min:90},Heart:{min:88}},desc:"Stamina 90+ and Heart 88+ drafted. +2 Stamina.",bonuses:{Stamina:2}},
+  // Trait Combo Synergies — activate when specific trait pair is obtained
+  {id:"relentless_engine_combo",name:"Relentless Engine",reqType:"trait_combo",requirements:{traits:["volume_puncher","second_wind"]},desc:"Volume Puncher + Second Wind. +2 Stamina, +2 Heart.",bonuses:{Stamina:2,Heart:2}},
+  {id:"counter_king_meta",name:"Counter King",reqType:"trait_combo",requirements:{traits:["counter_puncher","southpaw_enigma"]},desc:"Counter Puncher + Southpaw Enigma. +2 Ring IQ, +2 Defence.",bonuses:{"Ring IQ":2,Defence:2}},
+  {id:"show_and_stop",name:"Show & Stop",reqType:"trait_combo",requirements:{traits:["fan_favourite","ko_artist"]},desc:"Fan Favourite + Knockout Artist. +2 Power, +2 Accuracy.",bonuses:{Power:2,Accuracy:2}},
+  {id:"heart_of_oak",name:"Heart of Oak",reqType:"trait_combo",requirements:{traits:["iron_chin","late_finisher"]},desc:"Iron Chin + Late Finisher. +2 Chin, +1 Heart.",bonuses:{Chin:2,Heart:1}},
+  {id:"late_pressure",name:"Late Pressure",reqType:"trait_combo",requirements:{traits:["body_engine","late_finisher"]},desc:"Body Engine + Late Finisher. +2 Heart, +2 Power.",bonuses:{Heart:2,Power:2}},
+  {id:"snap_jab_craft",name:"Snap & Jab Craft",reqType:"trait_combo",requirements:{traits:["snap_jab","busy_feet"]},desc:"Snap Jab + Busy Feet. +1 Speed, +1 Footwork, +1 Accuracy.",bonuses:{Speed:1,Footwork:1,Accuracy:1}},
+  {id:"championship_machine",name:"Championship Machine",reqType:"trait_combo",requirements:{traits:["championship_lungs","second_wind"]},desc:"Championship Lungs + Second Wind. +3 Stamina, +1 Recovery.",bonuses:{Stamina:3,Recovery:1}}
+];
+SYNERGY.push(...META_SYNERGIES);
+
 const STATS = ['Power','Chin','Speed','Footwork','Ring IQ','Heart','Defence','Stamina','Accuracy','Recovery'];
 const STANDARD_MODE = {id:'standard',name:'Standard Career',rerolls:2,oppMod:-2,purse:1.08,elite:1.18,ultra:1.08};
 const MODE = {
@@ -7299,7 +7499,7 @@ function renderAttributeValue(value){ return '<strong class="'+getAttributeClass
 function valCls(v){ return (v==null)?'attr-low':getAttributeClass(v); }
 function modeCfg(){ return standardModeCfg(); }
 function fresh(){ const profile=loadProfileFoundation(); S.mode='standard'; S.player=applyProfileFoundation({Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}, profile); STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:'standard',currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:STANDARD_MODE.rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0,achievementStartIds:Object.keys(S.player.achievements?.unlocked||{}), firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false, profile50Counted: false, playMoneyRewarded: false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
-function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?'('+(S.player.StatSources[st]||'Unknown')+')'+(S.player.PerfectSpinStats[st]?' • Perfect Spin':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
+function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?formatFighterSource(S.player.StatSources[st]||'')+(S.player.PerfectSpinStats[st]?' ✦':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
 function updateDraftTop(){ const cfg=modeCfg(); $('draft-mode-label').innerText=cfg.name; $('draft-rerolls-left').innerText=S.career.draftRerolls; $('reroll-btn').innerText='Use Re-Roll ('+S.career.draftRerolls+')'; $('reroll-btn').disabled=!S.awaiting || S.career.draftRerolls<=0; }
 function avgLegend(l){ return STATS.reduce((s,st)=>s+l[st],0)/STATS.length; }
 function weightedPick(list,fn){ const arr=list.map(item=>({item,weight:Math.max(0,fn(item))})); const total=arr.reduce((s,e)=>s+e.weight,0); let roll=Math.random()*total; for(const e of arr){ roll-=e.weight; if(roll<=0) return e.item; } return arr[arr.length-1].item; }
@@ -7333,10 +7533,62 @@ function restartDraft(){
     startNewCareer();
   }
 }
-function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=a.Name; $('slot-mid').innerText=b.Name; $('slot-bottom').innerText=c.Name; ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=LEGENDS[(idx+1)%LEGENDS.length].Name; $('slot-mid').innerText=S.legend.Name; $('slot-bottom').innerText=LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name; $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+S.legend.Name+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); let txt='('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' • '+S.legend.Pool; if(S.perfect) txt+=' • Perfect Spin +1'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
+function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=getFighterDisplayLabel(a.Name); $('slot-mid').innerText=getFighterDisplayLabel(b.Name); $('slot-bottom').innerText=getFighterDisplayLabel(c.Name); ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=getFighterDisplayLabel(LEGENDS[(idx+1)%LEGENDS.length].Name); $('slot-mid').innerText=getFighterDisplayLabel(S.legend.Name); $('slot-bottom').innerText=getFighterDisplayLabel(LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name); $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+getFighterDisplayLabel(S.legend.Name)+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); const _fid=getFighterIdentity(S.legend.Name); let txt=_fid?_fid.displayName+' '+_fid.flag+' '+getFighterPrimeTag(S.legend.Name):'('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' · '+S.legend.Pool; if(S.perfect) txt+=' ✦'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
 function useReroll(){ if(!S.awaiting||S.career.draftRerolls<=0) return; S.career.draftRerolls--; saveCareer(); spinWheel(true,true); }
 function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} • ${t.rarity.toUpperCase()}\n\n${t.desc}`; }
-function checkSynergy(){ const unlocked=[]; SYNERGY.forEach(sy=>{ const ok=Object.entries(sy.requirements).every(([st,name])=>S.player.StatSources[st]===name); if(ok) unlocked.push(sy); }); S.player.HiddenBonuses=unlocked; updateOverallDisplays(); }
+function checkSynergy(){
+  const unlocked=[];
+  const sources=S.player.StatSources||{};
+  const srcVals=Object.values(sources).filter(Boolean);
+  const traits=(S.player.Traits||[]).map(t=>t.id);
+  const rawStats=S.player.Stats||{};
+  SYNERGY.forEach(sy=>{
+    let ok=false;
+    const rt=sy.reqType||'source';
+    try{
+      if(rt==='source'){
+        ok=Object.entries(sy.requirements).every(([st,name])=>sources[st]===name);
+      } else if(rt==='style_count'){
+        const {style,count}=sy.requirements;
+        ok=srcVals.filter(n=>(getFighterIdentity(n)||{}).sc===style).length>=count;
+      } else if(rt==='nation_count'){
+        const {flag,count}=sy.requirements;
+        ok=srcVals.filter(n=>(getFighterIdentity(n)||{}).flag===flag).length>=count;
+      } else if(rt==='nations_any'){
+        const {flags,count}=sy.requirements;
+        ok=srcVals.filter(n=>flags.includes((getFighterIdentity(n)||{}).flag)).length>=count;
+      } else if(rt==='multi_nation'){
+        const nations=new Set(srcVals.map(n=>(getFighterIdentity(n)||{}).flag).filter(Boolean));
+        ok=nations.size>=sy.requirements.count;
+      } else if(rt==='era_old'){
+        const {before,count}=sy.requirements;
+        ok=srcVals.filter(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py<before;}).length>=count;
+      } else if(rt==='era_modern'){
+        const {from,count}=sy.requirements;
+        ok=srcVals.filter(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py>=from;}).length>=count;
+      } else if(rt==='era_clash'){
+        const {before,from}=sy.requirements;
+        const hasOld=srcVals.some(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py<before;});
+        const hasNew=srcVals.some(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py>=from;});
+        ok=hasOld&&hasNew;
+      } else if(rt==='era_decade'){
+        const {decadeStart,count}=sy.requirements;
+        ok=srcVals.filter(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py>=decadeStart&&py<decadeStart+10;}).length>=count;
+      } else if(rt==='build_shape'){
+        ok=Object.entries(sy.requirements).every(([st,check])=>{
+          const v=rawStats[st]; if(v==null) return false;
+          if(check.min!=null&&v<check.min) return false;
+          if(check.max!=null&&v>check.max) return false;
+          return true;
+        });
+      } else if(rt==='trait_combo'){
+        ok=(sy.requirements.traits||[]).every(tid=>traits.includes(tid));
+      }
+    }catch(e){ ok=false; }
+    if(ok) unlocked.push(sy);
+  });
+  S.player.HiddenBonuses=unlocked; updateOverallDisplays();
+}
 function updateSynergyPanel(newIds){ newIds=newIds||new Set(); const p=$('synergy-panel'); const list=S.player.HiddenBonuses||[]; if(!list.length){ p.innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; return; } p.innerHTML=''; list.forEach(b=>{ const div=document.createElement('div'); div.className='trait-pill secret synergy-pill'+(newIds.has(b.id)?' synergy-new':''); div.title=b.desc; const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(' \u00b7 '); div.innerHTML='<div class="trait-title"><span class="synergy-spark">\u2726</span> '+b.name+'</div><div>'+b.desc+'</div><div class="synergy-bonus">'+plus+'</div><span class="trait-chip secret">Synergy</span>'; p.appendChild(div); }); }
 function flashScreen(cls){ try{ const f=document.createElement('div'); f.className='synergy-flash '+(cls||''); document.body.appendChild(f); setTimeout(()=>{ if(f.parentNode) f.parentNode.removeChild(f); },900); }catch(e){} }
 function celebrateSynergies(list){ if(!list||!list.length) return; setTimeout(()=>{ playSynergy(); flashScreen('teal'); list.slice(0,3).forEach((b,i)=>{ const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(', '); setTimeout(()=>showToast('\u26a1 Synergy Unlocked', b.name+' \u2014 '+plus), i*260); }); }, 230); }
@@ -7344,7 +7596,7 @@ function lockStat(stat){ if(!S.legend||S.player.Stats[stat]!=null||!S.awaiting) 
 // ---- Central trait rarity colour system (matches rarity tabs) ----
 function getTraitRarityClass(trait){ if(!trait) return 'trait-common'; const type=(trait.type||'').toLowerCase(); const r=(trait.rarity||'common').toLowerCase(); if(type==='negative'||r==='cursed') return 'trait-cursed'; switch(r){ case 'common': return 'trait-common'; case 'uncommon': return 'trait-uncommon'; case 'rare': return 'trait-rare'; case 'luxury': return 'trait-luxury'; case 'epic': return 'trait-epic'; case 'legendary': return 'trait-legendary'; case 'mythic': case 'premium': return 'trait-premium'; case 'secret': return 'trait-secret'; default: return 'trait-common'; } }
 function renderTraitChip(trait){ const label=(trait&&trait.rarity)?trait.rarity:'common'; return '<span class="trait-chip '+getTraitRarityClass(trait)+'">'+htmlEscape(label)+'</span>'; }
-function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTraitBusy=true; const btn=$('trait-spin-btn'), reel=$('trait-result'); btn.disabled=true; const available=TRAITS.filter(t=>!(S.player.Traits||[]).some(x=>x.id===t.id)); let i=0; const loop=()=>{ if(i<12){ playTick(); const tease=choice(available); reel.innerText=tease.name+' • '+tease.rarity.toUpperCase(); reel.className='trait-reel '+getTraitRarityClass(tease); i++; setTimeout(loop,60+i*5); } else { playLock(); const pick=weightedPick(available,t=>{ let w=TRAIT_W[t.rarity]||8; if(t.type==='positive') w*=1.12; return w; }); S.player.Traits.push(pick); S.traitsRolled++; reel.innerText=pick.name+' • '+pick.rarity.toUpperCase(); reel.className='trait-reel '+getTraitRarityClass(pick); const box=document.createElement('div'); box.className='trait-pill '+getTraitRarityClass(pick)+(pick.type==='negative'?' trait-negative':''); box.title=traitTooltip(pick); box.innerHTML='<div class="trait-title">'+pick.name+' ('+pick.type.toUpperCase()+' • '+pick.rarity.toUpperCase()+')</div><div>'+pick.desc+'</div>'+renderTraitChip(pick); $('trait-list').appendChild(box); $('draft-archetype').innerText=archetype(getPerm()).name; if(S.traitsRolled===1){ btn.innerText='Spin Trait #2'; btn.disabled=false; } else { btn.innerText='Draft Complete'; btn.disabled=true; } saveCareer(); updateOverallDisplays(); S.spinTraitBusy=false; } }; loop(); }
+function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTraitBusy=true; const btn=$('trait-spin-btn'), reel=$('trait-result'); btn.disabled=true; const available=TRAITS.filter(t=>!(S.player.Traits||[]).some(x=>x.id===t.id)); let i=0; const loop=()=>{ if(i<12){ playTick(); const tease=choice(available); reel.innerText=tease.name+' • '+tease.rarity.toUpperCase(); reel.className='trait-reel '+getTraitRarityClass(tease); i++; setTimeout(loop,60+i*5); } else { playLock(); const pick=weightedPick(available,t=>{ let w=TRAIT_W[t.rarity]||8; if(t.type==='positive') w*=1.12; return w; }); S.player.Traits.push(pick); S.traitsRolled++; reel.innerText=pick.name+' • '+pick.rarity.toUpperCase(); reel.className='trait-reel '+getTraitRarityClass(pick); const box=document.createElement('div'); box.className='trait-pill '+getTraitRarityClass(pick)+(pick.type==='negative'?' trait-negative':''); box.title=traitTooltip(pick); box.innerHTML='<div class="trait-title">'+pick.name+' ('+pick.type.toUpperCase()+' • '+pick.rarity.toUpperCase()+')</div><div>'+pick.desc+'</div>'+renderTraitChip(pick); $('trait-list').appendChild(box); $('draft-archetype').innerText=archetype(getPerm()).name; if(S.traitsRolled===1){ btn.innerText='Spin Trait #2'; btn.disabled=false; } else { btn.innerText='Draft Complete'; btn.disabled=true; } checkSynergy(); saveCareer(); updateOverallDisplays(); S.spinTraitBusy=false; } }; loop(); }
 function getPerm(){ const s=deep(S.player.Stats); if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number')) return s; if(hasTrait('iron_chin')){s.Chin+=4; s.Recovery+=5;} if(hasTrait('glass_cannon')){s.Power+=8; s.Chin-=10;} if(hasTrait('counter_puncher')){s.Defence+=6; s['Ring IQ']+=6;} if(hasTrait('ring_general')){s['Ring IQ']+=4; s.Accuracy+=3;} if(hasTrait('volume_puncher')){s.Accuracy+=2; s.Stamina+=1;} if(hasTrait('generational_talent')) STATS.forEach(st=>s[st]+=3); if(hasTrait('supertank')){s.Chin+=7; s.Heart+=5; s.Recovery+=5;} (S.player.HiddenBonuses||[]).forEach(b=>Object.entries(b.bonuses).forEach(([st,amt])=>s[st]+=amt)); STATS.forEach(st=>s[st]=clamp(Math.round(s[st]),1,99)); return s; }
 function calculateOverall(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null && typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(()=>overall+=2); return clamp(Math.round(overall), 40, 99); }
 function updateOverallDisplays(){ const ovr=calculateOverall(); if($('overall-rating-draft')) $('overall-rating-draft').innerText=ovr; if($('overall-rating-trait')) $('overall-rating-trait').innerText=ovr; if($('overall-rating-hub')) $('overall-rating-hub').innerText=ovr; if($('hub-rating')) $('hub-rating').innerText='Rating '+ovr; }
@@ -7445,7 +7697,7 @@ function updateHub(){
   STATS.forEach(st=>{
     const card=document.createElement('div');
     card.className='stat-card';
-    card.innerHTML='<div class="stat-head"><span>'+st+':</span><strong class="'+valCls(s[st])+'">'+s[st]+'</strong></div><div class="stat-source">'+(S.player.StatSources[st]?'('+S.player.StatSources[st]+')':'')+'</div>';
+    card.innerHTML='<div class="stat-head"><span>'+st+':</span><strong class="'+valCls(s[st])+'">'+s[st]+'</strong></div><div class="stat-source">'+formatFighterSource(S.player.StatSources[st]||'')+'</div>';
     g.appendChild(card);
   });
   const tr=$('hub-traits');
