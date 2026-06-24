@@ -6420,7 +6420,7 @@ function leaderboardBuildEntryData(entry){
   return {
     name:entry?.fighterName||entry?.boxerName||'Unknown Fighter',
     username:entry?.username||'Player',
-    nickname:build.nickname||'The Contender',
+    nickname:build.nickname||entry?.cardNickname||'The Contender',
     country:build.country||'',
     record:entry?.record||entry?.finalRecord||wins+'-'+losses+(draws?'-'+draws:''),
     kos:Number(entry?.koWins??entry?.koCount)||0,
@@ -6430,6 +6430,13 @@ function leaderboardBuildEntryData(entry){
     mode:entry?.gameMode||'',
     avatar:entry?.avatar,
     equippedCosmetics:entry?.equippedCosmetics||{},
+    equippedCardItems:entry?.equippedCardItems||null,
+    ownedCardItems:entry?.ownedCardItems||null,
+    cardName:entry?.cardName||'',
+    belts:Number(entry?.beltsUnified||0),
+    earnings:Number(entry?.lifetimeEarnings||0),
+    peakWorldRank:Number(entry?.peakWorldRank||0),
+    careerEndDate:entry?.careerEndDate||null,
     build
   };
 }
@@ -6446,11 +6453,14 @@ function leaderboardBuildMarkup(entry, cacheKey){
   }).join(''):'<div class="empty-state">Detailed build stats were not saved for this older leaderboard entry. New submissions will include them.</div>';
   const traits=Array.isArray(build.traits)?build.traits:[];
   const synergies=Array.isArray(build.synergies)?build.synergies:[];
-  const cosmeticNames=Object.values(data.equippedCosmetics).map(id=>COSMETIC_CATALOG[id]?.name||id).filter(Boolean);
+  const cosmeticNames=Object.values(data.equippedCosmetics).map(id=>COSMETIC_DEFINITIONS[id]?.name||id).filter(Boolean);
+  const cardStats=[{label:'Record',value:data.record},{label:'KOs',value:String(data.kos)},{label:'Legacy',value:String(data.legacy)},{label:'Rank',value:data.peakWorldRank?'#'+data.peakWorldRank:'-'},{label:'Belts',value:String(data.belts)},{label:'Earned',value:compactCardMoney(data.earnings)}];
+  const cardHtml=data.equippedCardItems?'<div class="profile-card-art" style="max-width:220px">'+modularCardMarkupFrom({name:data.cardName||data.name,nickname:data.nickname,ovr:data.ovr,equippedCardItems:data.equippedCardItems,ownedCardItems:data.ownedCardItems,stats:cardStats})+'</div>':'<span class="career-summary-empty">Full fighter build data is not available for this older entry.</span>';
   const cached=leaderboardBuildCache.get(cacheKey);
   const profileButton=cached?.profileUid?'<button class="btn ghost" onclick="openLeaderboardBuildProfile(\''+cacheKey+'\')">View Player Profile</button>':'';
   return '<div class="leaderboard-build-hero"><div class="leaderboard-build-avatar">'+avatarMarkup(data.avatar,data.equippedCosmetics)+'</div><div><div class="leaderboard-build-name">'+htmlEscape(data.name)+'</div><div class="leaderboard-build-sub">'+htmlEscape('"'+data.nickname+'"')+(data.country?' / '+htmlEscape(data.country):'')+'<br>'+htmlEscape(data.username)+(data.mode?' / '+htmlEscape(data.mode):'')+'<br>'+htmlEscape(data.identity)+'</div></div></div>'+
     '<div class="leaderboard-build-metrics"><div class="leaderboard-build-metric"><span>OVR</span><strong>'+htmlEscape(data.ovr)+'</strong></div><div class="leaderboard-build-metric"><span>Record</span><strong>'+htmlEscape(data.record)+'</strong></div><div class="leaderboard-build-metric"><span>KOs</span><strong>'+htmlEscape(data.kos)+'</strong></div><div class="leaderboard-build-metric"><span>Legacy</span><strong>'+htmlEscape(data.legacy)+'</strong></div><div class="leaderboard-build-metric"><span>Traits</span><strong>'+traits.length+'</strong></div><div class="leaderboard-build-metric"><span>Synergies</span><strong>'+synergies.length+'</strong></div></div>'+
+    '<div class="leaderboard-build-section"><h3>Fighter Card</h3>'+cardHtml+'</div>'+
     '<div class="leaderboard-build-section"><h3>Final Attributes And Sources</h3><div class="leaderboard-build-stats">'+statsHtml+'</div></div>'+
     '<div class="leaderboard-build-section"><h3>Traits</h3><div class="leaderboard-build-chips">'+(traits.length?traits.map(t=>'<span class="leaderboard-build-chip">'+htmlEscape(t.name||t.id||'Trait')+'</span>').join(''):'<span class="career-summary-empty">No trait data saved.</span>')+'</div></div>'+
     '<div class="leaderboard-build-section"><h3>Synergies</h3><div class="leaderboard-build-chips">'+(synergies.length?synergies.map(s=>'<span class="leaderboard-build-chip synergy">'+htmlEscape(s.name||s.id||'Synergy')+'</span>').join(''):'<span class="career-summary-empty">No synergy data saved.</span>')+'</div></div>'+
@@ -6459,8 +6469,14 @@ function leaderboardBuildMarkup(entry, cacheKey){
 function openLeaderboardBuild(cacheKey){
   const cached=leaderboardBuildCache.get(cacheKey), modal=$('leaderboard-build-modal'), content=$('leaderboard-build-content');
   if(!cached||!modal||!content){ showToast('Build Unavailable','This fighter build could not be loaded.'); return; }
-  content.innerHTML=leaderboardBuildMarkup(cached.entry,cacheKey);
+  try{
+    content.innerHTML=leaderboardBuildMarkup(cached.entry,cacheKey);
+  }catch(e){
+    console.error('Fighter build render error',e);
+    content.innerHTML='<div class="empty-state">Unable to display this fighter build.</div>';
+  }
   modal.classList.remove('hidden');
+  modal.scrollTop=0;
   document.body.classList.add('final-card-open');
   setTimeout(()=>$('leaderboard-build-close-btn')?.focus(),0);
 }
@@ -7519,6 +7535,10 @@ function careerSnapshot(){
     buildIdentity:getBuildIdentity(stats),
     gameMode:modeCfg().name,
     gameModeId:S.career.mode||S.mode,
+    equippedCardItems:S.player.equippedCardItems||null,
+    ownedCardItems:S.player.ownedCardItems||null,
+    cardName:S.player.cardName||'',
+    cardNickname:S.player.cardNickname||'',
     fighterBuild:fighterBuildSnapshot(S.player,stats),
     careerEndDate:new Date().toISOString(),
     submittedAt:firebase.firestore.FieldValue.serverTimestamp()
