@@ -1656,6 +1656,37 @@ body.final-card-open{overflow:hidden}
 .featured-store-item .card-store-thumb{width:72px;height:80px}
 .featured-store-item .card-store-meta strong{font-size:.75rem}
 .featured-all-owned{padding:14px;text-align:center;color:rgba(255,255,255,.38);font-size:.74rem;border:1px dashed rgba(255,255,255,.1);border-radius:8px;background:rgba(0,0,0,.15)}
+/* ===== Store Item Polish ===== */
+.store-rarity-badge{display:inline-block;font-size:.5rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase;padding:2px 7px;border-radius:4px;margin:3px 0 4px}
+.store-rarity-badge.store-rarity-common{background:rgba(203,213,225,.07);color:#94a3b8}
+.store-rarity-badge.store-rarity-uncommon{background:rgba(74,222,128,.1);color:#86efac}
+.store-rarity-badge.store-rarity-rare{background:rgba(96,165,250,.1);color:#60a5fa}
+.store-rarity-badge.store-rarity-luxury{background:rgba(192,132,252,.1);color:#c084fc}
+.store-rarity-badge.store-rarity-legendary{background:rgba(249,115,22,.12);color:#fb923c}
+.store-rarity-badge.store-rarity-premium{background:rgba(250,204,21,.1);color:#fde68a}
+.store-state-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:.5rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.store-state-equipped{background:rgba(227,178,60,.14);border:1px solid rgba(227,178,60,.38);color:var(--gold)}
+.store-state-owned{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.11);color:rgba(255,255,255,.52)}
+.store-price{display:block;margin-top:5px;color:#f6d768;font-size:.68rem;font-weight:1000}
+.store-price-free{display:block;margin-top:5px;color:#79e3ad;font-size:.62rem;font-weight:1000;text-transform:uppercase}
+.store-price-premium{display:block;margin-top:5px;color:#fde68a;font-size:.6rem;font-weight:900;text-transform:uppercase;opacity:.6}
+.store-shortage{display:block;font-size:.6rem;font-weight:700;color:rgba(255,255,255,.38);margin-top:4px;line-height:1.3}
+.store-close-nudge{display:inline-block;font-size:.57rem;font-weight:900;color:#fbbf24;margin-top:3px;background:rgba(251,191,36,.1);padding:2px 6px;border-radius:3px;letter-spacing:.02em}
+/* Stronger rarity borders/accents on store item cards */
+.card-store-item.rarity-uncommon{border-color:rgba(74,222,128,.22)}
+.card-store-item.rarity-rare{border-color:rgba(59,130,246,.32)}
+.card-store-item.rarity-luxury{border-color:rgba(168,85,247,.38)}
+.card-store-item.rarity-legendary{border-color:rgba(249,115,22,.52);background:linear-gradient(120deg,rgba(249,115,22,.04) 0%,#0c0d11 60%)}
+.card-store-item.rarity-premium{border-color:rgba(212,175,55,.52);background:linear-gradient(120deg,rgba(212,175,55,.04) 0%,#0c0d11 60%)}
+/* Featured item rarity override — each tier gets its own glow colour */
+.featured-store-item.rarity-uncommon{border-color:rgba(74,222,128,.3);background:linear-gradient(135deg,rgba(74,222,128,.04) 0%,#0c0d11 65%)}
+.featured-store-item.rarity-rare{border-color:rgba(59,130,246,.4);background:linear-gradient(135deg,rgba(59,130,246,.05) 0%,#0c0d11 65%)}
+.featured-store-item.rarity-luxury{border-color:rgba(168,85,247,.45);background:linear-gradient(135deg,rgba(168,85,247,.06) 0%,#0c0d11 65%)}
+.featured-store-item.rarity-legendary{border-color:rgba(249,115,22,.55);background:linear-gradient(135deg,rgba(249,115,22,.07) 0%,#0c0d11 65%)}
+/* Bucket progress bar */
+.bucket-progress-bar{height:3px;background:rgba(255,255,255,.07);border-radius:99px;margin-top:7px;overflow:hidden}
+.bucket-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#f6d768);border-radius:99px}
+.bucket-all-owned{display:block;margin-top:3px;font-size:.52rem;color:#79e3ad;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
 /* ===== My Profile Screen ===== */
 .my-profile-card-wrap{display:flex;justify-content:center;margin:0 auto 18px}
 .my-profile-card-wrap .modular-card{width:min(100%,280px);filter:drop-shadow(0 6px 28px rgba(227,178,60,.25)) drop-shadow(0 12px 40px rgba(0,0,0,.8))}
@@ -7606,11 +7637,17 @@ function renderFeaturedWeekly(){
   } else {
     html+='<div class="featured-weekly-grid">'+items.map(item=>{
       const state=cardStoreItemState(item,profile);
-      const status=state==='equipped'?'Equipped':state==='owned'?'Owned':state==='affordable'?'Available':'Not Enough PM';
-      const price=item.rarity==='premium'?'Premium':cardItemPrice(item).toLocaleString()+' PM';
+      const iPrice=item.base?0:item.rarity==='premium'?-1:cardItemPrice(item);
+      const pm=safeMoney(profile.playMoney);
+      const shortage=state==='unaffordable'&&iPrice>0?iPrice-pm:0;
+      const isClose=shortage>0&&pm>=Math.floor(iPrice*0.7);
       const action=state==='owned'?'<button type="button" class="btn blue" onclick="equipCardItem(\''+item.id+'\')">Equip</button>':state==='affordable'?'<button type="button" class="btn gold" onclick="purchaseCardItem(\''+item.id+'\')">Buy</button>':'';
+      const priceHtml=state==='equipped'||state==='owned'?'':item.base?'<span class="store-price-free">Free</span>':item.rarity==='premium'?'<span class="store-price-premium">Coming Later</span>':'<span class="store-price">'+iPrice.toLocaleString()+' PM</span>';
+      const stateBadge=state==='equipped'?'<span class="store-state-badge store-state-equipped">✓ Equipped</span>':state==='owned'?'<span class="store-state-badge store-state-owned">Owned</span>':'';
+      const rarityBadge='<span class="store-rarity-badge store-rarity-'+item.rarity+'">'+htmlEscape(item.rarity)+'</span>';
+      const shortageHtml=shortage>0?'<span class="store-shortage">Need '+shortage.toLocaleString()+' more PM</span>'+(isClose?'<span class="store-close-nudge">You\'re close</span>':''):'';
       const _fboosts=(item.boosts||[]).map(b=>'<span class="ce-boost-badge ce-boost-badge-'+item.rarity+'" title="'+htmlEscape(b.desc)+'">'+(b.icon||'⚡')+' '+htmlEscape(b.name)+'</span>').join('');
-      return '<article class="featured-store-item rarity-'+item.rarity+'" onclick="openItemPreview(\''+item.id+'\',event)"><div class="featured-badge">Featured</div>'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+CARD_CATEGORY_LABELS[item.category]+' &bull; '+item.rarity+'</div>'+(_fboosts?'<div style="margin:4px 0">'+_fboosts+'</div>':'')+' <span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
+      return '<article class="featured-store-item rarity-'+item.rarity+'" onclick="openItemPreview(\''+item.id+'\',event)"><div class="featured-badge">Featured</div>'+cardStoreThumb(item)+'<div class="card-store-meta">'+stateBadge+'<strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+CARD_CATEGORY_LABELS[item.category]+'</div>'+rarityBadge+(_fboosts?'<div style="margin:4px 0">'+_fboosts+'</div>':'')+priceHtml+shortageHtml+action+'</div></article>';
     }).join('')+'</div>';
   }
   html+='</div>';
@@ -7624,8 +7661,11 @@ function renderCardStore(){
     buckets.classList.toggle('hidden',browsing);
     buckets.innerHTML=CARD_STORE_CATEGORIES.map(category=>{
       const categoryItems=allItems.filter(item=>item.category===category), representative=categoryItems.find(item=>item.base)||categoryItems[0], ownedCount=categoryItems.filter(item=>owned.includes(item.id)).length;
+      const pct=Math.round(100*ownedCount/Math.max(1,categoryItems.length));
+      const allOwned=ownedCount===categoryItems.length;
       const art=representative?'<span class="card-store-bucket-art '+category+'"><img loading="lazy" src="'+representative.asset+'" alt=""></span>':'';
-      return '<button type="button" class="card-store-bucket" onclick="selectCardStoreCategory(\''+category+'\')">'+art+'<strong>'+CARD_CATEGORY_LABELS[category]+'</strong><span class="card-store-bucket-count">'+ownedCount+' owned &bull; '+categoryItems.length+' items</span></button>';
+      const countHtml=allOwned?'<span class="bucket-all-owned">✓ All Owned</span>':'<span class="card-store-bucket-count">'+ownedCount+' / '+categoryItems.length+' owned</span>';
+      return '<button type="button" class="card-store-bucket" onclick="selectCardStoreCategory(\''+category+'\')">'+art+'<strong>'+CARD_CATEGORY_LABELS[category]+'</strong>'+countHtml+'<div class="bucket-progress-bar"><div class="bucket-progress-fill" style="width:'+pct+'%"></div></div></button>';
     }).join('');
   }
   renderPackPanel();
@@ -7639,11 +7679,18 @@ function renderCardStore(){
   if(list&&browsing){
     const categoryItems=allItems.filter(item=>item.category===activeCardStoreCategory), items=categoryItems.filter(item=>activeCardStoreRarity==='all'||item.rarity===activeCardStoreRarity);
     list.innerHTML=items.map(item=>{
-      const state=cardStoreItemState(item,profile), status=state==='equipped'?'Equipped':state==='owned'?'Owned':state==='premium'?'Coming Later':state==='affordable'?'Available':'Not Enough Play Money';
+      const state=cardStoreItemState(item,profile);
+      const iPrice=item.base?0:item.rarity==='premium'?-1:cardItemPrice(item);
+      const pm=safeMoney(profile.playMoney);
+      const shortage=state==='unaffordable'&&iPrice>0?iPrice-pm:0;
+      const isClose=shortage>0&&pm>=Math.floor(iPrice*0.7);
       const action=state==='owned'?'<button type="button" class="btn blue" onclick="equipCardItem(\''+item.id+'\')">Equip</button>':state==='affordable'?'<button type="button" class="btn gold" onclick="purchaseCardItem(\''+item.id+'\')">Buy</button>':'';
-      const price=item.base?'Free':item.rarity==='premium'?'Premium':cardItemPrice(item).toLocaleString()+' Play Money';
+      const priceHtml=state==='equipped'||state==='owned'?'':item.base?'<span class="store-price-free">Free</span>':item.rarity==='premium'?'<span class="store-price-premium">Coming Later</span>':'<span class="store-price">'+iPrice.toLocaleString()+' PM</span>';
+      const stateBadge=state==='equipped'?'<span class="store-state-badge store-state-equipped">✓ Equipped</span>':state==='owned'?'<span class="store-state-badge store-state-owned">Owned</span>':'';
+      const rarityBadge='<span class="store-rarity-badge store-rarity-'+item.rarity+'">'+htmlEscape(item.rarity)+'</span>';
+      const shortageHtml=shortage>0?'<span class="store-shortage">Need '+shortage.toLocaleString()+' more PM</span>'+(isClose?'<span class="store-close-nudge">You\'re close</span>':''):'';
       const _sboosts=(item.boosts||[]).map(b=>'<span class="ce-boost-badge ce-boost-badge-'+item.rarity+'" title="'+htmlEscape(b.desc)+'">'+(b.icon||'⚡')+' '+htmlEscape(b.name)+'</span>').join('');
-      return '<article class="card-store-item rarity-'+item.rarity+'" onclick="openItemPreview(\''+item.id+'\',event)">'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+htmlEscape(item.rarity)+'</div>'+(_sboosts?'<div style="margin:3px 0">'+_sboosts+'</div>':'')+'<span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
+      return '<article class="card-store-item rarity-'+item.rarity+'" onclick="openItemPreview(\''+item.id+'\',event)">'+cardStoreThumb(item)+'<div class="card-store-meta">'+stateBadge+'<strong>'+htmlEscape(item.name)+'</strong>'+rarityBadge+(_sboosts?'<div style="margin:4px 0">'+_sboosts+'</div>':'')+priceHtml+shortageHtml+action+'</div></article>';
     }).join('');
     if($('card-store-coming-soon')) $('card-store-coming-soon').innerText=items.length?'More '+CARD_CATEGORY_LABELS[activeCardStoreCategory]+' coming soon':'No '+(activeCardStoreRarity==='all'?'':activeCardStoreRarity+' ')+CARD_CATEGORY_LABELS[activeCardStoreCategory]+' yet';
     if($('card-store-premium-later')) $('card-store-premium-later').classList.toggle('hidden',activeCardStoreRarity!=='all'&&activeCardStoreRarity!=='premium');
