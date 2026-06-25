@@ -4,6 +4,7 @@
   "private": true,
   "description": "Build tools for UNBEATEN: 50-0",
   "scripts": {
+    "process":       "node process-fighters.js",
     "normalize":     "node normalize-fighters.js",
     "normalize:dry": "node normalize-fighters.js --dry-run"
   },
