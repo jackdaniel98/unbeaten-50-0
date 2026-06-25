@@ -1249,6 +1249,27 @@ body.final-card-open{overflow:hidden}
 .colbook-ms-prog{height:4px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
 .colbook-ms-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,rgba(227,178,60,.5),var(--gold))}
 .colbook-ms-progtext{font-size:.6rem;color:rgba(255,255,255,.32);margin-top:3px}
+/* ===== Weekly Objectives ===== */
+.weekly-badge{display:inline-block;background:#fb923c;color:#1a0800;font-size:.52rem;font-weight:900;padding:1px 6px;border-radius:999px;margin-left:6px;vertical-align:middle;line-height:1.6}
+.weekly-badge.hidden{display:none}
+.btn.weekly-ready{border-color:rgba(251,146,60,.45)!important;color:#fb923c!important}
+.weekly-reset-label{font-size:.63rem;color:rgba(255,255,255,.3);margin-top:3px;text-align:center}
+.weekly-obj-card{border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:13px 14px;background:#0c0d11;margin-bottom:8px}
+.weekly-obj-card.ready{border-color:rgba(227,178,60,.5);background:linear-gradient(135deg,rgba(227,178,60,.07) 0%,#0c0d11 70%)}
+.weekly-obj-card.claimed{opacity:.45}
+.weekly-diff-badge{display:inline-block;font-size:.5rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:4px;margin-bottom:6px}
+.diff-easy{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.18)}
+.diff-medium{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.18)}
+.diff-hard{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid rgba(251,146,60,.25)}
+.weekly-obj-label{font-size:.85rem;font-weight:900;color:#fff;margin-bottom:2px}
+.weekly-obj-desc{font-size:.72rem;color:rgba(255,255,255,.46);line-height:1.4;margin-bottom:8px}
+.weekly-obj-progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.weekly-obj-progress-text{font-size:.63rem;color:rgba(255,255,255,.38)}
+.weekly-obj-progress-count{font-size:.63rem;font-weight:900;color:#fff}
+.weekly-progress-bar{height:5px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin-bottom:9px}
+.weekly-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,rgba(227,178,60,.55),var(--gold))}
+.weekly-obj-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.weekly-obj-reward{font-size:.65rem;color:var(--gold);font-weight:700}
 .collection-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
 .collection-title strong{color:#fff;font-size:.95rem;overflow-wrap:anywhere}
 .collection-status{font-size:.62rem;text-transform:uppercase;letter-spacing:.8px;font-weight:1000;border-radius:999px;padding:4px 7px;background:rgba(255,255,255,.08);white-space:nowrap}
@@ -2044,6 +2065,7 @@ body.final-card-open{overflow:hidden}
     <button id="settings-menu-btn" type="button" class="btn ghost" onclick="openAccountSettings()">Settings</button>
     <button id="my-profile-menu-btn" type="button" class="btn ghost" onclick="openMyProfile()">My Profile</button>
     <button id="collection-book-menu-btn" type="button" class="btn ghost" onclick="openCollectionBook()">Collection Book</button>
+    <button id="weekly-obj-menu-btn" type="button" class="btn ghost" onclick="openWeeklyObjectives()">Weekly Objectives<span id="weekly-badge" class="weekly-badge hidden">0</span></button>
     <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
     <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Hall Of Fame</button>
     <button id="help-menu-btn" type="button" class="btn ghost" onclick="openHelp()">Help</button>
@@ -2393,6 +2415,16 @@ body.final-card-open{overflow:hidden}
   <div id="colbook-cats"></div>
   <p class="colbook-ms-section-head">Milestones</p>
   <div id="colbook-milestones" class="colbook-milestones"></div>
+  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+</section>
+
+<section id="weekly-objectives-screen" class="screen">
+  <div class="card-screen-head">
+    <h2>Weekly Objectives</h2>
+    <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
+  </div>
+  <p id="weekly-reset-timer" class="weekly-reset-label"></p>
+  <div id="weekly-obj-list"></div>
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
@@ -7556,6 +7588,7 @@ function openArtPack(){
     target.playMoney=Math.max(0,bal);
   });
   playPackAnimation(item, isDuplicate, refundAmt);
+  incrementWeeklyProgress('packs');
 }
 function playPackRevealSound(rarity){
   initAudio(); if(typeof isMuted!=='undefined' && isMuted) return;
@@ -7692,6 +7725,7 @@ function openArtPackTen(){
     t.playMoney=Math.max(0,bal);
   });
   playTenPackAnimation(results);
+  incrementWeeklyProgress('packs', 10);
 }
 function playTenPackAnimation(results){
   const modal=$('pack-modal'),orb=$('pack-orb'),reveal=$('pack-reveal');
@@ -8123,6 +8157,107 @@ function showAchievementToast(achievement){
   stack.appendChild(toast);
   setTimeout(()=>toast.remove(),5500);
 }
+// ===== Weekly Objectives =====
+const WEEKLY_OBJECTIVES=[
+  {id:'careers_2',    label:'Career Grinder',   desc:'Complete 2 careers this week',                    key:'careers',   target:2,  reward:{pm:75},  difficulty:'Easy'},
+  {id:'kos_25',       label:'Finishing Machine', desc:'Score 25 total KOs across all careers this week', key:'kos',       target:25, reward:{pm:100}, difficulty:'Medium'},
+  {id:'title_wins_5', label:'Title Hunter',      desc:'Win 5 world title fights this week',              key:'titleWins', target:5,  reward:{pm:125}, difficulty:'Medium'},
+  {id:'packs_3',      label:'Pack Opener',       desc:'Open 3 packs from the store this week',           key:'packs',     target:3,  reward:{pm:50},  difficulty:'Easy'},
+  {id:'long_career',  label:'Distance Fighter',  desc:'Complete a career reaching fight 45 or beyond',   key:'longCareer',target:1,  reward:{pm:200}, difficulty:'Hard'},
+];
+const WEEKLY_KEY='unbeaten_weekly_v1';
+function loadWeeklyData(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(WEEKLY_KEY)||'{}');
+    const week=rankSeasonKey();
+    if(raw.weekKey!==week) return{weekKey:week,progress:{},claimed:{}};
+    return{weekKey:week,progress:raw.progress||{},claimed:raw.claimed||{}};
+  }catch{return{weekKey:rankSeasonKey(),progress:{},claimed:{}};}
+}
+function saveWeeklyData(d){try{localStorage.setItem(WEEKLY_KEY,JSON.stringify(d));}catch{}}
+function incrementWeeklyProgress(key,amount=1){
+  const d=loadWeeklyData();
+  d.progress[key]=(d.progress[key]||0)+amount;
+  saveWeeklyData(d);
+}
+function nextWeekResetMs(){
+  const now=new Date(), d=new Date(now);
+  const dow=d.getDay();
+  const daysUntilMon=dow===0?1:(8-dow)%7||7;
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate()+daysUntilMon);
+  return d.getTime()-Date.now();
+}
+function formatWeeklyReset(){
+  const ms=nextWeekResetMs();
+  const days=Math.floor(ms/86400000);
+  const hours=Math.floor((ms%86400000)/3600000);
+  const mins=Math.floor((ms%3600000)/60000);
+  if(days>0) return 'Resets in '+days+'d '+hours+'h';
+  if(hours>0) return 'Resets in '+hours+'h '+mins+'m';
+  return 'Resets in '+mins+'m';
+}
+function updateWeeklyBadge(){
+  const badge=$('weekly-badge');
+  if(!badge) return;
+  const data=loadWeeklyData();
+  const ready=WEEKLY_OBJECTIVES.filter(o=>!data.claimed[o.id]&&(data.progress[o.key]||0)>=o.target).length;
+  const btn=$('weekly-obj-menu-btn');
+  if(ready>0){
+    badge.innerText=ready; badge.classList.remove('hidden');
+    if(btn) btn.classList.add('weekly-ready');
+  }else{
+    badge.classList.add('hidden');
+    if(btn) btn.classList.remove('weekly-ready');
+  }
+}
+function claimWeeklyReward(id){
+  const obj=WEEKLY_OBJECTIVES.find(o=>o.id===id);
+  if(!obj) return;
+  const data=loadWeeklyData();
+  if(data.claimed[id]) return;
+  if((data.progress[obj.key]||0)<obj.target) return;
+  data.claimed[id]=true;
+  saveWeeklyData(data);
+  mutateCardProfile(t=>{t.playMoney=safeMoney(t.playMoney)+obj.reward.pm;});
+  showToast('⭐ Objective Claimed!','+'+obj.reward.pm.toLocaleString()+' PM — '+obj.label);
+  openWeeklyObjectives();
+}
+function openWeeklyObjectives(){
+  const data=loadWeeklyData();
+  const listEl=$('weekly-obj-list');
+  if(!listEl){screen('weekly-objectives-screen');return;}
+  listEl.innerHTML='';
+  const resetEl=$('weekly-reset-timer');
+  if(resetEl) resetEl.innerText=formatWeeklyReset();
+  WEEKLY_OBJECTIVES.forEach(obj=>{
+    const isClaimed=!!data.claimed[obj.id];
+    const current=Math.min(data.progress[obj.key]||0, obj.target);
+    const pct=Math.round(current/obj.target*100);
+    const isReady=current>=obj.target&&!isClaimed;
+    const diffKey=obj.difficulty.toLowerCase();
+    const card=document.createElement('div');
+    card.className='weekly-obj-card'+(isReady?' ready':isClaimed?' claimed':'');
+    card.innerHTML=
+      '<span class="weekly-diff-badge diff-'+diffKey+'">'+htmlEscape(obj.difficulty)+'</span>'+
+      '<div class="weekly-obj-label">'+htmlEscape(obj.label)+'</div>'+
+      '<div class="weekly-obj-desc">'+htmlEscape(obj.desc)+'</div>'+
+      '<div class="weekly-obj-progress-row">'+
+        '<span class="weekly-obj-progress-text">Progress</span>'+
+        '<span class="weekly-obj-progress-count">'+(isClaimed?'✓ Done':current+' / '+obj.target)+'</span>'+
+      '</div>'+
+      '<div class="weekly-progress-bar"><div class="weekly-progress-fill" style="width:'+pct+'%"></div></div>'+
+      '<div class="weekly-obj-footer">'+
+        '<span class="weekly-obj-reward">🏅 Reward: +'+obj.reward.pm.toLocaleString()+' PM</span>'+
+        (isReady?'<button class="btn gold" style="font-size:.68rem;min-height:36px;padding:0 12px;flex-shrink:0" onclick="claimWeeklyReward(\''+htmlEscape(obj.id)+'\')">Claim</button>':
+         isClaimed?'<span style="font-size:.72rem;color:rgba(255,255,255,.28);flex-shrink:0">✓ Claimed</span>':'')+
+      '</div>';
+    listEl.appendChild(card);
+  });
+  updateWalletDisplays();
+  updateWeeklyBadge();
+  screen('weekly-objectives-screen');
+}
 // ===== Collection Book =====
 (function(){
   const _all=Object.values(CARD_ITEM_DEFINITIONS);
@@ -8355,6 +8490,7 @@ function refreshMenu(){
   $('rec-kos').innerText=r.mostKOs+' KO';
   $('rec-tier').innerText=r.bestTier;
   updateDailyWheelButton();
+  updateWeeklyBadge();
   const save=loadCareer();
   if(save&&save.player&&save.career){
     $('continue-btn').classList.remove('hidden');
@@ -8749,7 +8885,7 @@ function weakText(){ const st=S.opponent.Stats, arr=[]; if(st.Chin<=76)arr.push(
 function sourceText(){ const src=S.player.StatSources||{}, stats=getPerm(), arr=[]; if(src.Power)arr.push(`${src.Power}'s power was too much for the opponent`); if(src.Speed)arr.push(`${src.Speed}'s speed controlled the tempo`); if(src.Footwork)arr.push(`${src.Footwork}'s footwork kept the angles clean`); if(src.Accuracy)arr.push(`${src.Accuracy}'s accuracy kept finding the target`); if(src['Ring IQ'])arr.push(`${src['Ring IQ']}'s ring IQ solved the fight`); if(src.Defence)arr.push(`${src.Defence}'s defence smothered the counters`); if(src.Heart)arr.push(`${src.Heart}'s heart took over in the hard moments`); const hi=STATS.slice().sort((a,b)=>stats[b]-stats[a])[0]; arr.push(src[hi]?`${src[hi]}'s ${hi.toLowerCase()} was a major edge`:`${hi} was a major edge`); if((S.player.HiddenBonuses||[]).length) arr.push(choice(S.player.HiddenBonuses).name+' gave the build an extra edge'); return choice(arr); }
 function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) extra.push('The cleaner work and control dominated the rounds.'); if(S.fight.p1Dmg>S.fight.p2Dmg+35) extra.push('The damage output was clearly tilting the fight.'); if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.28) extra.push('The opponent faded badly as stamina drained.'); if(S.fight.method==='KO'&&String(S.fight.detail||'').includes('Flash KO')) extra.push('One perfect shot ended it instantly.'); if(['TKO','RTD'].includes(S.fight.method)) extra.push('Sustained punishment forced the stoppage.'); const dom=choice(extra.length?extra:['The style edge kept stacking up over the rounds.']); if(kind==='win') return sourceText()+'. '+weakText().charAt(0).toUpperCase()+weakText().slice(1)+' was exposed. '+dom; if(kind==='loss') return S.opponent.Name+' exploited clear openings and your fighter never fully solved the pressure.'; return 'Neither fighter truly separated from the other over 12 rounds.'; }
 function histLine(bout,opp,icon,res,purseAmt,rank,arrow){ let line='Bout '+bout+': '+icon+' '+res+' vs '+opp; if(S.fight.method) line+=' ('+S.fight.method+(S.fight.detail?' • '+S.fight.detail:'')+')'; line+=' +'+cash(purseAmt)+' • World Rank #'+rank+' '+arrow; return line; }
-function finishBout(batch=false){ const isWin=S.fight.winner==='p1', isDraw=S.fight.winner==='draw', purseAmt=purse(), prev=S.career.worldRank, bout=S.career.currentFight, opp=S.opponent.Name, title=S.opponent.TitleOnLine; S.career.bestPurse=Math.max(S.career.bestPurse||0, purseAmt); if(isWin){ S.career.wins++; S.career.winStreak++; S.career.bestWinStreak=Math.max(S.career.bestWinStreak,S.career.winStreak); if(['KO','TKO','RTD'].includes(S.fight.method)) S.career.kos++; S.career.earnings+=purseAmt; if(S.career.challengeActive&&S.player){const _cPM=S.career.challengeRewardPM||0;if(_cPM>0){S.player.playMoney=safeMoney(S.player.playMoney)+_cPM;S.career.challengeWins=(S.career.challengeWins||0)+1;if(!batch)showToast('Challenge Win! +'+_cPM.toLocaleString()+' PM','Bonus for taking the harder fight!');}} if(title&&!S.career.belts.includes(title)) S.career.belts.push(title); if(title&&S.career.belts.includes(title)) S.career.titleDef++; S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-3); } else if(isDraw){ S.career.draws++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.45); S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-2); } else { S.career.losses++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.18); if(S.career.belts.length>0&&title) S.career.belts.pop(); S.career.recentLossPenalty+=2; if(S.career.worldRank===1) S.career.recentLossPenalty+=2; } S.career.challengeActive=false; S.career.challengeRewardPM=0; S.career.currentFight++; recalcRank(); if(prev===1&&!isWin) S.career.worldRank=Math.max(2,Math.min(6,S.career.worldRank+rand(1,2))); const arrow=S.career.worldRank<prev?'⬆️':S.career.worldRank>prev?'⬇️':'➡️'; let line=''; if(isWin){ line=histLine(bout,opp,'✅','W',purseAmt,S.career.worldRank,arrow); if(title) line+=' 👑 '+title; } else if(isDraw) line=histLine(bout,opp,'🤝','D',Math.floor(purseAmt*.45),S.career.worldRank,arrow); else line=histLine(bout,opp,'❌','L',Math.floor(purseAmt*.18),S.career.worldRank,arrow); S.career.history.unshift(line); if(S.career.history.length>6) S.career.history.pop(); S.career.fullHistory.unshift(line); if(S.career.fullHistory.length>200) S.career.fullHistory=S.career.fullHistory.slice(0,200); if(S.career.currentFight>50){ clearCareer(); S.opponent=null; updateHub(); if(batch) S.pendingHof=true; else triggerHof(); } else { generateOpponent(); updateHub(); saveCareer(); if(!batch) screen('hub-screen'); } }
+function finishBout(batch=false){ const isWin=S.fight.winner==='p1', isDraw=S.fight.winner==='draw', purseAmt=purse(), prev=S.career.worldRank, bout=S.career.currentFight, opp=S.opponent.Name, title=S.opponent.TitleOnLine; S.career.bestPurse=Math.max(S.career.bestPurse||0, purseAmt); if(isWin){ S.career.wins++; S.career.winStreak++; S.career.bestWinStreak=Math.max(S.career.bestWinStreak,S.career.winStreak); if(['KO','TKO','RTD'].includes(S.fight.method)){S.career.kos++;incrementWeeklyProgress('kos');} S.career.earnings+=purseAmt; if(S.career.challengeActive&&S.player){const _cPM=S.career.challengeRewardPM||0;if(_cPM>0){S.player.playMoney=safeMoney(S.player.playMoney)+_cPM;S.career.challengeWins=(S.career.challengeWins||0)+1;if(!batch)showToast('Challenge Win! +'+_cPM.toLocaleString()+' PM','Bonus for taking the harder fight!');}} if(title&&!S.career.belts.includes(title)){S.career.belts.push(title);incrementWeeklyProgress('titleWins');} if(title&&S.career.belts.includes(title)) S.career.titleDef++; S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-3); } else if(isDraw){ S.career.draws++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.45); S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-2); } else { S.career.losses++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.18); if(S.career.belts.length>0&&title) S.career.belts.pop(); S.career.recentLossPenalty+=2; if(S.career.worldRank===1) S.career.recentLossPenalty+=2; } S.career.challengeActive=false; S.career.challengeRewardPM=0; S.career.currentFight++; recalcRank(); if(prev===1&&!isWin) S.career.worldRank=Math.max(2,Math.min(6,S.career.worldRank+rand(1,2))); const arrow=S.career.worldRank<prev?'⬆️':S.career.worldRank>prev?'⬇️':'➡️'; let line=''; if(isWin){ line=histLine(bout,opp,'✅','W',purseAmt,S.career.worldRank,arrow); if(title) line+=' 👑 '+title; } else if(isDraw) line=histLine(bout,opp,'🤝','D',Math.floor(purseAmt*.45),S.career.worldRank,arrow); else line=histLine(bout,opp,'❌','L',Math.floor(purseAmt*.18),S.career.worldRank,arrow); S.career.history.unshift(line); if(S.career.history.length>6) S.career.history.pop(); S.career.fullHistory.unshift(line); if(S.career.fullHistory.length>200) S.career.fullHistory=S.career.fullHistory.slice(0,200); if(S.career.currentFight>50){ clearCareer(); S.opponent=null; updateHub(); if(batch) S.pendingHof=true; else triggerHof(); } else { generateOpponent(); updateHub(); saveCareer(); if(!batch) screen('hub-screen'); } }
 function simResult(){ if(!S.opponent) generateOpponent(); const _isChal=!!S.career.challengeActive,_chalPM=_isChal?(S.career.challengeRewardPM||0):0; const bout=S.career.currentFight, opp=S.opponent.Name, tier=S.opponent.Tier, title=S.opponent.TitleOnLine; S.fight=makeFight(); while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); const p=purse(), method=S.fight.method, detail=S.fight.detail||(method==='Draw'?'Even After 12':'Official Result'), pre=S.career.worldRank, kind=S.fight.winner==='p1'?'win':S.fight.winner==='p2'?'loss':'draw', ins=fightInsight(kind); const isMilestone = MILESTONES.includes(bout); finishBout(true); const post=S.career.worldRank, rankText='World Rank #'+post+' '+(post<pre?'⬆️':post>pre?'⬇️':'➡️'); if(kind==='win') return {bout,type:'win',outcome:(['KO','TKO','RTD'].includes(method)?'WIN • '+method:'WIN • DEC'),main:S.player.Name+' beat '+opp,method:method+(detail?' '+detail:''),sub:tier+(title?' • Won '+title:'')+' • '+cash(p)+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone,challenge:_isChal,challengeWon:_isChal,challengePM:_isChal?_chalPM:0}; if(kind==='loss') return {bout,type:'loss',outcome:(['KO','TKO','RTD'].includes(method)?'LOSS • '+method:'LOSS • DEC'),main:S.player.Name+' lost to '+opp,method:method+(detail?' • '+detail:''),sub:tier+(title?' • '+title+' slipped away':'')+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone,challenge:_isChal,challengeWon:false,challengePM:0}; return {bout,type:'draw',outcome:'DRAW',main:S.player.Name+' drew with '+opp,method:method+(detail?' • '+detail:''),sub:tier+' • Tough, close fight • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone,challenge:_isChal,challengeWon:false,challengePM:0}; }
 function openOverlay(title){ $('sim-overlay').classList.remove('hidden'); $('sim-list').innerHTML=''; $('sim-subtitle').innerText=title||'Running bouts...'; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; $('sim-close-btn').classList.add('hidden'); $('sim-next-tease').classList.add('hidden'); const _slr=$('sim-live-record'); if(_slr){_slr.style.display='none'; _slr.innerHTML='';} }
 function closeOverlay(){ $('sim-overlay').classList.add('hidden'); if(S.pendingHof){ S.pendingHof=false; triggerHof(); } else { updateHub(); screen('hub-screen'); } }
@@ -9846,6 +9982,11 @@ function triggerHof(){
     saveProfileFromPlayer(S.player);
   }
   submitCareerToHallOfFame().catch(e => console.error("Hall Of Fame submission failed:", e));
+  // Weekly objectives: career completed
+  incrementWeeklyProgress('careers');
+  const _wfTotal=(S.career.wins||0)+(S.career.losses||0)+(S.career.draws||0);
+  if(_wfTotal>=45) incrementWeeklyProgress('longCareer');
+  updateWeeklyBadge();
   const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?Math.floor((S.career.kos/total)*100):0, a=archetype(getPerm()).name, l=leg(), ovr=calculateOverall(), wealth=getWealthInfo(S.career.earnings), identity=getBuildIdentity(getPerm()); $('hof-tier').innerText=l.t; $('hof-pct').innerText='Top '+l.p+'% Career'; renderCareerWorldRanks(l.score); $('hof-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hof-kos').innerText=S.career.kos+' KO'; $('hof-kopct').innerText=koPct+'%'; $('hof-earnings').innerText=cash(S.career.earnings); $('hof-wealth').innerText=wealth[0]+' ('+wealth[1]+' Earners)'; $('hof-best-purse').innerText=cash(S.career.bestPurse||0); $('hof-belts').innerText=S.career.belts.length+' / 4 Belts'; $('hof-title-def').innerText=S.career.titleDef||0; $('hof-rating').innerText=''+S.career.rating; $('hof-ovr').innerText=''+ovr; $('hof-best-rank').innerText='#'+S.career.bestWorldRank; $('hof-score').innerText=''+l.score; $('hof-arch').innerText=a; $('hof-identity').innerText=identity; $('hof-mode').innerText=modeCfg().name; const r=getRecords(), finalRec=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); if(better(S.career,r.bestRecord)) r.bestRecord=finalRec; if(S.career.earnings>r.mostMoney) r.mostMoney=S.career.earnings; if(S.career.kos>r.mostKOs) r.mostKOs=S.career.kos; const prior={'None':0,'GOAT (50-0 UNDISPUTED)':1000}; HOF.slice().reverse().forEach((h,i)=>prior[h.t]=i+1); if((prior[l.t]||0)>(prior[r.bestTier]||0)) r.bestTier=l.t; saveRecords(r); refreshMenu(); 
 }
 function showHistory(){ const p=$('full-history'); p.innerHTML=''; if(!S.career.fullHistory.length) p.innerHTML='<div style="color:var(--muted);text-align:center">No fight history recorded.</div>'; else S.career.fullHistory.forEach(line=>{ const d=document.createElement('div'); d.innerText=line; p.appendChild(d); }); screen('history-screen'); }
