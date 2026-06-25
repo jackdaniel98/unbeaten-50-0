@@ -1,0 +1,4 @@
+# Build tools — dependencies and staging folders
+tools/node_modules/
+tools/input/
+tools/output/
