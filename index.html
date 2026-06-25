@@ -1209,6 +1209,46 @@ body.final-card-open{overflow:hidden}
 /* Achievement toast variant */
 .toast.toast-achievement{border-left-color:#fb923c!important;border-color:rgba(251,146,60,.45)!important;background:linear-gradient(180deg,#1a1007 0%,#0d0e12 100%)!important}
 .toast.toast-achievement strong{color:#fb923c!important}
+/* ===== Collection Book ===== */
+.colbook-total-wrap{background:#0c0d11;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:11px 14px;margin-bottom:14px}
+.colbook-total-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.colbook-total-label{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.45)}
+.colbook-total-count{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;color:var(--gold)}
+.colbook-bar{height:7px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin-top:2px}
+.colbook-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,rgba(227,178,60,.6),var(--gold))}
+.colbook-cat-head{display:flex;align-items:center;justify-content:space-between;background:#0c0d11;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:11px 14px;margin-bottom:8px;cursor:pointer;user-select:none;width:100%;text-align:left}
+.colbook-cat-head h3{margin:0;font-size:.82rem;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:.04em}
+.colbook-cat-count{font-size:.75rem;color:rgba(255,255,255,.35);font-weight:700;flex-shrink:0}
+.colbook-cat-body{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.colbook-cat-body.collapsed{display:none}
+.col-item-tile{border-radius:10px;overflow:hidden;background:#131519;border:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column}
+.col-item-tile.owned{border-color:rgba(227,178,60,.35)}
+.col-item-tile.locked{opacity:.6}
+.col-item-img-wrap{aspect-ratio:1;background:#0c0d11;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.col-item-img-wrap img{width:100%;height:100%;object-fit:cover}
+.col-item-img-lock{font-size:1.5rem;opacity:.35}
+.col-item-info{padding:5px 6px 6px}
+.col-item-name{font-size:.57rem;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.col-item-rarity{display:inline-block;font-size:.46rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;padding:2px 5px;border-radius:4px;margin-bottom:3px}
+.col-item-badge{display:block;font-size:.5rem;font-weight:900;text-transform:uppercase;letter-spacing:.03em}
+.col-item-badge.owned{color:var(--gold)}
+.col-item-badge.locked{color:rgba(255,255,255,.28)}
+.cr-common{background:rgba(148,163,184,.1);color:#94a3b8;border:1px solid rgba(148,163,184,.22)}
+.cr-uncommon{background:rgba(74,222,128,.08);color:#4ade80;border:1px solid rgba(74,222,128,.18)}
+.cr-rare{background:rgba(96,165,250,.08);color:#60a5fa;border:1px solid rgba(96,165,250,.18)}
+.cr-luxury{background:rgba(227,178,60,.1);color:var(--gold);border:1px solid rgba(227,178,60,.25)}
+.cr-legendary{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid rgba(251,146,60,.25)}
+.colbook-ms-section-head{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin:14px 0 10px}
+.colbook-milestones{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:16px}
+.colbook-ms-card{border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:11px 13px;background:#0c0d11;display:flex;align-items:center;gap:10px}
+.colbook-ms-card.ready{border-color:rgba(227,178,60,.5);background:linear-gradient(135deg,rgba(227,178,60,.07) 0%,#0c0d11 70%)}
+.colbook-ms-card.claimed{opacity:.45}
+.colbook-ms-main{flex:1;min-width:0}
+.colbook-ms-label{font-size:.76rem;font-weight:900;color:#fff;margin-bottom:2px}
+.colbook-ms-reward{font-size:.62rem;color:var(--gold);font-weight:700;margin-bottom:5px}
+.colbook-ms-prog{height:4px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.colbook-ms-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,rgba(227,178,60,.5),var(--gold))}
+.colbook-ms-progtext{font-size:.6rem;color:rgba(255,255,255,.32);margin-top:3px}
 .collection-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
 .collection-title strong{color:#fff;font-size:.95rem;overflow-wrap:anywhere}
 .collection-status{font-size:.62rem;text-transform:uppercase;letter-spacing:.8px;font-weight:1000;border-radius:999px;padding:4px 7px;background:rgba(255,255,255,.08);white-space:nowrap}
@@ -2003,6 +2043,7 @@ body.final-card-open{overflow:hidden}
     <!-- Character creation, cosmetic store, and achievements are temporarily disabled and may return later as Build Your Card. -->
     <button id="settings-menu-btn" type="button" class="btn ghost" onclick="openAccountSettings()">Settings</button>
     <button id="my-profile-menu-btn" type="button" class="btn ghost" onclick="openMyProfile()">My Profile</button>
+    <button id="collection-book-menu-btn" type="button" class="btn ghost" onclick="openCollectionBook()">Collection Book</button>
     <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
     <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Hall Of Fame</button>
     <button id="help-menu-btn" type="button" class="btn ghost" onclick="openHelp()">Help</button>
@@ -2340,6 +2381,18 @@ body.final-card-open{overflow:hidden}
   </div>
   <div id="trophy-summary" class="trophy-summary"></div>
   <div id="trophy-list"></div>
+  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
+</section>
+
+<section id="collection-book-screen" class="screen">
+  <div class="card-screen-head">
+    <h2>Collection Book</h2>
+    <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
+  </div>
+  <div id="colbook-total"></div>
+  <div id="colbook-cats"></div>
+  <p class="colbook-ms-section-head">Milestones</p>
+  <div id="colbook-milestones" class="colbook-milestones"></div>
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
@@ -8069,6 +8122,147 @@ function showAchievementToast(achievement){
   toast.innerHTML='<strong>'+icon+' Achievement Unlocked</strong><span>'+htmlEscape(achievement.name)+'</span>'+(reward?'<span style="display:block;margin-top:3px;opacity:.7;font-size:.74rem">Reward: '+htmlEscape(reward.name)+'</span>':'');
   stack.appendChild(toast);
   setTimeout(()=>toast.remove(),5500);
+}
+// ===== Collection Book =====
+(function(){
+  const _all=Object.values(CARD_ITEM_DEFINITIONS);
+  const _cc=CARD_CATEGORIES.reduce((o,c)=>{o[c]=_all.filter(i=>i.category===c).length;return o;},{});
+  const _ct=_all.length;
+  window.COLLECTION_MILESTONES=[
+    {id:'char_5',   label:'Collect 5 Characters',   type:'cat', category:'character',  count:5,          reward:{pm:50,   label:'50 PM'}},
+    {id:'char_10',  label:'Collect 10 Characters',  type:'cat', category:'character',  count:10,         reward:{pm:100,  label:'100 PM (Pack Credit)'}},
+    {id:'char_all', label:'Complete Character Set',  type:'cat', category:'character',  count:_cc.character, reward:{pm:500,  label:'500 PM'}},
+    {id:'aura_5',   label:'Collect 5 Auras',        type:'cat', category:'aura',       count:5,          reward:{pm:50,   label:'50 PM'}},
+    {id:'aura_all', label:'Complete Aura Set',       type:'cat', category:'aura',       count:_cc.aura,   reward:{pm:200,  label:'200 PM'}},
+    {id:'bg_5',     label:'Collect 5 Backgrounds',  type:'cat', category:'background', count:5,          reward:{pm:50,   label:'50 PM'}},
+    {id:'bg_all',   label:'Complete Background Set', type:'cat', category:'background', count:_cc.background, reward:{pm:200, label:'200 PM'}},
+    {id:'frame_all',label:'Complete Frame Set',      type:'cat', category:'frame',      count:_cc.frame,  reward:{pm:200,  label:'200 PM'}},
+    {id:'total_10', label:'10 Items Collected',      type:'total',                       count:10,         reward:{pm:75,   label:'75 PM'}},
+    {id:'total_25', label:'25 Items Collected',      type:'total',                       count:25,         reward:{pm:200,  label:'200 PM'}},
+    {id:'total_all',label:'Complete the Collection', type:'total',                       count:_ct,        reward:{pm:1000, label:'1,000 PM'}},
+  ];
+})();
+const COLLECTION_RARITY_ORDER=['common','uncommon','rare','luxury','legendary'];
+function loadCollectionClaimed(){try{return new Set(JSON.parse(localStorage.getItem('unbeaten_coll_milestones')||'[]'));}catch{return new Set();}}
+function saveCollectionClaimed(s){try{localStorage.setItem('unbeaten_coll_milestones',JSON.stringify([...s]));}catch{}}
+function getCollectionCounts(ownedArr){
+  const owned=new Set(ownedArr||[]);
+  const cats={};
+  CARD_CATEGORIES.forEach(c=>{cats[c]={owned:0,total:0};});
+  Object.values(CARD_ITEM_DEFINITIONS).forEach(item=>{
+    if(cats[item.category]){cats[item.category].total++;if(owned.has(item.id))cats[item.category].owned++;}
+  });
+  const totalOwned=Object.values(cats).reduce((s,c)=>s+c.owned,0);
+  const totalAll=Object.values(CARD_ITEM_DEFINITIONS).length;
+  return{cats,totalOwned,totalAll};
+}
+function claimCollectionMilestone(id){
+  const ms=(COLLECTION_MILESTONES||[]).find(m=>m.id===id);
+  if(!ms) return;
+  const claimed=loadCollectionClaimed();
+  if(claimed.has(id)) return;
+  const profile=activeCardProfile();
+  const ownedArr=createOwnedCardItems(profile.ownedCardItems);
+  const{cats,totalOwned}=getCollectionCounts(ownedArr);
+  const current=ms.type==='total'?totalOwned:(cats[ms.category]?.owned||0);
+  if(current<ms.count) return;
+  claimed.add(id);
+  saveCollectionClaimed(claimed);
+  mutateCardProfile(t=>{t.playMoney=safeMoney(t.playMoney)+ms.reward.pm;});
+  showToast('🏆 Milestone Claimed!','+'+ms.reward.pm.toLocaleString()+' PM — '+ms.label);
+  openCollectionBook();
+}
+function openCollectionBook(){
+  const profile=activeCardProfile();
+  const ownedArr=createOwnedCardItems(profile.ownedCardItems);
+  const ownedSet=new Set(ownedArr);
+  const{cats,totalOwned,totalAll}=getCollectionCounts(ownedArr);
+  const claimed=loadCollectionClaimed();
+  const catLabels={character:'Characters',aura:'Auras',background:'Backgrounds',frame:'Frames'};
+  // Total bar
+  const totalEl=$('colbook-total');
+  if(totalEl){
+    const pct=Math.round(totalOwned/totalAll*100);
+    totalEl.innerHTML=
+      '<div class="colbook-total-wrap">'+
+        '<div class="colbook-total-row"><span class="colbook-total-label">Total Collection</span><span class="colbook-total-count">'+totalOwned+' / '+totalAll+'</span></div>'+
+        '<div class="colbook-bar"><div class="colbook-bar-fill" style="width:'+pct+'%"></div></div>'+
+      '</div>';
+  }
+  // Category sections
+  const catsEl=$('colbook-cats');
+  if(catsEl){
+    catsEl.innerHTML='';
+    CARD_CATEGORIES.forEach(cat=>{
+      const items=Object.values(CARD_ITEM_DEFINITIONS).filter(i=>i.category===cat);
+      const catStat=cats[cat];
+      const catPct=catStat.total>0?Math.round(catStat.owned/catStat.total*100):0;
+      const head=document.createElement('button');
+      head.type='button';
+      head.className='colbook-cat-head';
+      head.innerHTML=
+        '<div style="flex:1;min-width:0">'+
+          '<h3>'+htmlEscape(catLabels[cat]||cat)+'</h3>'+
+          '<div class="colbook-bar" style="margin-top:5px"><div class="colbook-bar-fill" style="width:'+catPct+'%"></div></div>'+
+        '</div>'+
+        '<span class="colbook-cat-count" style="margin-left:10px">'+catStat.owned+'/'+catStat.total+'</span>';
+      const body=document.createElement('div');
+      body.className='colbook-cat-body';
+      const sorted=[...items].sort((a,b)=>{
+        const ao=ownedSet.has(a.id)?0:1, bo=ownedSet.has(b.id)?0:1;
+        if(ao!==bo) return ao-bo;
+        return COLLECTION_RARITY_ORDER.indexOf(a.rarity)-COLLECTION_RARITY_ORDER.indexOf(b.rarity);
+      });
+      sorted.forEach(item=>{
+        const isOwned=ownedSet.has(item.id);
+        const tile=document.createElement('div');
+        tile.className='col-item-tile '+(isOwned?'owned':'locked');
+        tile.innerHTML=
+          '<div class="col-item-img-wrap">'+
+            (isOwned
+              ?'<img src="'+htmlEscape(item.asset)+'" alt="" loading="lazy">'
+              :'<div class="col-item-img-lock">🔒</div>')+
+          '</div>'+
+          '<div class="col-item-info">'+
+            '<div class="col-item-name">'+htmlEscape(item.name)+'</div>'+
+            '<span class="col-item-rarity cr-'+htmlEscape(item.rarity||'common')+'">'+htmlEscape(item.rarity||'common')+'</span>'+
+            '<span class="col-item-badge '+(isOwned?'owned':'locked')+'">'+(isOwned?'✓ Owned':'Locked')+'</span>'+
+          '</div>';
+        body.appendChild(tile);
+      });
+      head.onclick=()=>body.classList.toggle('collapsed');
+      catsEl.appendChild(head);
+      catsEl.appendChild(body);
+    });
+  }
+  // Milestones
+  const msEl=$('colbook-milestones');
+  if(msEl){
+    msEl.innerHTML='';
+    (COLLECTION_MILESTONES||[]).forEach(ms=>{
+      const isClaimed=claimed.has(ms.id);
+      const current=ms.type==='total'?totalOwned:(cats[ms.category]?.owned||0);
+      const pct=Math.min(100,Math.round(current/ms.count*100));
+      const isReady=current>=ms.count&&!isClaimed;
+      const card=document.createElement('div');
+      card.className='colbook-ms-card'+(isReady?' ready':isClaimed?' claimed':'');
+      card.innerHTML=
+        '<div class="colbook-ms-main">'+
+          '<div class="colbook-ms-label">'+htmlEscape(ms.label)+'</div>'+
+          '<div class="colbook-ms-reward">🏅 '+htmlEscape(ms.reward.label)+'</div>'+
+          '<div class="colbook-ms-prog"><div class="colbook-ms-fill" style="width:'+pct+'%"></div></div>'+
+          '<div class="colbook-ms-progtext">'+(isClaimed?'✓ Claimed':current+' / '+ms.count)+'</div>'+
+        '</div>'+
+        (isReady
+          ?'<button class="btn gold" style="font-size:.68rem;min-height:36px;padding:0 12px;flex-shrink:0" onclick="claimCollectionMilestone(\''+htmlEscape(ms.id)+'\')">Claim</button>'
+          :isClaimed
+            ?'<span style="font-size:1rem;color:rgba(255,255,255,.25);flex-shrink:0">✓</span>'
+            :'');
+      msEl.appendChild(card);
+    });
+  }
+  updateWalletDisplays();
+  screen('collection-book-screen');
 }
 function openTrophyCabinet(){
   const profile=activeProfileForCollection();
