@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#0a0a0a" />
+<meta name="theme-color" content="#e3b23c" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="UNBEATEN" />
+<link rel="manifest" href="manifest.json" />
 <title>UNBEATEN: 50-0 | Premium Edition</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2084,6 +2086,18 @@ body.final-card-open{overflow:hidden}
 .profile-card-art{display:flex;justify-content:center;margin:0 auto 16px;max-width:250px}
 .profile-card-art:empty{display:none}
 .profile-card-art .modular-card{width:100%;height:auto}
+/* ===== PWA Install Nudge ===== */
+.pwa-nudge{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);left:12px;right:12px;z-index:3500;display:flex;align-items:center;gap:10px;padding:12px 14px;background:#1a1c22;border:1px solid rgba(227,178,60,.4);border-radius:14px;box-shadow:0 4px 28px rgba(0,0,0,.7);animation:pwa-nudge-in .3s ease}
+.pwa-nudge.hidden{display:none}
+@keyframes pwa-nudge-in{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.pwa-nudge-icon{font-size:1.3rem;flex-shrink:0;line-height:1}
+.pwa-nudge-body{flex:1;min-width:0}
+.pwa-nudge-body strong{display:block;font-size:.76rem;color:#f3f4f6;font-weight:900;letter-spacing:.02em}
+.pwa-nudge-body span{display:block;font-size:.64rem;color:rgba(255,255,255,.48);margin-top:2px;line-height:1.35}
+.pwa-nudge-close{flex-shrink:0;width:28px;height:28px;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:transparent;color:rgba(255,255,255,.4);font-size:.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pwa-nudge-close:active{background:rgba(255,255,255,.08)}
+.pwa-nudge-install{flex-shrink:0;padding:7px 12px;border:1px solid var(--gold);border-radius:8px;background:rgba(227,178,60,.1);color:var(--gold);font-size:.63rem;font-weight:900;text-transform:uppercase;cursor:pointer;letter-spacing:.04em;white-space:nowrap}
+.pwa-nudge-install:active{background:rgba(227,178,60,.2)}
 </style>
 </head>
 <body>
@@ -10361,6 +10375,92 @@ const priorUnbeatenOnload=window.onload;
 window.onload=function(event){
   if(typeof priorUnbeatenOnload==='function') priorUnbeatenOnload.call(window,event);
 };
+</script>
+
+<!-- PWA: Add to Home Screen nudge -->
+<div id="pwa-nudge" class="pwa-nudge hidden" role="status" aria-live="polite">
+  <span class="pwa-nudge-icon">📲</span>
+  <div class="pwa-nudge-body">
+    <strong>Install UNBEATEN</strong>
+    <span id="pwa-nudge-text">Add to Home Screen for quicker access.</span>
+  </div>
+  <button type="button" id="pwa-nudge-install" class="pwa-nudge-install hidden" aria-label="Install app">Install</button>
+  <button type="button" class="pwa-nudge-close" onclick="dismissPwaNudge()" aria-label="Dismiss">✕</button>
+</div>
+
+<!-- PWA: Service Worker registration + Install nudge logic -->
+<script>
+(function(){
+  'use strict';
+
+  // ── Service Worker registration ──────────────────────────────────────────
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./sw.js')
+        .then(function(reg) { console.log('[SW] Registered, scope:', reg.scope); })
+        .catch(function(err) { console.warn('[SW] Registration failed (game unaffected):', err); });
+    });
+  }
+
+  // ── Add to Home Screen nudge ─────────────────────────────────────────────
+  var _pwaPrompt = null;
+
+  // Don't show if already installed or already dismissed
+  function _pwaShouldShow() {
+    if (localStorage.getItem('pwa_dismissed')) return false;
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return false;
+    if (window.navigator.standalone === true) return false; // iOS standalone
+    return true;
+  }
+
+  // Android / Chrome — capture the install prompt
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    _pwaPrompt = e;
+    if (_pwaShouldShow()) setTimeout(_pwaShowNudge, 40000); // 40 s after interaction
+  });
+
+  // iOS — show manual instructions after delay
+  var _isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !('MSStream' in window);
+  if (_isIOS && _pwaShouldShow()) {
+    setTimeout(_pwaShowNudge, 40000);
+  }
+
+  function _pwaShowNudge() {
+    if (!_pwaShouldShow()) return;
+    var nudge = document.getElementById('pwa-nudge');
+    if (!nudge) return;
+
+    if (_isIOS) {
+      // iOS: show share-sheet instructions
+      var t = document.getElementById('pwa-nudge-text');
+      if (t) t.textContent = 'Tap Share → “Add to Home Screen”';
+    } else if (_pwaPrompt) {
+      // Android/Chrome: show native install button
+      var btn = document.getElementById('pwa-nudge-install');
+      if (btn) {
+        btn.classList.remove('hidden');
+        btn.onclick = function() {
+          _pwaPrompt.prompt();
+          _pwaPrompt.userChoice.then(function(c) {
+            if (c.outcome === 'accepted') dismissPwaNudge();
+            _pwaPrompt = null;
+          });
+        };
+      }
+    } else {
+      return; // Neither iOS nor Android with prompt — skip
+    }
+
+    nudge.classList.remove('hidden');
+  }
+
+  window.dismissPwaNudge = function() {
+    localStorage.setItem('pwa_dismissed', '1');
+    var n = document.getElementById('pwa-nudge');
+    if (n) n.classList.add('hidden');
+  };
+}());
 </script>
 </body>
 </html>
