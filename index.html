@@ -2098,6 +2098,11 @@ body.final-card-open{overflow:hidden}
 .pwa-nudge-close:active{background:rgba(255,255,255,.08)}
 .pwa-nudge-install{flex-shrink:0;padding:7px 12px;border:1px solid var(--gold);border-radius:8px;background:rgba(227,178,60,.1);color:var(--gold);font-size:.63rem;font-weight:900;text-transform:uppercase;cursor:pointer;letter-spacing:.04em;white-space:nowrap}
 .pwa-nudge-install:active{background:rgba(227,178,60,.2)}
+/* ── Broken asset placeholders ── */
+.card-store-thumb.thumb-error,.card-store-bucket-art.thumb-error{background:#0c0d11}
+.card-store-thumb.thumb-error::after,.card-store-bucket-art.thumb-error::after{content:'?';display:flex;align-items:center;justify-content:center;width:100%;color:rgba(255,255,255,.18);font-size:1.4rem;font-weight:900;pointer-events:none}
+/* ── Sim list scroll optimisation ── */
+.sim-list-wrap{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 </style>
 </head>
 <body>
@@ -7399,11 +7404,11 @@ function modularCardMarkup(profile=activeCardProfile()){
   const assets=equippedCardAssets(profile), data=cardDisplayData(profile);
   return '<div class="modular-card" role="img" aria-label="'+htmlEscape(data.name)+' fighter card">'+
     '<div class="modular-card-art">'+
-    '<img class="modular-card-background" src="'+assets.background.asset+'" alt="">'+
-    '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" alt="">'+
-    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" alt="">'+
+    '<img class="modular-card-background" src="'+assets.background.asset+'" onerror="_imgErr(this)" alt="">'+
+    '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" onerror="_imgErr(this)" alt="">'+
+    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" onerror="_imgErr(this)" alt="">'+
     '</div>'+
-    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" alt="">'+
+    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" onerror="_imgErr(this)" alt="">'+
     '<div class="modular-card-copy modular-card-ovr"><strong>'+data.ovr+'</strong><span>OVR</span></div>'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(data.name)+'</strong><span>'+htmlEscape(data.nickname)+'</span></div>'+
     '<div class="modular-card-stats">'+data.stats.map(stat=>'<div class="modular-card-stat"><strong>'+htmlEscape(stat.value)+'</strong><span>'+htmlEscape(stat.label)+'</span></div>').join('')+'</div>'+
@@ -7418,6 +7423,8 @@ function computeCareerRanks(myScore){ const pool=gatherRankPool(), myKey=rankSea
 function renderCareerWorldRanks(score){ const ranks=computeCareerRanks(score); const a=$('hof-rank-alltime'), s=$('hof-rank-season'); if(a){ a.innerHTML = ranks.allRank===1 ? '\uD83C\uDF0D This attempt ranked <strong>#1 in the world!</strong>' : 'All-Time: this attempt ranked <strong>'+rankOrdinal(ranks.allRank)+'</strong> in the world'; } if(s){ s.innerHTML = ranks.seasonRank===1 ? 'This Season: ranked <strong>#1</strong> &mdash; season leader!' : 'This Season: ranked <strong>'+rankOrdinal(ranks.seasonRank)+'</strong> of '+ranks.seasonTotal; } return ranks; }
 // ---- Modular card render from explicit data (other players / snapshots) ----
 const _bgCache=new Map();
+function _imgErr(img){if(!img.dataset.err){img.dataset.err='1';console.warn('[UNBEATEN] Missing card asset:',img.src);img.style.opacity='0';}}
+function _thumbErr(img){if(!img.dataset.err){img.dataset.err='1';console.warn('[UNBEATEN] Missing store asset:',img.src);img.style.display='none';if(img.parentElement)img.parentElement.classList.add('thumb-error');}}
 function bgRemove(img,aura,darkBg){
   if(img.dataset.bgr) return;
   img.dataset.bgr='1';
@@ -7455,11 +7462,11 @@ function modularCardMarkupFrom(opts){
   const name=cleanName(opts.name||'Fighter')||'Fighter', nickname=cleanName(opts.nickname||'The Contender')||'The Contender', ovr=opts.ovr||50, stats=opts.stats||[];
   return '<div class="modular-card" role="img" aria-label="'+htmlEscape(name)+' fighter card">'+
     '<div class="modular-card-art">'+
-    '<img class="modular-card-background" src="'+assets.background.asset+'" alt="">'+
-    '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" alt="">'+
-    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" alt="">'+
+    '<img class="modular-card-background" src="'+assets.background.asset+'" onerror="_imgErr(this)" alt="">'+
+    '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" onerror="_imgErr(this)" alt="">'+
+    '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" onerror="_imgErr(this)" alt="">'+
     '</div>'+
-    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" alt="">'+
+    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" onerror="_imgErr(this)" alt="">'+
     '<div class="modular-card-copy modular-card-ovr"><strong>'+htmlEscape(ovr)+'</strong><span>OVR</span></div>'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(name)+'</strong><span>'+htmlEscape(nickname)+'</span></div>'+
     '<div class="modular-card-stats">'+stats.map(s=>'<div class="modular-card-stat"><strong>'+htmlEscape(s.value)+'</strong><span>'+htmlEscape(s.label)+'</span></div>').join('')+'</div>'+
@@ -7496,11 +7503,15 @@ function equipCardItem(itemId){
   showToast('Card Updated',item.name+' equipped.');
   return true;
 }
+let _previewCardTimer=null;
 function previewCardIdentity(){
-  const preview=$('card-editor-preview');
-  if(!preview) return;
-  const profile=activeCardProfile(), name=cleanName($('card-editor-name')?.value||''), nickname=cleanName($('card-editor-nickname')?.value||'');
-  preview.innerHTML=modularCardMarkup({...profile,cardName:name||profile.cardName,cardNickname:nickname||profile.cardNickname});
+  clearTimeout(_previewCardTimer);
+  _previewCardTimer=setTimeout(function(){
+    const preview=$('card-editor-preview');
+    if(!preview) return;
+    const profile=activeCardProfile(), name=cleanName($('card-editor-name')?.value||''), nickname=cleanName($('card-editor-nickname')?.value||'');
+    preview.innerHTML=modularCardMarkup({...profile,cardName:name||profile.cardName,cardNickname:nickname||profile.cardNickname});
+  },250);
 }
 function saveCardIdentity(){
   const name=cleanName($('card-editor-name')?.value||''), nickname=cleanName($('card-editor-nickname')?.value||'');
@@ -7557,7 +7568,7 @@ function cardStoreItemState(item,profile){
   if(item.rarity==='premium') return 'premium';
   return safeMoney(profile.playMoney)>=cardItemPrice(item)?'affordable':'unaffordable';
 }
-function cardStoreThumb(item){ return '<div class="card-store-thumb '+item.category+'"><img loading="lazy" src="'+item.asset+'" alt=""></div>'; }
+function cardStoreThumb(item){ return '<div class="card-store-thumb '+item.category+'"><img loading="lazy" width="82" height="90" src="'+item.asset+'" onerror="_thumbErr(this)" alt=""></div>'; }
 function getWeekSeed(){const d=new Date(),start=new Date(d.getFullYear(),0,1);return d.getFullYear()*100+Math.floor((d-start)/(7*24*3600*1000));}
 function seededShuffle(arr,seed){const a=arr.slice();let s=seed>>>0;for(let i=a.length-1;i>0;i--){s=(s*1664525+1013904223)>>>0;const j=s%(i+1);const t=a[i];a[i]=a[j];a[j]=t;}return a;}
 function getFeaturedWeeklyItems(){
@@ -7677,7 +7688,7 @@ function renderCardStore(){
       const categoryItems=allItems.filter(item=>item.category===category), representative=categoryItems.find(item=>item.base)||categoryItems[0], ownedCount=categoryItems.filter(item=>owned.includes(item.id)).length;
       const pct=Math.round(100*ownedCount/Math.max(1,categoryItems.length));
       const allOwned=ownedCount===categoryItems.length;
-      const art=representative?'<span class="card-store-bucket-art '+category+'"><img loading="lazy" src="'+representative.asset+'" alt=""></span>':'';
+      const art=representative?'<span class="card-store-bucket-art '+category+'"><img loading="lazy" src="'+representative.asset+'" onerror="_thumbErr(this)" alt=""></span>':'';
       const countHtml=allOwned?'<span class="bucket-all-owned">✓ All Owned</span>':'<span class="card-store-bucket-count">'+ownedCount+' / '+categoryItems.length+' owned</span>';
       return '<button type="button" class="card-store-bucket" onclick="selectCardStoreCategory(\''+category+'\')">'+art+'<strong>'+CARD_CATEGORY_LABELS[category]+'</strong>'+countHtml+'<div class="bucket-progress-bar"><div class="bucket-progress-fill" style="width:'+pct+'%"></div></div></button>';
     }).join('');
