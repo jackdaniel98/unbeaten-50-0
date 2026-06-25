@@ -1067,6 +1067,40 @@ h2:first-child{margin-top:6px}
 .ce-boost-badge-luxury{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.45);color:#fde68a}
 .ce-boost-badge-legendary{background:rgba(200,100,255,.12);border-color:rgba(200,100,255,.4);color:#d8a6ff}
 .hub-boost-note{font-size:.52rem;color:rgba(255,255,255,.28);text-align:center;width:100%;margin-top:4px;letter-spacing:.02em}
+.item-preview-modal{position:fixed;inset:0;z-index:2800;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.item-preview-modal.hidden{display:none}
+.item-preview-dialog{width:min(430px,100%);max-height:88vh;overflow-y:auto;background:#0c0d11;border:1.5px solid rgba(255,255,255,.1);border-radius:20px 20px 0 0;display:flex;flex-direction:column;padding-bottom:max(20px,env(safe-area-inset-bottom))}
+.item-preview-dialog.rarity-uncommon{border-color:rgba(74,222,128,.3)}
+.item-preview-dialog.rarity-rare{border-color:rgba(59,130,246,.4);box-shadow:0 -4px 40px rgba(59,130,246,.12)}
+.item-preview-dialog.rarity-luxury{border-color:rgba(168,85,247,.45);box-shadow:0 -4px 40px rgba(168,85,247,.15)}
+.item-preview-dialog.rarity-legendary{border-color:#f97316;box-shadow:0 -4px 50px rgba(249,115,22,.22)}
+.item-preview-dialog.rarity-premium{border-color:#d4af37;box-shadow:0 -4px 50px rgba(212,175,55,.2)}
+.item-preview-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0}
+.item-preview-head-label{font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.3)}
+.item-preview-close{width:34px;height:34px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(255,255,255,.05);color:#fff;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.item-preview-close:active{background:rgba(255,255,255,.12)}
+.item-preview-card-wrap{display:flex;justify-content:center;padding:10px 20px 8px}
+.item-preview-card-wrap .modular-card{width:min(100%,210px)!important}
+.item-preview-meta{padding:0 18px 10px;text-align:center}
+.item-preview-rarity-badge{display:inline-block;font-size:.54rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:6px}
+.item-preview-rarity-badge.rarity-common{background:rgba(203,213,225,.1);color:#cbd5e1}
+.item-preview-rarity-badge.rarity-uncommon{background:rgba(74,222,128,.1);color:#86efac}
+.item-preview-rarity-badge.rarity-rare{background:rgba(96,165,250,.1);color:#60a5fa}
+.item-preview-rarity-badge.rarity-luxury{background:rgba(192,132,252,.1);color:#c084fc}
+.item-preview-rarity-badge.rarity-legendary{background:rgba(249,115,22,.1);color:#fb923c}
+.item-preview-rarity-badge.rarity-premium{background:rgba(250,204,21,.1);color:#fde68a}
+.item-preview-name{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.55rem;color:#fff;margin:0 0 2px;letter-spacing:.04em;line-height:1.1}
+.item-preview-cat{font-size:.63rem;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.item-preview-boosts{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 12px;text-align:left;margin-top:8px}
+.item-preview-boosts-lbl{font-size:.54rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.28);margin-bottom:8px}
+.item-preview-boost-row{display:flex;align-items:flex-start;gap:8px;padding:4px 0;flex-wrap:wrap}
+.item-preview-boost-row+.item-preview-boost-row{border-top:1px solid rgba(255,255,255,.05);padding-top:7px}
+.item-preview-boost-desc{font-size:.65rem;color:rgba(255,255,255,.48);line-height:1.4;flex:1 1 auto;padding-top:2px}
+.item-preview-actions{padding:8px 16px 6px;display:flex;flex-direction:column;gap:8px}
+.item-preview-actions .btn{width:100%;text-align:center}
+.item-preview-preview-note{font-size:.54rem;color:rgba(255,255,255,.2);text-align:center;padding:0 16px 8px;margin:0;letter-spacing:.03em}
+.card-store-item,.featured-store-item{cursor:pointer}
+.card-store-item:active,.featured-store-item:active{opacity:.85;transition:opacity .1s}
 .hub-section{border-bottom:1px solid var(--line)}
 .hub-section>summary{display:flex;align-items:center;justify-content:space-between;padding:13px 0;cursor:pointer;list-style:none;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--text);user-select:none;-webkit-tap-highlight-color:transparent}
 .hub-section>summary::-webkit-details-marker{display:none}
@@ -2478,6 +2512,19 @@ body.final-card-open{overflow:hidden}
   <div id="retired-detail-achievements" class="panel"></div>
   <button class="btn blue" onclick="openRetiredCareers(retiredReturnScreen)">Back To Retired Careers</button>
 </section>
+
+<div id="item-preview-modal" class="item-preview-modal hidden" role="dialog" aria-modal="true" aria-labelledby="item-preview-title" onclick="if(event.target===this)closeItemPreview()">
+  <div class="item-preview-dialog" id="item-preview-dialog">
+    <div class="item-preview-head">
+      <span class="item-preview-head-label">Card Preview</span>
+      <button type="button" class="item-preview-close" onclick="closeItemPreview()" aria-label="Close preview">✕</button>
+    </div>
+    <div id="item-preview-card" class="item-preview-card-wrap"></div>
+    <div id="item-preview-meta" class="item-preview-meta"></div>
+    <div id="item-preview-actions" class="item-preview-actions"></div>
+    <p class="item-preview-preview-note">Preview only — tap Equip or Buy to make it permanent.</p>
+  </div>
+</div>
 
 <div id="final-fighter-card-modal" class="final-card-modal hidden" role="dialog" aria-modal="true" aria-labelledby="final-fighter-card-title" onclick="if(event.target===this) closeFinalFighterCard()">
   <div class="final-card-dialog">
@@ -7488,6 +7535,62 @@ function formatWeekCountdown(ms){
   const h=Math.floor(ms/3600000),d=Math.floor(h/24),rh=h%24;
   return d>=1?(rh>0?'Refreshes in '+d+'d '+rh+'h':'Refreshes in '+d+'d'):'Refreshes in '+h+'h';
 }
+function previewCardMarkupForItem(item){
+  try{
+    const profile=activeCardProfile();
+    const owned=createOwnedCardItems(profile.ownedCardItems);
+    const equipped=createEquippedCardItems(profile.equippedCardItems,owned);
+    const previewOwned=Array.from(new Set([...owned,item.id]));
+    const previewEquipped=createEquippedCardItems({...equipped,[item.category]:item.id},previewOwned);
+    return modularCardMarkup({...profile,equippedCardItems:previewEquipped,ownedCardItems:previewOwned});
+  }catch(e){ return modularCardMarkup(); }
+}
+function openItemPreview(itemId,event){
+  if(event&&event.target&&typeof event.target.closest==='function'&&event.target.closest('button')) return;
+  const item=getCardItem(itemId); if(!item) return;
+  const profile=activeCardProfile();
+  const state=cardStoreItemState(item,profile);
+  const price=cardItemPrice(item);
+  const modal=$('item-preview-modal'),dialog=$('item-preview-dialog');
+  if(!modal||!dialog) return;
+  dialog.className='item-preview-dialog rarity-'+item.rarity;
+  $('item-preview-card').innerHTML=previewCardMarkupForItem(item);
+  const boostHtml=(item.boosts||[]).length?
+    '<div class="item-preview-boosts"><div class="item-preview-boosts-lbl">Signature Boost'+(item.boosts.length>1?'s':'')+'</div>'+
+    (item.boosts||[]).map(b=>'<div class="item-preview-boost-row"><span class="ce-boost-badge ce-boost-badge-'+item.rarity+'">'+(b.icon||'⚡')+' '+htmlEscape(b.name)+'</span><span class="item-preview-boost-desc">'+htmlEscape(b.desc)+'</span></div>').join('')+
+    '</div>':'';
+  $('item-preview-meta').innerHTML=
+    '<span class="item-preview-rarity-badge rarity-'+item.rarity+'">'+htmlEscape(item.rarity)+'</span>'+
+    '<h3 class="item-preview-name" id="item-preview-title">'+htmlEscape(item.name)+'</h3>'+
+    '<div class="item-preview-cat">'+htmlEscape(CARD_CATEGORY_LABELS[item.category]||item.category)+'</div>'+
+    boostHtml;
+  let actionHtml='';
+  if(state==='equipped'){
+    actionHtml='<button type="button" class="btn" disabled>✓ Equipped</button>';
+  }else if(state==='owned'){
+    actionHtml='<button type="button" class="btn gold" onclick="previewEquipItem(\''+itemId+'\')">Equip</button>';
+  }else if(state==='affordable'){
+    actionHtml='<button type="button" class="btn gold" onclick="previewBuyItem(\''+itemId+'\')">Buy — '+price.toLocaleString()+' PM</button>';
+  }else if(state==='unaffordable'){
+    const need=Math.max(0,price-safeMoney(profile.playMoney));
+    actionHtml='<button type="button" class="btn" disabled>Need '+need.toLocaleString()+' more PM</button>';
+  }else{
+    actionHtml='<button type="button" class="btn" disabled>Not Available</button>';
+  }
+  $('item-preview-actions').innerHTML=actionHtml;
+  modal.classList.remove('hidden');
+}
+function closeItemPreview(){
+  const m=$('item-preview-modal'); if(m) m.classList.add('hidden');
+}
+function previewBuyItem(itemId){
+  purchaseCardItem(itemId);
+  openItemPreview(itemId);
+}
+function previewEquipItem(itemId){
+  equipCardItem(itemId);
+  openItemPreview(itemId);
+}
 function renderFeaturedWeekly(){
   const section=$('featured-weekly-section'); if(!section) return;
   const browsing=!!activeCardStoreCategory;
@@ -7507,7 +7610,7 @@ function renderFeaturedWeekly(){
       const price=item.rarity==='premium'?'Premium':cardItemPrice(item).toLocaleString()+' PM';
       const action=state==='owned'?'<button type="button" class="btn blue" onclick="equipCardItem(\''+item.id+'\')">Equip</button>':state==='affordable'?'<button type="button" class="btn gold" onclick="purchaseCardItem(\''+item.id+'\')">Buy</button>':'';
       const _fboosts=(item.boosts||[]).map(b=>'<span class="ce-boost-badge ce-boost-badge-'+item.rarity+'" title="'+htmlEscape(b.desc)+'">'+(b.icon||'⚡')+' '+htmlEscape(b.name)+'</span>').join('');
-      return '<article class="featured-store-item rarity-'+item.rarity+'"><div class="featured-badge">Featured</div>'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+CARD_CATEGORY_LABELS[item.category]+' &bull; '+item.rarity+'</div>'+(_fboosts?'<div style="margin:4px 0">'+_fboosts+'</div>':'')+' <span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
+      return '<article class="featured-store-item rarity-'+item.rarity+'" onclick="openItemPreview(\''+item.id+'\',event)"><div class="featured-badge">Featured</div>'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+CARD_CATEGORY_LABELS[item.category]+' &bull; '+item.rarity+'</div>'+(_fboosts?'<div style="margin:4px 0">'+_fboosts+'</div>':'')+' <span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
     }).join('')+'</div>';
   }
   html+='</div>';
@@ -7540,7 +7643,7 @@ function renderCardStore(){
       const action=state==='owned'?'<button type="button" class="btn blue" onclick="equipCardItem(\''+item.id+'\')">Equip</button>':state==='affordable'?'<button type="button" class="btn gold" onclick="purchaseCardItem(\''+item.id+'\')">Buy</button>':'';
       const price=item.base?'Free':item.rarity==='premium'?'Premium':cardItemPrice(item).toLocaleString()+' Play Money';
       const _sboosts=(item.boosts||[]).map(b=>'<span class="ce-boost-badge ce-boost-badge-'+item.rarity+'" title="'+htmlEscape(b.desc)+'">'+(b.icon||'⚡')+' '+htmlEscape(b.name)+'</span>').join('');
-      return '<article class="card-store-item rarity-'+item.rarity+'">'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+htmlEscape(item.rarity)+'</div>'+(_sboosts?'<div style="margin:3px 0">'+_sboosts+'</div>':'')+'<span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
+      return '<article class="card-store-item rarity-'+item.rarity+'" onclick="openItemPreview(\''+item.id+'\',event)">'+cardStoreThumb(item)+'<div class="card-store-meta"><strong>'+htmlEscape(item.name)+'</strong><div class="sub">'+htmlEscape(item.rarity)+'</div>'+(_sboosts?'<div style="margin:3px 0">'+_sboosts+'</div>':'')+'<span class="status">'+status+'</span><span class="price">'+price+'</span>'+action+'</div></article>';
     }).join('');
     if($('card-store-coming-soon')) $('card-store-coming-soon').innerText=items.length?'More '+CARD_CATEGORY_LABELS[activeCardStoreCategory]+' coming soon':'No '+(activeCardStoreRarity==='all'?'':activeCardStoreRarity+' ')+CARD_CATEGORY_LABELS[activeCardStoreCategory]+' yet';
     if($('card-store-premium-later')) $('card-store-premium-later').classList.toggle('hidden',activeCardStoreRarity!=='all'&&activeCardStoreRarity!=='premium');
