@@ -9991,8 +9991,31 @@ function triggerHof(){
 }
 function showHistory(){ const p=$('full-history'); p.innerHTML=''; if(!S.career.fullHistory.length) p.innerHTML='<div style="color:var(--muted);text-align:center">No fight history recorded.</div>'; else S.career.fullHistory.forEach(line=>{ const d=document.createElement('div'); d.innerText=line; p.appendChild(d); }); screen('history-screen'); }
 function backToHof(){ screen('hof-screen'); }
-function shareCareer(){ const l = leg(); const wealth = getWealthInfo(S.career.earnings); const record = S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); const txt = `🥊 UNBEATEN: 50-0\n\n📊 Record: ${record}\n💥 KOs: ${S.career.kos}\n🏆 HOF: ${l.t}\n💰 Earnings: ${cash(S.career.earnings)}\n🎖️ Wealth: ${wealth[0]}\n🏅 Belts: ${S.career.belts.length}/4\n\nCan you go 50-0? Play now!`;
-  shareCardWithText(txt,'UNBEATEN: 50-0 - My Career');
+function shareCareer(){
+  if(!S.career) return;
+  const l=leg();
+  const record=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:'');
+  const is50=S.career.wins===50&&S.career.losses===0&&S.career.draws===0;
+  const profile=activeCardProfile();
+  const data=cardDisplayData(profile);
+  const fighterName=cleanName(profile.cardName||data.name)||S.player?.Name||'Fighter';
+  const nick=cleanName(profile.cardNickname||data.nickname)||'The Contender';
+  const belts=S.career.belts||[];
+  const beltLine=belts.length===4
+    ?'🏆 Undisputed Champion (WBC · WBA · IBF · WBO)'
+    :belts.length>0
+      ?'🏆 Belts: '+belts.join(' · ')
+      :'No titles held';
+  const assets=equippedCardAssets(profile);
+  const cardParts=[assets.character?.name,assets.aura?.name,assets.frame?.name,assets.background?.name].filter(Boolean);
+  const cardLine=cardParts.length?'\n🃏 Card: '+cardParts.join(' / '):'';
+  let txt;
+  if(is50){
+    txt=`🥊 UNBEATEN: 50-0\n\n🔥 LEGENDARY RUN COMPLETE\n\n${fighterName} — "${nick}"\nRetired undefeated at 50-0 🏆\n\n💥 KOs: ${S.career.kos}\n${beltLine}\n🏅 Legacy: ${l.score.toLocaleString()} (${l.t})\n💰 Earned: ${cash(S.career.earnings)}${cardLine}\n\nCan you go 50-0?`;
+  } else {
+    txt=`🥊 UNBEATEN: 50-0\n\n${fighterName} — "${nick}"\nRecord: ${record}\n\n💥 KOs: ${S.career.kos}\n${beltLine}\n🏅 Legacy: ${l.score.toLocaleString()} (${l.t})\n💰 Earned: ${cash(S.career.earnings)}${cardLine}\n\nCan you beat my run?`;
+  }
+  shareCardWithText(txt,'UNBEATEN: 50-0 — '+fighterName+' '+record);
 }
 function openAccountSettings(){ updateAuthUI(); screen('account-settings-screen'); }
 function backToMenu(fromHof=false){ if(!fromHof&&S.career&&S.player&&S.player.Name&&S.career.currentFight<=50) saveCareer(); refreshMenu(); screen('menu-screen'); }
