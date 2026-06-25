@@ -1786,6 +1786,21 @@ body.final-card-open{overflow:hidden}
 .sim-item.challenge.win .sim-challenge-badge{background:#fb923c;color:#1a0800}
 .sim-item.challenge.loss .sim-challenge-badge{background:#ef4444;color:#fff}
 .sim-challenge-pm{font-size:.63rem;font-weight:900;color:#fb923c;margin-top:5px;letter-spacing:.03em}
+/* ===== Rival / Danger Zone / Hype ===== */
+.sim-item.rival{border-left:5px solid #ef4444;background:linear-gradient(120deg,rgba(239,68,68,.09) 0%,var(--panel) 65%);box-shadow:0 0 0 1px rgba(239,68,68,.2),0 0 18px rgba(239,68,68,.07)}
+.sim-item.rival.win{border-left-color:var(--gold);background:linear-gradient(120deg,rgba(227,178,60,.1) 0%,var(--panel) 65%);box-shadow:0 0 0 1px rgba(227,178,60,.25),0 0 20px rgba(227,178,60,.09)}
+.sim-item.danger-zone{border-left:3px solid rgba(251,146,60,.5);background:linear-gradient(120deg,rgba(251,146,60,.05) 0%,var(--panel) 60%)}
+.sim-rival-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:.55rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-right:6px;vertical-align:middle;flex-shrink:0;background:#ef4444;color:#fff}
+.sim-item.rival.win .sim-rival-badge{background:var(--gold);color:#1a0800}
+.sim-hype{font-size:.67rem;font-style:italic;color:rgba(255,255,255,.4);padding:3px 0 7px;line-height:1.4;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:6px}
+.sim-item.rival .sim-hype{color:rgba(239,68,68,.65)}
+.sim-item.rival.win .sim-hype{color:rgba(227,178,60,.6)}
+.sim-item.danger-zone .sim-hype{color:rgba(251,146,60,.6)}
+.opp-nick{font-size:.78rem;font-style:italic;color:rgba(255,255,255,.48);margin-bottom:3px}
+.opp-flavour{font-size:.67rem;color:rgba(255,255,255,.32);margin-bottom:8px;font-style:italic;line-height:1.35}
+.sim-summary-moments{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:11px 13px;margin:10px 0}
+.sim-summary-moments-title{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.35);margin-bottom:7px}
+.sim-moment-line{font-size:.74rem;color:rgba(255,255,255,.65);padding:3px 0;line-height:1.4}
 .sim-career-summary{margin:10px 0 0;padding:18px;border-radius:12px;border:1px solid rgba(227,178,60,.3);background:linear-gradient(180deg,rgba(227,178,60,.06) 0%,rgba(0,0,0,.35) 100%);position:relative;overflow:hidden}
 .sim-career-summary.fifty-zero{border-color:rgba(227,178,60,.65);box-shadow:0 0 0 1px rgba(227,178,60,.3),0 0 40px rgba(227,178,60,.18)}
 .sim-summary-hl{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.6rem;color:#e3b23c;line-height:1;text-align:center;margin-bottom:3px;letter-spacing:.04em}
@@ -2290,8 +2305,10 @@ body.final-card-open{overflow:hidden}
   <h2>Next Fight Schedule</h2>
   <div class="opponent-card">
     <div class="row"><span id="opp-bout">BOUT 1/50</span><span id="opp-tier" style="font-size:.74rem;color:var(--gold);font-weight:900;text-transform:uppercase;letter-spacing:1px">Journeyman</span></div>
-    <div id="opp-name" style="font-size:1.15rem;font-weight:900;margin-bottom:6px;color:#fff">Razor Evans</div>
-    <div id="opp-details" class="subtle" style="margin-bottom:8px">Record: 12-14 | Power: 70 | Chin: 68 | Speed: 72</div>
+    <div id="opp-name" style="font-size:1.15rem;font-weight:900;margin-bottom:3px;color:#fff">Razor Evans</div>
+    <div id="opp-nick" class="opp-nick"></div>
+    <div id="opp-details" class="subtle" style="margin-bottom:4px">Record: 12-14 | Power: 70 | Chin: 68 | Speed: 72</div>
+    <div id="opp-flavour" class="opp-flavour"></div>
     <div id="opp-tags" class="tag-row"></div>
   </div>
   <div id="challenge-section" class="challenge-section hidden"></div>
@@ -8790,7 +8807,7 @@ function updateChallengePrefUI(){const pref=loadChallengePref();const btn=$('cha
 function generateChallengeOpponent(normalOpp,bout){const boost=bout<=20?10:bout<=35?13:16;const pmR=CHALLENGE_PM_MAP[bout]||300;const c=JSON.parse(JSON.stringify(normalOpp));STATS.forEach(st=>c.Stats[st]=clamp((normalOpp.Stats[st]||70)+boost,40,103));c.Rating=clamp((normalOpp.Rating||70)+10,56,103);c.isChallenge=true;c.challengeLabel=CHALLENGE_LABELS[bout]||'Dangerous Opponent';c.challengeRisk=CHALLENGE_RISKS[bout]||'High';c.challengePM=pmR;c.Tier=(normalOpp.Tier||'Contender')+' [Challenge]';const wins=Math.floor(bout*1.8)+rand(8,15);c.Record=wins+'-'+rand(0,2);return c;}
 function applyChallengeFight(){if(!S.career||!S.career.challengeOpponent) return;S.opponent=S.career.challengeOpponent;S.career.challengeActive=true;S.career.challengeRewardPM=S.career.challengeOpponent.challengePM;S.career.challengeOpponent=null;}
 function clearChallengeFight(){if(!S.career) return;S.career.challengeActive=false;S.career.challengeRewardPM=0;S.career.challengeOpponent=null;}
-function acceptChallengeFight(){if(!S.career||!S.career.challengeOpponent) return;applyChallengeFight();if($('opp-name'))$('opp-name').innerText=S.opponent.Name;if($('opp-tier'))$('opp-tier').innerText=S.opponent.Tier;if($('opp-details'))$('opp-details').innerText='Record: '+S.opponent.Record+' | Power: '+S.opponent.Stats.Power+' | Chin: '+S.opponent.Stats.Chin+' | Speed: '+S.opponent.Stats.Speed;updateChallengeBanner();saveCareer();}
+function acceptChallengeFight(){if(!S.career||!S.career.challengeOpponent) return;applyChallengeFight();if($('opp-name'))$('opp-name').innerText=S.opponent.Name;if($('opp-tier'))$('opp-tier').innerText=S.opponent.Tier;if($('opp-details'))$('opp-details').innerText='Record: '+S.opponent.Record+(S.opponent.DangerRating&&S.opponent.DangerRating!=='Normal'?' | Danger: '+S.opponent.DangerRating:'');if($('opp-nick'))$('opp-nick').innerText=S.opponent.Nickname||'';if($('opp-flavour'))$('opp-flavour').innerText=S.opponent.Flavour?'Challenge fight — '+S.opponent.Flavour:'Challenge fight';updateChallengeBanner();saveCareer();}
 function declineChallengeFight(){clearChallengeFight();updateChallengeBanner();saveCareer();}
 function updateChallengeBanner(){
   const sec=$('challenge-section');
@@ -8886,7 +8903,7 @@ function sourceText(){ const src=S.player.StatSources||{}, stats=getPerm(), arr=
 function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) extra.push('The cleaner work and control dominated the rounds.'); if(S.fight.p1Dmg>S.fight.p2Dmg+35) extra.push('The damage output was clearly tilting the fight.'); if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.28) extra.push('The opponent faded badly as stamina drained.'); if(S.fight.method==='KO'&&String(S.fight.detail||'').includes('Flash KO')) extra.push('One perfect shot ended it instantly.'); if(['TKO','RTD'].includes(S.fight.method)) extra.push('Sustained punishment forced the stoppage.'); const dom=choice(extra.length?extra:['The style edge kept stacking up over the rounds.']); if(kind==='win') return sourceText()+'. '+weakText().charAt(0).toUpperCase()+weakText().slice(1)+' was exposed. '+dom; if(kind==='loss') return S.opponent.Name+' exploited clear openings and your fighter never fully solved the pressure.'; return 'Neither fighter truly separated from the other over 12 rounds.'; }
 function histLine(bout,opp,icon,res,purseAmt,rank,arrow){ let line='Bout '+bout+': '+icon+' '+res+' vs '+opp; if(S.fight.method) line+=' ('+S.fight.method+(S.fight.detail?' • '+S.fight.detail:'')+')'; line+=' +'+cash(purseAmt)+' • World Rank #'+rank+' '+arrow; return line; }
 function finishBout(batch=false){ const isWin=S.fight.winner==='p1', isDraw=S.fight.winner==='draw', purseAmt=purse(), prev=S.career.worldRank, bout=S.career.currentFight, opp=S.opponent.Name, title=S.opponent.TitleOnLine; S.career.bestPurse=Math.max(S.career.bestPurse||0, purseAmt); if(isWin){ S.career.wins++; S.career.winStreak++; S.career.bestWinStreak=Math.max(S.career.bestWinStreak,S.career.winStreak); if(['KO','TKO','RTD'].includes(S.fight.method)){S.career.kos++;incrementWeeklyProgress('kos');} S.career.earnings+=purseAmt; if(S.career.challengeActive&&S.player){const _cPM=S.career.challengeRewardPM||0;if(_cPM>0){S.player.playMoney=safeMoney(S.player.playMoney)+_cPM;S.career.challengeWins=(S.career.challengeWins||0)+1;if(!batch)showToast('Challenge Win! +'+_cPM.toLocaleString()+' PM','Bonus for taking the harder fight!');}} if(title&&!S.career.belts.includes(title)){S.career.belts.push(title);incrementWeeklyProgress('titleWins');} if(title&&S.career.belts.includes(title)) S.career.titleDef++; S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-3); } else if(isDraw){ S.career.draws++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.45); S.career.recentLossPenalty=Math.max(0,S.career.recentLossPenalty-2); } else { S.career.losses++; S.career.winStreak=0; S.career.earnings+=Math.floor(purseAmt*.18); if(S.career.belts.length>0&&title) S.career.belts.pop(); S.career.recentLossPenalty+=2; if(S.career.worldRank===1) S.career.recentLossPenalty+=2; } S.career.challengeActive=false; S.career.challengeRewardPM=0; S.career.currentFight++; recalcRank(); if(prev===1&&!isWin) S.career.worldRank=Math.max(2,Math.min(6,S.career.worldRank+rand(1,2))); const arrow=S.career.worldRank<prev?'⬆️':S.career.worldRank>prev?'⬇️':'➡️'; let line=''; if(isWin){ line=histLine(bout,opp,'✅','W',purseAmt,S.career.worldRank,arrow); if(title) line+=' 👑 '+title; } else if(isDraw) line=histLine(bout,opp,'🤝','D',Math.floor(purseAmt*.45),S.career.worldRank,arrow); else line=histLine(bout,opp,'❌','L',Math.floor(purseAmt*.18),S.career.worldRank,arrow); S.career.history.unshift(line); if(S.career.history.length>6) S.career.history.pop(); S.career.fullHistory.unshift(line); if(S.career.fullHistory.length>200) S.career.fullHistory=S.career.fullHistory.slice(0,200); if(S.career.currentFight>50){ clearCareer(); S.opponent=null; updateHub(); if(batch) S.pendingHof=true; else triggerHof(); } else { generateOpponent(); updateHub(); saveCareer(); if(!batch) screen('hub-screen'); } }
-function simResult(){ if(!S.opponent) generateOpponent(); const _isChal=!!S.career.challengeActive,_chalPM=_isChal?(S.career.challengeRewardPM||0):0; const bout=S.career.currentFight, opp=S.opponent.Name, tier=S.opponent.Tier, title=S.opponent.TitleOnLine; S.fight=makeFight(); while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); const p=purse(), method=S.fight.method, detail=S.fight.detail||(method==='Draw'?'Even After 12':'Official Result'), pre=S.career.worldRank, kind=S.fight.winner==='p1'?'win':S.fight.winner==='p2'?'loss':'draw', ins=fightInsight(kind); const isMilestone = MILESTONES.includes(bout); finishBout(true); const post=S.career.worldRank, rankText='World Rank #'+post+' '+(post<pre?'⬆️':post>pre?'⬇️':'➡️'); if(kind==='win') return {bout,type:'win',outcome:(['KO','TKO','RTD'].includes(method)?'WIN • '+method:'WIN • DEC'),main:S.player.Name+' beat '+opp,method:method+(detail?' '+detail:''),sub:tier+(title?' • Won '+title:'')+' • '+cash(p)+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone,challenge:_isChal,challengeWon:_isChal,challengePM:_isChal?_chalPM:0}; if(kind==='loss') return {bout,type:'loss',outcome:(['KO','TKO','RTD'].includes(method)?'LOSS • '+method:'LOSS • DEC'),main:S.player.Name+' lost to '+opp,method:method+(detail?' • '+detail:''),sub:tier+(title?' • '+title+' slipped away':'')+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone,challenge:_isChal,challengeWon:false,challengePM:0}; return {bout,type:'draw',outcome:'DRAW',main:S.player.Name+' drew with '+opp,method:method+(detail?' • '+detail:''),sub:tier+' • Tough, close fight • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone,challenge:_isChal,challengeWon:false,challengePM:0}; }
+function simResult(){ if(!S.opponent) generateOpponent(); const _isChal=!!S.career.challengeActive,_chalPM=_isChal?(S.career.challengeRewardPM||0):0; const bout=S.career.currentFight, opp=S.opponent.Name, tier=S.opponent.Tier, title=S.opponent.TitleOnLine; S.fight=makeFight(); while(S.fight.round<=12&&!S.fight.done){ simRound(); if(!S.fight.done) S.fight.round++; } if(!S.fight.winner) scoreDecision(); const p=purse(), method=S.fight.method, detail=S.fight.detail||(method==='Draw'?'Even After 12':'Official Result'), pre=S.career.worldRank, kind=S.fight.winner==='p1'?'win':S.fight.winner==='p2'?'loss':'draw', ins=fightInsight(kind); const isMilestone=MILESTONES.includes(bout); const _isRival=!!S.opponent.isRival; const _oppNick=S.opponent.Nickname||''; const _dangerZone=bout>=40&&S.career.losses===0; const _hype=buildFightHype(bout,title,_isRival,_dangerZone); finishBout(true); const post=S.career.worldRank, rankText='World Rank #'+post+' '+(post<pre?'⬆️':post>pre?'⬇️':'➡️'); if(kind==='win') return {bout,type:'win',outcome:(['KO','TKO','RTD'].includes(method)?'WIN • '+method:'WIN • DEC'),main:S.player.Name+' beat '+opp,method:method+(detail?' '+detail:''),sub:tier+(title?' • Won '+title:'')+' • '+cash(p)+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone,challenge:_isChal,challengeWon:_isChal,challengePM:_isChal?_chalPM:0,rival:_isRival,oppNick:_oppNick,dangerZone:_dangerZone,hype:_hype}; if(kind==='loss') return {bout,type:'loss',outcome:(['KO','TKO','RTD'].includes(method)?'LOSS • '+method:'LOSS • DEC'),main:S.player.Name+' lost to '+opp,method:method+(detail?' • '+detail:''),sub:tier+(title?' • '+title+' slipped away':'')+' • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone,challenge:_isChal,challengeWon:false,challengePM:0,rival:_isRival,oppNick:_oppNick,dangerZone:_dangerZone,hype:_hype}; return {bout,type:'draw',outcome:'DRAW',main:S.player.Name+' drew with '+opp,method:method+(detail?' • '+detail:''),sub:tier+' • Tough, close fight • '+rankText,insight:ins,titleFight:!!title,milestone:isMilestone,challenge:_isChal,challengeWon:false,challengePM:0,rival:_isRival,oppNick:_oppNick,dangerZone:_dangerZone,hype:_hype}; }
 function openOverlay(title){ $('sim-overlay').classList.remove('hidden'); $('sim-list').innerHTML=''; $('sim-subtitle').innerText=title||'Running bouts...'; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; $('sim-close-btn').classList.add('hidden'); $('sim-next-tease').classList.add('hidden'); const _slr=$('sim-live-record'); if(_slr){_slr.style.display='none'; _slr.innerHTML='';} }
 function closeOverlay(){ $('sim-overlay').classList.add('hidden'); if(S.pendingHof){ S.pendingHof=false; triggerHof(); } else { updateHub(); screen('hub-screen'); } }
 function toggleFast(){ S.fast=!S.fast; $('sim-speed-btn').innerText=S.fast?'Normal Delays':'Skip Delays'; }
@@ -8895,6 +8912,8 @@ function addSimCard(r){
   const isTitleWin=r.titleFight&&r.type==='win';
   const isFirstLoss=r.firstLoss===true;
   const isChallenge=!!r.challenge;
+  const isRival=!!r.rival;
+  const isDangerZone=!!r.dangerZone&&!isRival;
   let classes='sim-item '+r.type;
   if(isKO) classes+=' ko';
   if(isTitleWin) classes+=' title-won';
@@ -8902,10 +8921,15 @@ function addSimCard(r){
   if(r.milestone) classes+=' milestone';
   if(isFirstLoss) classes+=' first-loss';
   if(isChallenge) classes+=' challenge';
+  if(isRival) classes+=' rival';
+  else if(isDangerZone) classes+=' danger-zone';
   const koType=isKO?(r.outcome.split('• ')[1]||'KO'):'';
   const milestoneHtml=r.milestone?'<span class="sim-milestone-badge">Milestone</span>':'';
   const challengeBadgeHtml=isChallenge?'<span class="sim-challenge-badge">'+(r.challengeWon?'CHALLENGE WIN':'CHALLENGE LOSS')+'</span>':'';
-  const koBadgeHtml=(isKO&&!isChallenge)?'<span class="sim-ko-badge">'+htmlEscape(koType)+'</span>':'';
+  const _rivalLabel=isRival?(r.type==='win'?'RIVAL WIN':r.type==='draw'?'RIVAL DRAW':'RIVAL LOSS'):'';
+  const rivalBadgeHtml=isRival?'<span class="sim-rival-badge">'+_rivalLabel+'</span>':'';
+  const koBadgeHtml=(isKO&&!isChallenge&&!isRival)?'<span class="sim-ko-badge">'+htmlEscape(koType)+'</span>':'';
+  const hyp=r.hype?'<div class="sim-hype">'+htmlEscape(r.hype)+'</div>':'';
   let beltRowHtml='';
   if(isTitleWin){
     const bm=r.sub.match(/Won (\w+)/);
@@ -8916,8 +8940,8 @@ function addSimCard(r){
   const challengePMHtml=(r.challengeWon&&r.challengePM>0)?'<div class="sim-challenge-pm">+'+r.challengePM.toLocaleString()+' PM bonus earned</div>':'';
   const item=document.createElement('div');
   item.className=classes;
-  item.innerHTML=lossHtml+
-    '<div class="sim-top"><div class="sim-bout">Bout '+r.bout+'/50'+milestoneHtml+'</div><div class="sim-outcome '+r.type+'">'+challengeBadgeHtml+r.outcome+koBadgeHtml+'</div></div>'+
+  item.innerHTML=lossHtml+hyp+
+    '<div class="sim-top"><div class="sim-bout">Bout '+r.bout+'/50'+milestoneHtml+'</div><div class="sim-outcome '+r.type+'">'+challengeBadgeHtml+rivalBadgeHtml+r.outcome+koBadgeHtml+'</div></div>'+
     '<div class="sim-main">'+r.main+'</div>'+
     '<div class="sim-method">'+r.method+'</div>'+
     '<div class="sim-sub">'+r.sub+'</div>'+
@@ -8930,7 +8954,7 @@ function addSimCard(r){
 }
 function showNextTease(){ const tease = $('sim-next-tease'); if(S.career.currentFight <= 50 && S.opponent){ tease.innerHTML = '⚡ <strong>Next up:</strong> '+S.opponent.Name+' ('+S.opponent.Tier+')'; tease.classList.remove('hidden'); } else { tease.classList.add('hidden'); } }
 function disableHub(dis){ $('enter-ring-btn').disabled=dis; document.querySelectorAll('.sim-btn').forEach(b=>b.disabled=dis); }
-async function simMany(count){ if(S.career.currentFight>50||S.batch) return; S.batch=true; S.pendingHof=false; openOverlay('Simulating '+count+' bout'+(count>1?'s':'')+'...'); disableHub(true); let shown=0; try{ for(let i=0;i<count;i++){ if(S.career.currentFight>50) break; if(S.career.challengeOpponent&&!S.career.challengeActive){if(loadChallengePref()==='accept') applyChallengeFight(); else clearChallengeFight();} const prevUnbeaten=S.career.losses===0; const r=simResult(); if(prevUnbeaten&&r.type==='loss') r.firstLoss=true; addSimCard(r); shown++; updateSimLiveRecord(); const delay=S.fast?80:(r.outcome.includes('KO')||r.outcome.includes('TKO')||r.outcome.includes('RTD'))?600:350; await sleep(delay); } }catch(e){ console.error(e); $('sim-subtitle').innerText='Simulation error: '+e.message; } $('sim-subtitle').innerText='Simulation complete • '+shown+' result'+(shown!==1?'s':'')+' shown'; showNextTease(); $('sim-close-btn').classList.remove('hidden'); $('sim-close-btn').innerText=S.pendingHof?'View Hall of Fame':'Return To Hub'; renderSimCareerSummary(); disableHub(false); S.batch=false; }
+async function simMany(count){ if(S.career.currentFight>50||S.batch) return; S.batch=true; S.pendingHof=false; _careerStoryMoments=[]; openOverlay('Simulating '+count+' bout'+(count>1?'s':'')+'...'); disableHub(true); let shown=0; try{ for(let i=0;i<count;i++){ if(S.career.currentFight>50) break; if(S.career.challengeOpponent&&!S.career.challengeActive){if(loadChallengePref()==='accept') applyChallengeFight(); else clearChallengeFight();} const prevUnbeaten=S.career.losses===0; const r=simResult(); if(prevUnbeaten&&r.type==='loss') r.firstLoss=true; addSimCard(r); if(r.rival) _careerStoryMoments.push({type:r.type==='win'?'rival_win':'rival_loss',bout:r.bout,name:r.oppNick||(S.career.rivalNick||'')}); if(r.titleFight&&r.type==='win'){const _bm=r.sub.match(/Won (\w+)/);if(_bm) _careerStoryMoments.push({type:'title',bout:r.bout,belt:_bm[1]||''});} if(r.type==='win'&&r.outcome.includes('KO')&&r.bout>=35) _careerStoryMoments.push({type:'big_ko',bout:r.bout}); shown++; updateSimLiveRecord(); const delay=S.fast?80:(r.outcome.includes('KO')||r.outcome.includes('TKO')||r.outcome.includes('RTD'))?600:350; await sleep(delay); } }catch(e){ console.error(e); $('sim-subtitle').innerText='Simulation error: '+e.message; } $('sim-subtitle').innerText='Simulation complete • '+shown+' result'+(shown!==1?'s':'')+' shown'; showNextTease(); $('sim-close-btn').classList.remove('hidden'); $('sim-close-btn').innerText=S.pendingHof?'View Hall of Fame':'Return To Hub'; renderSimCareerSummary(); disableHub(false); S.batch=false; }
 async function simAll(){ if(S.career.currentFight>50||S.batch) return; await simMany(51-S.career.currentFight); }
 function updateSimLiveRecord(){
   const el=$('sim-live-record'); if(!el||!S.career) return;
@@ -8978,6 +9002,8 @@ function renderSimCareerSummary(){
     confettiHtml+='</div>';
   }
   const cardHtml=careerDone?'<div class="sim-summary-card-wrap">'+modularCardMarkup()+'</div>':'';
+  const _smt=(_careerStoryMoments||[]).filter(Boolean).slice(0,6);
+  const momentsHtml=_smt.length?'<div class="sim-summary-moments"><div class="sim-summary-moments-title">Career Moments</div>'+_smt.map(function(m){if(m.type==='title')return'<div class="sim-moment-line">🏆 Bout '+m.bout+': Won the '+htmlEscape(m.belt||'')+' World Title</div>';if(m.type==='rival_win')return'<div class="sim-moment-line">🔥 Bout '+m.bout+': Beat rival '+htmlEscape(m.name||'')+' — bad blood settled</div>';if(m.type==='rival_loss')return'<div class="sim-moment-line">💀 Bout '+m.bout+': Rival fight — the bitter taste lingers</div>';if(m.type==='big_ko')return'<div class="sim-moment-line">💥 Bout '+m.bout+': Statement KO — a message to the division</div>';return'';}).filter(Boolean).join('')+'</div>':'';
   const wrap=document.createElement('div');
   wrap.id='sim-career-summary';
   wrap.className='sim-career-summary'+(is50?' fifty-zero':'');
@@ -8994,6 +9020,7 @@ function renderSimCareerSummary(){
       '<div class="sim-summary-cell"><strong>'+cash(c.earnings)+'</strong><span>Earnings</span></div>'+
     '</div>'+
     '<div class="sim-summary-story">'+htmlEscape(legData.t)+' • Top '+legData.p+'% • Legacy: '+legData.score+'</div>'+
+    momentsHtml+
     (careerDone?'<button class="btn ghost sim-summary-share" onclick="shareCareer()">📤 Share Career</button>':'');
   list.appendChild(wrap);
   list.parentElement.scrollTop=list.parentElement.scrollHeight;
@@ -10028,6 +10055,42 @@ window.onload = () => {
 };
 </script>
 <script>
+// ===== Opponent Personality & Rival System =====
+const OPP_NICKNAMES={
+  slugger:['"The Hammer"','"Bone Crusher"','"The Destroyer"','"The Wrecking Ball"','"The Executioner"','"Iron Fists"'],
+  outboxer:['"El Fantasma"','"The Ghost"','"The Surgeon"','"The Shadow"','"Silk Hands"','"The Illusionist"'],
+  pressure:['"The Machine"','"The Mauler"','"Non-Stop"','"The Freight Train"','"The Swarm"','"The Pressure Cooker"'],
+  technician:['"The Professor"','"The Chess Master"','"The Architect"','"Cold Logic"','"The Scholar"','"The Mechanic"'],
+  tank:['"The Rock"','"The Fortress"','"Granite Jaw"','"The Iron Wall"','"The Immovable"','"The Bunker"'],
+};
+const OPP_FLAVOUR_LINES={
+  slugger:['Heavy-handed — one clean shot can close the show.','Throws bombs from the first bell. Respect the power.','A single punch can end your night early.'],
+  outboxer:['Slick counterpuncher. Makes opponents miss, makes them pay.','Hard to catch — fast hands and faster feet.','Will try to out-box you on the back foot all night.'],
+  pressure:['Relentless. Never stops coming forward.','Walks you down and breaks you down round by round.','High workrate and a big heart — built for the late rounds.'],
+  technician:['Smart fighter who finds the gaps and exploits weaknesses.','Elite ring IQ — will pick you apart if you let him settle.','Every shot lands with a purpose. Stay disciplined.'],
+  tank:['Takes shots all night and keeps coming. Can you break him?','Granite chin — not going anywhere. Outwork him.','Absorbs punishment like it is nothing. Expect a long night.'],
+};
+const OPP_HYPE_LATE=[
+  'Every fight this close to history carries a risk.',
+  'One punch from devastation. Stay sharp.',
+  'The higher the number, the bigger the danger.',
+  'This close to 50-0 — there is no room for mistakes.',
+];
+const RIVAL_BOUTS=[20,30,40];
+let _careerStoryMoments=[];
+function buildFightHype(bout,title,isRival,dangerZone){
+  if(isRival) return '"This is personal." The rivalry finally spills into the ring.';
+  if(bout===50) return 'Bout 50. The final fight. One win from 50-0 and immortality.';
+  if(bout===45) return 'Bout 45. Five fights from perfection. The danger zone is real.';
+  if(bout===40) return 'Bout 40. Ten fights remain. The 50-0 dream is still alive — protect it.';
+  if(title==='WBC'&&bout<=20) return 'The WBC World Title is on the line. First belt on offer.';
+  if(title==='WBA') return 'The WBA belt and a first unification fight await.';
+  if(title==='IBF') return 'The IBF title — three belts in reach, one step closer to undisputed.';
+  if(title==='WBO'&&bout>=48) return 'The WBO. Four belts. History written tonight.';
+  if(dangerZone&&bout>=47) return 'Bout '+bout+'. '+choice(OPP_HYPE_LATE);
+  if(dangerZone&&bout>=43) return 'Bout '+bout+'. One mistake now and the dream is over.';
+  return null;
+}
 // Phase balance patch: removes runtime use of the old flat lucky-punch KO and
 // routes fights through an intended win-probability spine.
 function opponentBand(bout){
@@ -10053,12 +10116,17 @@ function generateOpponent(){
   rateMin=clamp(rateMin+cfg.oppMod,56,103); rateMax=clamp(rateMax+cfg.oppMod,rateMin+2,103);
   const style=choice(OPPSTYLE), name=choice(OPPF)+' '+choice(OPPL)+(Math.random()<.2?' Jr.':'');
   const opp={Name:name===S.player.Name?name+' II':name,Tier:tier,TitleOnLine:title,Style:style,Stats:{},Rating:rand(rateMin,rateMax)};
+  const _osi=style.id||'technician';
+  opp.Nickname=OPP_NICKNAMES[_osi]?choice(OPP_NICKNAMES[_osi]):'';
+  opp.Flavour=OPP_FLAVOUR_LINES[_osi]?choice(OPP_FLAVOUR_LINES[_osi]):'';
+  opp.DangerRating=bout>=48?'Extreme':bout>=44?'Very High':bout>=38?'High':bout>=25?'Medium':'Normal';
+  if(!S.career.rivalName&&RIVAL_BOUTS.includes(bout)&&Math.random()<0.38){opp.isRival=true;S.career.rivalName=opp.Name;S.career.rivalNick=opp.Nickname;S.career.rivalBout=bout;}
   STATS.forEach(st=>opp.Stats[st]=rand(baseMin,baseMax));
   if(style.power)opp.Stats.Power+=style.power; if(style.speed)opp.Stats.Speed+=style.speed; if(style.defence)opp.Stats.Defence+=style.defence; if(style.chin)opp.Stats.Chin+=style.chin; if(style.footwork)opp.Stats.Footwork+=style.footwork; if(style.ringIQ)opp.Stats['Ring IQ']+=style.ringIQ; if(style.heart)opp.Stats.Heart+=style.heart; if(style.stamina)opp.Stats.Stamina+=style.stamina; if(style.accuracy)opp.Stats.Accuracy+=style.accuracy;
   STATS.forEach(st=>opp.Stats[st]=clamp(opp.Stats[st],40,103));
   const wins=Math.floor(bout*1.5)+rand(4,10); let losses=tier==='Journeyman'?rand(6,16):rand(0,4); if(bout>40&&slump<3)losses=rand(0,2); else if(slump>=4)losses=rand(3,7);
   opp.Record=wins+'-'+losses; S.opponent=opp;
-  $('opp-bout').innerText='BOUT '+bout+'/50'; $('opp-tier').innerText=tier; $('opp-name').innerText=opp.Name; $('opp-details').innerText='Record: '+opp.Record+' | Power: '+opp.Stats.Power+' | Chin: '+opp.Stats.Chin+' | Speed: '+opp.Stats.Speed;
+  $('opp-bout').innerText='BOUT '+bout+'/50'; $('opp-tier').innerText=tier+(opp.isRival?' — ⚔ RIVAL':''); $('opp-name').innerText=opp.Name; if($('opp-nick')) $('opp-nick').innerText=opp.Nickname||(opp.isRival?'⚔ Rival Fight':''); $('opp-details').innerText='Record: '+opp.Record+(opp.DangerRating&&opp.DangerRating!=='Normal'?' | Danger: '+opp.DangerRating:''); if($('opp-flavour')) $('opp-flavour').innerText=opp.isRival?'Bad blood — this fight matters.':opp.Flavour||'';
   const tags=$('opp-tags'); tags.innerHTML=''; let t=document.createElement('span'); t.className='tag'; t.innerText=opp.Style.name; tags.appendChild(t); t=document.createElement('span'); t.className='tag blue'; t.innerText='Rating '+opp.Rating; tags.appendChild(t); t=document.createElement('span'); t.className='tag green'; t.innerText='You rank #'+S.career.worldRank; tags.appendChild(t); if(title){ t=document.createElement('span'); t.className='tag gold'; t.innerText=title+' on the line'; tags.appendChild(t); } if(MILESTONES.includes(bout)){ t=document.createElement('span'); t.className='tag orange'; t.innerText='Milestone Fight'; tags.appendChild(t); }
   S.career.challengeOpponent=null;
   if(CHALLENGE_BOUTS.includes(bout)&&!title){ S.career.challengeOpponent=generateChallengeOpponent(S.opponent,bout); }
