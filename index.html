@@ -2165,6 +2165,54 @@ body.final-card-open{overflow:hidden}
 .card-store-thumb.thumb-error::after,.card-store-bucket-art.thumb-error::after{content:'?';display:flex;align-items:center;justify-content:center;width:100%;color:rgba(255,255,255,.18);font-size:1.4rem;font-weight:900;pointer-events:none}
 /* ── Sim list scroll optimisation ── */
 .sim-list-wrap{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+/* ── My Cards Collection (mcc) ────────────────────────────────────────────── */
+.mcc-head{display:flex;align-items:center;gap:12px;padding:16px 16px 12px;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--line)}
+.mcc-head h2{flex:1;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.45rem;letter-spacing:.04em;color:var(--gold);margin:0;line-height:1}
+.mcc-showcase{padding:14px 16px;display:flex;justify-content:center;align-items:center;background:var(--bg-2);border-bottom:1px solid var(--line);min-height:80px}
+.mcc-showcase-empty{color:var(--muted);font-size:.76rem;text-align:center;line-height:1.5}
+.mcc-showcase-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.mcc-showcase-wrap .modular-card{width:min(100%,180px)}
+.mcc-showcase-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.mcc-filter-row{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-bottom:1px solid var(--line);flex-shrink:0}
+.mcc-filter-row::-webkit-scrollbar{display:none}
+.mcc-filter{flex-shrink:0;padding:5px 14px;border-radius:20px;border:1px solid var(--line-2);background:transparent;color:var(--text-dim);font-size:.72rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:background var(--t-fast),color var(--t-fast),border-color var(--t-fast)}
+.mcc-filter.active{background:var(--gold);color:#000;border-color:var(--gold)}
+.mcc-filter-fav.active{background:var(--red);border-color:var(--red);color:#fff}
+.mcc-count{padding:6px 16px 2px;font-size:.67rem;color:var(--muted);letter-spacing:.04em;font-weight:600}
+.mcc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px 16px 130px;overscroll-behavior:contain}
+.mcc-cell{position:relative;border-radius:var(--radius-sm);overflow:hidden;aspect-ratio:2/3;cursor:pointer;transition:transform var(--t-fast),opacity var(--t-fast);border:1px solid transparent;-webkit-tap-highlight-color:transparent}
+.mcc-cell:active{transform:scale(.94)}
+.mcc-cell.owned{border-color:rgba(255,255,255,.1)}
+.mcc-cell.unowned{opacity:.5}
+.mcc-cell-art{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.mcc-cell-num{position:absolute;bottom:4px;right:5px;font-size:.53rem;font-weight:900;color:rgba(255,255,255,.5);font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:.04em;line-height:1;text-shadow:0 1px 2px #000}
+.mcc-cell-name{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-size:.49rem;font-weight:700;color:#fff;text-shadow:0 1px 3px #000;padding:0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcc-cell-fav{position:absolute;top:4px;right:5px;font-size:.65rem;color:var(--red);text-shadow:0 1px 2px #000}
+.mcc-rarity-common{background:linear-gradient(160deg,#1f2229 0%,#2a2d36 100%)}
+.mcc-rarity-uncommon{background:linear-gradient(160deg,#0d2217 0%,#163323 100%)}
+.mcc-rarity-rare{background:linear-gradient(160deg,#0a1630 0%,#0f2248 100%)}
+.mcc-rarity-legendary{background:linear-gradient(160deg,#1e1400 0%,#392700 100%)}
+/* Detail overlay */
+.mcc-detail{position:fixed;inset:0;z-index:300;display:flex;align-items:flex-end;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.mcc-detail.hidden{display:none}
+.mcc-detail-inner{width:100%;background:var(--panel);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:24px 20px calc(24px + var(--safe-bottom));position:relative;max-height:92vh;overflow-y:auto;border-top:1px solid var(--line-2)}
+.mcc-detail-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:1px solid var(--line-2);background:var(--panel-2);color:var(--text-dim);font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.mcc-detail-art{width:110px;margin:0 auto 16px;border-radius:var(--radius);overflow:hidden;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:2.4rem}
+.mcc-detail-info{text-align:center;margin-bottom:16px}
+.mcc-detail-name{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.65rem;color:#fff;letter-spacing:.04em;line-height:1;margin-bottom:6px}
+.mcc-detail-meta{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
+.mcc-detail-num{font-size:.68rem;color:var(--text-dim);font-weight:700}
+.mcc-detail-rarity{padding:2px 10px;border-radius:12px;font-size:.59rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.mcc-rarity-badge-common{background:rgba(107,114,128,.2);color:#9ca3af}
+.mcc-rarity-badge-uncommon{background:rgba(54,196,126,.15);color:#36c47e}
+.mcc-rarity-badge-rare{background:rgba(91,141,239,.15);color:#5b8def}
+.mcc-rarity-badge-legendary{background:rgba(227,178,60,.15);color:var(--gold)}
+.mcc-detail-boost{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 14px;text-align:center;margin-bottom:18px}
+.mcc-detail-boost-label{display:block;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:4px}
+.mcc-detail-boost-value{font-size:.88rem;color:var(--gold);font-weight:700}
+.mcc-detail-unowned-notice{text-align:center;font-size:.72rem;color:var(--muted);padding:8px 0 16px;font-style:italic}
+.mcc-detail-actions{display:flex;flex-direction:column;gap:8px}
+.mcc-fav-btn-active{border-color:var(--red)!important;color:var(--red)!important}
 </style>
 </head>
 <body>
@@ -2231,6 +2279,7 @@ body.final-card-open{overflow:hidden}
     <button id="settings-menu-btn" type="button" class="btn ghost" onclick="openAccountSettings()">Settings</button>
     <button id="my-profile-menu-btn" type="button" class="btn ghost" onclick="openMyProfile()">My Profile</button>
     <button id="collection-book-menu-btn" type="button" class="btn ghost" onclick="openCollectionBook()">Collection Book</button>
+    <button id="my-cards-menu-btn" type="button" class="btn ghost" onclick="openMyCards()">My Cards</button>
     <button id="weekly-obj-menu-btn" type="button" class="btn ghost" onclick="openWeeklyObjectives()">Weekly Objectives<span id="weekly-badge" class="weekly-badge hidden">0</span></button>
     <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
     <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Hall Of Fame</button>
@@ -2317,6 +2366,38 @@ body.final-card-open{overflow:hidden}
     <div id="card-store-premium-later" class="card-premium-later">Premium items coming later</div>
   </div>
   <button type="button" class="btn gold" onclick="closeCardStore()">Back</button>
+</section>
+
+<section id="my-cards-screen" class="screen">
+  <div class="mcc-head">
+    <button type="button" class="icon-btn" onclick="closeMyCards()" aria-label="Back to menu">&#8592;</button>
+    <h2>My Cards</h2>
+    <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
+  </div>
+  <div id="mcc-showcase" class="mcc-showcase"></div>
+  <div class="mcc-filter-row" role="tablist" aria-label="Filter cards">
+    <button type="button" class="mcc-filter active" data-filter="all" onclick="setMyCardsFilter('all')" role="tab">All</button>
+    <button type="button" class="mcc-filter" data-filter="owned" onclick="setMyCardsFilter('owned')" role="tab">Owned</button>
+    <button type="button" class="mcc-filter" data-filter="unowned" onclick="setMyCardsFilter('unowned')" role="tab">Unowned</button>
+    <button type="button" class="mcc-filter mcc-filter-fav" data-filter="favs" onclick="setMyCardsFilter('favs')" role="tab">&#9829; Favs</button>
+  </div>
+  <div id="mcc-count" class="mcc-count"></div>
+  <div id="mcc-grid" class="mcc-grid"></div>
+  <div id="mcc-detail" class="mcc-detail hidden" role="dialog" aria-modal="true" aria-label="Card detail">
+    <div class="mcc-detail-inner">
+      <button type="button" class="mcc-detail-close" onclick="closeMccDetail()" aria-label="Close">&#10005;</button>
+      <div id="mcc-detail-art" class="mcc-detail-art"></div>
+      <div class="mcc-detail-info">
+        <div id="mcc-detail-name" class="mcc-detail-name"></div>
+        <div id="mcc-detail-meta" class="mcc-detail-meta"></div>
+        <div id="mcc-detail-boost" class="mcc-detail-boost"></div>
+      </div>
+      <div class="mcc-detail-actions">
+        <button type="button" class="btn blue" id="mcc-showcase-btn" onclick="setMyCardShowcase()">Set as Showcase</button>
+        <button type="button" class="btn ghost" id="mcc-fav-btn" onclick="toggleMyCardFavourite()">&#9825; Favourite</button>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section id="boxer-creator-screen" class="screen">
@@ -6677,6 +6758,39 @@ const CARD_ITEM_DEFINITIONS = {
 };
 const DEFAULT_OWNED_CARD_ITEMS = Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.base).map(item=>item.id);
 const DEFAULT_EQUIPPED_CARD_ITEMS = {character:'character_standard_contender',aura:'aura_corner_smoke',background:'background_standard_fight_night',frame:'frame_standard_contender'};
+const COLLECTIBLE_CARDS = [
+  {id:'cc001',num:1,name:'Carlos Vega',rarity:'common',boost:'+1% Defense'},
+  {id:'cc002',num:2,name:'Danny Hawk',rarity:'common',boost:'+1% Speed'},
+  {id:'cc003',num:3,name:'Mike Stone',rarity:'common',boost:'+1% Power'},
+  {id:'cc004',num:4,name:'Leon Brash',rarity:'common',boost:'+1% Stamina'},
+  {id:'cc005',num:5,name:'Ray Okafor',rarity:'common',boost:'+1% Defense'},
+  {id:'cc006',num:6,name:'Tony Blaze',rarity:'common',boost:'+1% Speed'},
+  {id:'cc007',num:7,name:'Eddie Cross',rarity:'common',boost:'+1% Power'},
+  {id:'cc008',num:8,name:'Pablo Cruz',rarity:'common',boost:'+1% Stamina'},
+  {id:'cc009',num:9,name:'Sam Flint',rarity:'common',boost:'+1% Defense'},
+  {id:'cc010',num:10,name:'Kyle Rush',rarity:'common',boost:'+1% Speed'},
+  {id:'cc011',num:11,name:'Marco Diaz',rarity:'common',boost:'+1% Power'},
+  {id:'cc012',num:12,name:'Joel Price',rarity:'common',boost:'+1% Stamina'},
+  {id:'cc013',num:13,name:'Vincent Kane',rarity:'uncommon',boost:'+2% Power'},
+  {id:'cc014',num:14,name:'Rico Bell',rarity:'uncommon',boost:'+2% Speed'},
+  {id:'cc015',num:15,name:'Damon Cole',rarity:'uncommon',boost:'+2% Defense'},
+  {id:'cc016',num:16,name:'Trent Nash',rarity:'uncommon',boost:'+2% Stamina'},
+  {id:'cc017',num:17,name:'Byron Fox',rarity:'uncommon',boost:'+3% Power'},
+  {id:'cc018',num:18,name:'Shane Wild',rarity:'uncommon',boost:'+2% Speed'},
+  {id:'cc019',num:19,name:'Derek Moon',rarity:'uncommon',boost:'+2% Defense'},
+  {id:'cc020',num:20,name:'Curtis Jay',rarity:'uncommon',boost:'+2% Stamina'},
+  {id:'cc021',num:21,name:'Phoenix Roar',rarity:'rare',boost:'+4% Power'},
+  {id:'cc022',num:22,name:'Storm Reed',rarity:'rare',boost:'+4% Speed'},
+  {id:'cc023',num:23,name:'Iron Doyle',rarity:'rare',boost:'+4% Defense'},
+  {id:'cc024',num:24,name:'Nova Slade',rarity:'rare',boost:'+4% Stamina'},
+  {id:'cc025',num:25,name:'Lance Fury',rarity:'rare',boost:'+5% Power'},
+  {id:'cc026',num:26,name:'Titan Cross',rarity:'rare',boost:'+5% Speed'},
+  {id:'cc027',num:27,name:'The Phantom',rarity:'legendary',boost:'+8% Power'},
+  {id:'cc028',num:28,name:'Gold Rush',rarity:'legendary',boost:'+8% Speed'},
+  {id:'cc029',num:29,name:'King Stone',rarity:'legendary',boost:'+10% Defense'},
+  {id:'cc030',num:30,name:'The Immortal',rarity:'legendary',boost:'+10% All Stats'},
+];
+const DEFAULT_OWNED_COLLECTIBLE_CARDS = ['cc001','cc003','cc007','cc013','cc015','cc021','cc023','cc027'];
 const ACHIEVEMENT_DEFINITIONS = {
   first_win:{id:'first_win',name:'First Win',desc:'Win your first professional bout.',reward:'gloves_red_reward',check:c=>c.wins>=1},
   prospect_10_0:{id:'prospect_10_0',name:'10-0 Prospect',desc:'Reach 10 wins with no losses or draws.',reward:'gloves_bronze',check:c=>c.wins>=10&&c.losses===0&&c.draws===0},
@@ -6979,6 +7093,9 @@ function createProfileFoundation(existing={}){
     cardNickname:cleanName(existing.cardNickname||''),
     ownedCardItems,
     equippedCardItems:createEquippedCardItems(existing.equippedCardItems,ownedCardItems),
+    myCards:Array.isArray(existing.myCards)?[...new Set([...DEFAULT_OWNED_COLLECTIBLE_CARDS,...existing.myCards.filter(id=>COLLECTIBLE_CARDS.some(c=>c.id===id))])]:DEFAULT_OWNED_COLLECTIBLE_CARDS.slice(),
+    myCardsShowcase:COLLECTIBLE_CARDS.some(c=>c.id===existing.myCardsShowcase)?existing.myCardsShowcase:null,
+    myCardsFavourites:Array.isArray(existing.myCardsFavourites)?existing.myCardsFavourites.filter(id=>COLLECTIBLE_CARDS.some(c=>c.id===id)):[],
     profileSetupComplete:!!existing.profileSetupComplete
   };
   return profile;
@@ -7440,6 +7557,10 @@ function saveBoxerCreator(){
   screen(boxerCreatorReturnScreen||'menu-screen');
 }
 function cancelBoxerCreator(){ screen(boxerCreatorReturnScreen||'menu-screen'); }
+function loadMyCardsData(){ return loadProfileFoundation(); }
+function saveMyCardsOwned(ids){ const p=loadProfileFoundation(); p.myCards=ids; saveProfileFoundation(p); }
+function saveMyCardsShowcase(id){ const p=loadProfileFoundation(); p.myCardsShowcase=id||null; saveProfileFoundation(p); }
+function saveMyCardsFavourites(ids){ const p=loadProfileFoundation(); p.myCardsFavourites=ids; saveProfileFoundation(p); }
 function getRecords(){ try{ return {...NIL, ...JSON.parse(localStorage.getItem(KEYS.records)||'{}')}; }catch{ return {...NIL}; } }
 function saveRecords(r){ localStorage.setItem(KEYS.records, JSON.stringify(r)); }
 function persistCareer(){ if(S.player){ ensurePlayerFoundation(S.player); saveProfileFromPlayer(S.player); } localStorage.setItem(KEYS.career, JSON.stringify({mode:S.mode,player:S.player,career:S.career,opponent:S.opponent,traitsRolled:S.traitsRolled})); markLocalUpdated(); }
@@ -7535,7 +7656,7 @@ function modularCardMarkup(profile=activeCardProfile()){
     '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" onerror="_imgErr(this)" alt="">'+
     '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" onerror="_imgErr(this)" alt="">'+
     '</div>'+
-    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" onerror="_imgErr(this)" alt="">'+
+    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onerror="_imgErr(this)" alt="">'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(data.name)+'</strong><span>'+htmlEscape(data.nickname)+'</span></div>'+
   '</div>';
 }
@@ -7591,7 +7712,7 @@ function modularCardMarkupFrom(opts){
     '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" onerror="_imgErr(this)" alt="">'+
     '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" onerror="_imgErr(this)" alt="">'+
     '</div>'+
-    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" onerror="_imgErr(this)" alt="">'+
+    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onerror="_imgErr(this)" alt="">'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(name)+'</strong><span>'+htmlEscape(nickname)+'</span></div>'+
   '</div>';
 }
@@ -9597,6 +9718,159 @@ function openRetiredCareerDetail(id){
   }
   screen('retired-career-detail-screen');
 }
+
+// ── My Cards Collection ────────────────────────────────────────────────────
+let _mccFilter='all';
+let _mccDetailId=null;
+
+function openMyCards(){
+  _mccFilter='all';
+  document.querySelectorAll('.mcc-filter').forEach(el=>el.classList.toggle('active',el.dataset.filter==='all'));
+  renderMccShowcase();
+  renderMyCardsGrid();
+  showScreen('my-cards-screen');
+}
+function closeMyCards(){
+  closeMccDetail();
+  showScreen('menu-screen');
+}
+function setMyCardsFilter(f){
+  _mccFilter=f;
+  document.querySelectorAll('.mcc-filter').forEach(el=>el.classList.toggle('active',el.dataset.filter===f));
+  renderMyCardsGrid();
+}
+function _mccRarityClass(rarity){ return 'mcc-rarity-'+rarity; }
+function _mccRarityBadgeClass(rarity){ return 'mcc-rarity-badge-'+rarity; }
+function _mccArtHTML(card,sizePx){
+  const style='width:'+sizePx+'px;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:'+(sizePx*0.35)+'px;border-radius:var(--radius);overflow:hidden;';
+  return '<div class="'+_mccRarityClass(card.rarity)+'" style="'+style+'">🥊</div>';
+}
+function renderMccShowcase(){
+  const box=document.getElementById('mcc-showcase');
+  if(!box) return;
+  const p=loadMyCardsData();
+  const card=COLLECTIBLE_CARDS.find(c=>c.id===p.myCardsShowcase);
+  if(!card){
+    box.innerHTML='<div class="mcc-showcase-empty">No showcase card selected.<br>Tap any owned card to set one.</div>';
+    return;
+  }
+  box.innerHTML='<div class="mcc-showcase-wrap">'+
+    '<div class="mcc-showcase-label">Showcase</div>'+
+    _mccArtHTML(card,140)+
+    '<div style="font-size:.7rem;color:var(--text-dim);font-weight:700;text-align:center;margin-top:4px">'+htmlEscape(card.name)+'</div>'+
+  '</div>';
+}
+function renderMyCardsGrid(){
+  const p=loadMyCardsData();
+  const owned=new Set(p.myCards||[]);
+  const favs=new Set(p.myCardsFavourites||[]);
+  let cards=COLLECTIBLE_CARDS.slice();
+  if(_mccFilter==='owned') cards=cards.filter(c=>owned.has(c.id));
+  else if(_mccFilter==='unowned') cards=cards.filter(c=>!owned.has(c.id));
+  else if(_mccFilter==='favs') cards=cards.filter(c=>favs.has(c.id));
+  const countEl=document.getElementById('mcc-count');
+  if(countEl){
+    const ownedCount=owned.size, total=COLLECTIBLE_CARDS.length;
+    countEl.textContent=(_mccFilter==='all'?ownedCount+' / '+total+' owned':cards.length+' card'+(cards.length!==1?'s':''));
+  }
+  const grid=document.getElementById('mcc-grid');
+  if(!grid) return;
+  if(!cards.length){
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:36px 0;font-size:.82rem">No cards here yet.</div>';
+    return;
+  }
+  grid.innerHTML=cards.map(card=>{
+    const isOwned=owned.has(card.id);
+    const isFav=favs.has(card.id);
+    const numStr='#'+String(card.num).padStart(3,'0');
+    if(isOwned){
+      return '<div class="mcc-cell owned" onclick="openMyCardDetail(\''+card.id+'\')" role="button" tabindex="0" aria-label="'+htmlEscape(card.name)+'">'+
+        '<div class="mcc-cell-art '+_mccRarityClass(card.rarity)+'">🥊</div>'+
+        '<div class="mcc-cell-name">'+htmlEscape(card.name)+'</div>'+
+        (isFav?'<div class="mcc-cell-fav" aria-hidden="true">&#9829;</div>':'')+
+        '<div class="mcc-cell-num">'+numStr+'</div>'+
+      '</div>';
+    } else {
+      return '<div class="mcc-cell unowned" onclick="openMyCardDetail(\''+card.id+'\')" role="button" tabindex="0" aria-label="Card '+numStr+' locked">'+
+        '<div class="mcc-cell-art" style="background:#0e0f14;color:rgba(255,255,255,.15);font-size:1.4rem">🔒</div>'+
+        '<div class="mcc-cell-num">'+numStr+'</div>'+
+      '</div>';
+    }
+  }).join('');
+}
+function openMyCardDetail(id){
+  const card=COLLECTIBLE_CARDS.find(c=>c.id===id);
+  if(!card) return;
+  _mccDetailId=id;
+  const p=loadMyCardsData();
+  const owned=new Set(p.myCards||[]);
+  const favs=new Set(p.myCardsFavourites||[]);
+  const isOwned=owned.has(id);
+  const isFav=favs.has(id);
+  const artEl=document.getElementById('mcc-detail-art');
+  if(artEl){ artEl.className='mcc-detail-art '+_mccRarityClass(card.rarity); artEl.innerHTML='<span style="font-size:2.4rem">🥊</span>'; }
+  const nameEl=document.getElementById('mcc-detail-name');
+  if(nameEl) nameEl.textContent=card.name;
+  const metaEl=document.getElementById('mcc-detail-meta');
+  if(metaEl) metaEl.innerHTML=
+    '<span class="mcc-detail-num">Card #'+String(card.num).padStart(3,'0')+' of '+String(COLLECTIBLE_CARDS.length).padStart(3,'0')+'</span>'+
+    '<span class="mcc-detail-rarity '+_mccRarityBadgeClass(card.rarity)+'">'+card.rarity+'</span>';
+  const boostEl=document.getElementById('mcc-detail-boost');
+  if(boostEl) boostEl.innerHTML='<span class="mcc-detail-boost-label">Boost (display only)</span><span class="mcc-detail-boost-value">'+htmlEscape(card.boost)+'</span>';
+  const showcaseBtn=document.getElementById('mcc-showcase-btn');
+  if(showcaseBtn){
+    showcaseBtn.disabled=!isOwned;
+    showcaseBtn.textContent=p.myCardsShowcase===id?'✓ Current Showcase':'Set as Showcase';
+  }
+  const favBtn=document.getElementById('mcc-fav-btn');
+  if(favBtn){
+    favBtn.disabled=!isOwned;
+    favBtn.innerHTML=isFav?'&#9829; Unfavourite':'&#9825; Favourite';
+    favBtn.classList.toggle('mcc-fav-btn-active',isFav);
+  }
+  const notice=document.getElementById('mcc-detail-boost');
+  const detailInner=document.querySelector('.mcc-detail-inner');
+  if(detailInner){
+    let unownedEl=detailInner.querySelector('.mcc-detail-unowned-notice');
+    if(!isOwned){
+      if(!unownedEl){ unownedEl=document.createElement('p'); unownedEl.className='mcc-detail-unowned-notice'; detailInner.insertBefore(unownedEl,document.querySelector('.mcc-detail-actions')); }
+      unownedEl.textContent='You don\'t own this card yet.';
+    } else if(unownedEl){ unownedEl.remove(); }
+  }
+  const el=document.getElementById('mcc-detail');
+  if(el) el.classList.remove('hidden');
+}
+function closeMccDetail(){
+  const el=document.getElementById('mcc-detail');
+  if(el) el.classList.add('hidden');
+  _mccDetailId=null;
+}
+function setMyCardShowcase(){
+  if(!_mccDetailId) return;
+  const p=loadMyCardsData();
+  p.myCardsShowcase=_mccDetailId;
+  saveProfileFoundation(p);
+  const btn=document.getElementById('mcc-showcase-btn');
+  if(btn) btn.textContent='✓ Current Showcase';
+  renderMccShowcase();
+  showToast('Showcase Updated','Card set as your showcase.');
+}
+function toggleMyCardFavourite(){
+  if(!_mccDetailId) return;
+  const p=loadMyCardsData();
+  const favs=new Set(p.myCardsFavourites||[]);
+  if(favs.has(_mccDetailId)) favs.delete(_mccDetailId); else favs.add(_mccDetailId);
+  p.myCardsFavourites=[...favs];
+  saveProfileFoundation(p);
+  renderMyCardsGrid();
+  const isFav=favs.has(_mccDetailId);
+  const favBtn=document.getElementById('mcc-fav-btn');
+  if(favBtn){
+    favBtn.innerHTML=isFav?'&#9829; Unfavourite':'&#9825; Favourite';
+    favBtn.classList.toggle('mcc-fav-btn-active',isFav);
+  }
+}
+
 function antiCheatProfile(profile){
   const clean=createProfileFoundation(profile||{});
   clean.walletBalance=clamp(safeMoney(clean.walletBalance),0,25000000000);
