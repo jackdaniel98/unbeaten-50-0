@@ -6759,7 +6759,7 @@ const CARD_ITEM_DEFINITIONS = {
 const DEFAULT_OWNED_CARD_ITEMS = Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.base).map(item=>item.id);
 const DEFAULT_EQUIPPED_CARD_ITEMS = {character:'character_standard_contender',aura:'aura_corner_smoke',background:'background_standard_fight_night',frame:'frame_standard_contender'};
 const COLLECTIBLE_CARDS = [
-  {id:'cc001',num:1,name:'Carlos Vega',rarity:'common',boost:'+1% Defense'},
+  {id:'cc001',num:1,name:'Street Spark',rarity:'common',boost:'+1% Defense'},
   {id:'cc002',num:2,name:'Danny Hawk',rarity:'common',boost:'+1% Speed'},
   {id:'cc003',num:3,name:'Mike Stone',rarity:'common',boost:'+1% Power'},
   {id:'cc004',num:4,name:'Leon Brash',rarity:'common',boost:'+1% Stamina'},
@@ -6790,7 +6790,7 @@ const COLLECTIBLE_CARDS = [
   {id:'cc029',num:29,name:'King Stone',rarity:'legendary',boost:'+10% Defense'},
   {id:'cc030',num:30,name:'The Immortal',rarity:'legendary',boost:'+10% All Stats'},
 ];
-const DEFAULT_OWNED_COLLECTIBLE_CARDS = ['cc001','cc003','cc007','cc013','cc015','cc021','cc023','cc027'];
+const DEFAULT_OWNED_COLLECTIBLE_CARDS = ['cc001'];
 const ACHIEVEMENT_DEFINITIONS = {
   first_win:{id:'first_win',name:'First Win',desc:'Win your first professional bout.',reward:'gloves_red_reward',check:c=>c.wins>=1},
   prospect_10_0:{id:'prospect_10_0',name:'10-0 Prospect',desc:'Reach 10 wins with no losses or draws.',reward:'gloves_bronze',check:c=>c.wins>=10&&c.losses===0&&c.draws===0},
@@ -7094,7 +7094,7 @@ function createProfileFoundation(existing={}){
     ownedCardItems,
     equippedCardItems:createEquippedCardItems(existing.equippedCardItems,ownedCardItems),
     myCards:Array.isArray(existing.myCards)?[...new Set([...DEFAULT_OWNED_COLLECTIBLE_CARDS,...existing.myCards.filter(id=>COLLECTIBLE_CARDS.some(c=>c.id===id))])]:DEFAULT_OWNED_COLLECTIBLE_CARDS.slice(),
-    myCardsShowcase:COLLECTIBLE_CARDS.some(c=>c.id===existing.myCardsShowcase)?existing.myCardsShowcase:null,
+    myCardsShowcase:COLLECTIBLE_CARDS.some(c=>c.id===existing.myCardsShowcase)?existing.myCardsShowcase:'cc001',
     myCardsFavourites:Array.isArray(existing.myCardsFavourites)?existing.myCardsFavourites.filter(id=>COLLECTIBLE_CARDS.some(c=>c.id===id)):[],
     profileSetupComplete:!!existing.profileSetupComplete
   };
