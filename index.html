@@ -1631,20 +1631,16 @@ body.final-card-open{overflow:hidden}
 .modular-card img{position:absolute;display:block;pointer-events:none;user-select:none}
 .modular-card-background,.modular-card-frame{inset:0;width:100%;height:100%}
 .modular-card-background{z-index:0;object-fit:cover}
-.modular-card-aura,.modular-card-character{left:0;top:2%;width:100%;height:76%;object-fit:contain;object-position:center bottom}
+.modular-card-aura,.modular-card-character{left:0;top:0;width:100%;height:90%;object-fit:contain;object-position:center bottom}
 .modular-card-aura{z-index:1;opacity:.92;mix-blend-mode:screen}.modular-card-character{z-index:2}.modular-card-frame{z-index:3}
-.modular-card::after{content:'';position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,transparent 52%,rgba(0,0,0,.65) 100%);pointer-events:none}
+.modular-card::after{content:'';position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.5) 78%,rgba(0,0,0,.72) 100%);pointer-events:none}
 .modular-card-copy{position:absolute;z-index:4;color:#f8fafc;text-align:center;text-shadow:0 1px 3px #000,0 2px 10px rgba(0,0,0,.9);pointer-events:none}
-.modular-card-ovr{left:6.7%;top:78.6%;width:21.5%;height:13.4%;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.modular-card-ovr strong{font-family:'Bebas Neue',Impact,sans-serif;font-size:2.4rem;line-height:.82;color:#f6d768;text-shadow:0 0 14px rgba(246,215,104,.5),0 2px 6px rgba(0,0,0,.9)}
-.modular-card-ovr span{font-size:.52rem;font-weight:1000;letter-spacing:0;text-transform:uppercase}
-.modular-card-name{left:31%;top:79.2%;width:60%;height:7.3%;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:0 4px}
-.modular-card-name strong{max-width:100%;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.modular-card-name span{max-width:100%;margin-top:2px;color:#f0d080;font-size:.58rem;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.03em}
-.modular-card-stats{position:absolute;z-index:4;left:5%;top:88%;width:90%;height:7%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));align-items:center;color:#fff;text-shadow:0 1px 2px #000,0 0 10px rgba(0,0,0,.95);pointer-events:none}
-.modular-card-stat{text-align:center;min-width:0;padding:0 2px}
-.modular-card-stat strong,.modular-card-stat span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.modular-card-stat strong{font-size:.64rem;line-height:1;color:#fff}.modular-card-stat span{margin-top:1px;color:#f0d080;font-size:.4rem;font-weight:1000;text-transform:uppercase;letter-spacing:0}
+.modular-card-ovr{display:none}
+.modular-card-name{left:8%;bottom:9%;top:auto;width:84%;height:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 12px 7px;background:linear-gradient(180deg,rgba(6,6,10,.84) 0%,rgba(2,2,6,.95) 100%);border:1px solid rgba(227,178,60,.4);border-radius:4px;box-shadow:0 0 0 1px rgba(0,0,0,.8),0 4px 24px rgba(0,0,0,.65),inset 0 1px 0 rgba(227,178,60,.15);overflow:hidden}
+.modular-card-name strong{max-width:100%;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.35rem;line-height:1;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.5px}
+.modular-card-name span{max-width:100%;margin-top:3px;color:#f0d080;font-size:.62rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1em;text-transform:uppercase}
+.modular-card-stats{display:none}
+.modular-card-stat{display:none}
 .card-editor-layout{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
 .card-editor-layout>.modular-card,.card-editor-layout>#card-editor-preview .modular-card{width:min(100%,386px)}
 .card-identity-editor{padding:0 0 12px;border-bottom:1px solid var(--line)}
@@ -1757,7 +1753,7 @@ body.final-card-open{overflow:hidden}
   .card-editor-layout{grid-template-columns:1fr}.card-editor-layout>.modular-card{width:min(100%,330px)}
   .card-store-top{grid-template-columns:140px minmax(0,1fr)}.card-store-top .modular-card{width:140px}
   .card-store-grid{grid-template-columns:1fr}.card-store-buckets{grid-template-columns:repeat(2,minmax(0,1fr))}.card-rarity-rail{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .modular-card-ovr strong{font-size:2rem}.modular-card-name strong{font-size:.94rem}.modular-card-name span{font-size:.5rem}.modular-card-stat strong{font-size:.56rem}.modular-card-stat span{font-size:.35rem}
+  .modular-card-name strong{font-size:1.1rem}.modular-card-name span{font-size:.54rem}
 }
 @media(max-width:350px){
   .play-money-hud{font-size:.58rem}.card-identity-fields,.card-owned-options{grid-template-columns:1fr}.card-rarity-key{font-size:.46rem}
@@ -7525,9 +7521,7 @@ function modularCardMarkup(profile=activeCardProfile()){
     '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" onerror="_imgErr(this)" alt="">'+
     '</div>'+
     '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" onerror="_imgErr(this)" alt="">'+
-    '<div class="modular-card-copy modular-card-ovr"><strong>'+data.ovr+'</strong><span>OVR</span></div>'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(data.name)+'</strong><span>'+htmlEscape(data.nickname)+'</span></div>'+
-    '<div class="modular-card-stats">'+data.stats.map(stat=>'<div class="modular-card-stat"><strong>'+htmlEscape(stat.value)+'</strong><span>'+htmlEscape(stat.label)+'</span></div>').join('')+'</div>'+
   '</div>';
 }
 
@@ -7583,9 +7577,7 @@ function modularCardMarkupFrom(opts){
     '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" onerror="_imgErr(this)" alt="">'+
     '</div>'+
     '<img class="modular-card-frame" src="'+assets.frame.asset+'" onload="bgRemove(this)" onerror="_imgErr(this)" alt="">'+
-    '<div class="modular-card-copy modular-card-ovr"><strong>'+htmlEscape(ovr)+'</strong><span>OVR</span></div>'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(name)+'</strong><span>'+htmlEscape(nickname)+'</span></div>'+
-    '<div class="modular-card-stats">'+stats.map(s=>'<div class="modular-card-stat"><strong>'+htmlEscape(s.value)+'</strong><span>'+htmlEscape(s.label)+'</span></div>').join('')+'</div>'+
   '</div>';
 }
 function mutateCardProfile(mutator){
