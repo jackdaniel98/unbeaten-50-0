@@ -1937,6 +1937,15 @@ body.final-card-open{overflow:hidden}
 .synergy-flash.teal{background:radial-gradient(circle at 50% 45%,rgba(20,184,166,.34),rgba(227,178,60,.12) 42%,transparent 70%)}
 @keyframes synergyFlash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
 
+/* ===== Synergy-pick selection screen ===== */
+.syn-pick-card{background:var(--panel);border:2px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px;margin-bottom:10px;cursor:pointer;transition:border-color var(--t) var(--ease),background var(--t) var(--ease),box-shadow var(--t) var(--ease);-webkit-tap-highlight-color:transparent;user-select:none}
+.syn-pick-card:active{opacity:.82}
+.syn-pick-card.selected{border-color:var(--gold);background:linear-gradient(110deg,var(--panel) 0%,var(--gold-soft) 60%,var(--panel) 100%);box-shadow:0 0 0 1px var(--gold-glow),var(--shadow-card)}
+.syn-pick-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.syn-pick-check{width:22px;height:22px;min-width:22px;border:2px solid var(--line-2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all var(--t) var(--ease);background:transparent;margin-top:1px}
+.syn-pick-card.selected .syn-pick-check{background:var(--gold);border-color:var(--gold);color:#000}
+.syn-pick-bonuses{margin-top:7px;font-size:.78rem;font-weight:700;color:#5fe3d2;letter-spacing:.2px}
+
 /* ===== Attribute rating tiers (match rarity tabs) ===== */
 .attr-premium{color:#ffdf7e !important;text-shadow:0 0 10px rgba(255,213,107,.55)}
 .attr-legendary{color:#fb923c !important;text-shadow:0 0 8px rgba(251,146,60,.4)}
@@ -2328,6 +2337,17 @@ body.final-card-open{overflow:hidden}
   </div>
   <button id="advance-btn" class="btn gold" onclick="goToHub()">Advance To Career Hub</button>
   <button class="btn red" onclick="restartDraft()">Restart Draft</button>
+</section>
+
+<section id="synergy-pick-screen" class="screen">
+  <h2>Choose 2 Synergies to Keep</h2>
+  <p class="subtle">You unlocked <strong id="syn-pick-total">0</strong> synergies. Pick exactly <strong>2</strong> to carry into your career — the rest are voided and contribute nothing to your rating or fights.</p>
+  <div class="overall-banner">
+    <div class="label">Selected</div>
+    <div id="syn-pick-counter" class="value">0 / 2</div>
+  </div>
+  <div id="syn-pick-list"></div>
+  <button id="syn-confirm-btn" class="btn gold" onclick="confirmSynergyPick()" disabled>Confirm Selection</button>
 </section>
 
 <section id="hub-screen" class="screen">
@@ -2887,6 +2907,8 @@ function playStatSound(value){ initAudio(); if(isMuted) return; switch(getAttrib
   case 'low': playOof(); break;
   default: playLock();
 } }
+function playSynergyKeep(){ initAudio(); if(isMuted) return; playArp([523.25,659.25,783.99,1046.50],'triangle',70,0.45,0.09); setTimeout(()=>playTone(1046.50,'sine',0.7,0.055),290); }
+function playSynergyVoid(){ initAudio(); if(isMuted) return; playSweep(420,78,'sawtooth',0.28,0.18); setTimeout(()=>playSweep(210,52,'square',0.22,0.13),38); }
 // ==========================================================
 
 // --- FIREBASE CONFIGURATION & INITIALIZATION ---
@@ -8914,30 +8936,68 @@ function updateOverallDisplays(){ const ovr=calculateOverall(); if($('overall-ra
 function archetype(s){ if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number')) return {name:'Undetermined'}; const pressure=s.Power+s.Heart+s.Stamina, box=s.Speed+s.Footwork+s.Defence, tech=s['Ring IQ']+s.Accuracy+s.Defence, tank=s.Chin+s.Heart+s.Recovery; const arr=[{name:'Slugger',score:pressure+10-s.Footwork*.08},{name:'Outboxer',score:box+7-s.Power*.04},{name:'Technician',score:tech+8},{name:'Ironman',score:tank+6},{name:'Balanced Contender',score:(pressure+box+tech+tank)/4}]; arr.sort((a,b)=>b.score-a.score); return arr[0]; }
 function getBuildIdentity(stats){ if(!stats) return 'Balanced Fighter'; if(stats.Power>92 && stats.Heart>90) return 'Explosive Slugger'; if(stats.Defence>90 && stats['Ring IQ']>90 && stats.Accuracy>88) return 'Precision Technician'; if(stats.Chin>90 && stats.Recovery>90) return 'Durable Ironman'; if(stats.Speed>90 && stats.Footwork>90) return 'Elusive Outboxer'; if(hasTrait('body_snatcher')) return 'Body Attack Specialist'; if(hasTrait('counter_puncher')) return 'Counter Fighting Operator'; if((S.player.HiddenBonuses||[]).length>=2) return 'Synergy Monster'; return 'Balanced Fighter'; }
 function getWealthInfo(m){ if(m>=200000000) return ['All-Time Cash King','Top 0.1%']; if(m>=175000000) return ['Global Superstar','Top 0.25%']; if(m>=150000000) return ['PPV Mega Icon','Top 0.4%']; if(m>=125000000) return ['PPV Megastar','Top 0.5%']; if(m>=100000000) return ['Elite Earner','Top 1%']; if(m>=75000000) return ['World Attraction','Top 2%']; if(m>=50000000) return ['Main Event Star','Top 5%']; if(m>=25000000) return ['Top Contender Payday','Top 10%']; return ['Professional Fighter','Rising Tier']; }
-function goToHub(){ 
+function goToHub(){
   const input=$('fighter-name-input'), err=$('fighter-name-error');
-  const nm=cleanName(input.value); 
+  const nm=cleanName(input.value);
   const nameCheck=validateFighterName(nm);
-  if(!nameCheck.ok){
-    err.innerText=nameCheck.msg;
-    err.classList.remove('ok');
-    input.focus();
-    return;
-  }
-  S.player.Name=nm; 
+  if(!nameCheck.ok){ err.innerText=nameCheck.msg; err.classList.remove('ok'); input.focus(); return; }
+  S.player.Name=nm;
   if(!S.player.username||S.player.username==='Custom Contender') S.player.username=nm;
-  if(S.traitsRolled<2){ alert('Spin both traits first.'); return; } 
-  if(STATS.some(st=>S.player.Stats[st]==null)){ alert('Complete the draft first.'); return; } 
+  if(S.traitsRolled<2){ alert('Spin both traits first.'); return; }
+  if(STATS.some(st=>S.player.Stats[st]==null)){ alert('Complete the draft first.'); return; }
   if(!S.career.id) S.career.id=makeId('career');
-  if (!S.career.firebaseCreatedCounted) {
-    S.career.firebaseCreatedCounted = true; 
-    incrementFightersCreated();
+  if(!S.career.firebaseCreatedCounted){ S.career.firebaseCreatedCounted=true; incrementFightersCreated(); }
+  if((S.player.HiddenBonuses||[]).length>=3){ renderSynergyPick(); screen('synergy-pick-screen'); return; }
+  completeDraft();
+}
+function completeDraft(){
+  recalcRank();
+  generateOpponent();
+  updateHub();
+  saveCareer();
+  screen('hub-screen');
+}
+function renderSynergyPick(){
+  const synergies=S.player.HiddenBonuses||[];
+  const total=$('syn-pick-total'); if(total) total.innerText=synergies.length;
+  const counter=$('syn-pick-counter');
+  const btn=$('syn-confirm-btn');
+  const list=$('syn-pick-list');
+  list.innerHTML='';
+  function updateUI(){
+    const n=list.querySelectorAll('.syn-pick-card.selected').length;
+    if(counter) counter.innerText=n+' / 2';
+    if(btn) btn.disabled=n!==2;
   }
-  recalcRank(); 
-  generateOpponent(); 
-  updateHub(); 
-  saveCareer(); 
-  screen('hub-screen'); 
+  synergies.forEach(syn=>{
+    const plus=Object.entries(syn.bonuses||{}).filter(([,v])=>v!==0).map(([k,v])=>(v>0?'+':'')+v+' '+k).join(', ');
+    const card=document.createElement('div');
+    card.className='syn-pick-card';
+    card.dataset.synId=syn.id;
+    card.innerHTML='<div class="syn-pick-header"><div class="trait-title"><span class="synergy-spark">✦</span> '+htmlEscape(syn.name)+'</div><div class="syn-pick-check"></div></div>'
+      +'<div style="font-size:.83rem;color:var(--text-dim);margin-top:4px;line-height:1.5">'+htmlEscape(syn.desc)+'</div>'
+      +(plus?'<div class="syn-pick-bonuses">'+htmlEscape(plus)+'</div>':'');
+    card.addEventListener('click',()=>{
+      const alreadySelected=card.classList.contains('selected');
+      if(!alreadySelected&&list.querySelectorAll('.syn-pick-card.selected').length>=2) return;
+      card.classList.toggle('selected');
+      updateUI();
+    });
+    list.appendChild(card);
+  });
+  updateUI();
+}
+function confirmSynergyPick(){
+  const list=$('syn-pick-list');
+  const selectedCards=list.querySelectorAll('.syn-pick-card.selected');
+  if(selectedCards.length!==2) return;
+  const keptIds=new Set(Array.from(selectedCards).map(c=>c.dataset.synId));
+  const kept=(S.player.HiddenBonuses||[]).filter(s=>keptIds.has(s.id));
+  if(kept.length!==2) return;
+  S.player.HiddenBonuses=kept;
+  playSynergyKeep();
+  setTimeout(playSynergyVoid,185);
+  completeDraft();
 }
 function recalcRank(){ const ovr=calculateOverall(); const score=ovr+(S.career.wins*2.2)+(S.career.kos*1.0)+(S.career.belts.length*14)+(S.career.bestWinStreak*.5)+(S.career.titleDef*2.2)-(S.career.losses*11.5)-(S.career.draws*4.5)-(S.career.recentLossPenalty*4.4); let rank=Math.round(80-(score/2.45)); rank=clamp(rank,1,60); if(S.career.belts.length>=3&&S.career.wins>=35&&S.career.recentLossPenalty<3) rank=Math.min(rank,4); if(S.career.belts.length===4&&S.career.wins>=45&&S.career.recentLossPenalty<2) rank=Math.min(rank,1); if(S.career.wins===50&&S.career.losses===0&&S.career.draws===0) rank=1; S.career.worldRank=rank; S.career.bestWorldRank=Math.min(S.career.bestWorldRank||60, rank); S.career.rating=ovr; }
 function streakBonus(){ const streak = S.career.winStreak || 0; if(streak >= 10) return 0.25; if(streak >= 7) return 0.18; if(streak >= 5) return 0.12; if(streak >= 3) return 0.06; return 0; }
