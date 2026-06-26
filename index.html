@@ -1115,12 +1115,16 @@ h2:first-child{margin-top:6px}
 .item-preview-preview-note{font-size:.54rem;color:rgba(255,255,255,.2);text-align:center;padding:0 16px 8px;margin:0;letter-spacing:.03em}
 .card-store-item,.featured-store-item{cursor:pointer}
 .card-store-item:active,.featured-store-item:active{opacity:.85;transition:opacity .1s}
-.hub-section{border-bottom:1px solid var(--line)}
-.hub-section>summary{display:flex;align-items:center;justify-content:space-between;padding:13px 0;cursor:pointer;list-style:none;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--text);user-select:none;-webkit-tap-highlight-color:transparent}
+.hub-section{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.hub-section+.hub-section{border-top:none}
+.hub-section>summary{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:13px 2px;cursor:pointer;list-style:none;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--text);user-select:none;-webkit-tap-highlight-color:transparent}
 .hub-section>summary::-webkit-details-marker{display:none}
-.hub-section>summary::after{content:'▾';color:var(--muted);font-size:.75rem;transition:transform .2s;display:inline-block;flex-shrink:0}
-.hub-section[open]>summary::after{transform:rotate(180deg)}
-.hub-section-body{padding-bottom:12px}
+.hub-section>summary::after{content:'›';color:var(--gold);font-size:1.1rem;line-height:1;transition:transform .22s ease;display:inline-block;flex-shrink:0;font-weight:300}
+.hub-section[open]>summary::after{transform:rotate(90deg)}
+.hub-section>summary:active{opacity:.65}
+.hub-section-body{padding-bottom:14px}
+@keyframes hubSectionIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.hub-section[open]>.hub-section-body{animation:hubSectionIn .18s ease}
 .hub-wallet-body .row{border-bottom:1px solid var(--line);padding:8px 0}.hub-wallet-body .row:last-child{border-bottom:none}
 .hub-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
 .hub-metric{min-width:0;padding:10px 6px;border:1px solid var(--line);border-radius:8px;background:#0a0b0e;text-align:center}
@@ -2392,7 +2396,7 @@ body.final-card-open{overflow:hidden}
     <div id="hub-build-power" class="hub-build-power" style="display:none"></div>
   </div>
   <!-- Career Summary -->
-  <details class="hub-section" open>
+  <details class="hub-section">
     <summary>Career Summary</summary>
     <div class="hub-section-body">
       <div class="hub-metrics">
@@ -2424,15 +2428,19 @@ body.final-card-open{overflow:hidden}
   </details>
   <h2>Your Fighter Attributes</h2>
   <div id="stats-grid" class="stats-grid"></div>
-  <h2>Profile Foundation</h2>
-  <div class="panel">
-    <div class="row"><span>Username:</span><span id="profile-username">-</span></div>
-    <div class="row"><span>Player ID:</span><span id="profile-player-id">-</span></div>
-    <div class="row"><span>Avatar Style:</span><span id="profile-avatar-style">Classic</span></div>
-    <div class="row"><span>Cosmetics:</span><span id="profile-cosmetics">0 unlocked</span></div>
-    <div class="row"><span>Achievements:</span><span id="profile-achievements">0 unlocked</span></div>
-    <div class="row"><span>50-0 Careers:</span><span id="profile-50-count">0</span></div>
-  </div>
+  <details class="hub-section">
+    <summary>Profile Foundation</summary>
+    <div class="hub-section-body">
+      <div class="panel" style="margin-bottom:4px">
+        <div class="row"><span>Username:</span><span id="profile-username">-</span></div>
+        <div class="row"><span>Player ID:</span><span id="profile-player-id">-</span></div>
+        <div class="row"><span>Avatar Style:</span><span id="profile-avatar-style">Classic</span></div>
+        <div class="row"><span>Cosmetics:</span><span id="profile-cosmetics">0 unlocked</span></div>
+        <div class="row"><span>Achievements:</span><span id="profile-achievements">0 unlocked</span></div>
+        <div class="row"><span>50-0 Careers:</span><span id="profile-50-count">0</span></div>
+      </div>
+    </div>
+  </details>
   <h2>Next Fight Schedule</h2>
   <div class="opponent-card">
     <div class="row"><span id="opp-bout">BOUT 1/50</span><span id="opp-tier" style="font-size:.74rem;color:var(--gold);font-weight:900;text-transform:uppercase;letter-spacing:1px">Journeyman</span></div>
@@ -2443,8 +2451,12 @@ body.final-card-open{overflow:hidden}
     <div id="opp-tags" class="tag-row"></div>
   </div>
   <div id="challenge-section" class="challenge-section hidden"></div>
-  <h2>Recent Results</h2>
-  <div id="recent-history" class="history-panel"><div style="color:var(--muted);text-align:center">No fight data recorded yet.</div></div>
+  <details class="hub-section">
+    <summary>Recent Results</summary>
+    <div class="hub-section-body">
+      <div id="recent-history" class="history-panel" style="margin-bottom:4px"><div style="color:var(--muted);text-align:center">No fight data recorded yet.</div></div>
+    </div>
+  </details>
   <div style="margin-top:auto">
     <button id="enter-ring-btn" class="btn gold" onclick="enterRing()">Enter the Ring</button>
     <div class="quad">
