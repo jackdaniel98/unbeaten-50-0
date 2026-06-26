@@ -407,6 +407,26 @@ h2:first-child{margin-top:6px}
 .draft-src{font-size:.68rem;color:var(--muted);line-height:1.35;min-height:15px;font-weight:500}
 .draft-src.perfect{color:var(--platinum)}
 
+/* ---------- Draft screen polish ---------- */
+#draft-screen>h2{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.48rem;color:var(--text);letter-spacing:.5px;font-weight:400;margin:4px 0 4px;text-transform:uppercase}
+#draft-screen>h2::before{display:none}
+#draft-screen>.subtle{font-size:.78rem;line-height:1.5;margin-bottom:10px}
+#draft-screen .compact-panel{background:transparent;border:none;border-radius:0;padding:0 2px;margin-bottom:10px;box-shadow:none;display:flex;justify-content:space-between;align-items:center}
+#draft-screen .compact-panel .row{margin-bottom:0;font-size:.68rem}
+#draft-screen .compact-panel .row>span:first-child{color:var(--muted)}
+#draft-screen .compact-panel .row>span:last-child{color:var(--text-dim);font-weight:700}
+#draft-screen>.overall-banner{order:6;margin-top:4px;margin-bottom:6px;padding:11px 16px}
+#draft-screen>.btn.red{order:7;font-size:.78rem;min-height:40px;padding:9px 14px;opacity:.5;margin-top:2px}
+#draft-screen>.btn.red:hover{opacity:1}
+#draft-screen .spin-card{border-top:2px solid rgba(227,178,60,.45);border-left-color:rgba(227,178,60,.18);border-right-color:rgba(227,178,60,.18);border-bottom-color:rgba(227,178,60,.18);padding:22px 18px 16px;margin-bottom:12px}
+#draft-screen .slot{height:144px}
+#draft-screen .slot-item.win{font-size:1.9rem}
+#draft-screen .draft-btn{position:relative;min-height:86px}
+#draft-screen .draft-btn .top strong{font-size:1.65rem}
+#draft-screen .draft-btn.choice{background:linear-gradient(160deg,rgba(227,178,60,.08) 0%,transparent 70%)}
+#draft-screen .draft-btn.choice .top strong{color:var(--gold);font-size:1.8rem}
+#draft-screen .draft-btn.locked::after{content:'✓';position:absolute;top:8px;right:9px;font-size:.58rem;font-family:'Inter',sans-serif;font-weight:700;color:var(--green);opacity:.7;pointer-events:none;letter-spacing:0}
+
 /* ---------- Tags ---------- */
 .tag-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
 .tag{
