@@ -1165,6 +1165,7 @@ h2:first-child{margin-top:6px}
 .final-card-close{width:40px;height:40px;flex:0 0 40px;border:1px solid var(--line-2);border-radius:50%;background:#08090b;color:#fff;font-size:1rem;font-weight:1000;cursor:pointer}
 .final-card-content{width:min(340px,100%);margin:0 auto}
 .final-card-content .avatar-card-creator{width:100%;margin:0}
+.final-fighter-showcase{display:flex;flex-direction:column;gap:10px}
 .leaderboard-build-dialog{width:min(500px,100%)}
 .leaderboard-build-content{width:100%;padding:14px;background:linear-gradient(180deg,#15171c 0%,#08090b 100%);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-card)}
 .leaderboard-build-hero{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;align-items:center}
@@ -7221,30 +7222,42 @@ function completedCareerCardData(entry=null){
   };
 }
 function finalFighterCardMarkup(data){
-  const profile=data.profile;
-  const avatar=createAvatarConfig(profile.avatar);
-  const slots=['gloves','shorts','boots','robe','tattoo'].map(slot=>equippedCosmetic(profile,slot));
-  const belts=data.belts.length?data.belts.join(' / '):'No belts won';
-  return '<div class="avatar-card-creator rarity-mythic"><div class="avatar-card-frame final-showcase-card" role="group" aria-label="'+htmlEscape(data.name)+' final fighter card">'+
-    '<img class="creator-card-frame-asset" src="'+creatorCardFrameAsset()+'" alt="" aria-hidden="true">'+
-    '<div class="avatar-card-rarity">Mythic</div>'+
-    '<div class="avatar-card-topline"><div class="avatar-ovr"><strong>'+htmlEscape(data.ovr)+'</strong><span>OVR</span></div><div class="avatar-country">'+htmlEscape(creatorCountryLabel(data.country))+'</div></div>'+
-    '<div class="avatar-portrait-stage"><div class="final-avatar-preview">'+
-      '<img class="creator-aura-img" src="'+creatorAuraAsset()+'" alt="" aria-hidden="true">'+
-      '<img class="creator-boxer-img" src="'+creatorSkinAsset(avatar)+'" alt="'+htmlEscape(data.name)+'" onerror="this.style.display=&quot;none&quot;;this.nextElementSibling.style.display=&quot;flex&quot;">'+
-      '<div class="creator-svg-fallback">'+premiumAvatarSvgMarkup(profile)+'</div>'+
-    '</div></div>'+
-    '<div class="avatar-card-identity"><div class="avatar-card-name">'+htmlEscape(data.name)+'</div><div class="avatar-card-nickname">'+htmlEscape('"'+data.nickname+'"')+'</div><div class="final-card-country">'+htmlEscape(data.country)+'</div></div>'+
-    '<div class="avatar-card-stats"><div><span>Record</span><strong>'+htmlEscape(data.record)+'</strong></div><div><span>KOs</span><strong>'+htmlEscape(data.kos)+'</strong></div><div><span>KO Rate</span><strong>'+htmlEscape(data.koRate)+'%</strong></div></div>'+
-    '<div class="final-card-metrics"><div class="final-card-metric"><span>Legacy</span><strong>'+htmlEscape(data.legacy)+'</strong></div><div class="final-card-metric"><span>Final Rank</span><strong>#'+htmlEscape(data.rank)+'</strong></div><div class="final-card-metric"><span>Belts</span><strong>'+htmlEscape(data.belts.length)+'/4</strong></div><div class="final-card-metric"><span>Career Earnings</span><strong>'+htmlEscape(cash(data.earnings))+'</strong></div></div>'+
-    '<div class="final-card-belts">'+htmlEscape(belts)+'</div>'+
-    '<div class="avatar-card-cosmetics">'+slots.map(item=>'<div class="cosmetic-slot equipped"><span>'+htmlEscape(item.name)+'</span></div>').join('')+'</div>'+
-  '</div></div>';
+  const belts=data.belts.length?data.belts.join(', '):'None';
+  const cardMarkup=modularCardMarkupFrom({
+    name:data.name,
+    nickname:data.nickname,
+    equippedCardItems:data.equippedCardItems||null,
+    ownedCardItems:data.ownedCardItems||null
+  });
+  const rows=[
+    ['Record',data.record],
+    ['KOs',String(data.kos)+' ('+data.koRate+'% KO rate)'],
+    ['Legacy Score',String(data.legacy)],
+    ['Final Rank','#'+String(data.rank)],
+    ['Belts Won',belts],
+    ['Career Earnings',cash(data.earnings)]
+  ];
+  return '<div class="final-fighter-showcase">'+
+    cardMarkup+
+    '<div class="panel">'+
+    rows.map(([k,v])=>'<div class="row"><span>'+htmlEscape(k)+'</span><span>'+htmlEscape(v)+'</span></div>').join('')+
+    '</div>'+
+    '</div>';
 }
 function openFinalFighterCard(entry=null){
   const data=completedCareerCardData(entry);
   const modal=$('final-fighter-card-modal'), content=$('final-fighter-card-content');
   if(!data||!modal||!content){ showToast('Card Unavailable','No completed career data is available.'); return; }
+  if(entry){
+    const hasCard=entry.equippedCardItems&&Object.keys(entry.equippedCardItems||{}).length;
+    const fb=activeCardProfile();
+    data.equippedCardItems=hasCard?entry.equippedCardItems:fb.equippedCardItems;
+    data.ownedCardItems=hasCard?entry.ownedCardItems:fb.ownedCardItems;
+  } else {
+    const fp=activeCardProfile();
+    data.equippedCardItems=fp.equippedCardItems;
+    data.ownedCardItems=fp.ownedCardItems;
+  }
   content.innerHTML=finalFighterCardMarkup(data);
   modal.classList.remove('hidden');
   document.body.classList.add('final-card-open');
