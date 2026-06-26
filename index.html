@@ -1817,6 +1817,15 @@ body.final-card-open{overflow:hidden}
 .account-detail strong{display:block;color:var(--text);font-size:.9rem;margin-top:4px;overflow-wrap:anywhere;font-weight:600}
 .sync-warning{border:1px solid rgba(227,178,60,.3);background:var(--gold-soft);border-radius:var(--radius-sm);padding:11px;color:var(--text-dim);font-size:.84rem;line-height:1.5;margin-bottom:14px}
 
+/* ---------- Settings collapsible sections ---------- */
+.settings-section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:9px;overflow:hidden;box-shadow:var(--shadow-card)}
+.settings-section>summary{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;cursor:pointer;list-style:none;font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim);user-select:none;gap:12px;-webkit-tap-highlight-color:transparent;transition:color var(--t) var(--ease),background var(--t) var(--ease)}
+.settings-section>summary::-webkit-details-marker{display:none}
+.settings-section>summary::after{content:'›';font-size:1.5rem;font-weight:300;color:var(--muted);transform:rotate(90deg);transition:transform .22s var(--ease);flex-shrink:0;line-height:1;margin-top:-2px}
+.settings-section[open]>summary{border-bottom:1px solid var(--line);color:var(--text)}
+.settings-section[open]>summary::after{transform:rotate(270deg);color:var(--gold)}
+.settings-section-body{padding:14px 16px;display:flex;flex-direction:column;gap:9px}
+
 /* Toasts */
 #toast-stack{bottom:16px;width:min(92vw,420px);gap:9px}
 .toast{
@@ -2795,35 +2804,50 @@ body.final-card-open{overflow:hidden}
 
 <section id="account-settings-screen" class="screen">
   <h2>Settings</h2>
-  <h2>All-Time Personal Records</h2>
-  <div class="compact-grid">
-    <div class="compact-group">
-      <div class="compact-group-title">Career Records</div>
-      <div class="row"><span>Best Record:</span><span id="rec-streak">0-0</span></div>
-      <div class="row"><span>Most Earnings:</span><span id="rec-money">$0</span></div>
-      <div class="row"><span>Most KOs:</span><span id="rec-kos">0 KO</span></div>
-      <div class="row"><span>Highest HOF Tier:</span><span id="rec-tier">None</span></div>
+
+  <details class="settings-section">
+    <summary>All-Time Personal Records</summary>
+    <div class="settings-section-body">
+      <div class="compact-grid">
+        <div class="compact-group">
+          <div class="compact-group-title">Career Records</div>
+          <div class="row"><span>Best Record:</span><span id="rec-streak">0-0</span></div>
+          <div class="row"><span>Most Earnings:</span><span id="rec-money">$0</span></div>
+          <div class="row"><span>Most KOs:</span><span id="rec-kos">0 KO</span></div>
+          <div class="row"><span>Highest HOF Tier:</span><span id="rec-tier">None</span></div>
+        </div>
+        <div class="compact-group">
+          <div class="compact-group-title">Financial Summary</div>
+          <div class="row"><span>Wallet Balance:</span><span id="menu-wallet">$0</span></div>
+          <div class="row"><span>Lifetime Earnings:</span><span id="menu-lifetime">$0</span></div>
+          <div class="row"><span>Current Career Earnings:</span><span id="menu-career-earnings">$0</span></div>
+        </div>
+      </div>
     </div>
-    <div class="compact-group">
-      <div class="compact-group-title">Financial Summary</div>
-      <div class="row"><span>Wallet Balance:</span><span id="menu-wallet">$0</span></div>
-      <div class="row"><span>Lifetime Earnings:</span><span id="menu-lifetime">$0</span></div>
-      <div class="row"><span>Current Career Earnings:</span><span id="menu-career-earnings">$0</span></div>
+  </details>
+
+  <details class="settings-section">
+    <summary>Records &amp; Community</summary>
+    <div class="settings-section-body">
+      <button class="btn ghost" onclick="openCloudLeaderboards()">Leaderboards</button>
+      <button class="btn ghost" onclick="openPublicProfiles()">Public Profiles</button>
     </div>
-  </div>
-  <h2>Records &amp; Community</h2>
-  <button class="btn ghost" onclick="openCloudLeaderboards()">Leaderboards</button>
-  <button class="btn ghost" onclick="openRetiredCareers('account-settings-screen')">Retired Careers</button>
-  <button class="btn ghost" onclick="openPublicProfiles()">Public Profiles</button>
-  <h2>Account</h2>
-  <div class="account-detail"><span>Status</span><strong id="account-status">Signed in</strong></div>
-  <div class="account-detail"><span>Email</span><strong id="account-email">-</strong></div>
-  <div class="account-detail"><span>User ID</span><strong id="account-uid">-</strong></div>
-  <div class="account-detail"><span>Cloud Sync</span><strong id="account-sync-status">Ready</strong></div>
-  <div id="account-auth-error" class="auth-error"></div>
-  <button id="account-sync-now-btn" type="button" class="btn blue" onclick="syncNow(true)">Update Profile Now</button>
-  <button id="account-sign-out-btn" type="button" class="btn ghost" onclick="signOutCloud()">Sign Out</button>
-  <button type="button" class="btn ghost" onclick="openOnboarding()">▶ Replay Tutorial</button>
+  </details>
+
+  <details class="settings-section">
+    <summary>Account</summary>
+    <div class="settings-section-body">
+      <div class="account-detail"><span>Status</span><strong id="account-status">Signed in</strong></div>
+      <div class="account-detail"><span>Email</span><strong id="account-email">-</strong></div>
+      <div class="account-detail"><span>User ID</span><strong id="account-uid">-</strong></div>
+      <div class="account-detail"><span>Cloud Sync</span><strong id="account-sync-status">Ready</strong></div>
+      <div id="account-auth-error" class="auth-error"></div>
+      <button id="account-sync-now-btn" type="button" class="btn blue" onclick="syncNow(true)">Update Profile Now</button>
+      <button id="account-sign-out-btn" type="button" class="btn ghost" onclick="signOutCloud()">Sign Out</button>
+      <button type="button" class="btn ghost" onclick="openOnboarding()">&#9654; Replay Tutorial</button>
+    </div>
+  </details>
+
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
