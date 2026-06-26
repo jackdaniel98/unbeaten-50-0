@@ -2237,7 +2237,6 @@ body.final-card-open{overflow:hidden}
     <button id="weekly-obj-menu-btn" type="button" class="btn ghost" onclick="openWeeklyObjectives()">Weekly Objectives<span id="weekly-badge" class="weekly-badge hidden">0</span></button>
     <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
     <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Hall Of Fame</button>
-    <button id="help-menu-btn" type="button" class="btn ghost" onclick="openHelp()">Help</button>
     <button id="report-bug-menu-btn" type="button" class="btn ghost" onclick="openBugReport()">Report Game Bug</button>
     <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save">Delete Current Save</button>
   </div>
@@ -2255,10 +2254,6 @@ body.final-card-open{overflow:hidden}
       <div class="label"><span class="ico">🏅</span><span>Total 50-0 Careers Ever</span></div>
       <div class="value loading" id="global-total-50">Loading...</div>
     </div>
-  </div>
-  <div class="standard-mode-card">
-    <div class="mode-title">Standard Career</div>
-    <div class="mode-sub">2 draft re-rolls • standard rewards • standard opponent scaling • eligible for achievements, leaderboards and profile tracking</div>
   </div>
   <div class="rank-hero current-rank-panel" id="current-rank-panel">
     <div class="rank-hero-label">⚡ World Ranking</div>
@@ -2848,6 +2843,7 @@ body.final-card-open{overflow:hidden}
     </div>
   </details>
 
+  <button id="help-menu-btn" type="button" class="btn ghost" onclick="openHelp()">Help</button>
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
