@@ -6560,6 +6560,11 @@ const CARD_ITEM_DEFINITIONS = {
   // New freebies
   aura_cosmos:{id:'aura_cosmos',category:'aura',name:'Cosmos',rarity:'rare',price:0,base:false,asset:'assets/card/aura_cosmos.png'},
   character_aqua:{id:'character_aqua',category:'character',name:'Aqua',rarity:'rare',price:0,base:false,darkBg:true,asset:'assets/card/character_aqua.png',boosts:[{id:'comeback_spirit',icon:'🔄',name:'Comeback Spirit',desc:'+3 damage/round in the first fight after a loss — never stays down'}]},
+  character_nora:{id:'character_nora',category:'character',name:'Nora',rarity:'luxury',price:10000,asset:'assets/card/character-nora.png',boosts:[{id:'crowd_favourite',icon:'🎤',name:'Crowd Favourite',desc:'+8% purse on every fight card — the ice queen commands a premium gate'}]},
+  character_otto:{id:'character_otto',category:'character',name:'Otto',rarity:'rare',price:8000,asset:'assets/card/character-otto.png',boosts:[{id:'power_surge',icon:'💥',name:'Power Surge',desc:'Cyber energy converts hurt opponents into finishes (+4 KO boost)',value:4}]},
+  character_chuckle:{id:'character_chuckle',category:'character',name:'Chuckle',rarity:'luxury',price:10000,asset:'assets/card/character-chuckle.png',boosts:[{id:'underdog_bite',icon:'⚡',name:'Underdog Bite',desc:'Everyone underestimates the clown — +2 damage/round vs higher-rated opponents'}]},
+  character_ghrinda:{id:'character_ghrinda',category:'character',name:'Ghrinda',rarity:'legendary',price:50000,asset:'assets/card/character-ghrinda.png',boosts:[{id:'belt_collector',icon:'🏆',name:'Belt Collector',desc:'+7% TKO stoppage chance in championship title fights — the crowned king collects belts',value:0.07}]},
+  character_beamz:{id:'character_beamz',category:'character',name:'Beamz',rarity:'legendary',price:50000,asset:'assets/card/character-beamz.png',boosts:[{id:'power_surge',icon:'💥',name:'Power Surge',desc:'Volcanic eruption — the highest KO conversion in the game when the opponent is hurt (+8)',value:8}]},
 };
 const DEFAULT_OWNED_CARD_ITEMS = Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.base).map(item=>item.id);
 const DEFAULT_EQUIPPED_CARD_ITEMS = {character:'character_standard_contender',aura:'aura_corner_smoke',background:'background_standard_fight_night',frame:'frame_standard_contender'};
