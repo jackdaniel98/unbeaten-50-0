@@ -1062,6 +1062,18 @@ h2:first-child{margin-top:6px}
 .hub-boost-badge{display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:7px 11px;border-radius:8px;border:1px solid rgba(227,178,60,.4);background:rgba(227,178,60,.08);min-width:110px;max-width:170px;text-align:center}
 .hub-boost-badge-name{font-size:.74rem;font-weight:900;color:#f6d768}
 .hub-boost-badge-desc{font-size:.57rem;color:var(--text-dim);line-height:1.35}
+.hub-build-power,.ce-build-power{display:flex;align-items:center;gap:8px;justify-content:center;padding:6px 0 2px;font-family:'Bebas Neue',Impact,sans-serif;position:relative;z-index:1}
+.hub-build-power{margin-top:6px}
+.ce-build-power{margin:6px 0 2px}
+.bp-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-family:inherit;font-weight:900}
+.bp-value{font-size:1.7rem;line-height:1;letter-spacing:1px;color:#fff;font-family:inherit}
+.bp-record{font-size:.62rem;letter-spacing:.05em;color:var(--muted);font-weight:900}
+.bp-value.bp-glow-1{color:#e3c84a;text-shadow:0 0 8px rgba(227,184,60,.55)}
+.bp-value.bp-glow-2{color:#ff8c00;text-shadow:0 0 12px rgba(255,120,0,.75);animation:bpPulseSlow 1.8s ease-in-out infinite}
+.bp-value.bp-glow-3{color:#ff5500;text-shadow:0 0 16px #ff5500,0 0 32px rgba(255,85,0,.5);animation:bpPulseFast .9s ease-in-out infinite}
+.bp-new-best{font-size:.62rem;color:var(--gold);font-weight:900;letter-spacing:.06em}
+@keyframes bpPulseSlow{0%,100%{opacity:1}50%{opacity:.72}}
+@keyframes bpPulseFast{0%,100%{opacity:1;text-shadow:0 0 16px #ff5500,0 0 32px rgba(255,85,0,.5)}50%{opacity:.75;text-shadow:0 0 24px #ff7700,0 0 48px rgba(255,120,0,.8)}}
 .ce-boost-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:5px;background:rgba(227,178,60,.1);border:1px solid rgba(227,178,60,.3);margin-top:4px;font-size:.54rem;font-weight:900;color:#f6d768;letter-spacing:.04em}
 .ce-boost-badge-common{background:rgba(227,178,60,.1);border-color:rgba(227,178,60,.3);color:#f6d768}
 .ce-boost-badge-uncommon{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3);color:#86efac}
@@ -2235,6 +2247,7 @@ body.final-card-open{overflow:hidden}
   </div>
   <div class="card-editor-layout">
     <div id="card-editor-preview"></div>
+    <div id="ce-build-power" class="ce-build-power" style="display:none"></div>
     <div>
       <div class="card-identity-editor">
         <div class="card-identity-fields">
@@ -2368,6 +2381,7 @@ body.final-card-open{overflow:hidden}
       <span class="belt" id="belt-WBO">WBO</span>
     </div>
     <div id="hub-active-boost" class="hub-active-boost" style="display:none"></div>
+    <div id="hub-build-power" class="hub-build-power" style="display:none"></div>
   </div>
   <!-- Career Summary -->
   <details class="hub-section" open>
@@ -7563,6 +7577,7 @@ function boostLabel(b){
 function renderCardEditor(){
   const profile=activeCardProfile(), owned=createOwnedCardItems(profile.ownedCardItems), equipped=createEquippedCardItems(profile.equippedCardItems,owned);
   if($('card-editor-preview')) $('card-editor-preview').innerHTML=modularCardMarkup(profile);
+  if(S.player&&S.career) renderBuildPower('ce-build-power');
   const display=cardDisplayData(profile);
   if($('card-editor-name')) $('card-editor-name').value=profile.cardName||display.name;
   if($('card-editor-nickname')) $('card-editor-nickname').value=profile.cardNickname||display.nickname;
@@ -8941,6 +8956,8 @@ function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTrait
 function getPerm(){ const s=deep(S.player.Stats); if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number')) return s; if(hasTrait('iron_chin')){s.Chin+=4; s.Recovery+=5;} if(hasTrait('glass_cannon')){s.Power+=8; s.Chin-=10;} if(hasTrait('counter_puncher')){s.Defence+=6; s['Ring IQ']+=6;} if(hasTrait('ring_general')){s['Ring IQ']+=4; s.Accuracy+=3;} if(hasTrait('volume_puncher')){s.Accuracy+=2; s.Stamina+=1;} if(hasTrait('generational_talent')) STATS.forEach(st=>s[st]+=3); if(hasTrait('supertank')){s.Chin+=7; s.Heart+=5; s.Recovery+=5;} (S.player.HiddenBonuses||[]).forEach(b=>Object.entries(b.bonuses).forEach(([st,amt])=>s[st]+=amt)); STATS.forEach(st=>s[st]=clamp(Math.round(s[st]),1,99)); return s; }
 function calculateOverall(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null && typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(()=>overall+=2); return clamp(Math.round(overall), 40, 99); }
 function updateOverallDisplays(){ const ovr=calculateOverall(); if($('overall-rating-draft')) $('overall-rating-draft').innerText=ovr; if($('overall-rating-trait')) $('overall-rating-trait').innerText=ovr; if($('overall-rating-hub')) $('overall-rating-hub').innerText=ovr; if($('hub-rating')) $('hub-rating').innerText='Rating '+ovr; }
+function calculateBuildPower(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null&&typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(()=>overall+=2); return Math.round(overall); }
+function renderBuildPower(elId){ const el=$(elId); if(!el||!S.player) return; const bp=calculateBuildPower(); const prev=S.player.bestBuildPower||0; const isNewBest=bp>prev; if(isNewBest){ S.player.bestBuildPower=bp; saveProfileFromPlayer(S.player); } const glowClass=bp>=110?'bp-glow-3':bp>=105?'bp-glow-2':bp>=100?'bp-glow-1':''; let suffix=''; if(bp>99){ suffix=isNewBest?'<span class="bp-new-best">★ New best!</span>':prev>99&&prev>bp?'<span class="bp-record">Best '+prev+'</span>':''; } el.style.display='flex'; el.innerHTML='<span class="bp-label">Build Power</span><span class="bp-value'+(glowClass?' '+glowClass:'')+'">'+bp+'</span>'+suffix; }
 function archetype(s){ if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number')) return {name:'Undetermined'}; const pressure=s.Power+s.Heart+s.Stamina, box=s.Speed+s.Footwork+s.Defence, tech=s['Ring IQ']+s.Accuracy+s.Defence, tank=s.Chin+s.Heart+s.Recovery; const arr=[{name:'Slugger',score:pressure+10-s.Footwork*.08},{name:'Outboxer',score:box+7-s.Power*.04},{name:'Technician',score:tech+8},{name:'Ironman',score:tank+6},{name:'Balanced Contender',score:(pressure+box+tech+tank)/4}]; arr.sort((a,b)=>b.score-a.score); return arr[0]; }
 function getBuildIdentity(stats){ if(!stats) return 'Balanced Fighter'; if(stats.Power>92 && stats.Heart>90) return 'Explosive Slugger'; if(stats.Defence>90 && stats['Ring IQ']>90 && stats.Accuracy>88) return 'Precision Technician'; if(stats.Chin>90 && stats.Recovery>90) return 'Durable Ironman'; if(stats.Speed>90 && stats.Footwork>90) return 'Elusive Outboxer'; if(hasTrait('body_snatcher')) return 'Body Attack Specialist'; if(hasTrait('counter_puncher')) return 'Counter Fighting Operator'; if((S.player.HiddenBonuses||[]).length>=2) return 'Synergy Monster'; return 'Balanced Fighter'; }
 function getWealthInfo(m){ if(m>=200000000) return ['All-Time Cash King','Top 0.1%']; if(m>=175000000) return ['Global Superstar','Top 0.25%']; if(m>=150000000) return ['PPV Mega Icon','Top 0.4%']; if(m>=125000000) return ['PPV Megastar','Top 0.5%']; if(m>=100000000) return ['Elite Earner','Top 1%']; if(m>=75000000) return ['World Attraction','Top 2%']; if(m>=50000000) return ['Main Event Star','Top 5%']; if(m>=25000000) return ['Top Contender Payday','Top 10%']; return ['Professional Fighter','Rising Tier']; }
@@ -9093,6 +9110,7 @@ function updateHub(){
   ensurePlayerFoundation(S.player);
   checkAchievements(!S.batch);
   updateOverallDisplays();
+  renderBuildPower('hub-build-power');
   if($('hub-arch')) $('hub-arch').innerText=archetype(getPerm()).name;
   const streakEl=$('hub-streak');
   if(streakEl){ streakEl.innerText='Streak '+S.career.winStreak; streakEl.classList.toggle('green',S.career.winStreak>=5); }
