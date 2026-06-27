@@ -10211,6 +10211,7 @@ function publicProfileFromPayload(payload){
     usernameLower:normaliseNameForFilter(p.username),
     avatar:p.avatar,
     equippedCosmetics:p.equippedCosmetics,
+    myCardsShowcase:validCollectibleId(p.myCardsShowcase)?p.myCardsShowcase:'cc001',
     walletBalance:p.walletBalance||0,
     lifetimeEarnings:p.lifetimeEarnings||0,
     completed50And0Careers:p.completed50And0Careers||0,
@@ -10757,8 +10758,14 @@ async function searchPublicProfiles(){
     box.innerHTML=snap.empty?'<div class="empty-state">No profiles found.</div>':snap.docs.map(d=>publicProfileCard(d.id,d.data())).join('');
   }catch(e){ console.error(e); box.innerHTML='<div class="empty-state">Unable to search profiles right now. Check Firebase rules/indexes and try again.</div>'; }
 }
+function _showcaseCardHtml(showcaseId,sizePx){
+  const card=COLLECTIBLE_CARDS.find(c=>c.id===(showcaseId||'cc001'));
+  if(card) return _mccArtHTML(card,sizePx);
+  return '<div style="width:'+sizePx+'px;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:var(--muted);text-align:center;border:1px solid var(--line);border-radius:var(--radius);padding:2px">No showcase card</div>';
+}
 function publicProfileCard(id,p){
-  return "<div class=\"cloud-profile-card\"><div class=\"cloud-profile-head\"><div class=\"cloud-mini-avatar\">"+avatarMarkup(p.avatar,p.equippedCosmetics)+"</div><div><div class=\"name\">"+(p.username||'Player')+"</div><div class=\"sub\">50-0: "+(p.completed50And0Careers||0)+"<br>Best Legacy: "+(p.highestLegacyScore||0)+"</div></div></div><button class=\"btn blue\" onclick=\"openPublicProfileDetail('"+id+"')\">View Profile</button></div>";
+  const showcaseHtml=_showcaseCardHtml(p.myCardsShowcase,64);
+  return "<div class=\"cloud-profile-card\"><div class=\"cloud-profile-head\"><div class=\"cloud-mini-avatar\">"+showcaseHtml+"</div><div><div class=\"name\">"+(p.username||'Player')+"</div><div class=\"sub\">50-0: "+(p.completed50And0Careers||0)+"<br>Best Legacy: "+(p.highestLegacyScore||0)+"</div></div></div><button class=\"btn blue\" onclick=\"openPublicProfileDetail('"+id+"')\">View Profile</button></div>";
 }
 function publicRetiredBuildCard(entry){
   const key=cacheLeaderboardBuild(entry), tierId=entry.finalCardTierId||'bronze';
@@ -10774,7 +10781,8 @@ async function openPublicProfileDetail(uid, returnScreen='public-profiles-screen
     const metrics='<div class="profile-metrics"><div class="profile-metric"><strong>'+(p.completed50And0Careers||0)+'</strong><span>50-0 Careers</span></div><div class="profile-metric"><strong>'+(p.highestLegacyScore||0)+'</strong><span>Best Legacy</span></div><div class="profile-metric"><strong>'+cash(p.walletBalance||0)+'</strong><span>Wallet</span></div><div class="profile-metric"><strong>'+cash(p.lifetimeEarnings||0)+'</strong><span>Lifetime</span></div><div class="profile-metric"><strong>'+(p.achievementCount||0)+'</strong><span>Achievements</span></div><div class="profile-metric"><strong>'+(p.cosmeticCount||0)+'</strong><span>Cosmetics</span></div></div>';
     $('public-profile-title').innerText=p.username||'Player Profile';
     const cardArt=(p.equippedCardItems)?'<div class="profile-card-art">'+modularCardMarkupFrom({name:p.cardName||p.username,nickname:p.cardNickname||p.nickname||'The Contender',ovr:p.overallRating||p.cardOverall||50,stats:[{label:'Best Legacy',value:String(p.highestLegacyScore||0)},{label:'50-0',value:String(p.completed50And0Careers||0)},{label:'Wallet',value:compactCardMoney(p.walletBalance||0)}],equippedCardItems:p.equippedCardItems,ownedCardItems:p.ownedCardItems})+'</div>':'';
-    $('public-profile-content').innerHTML=cardArt+'<div class="cloud-profile-card"><div class="cloud-profile-head"><div class="cloud-mini-avatar">'+avatarMarkup(p.avatar,p.equippedCosmetics)+'</div><div><div class="name">'+(p.username||'Player')+'</div><div class="sub">Read-only public boxer profile</div></div></div>'+metrics+'</div><div class="compact-section"><h2>Retired Career Highlights</h2><div class="retired-grid">'+(retired.length?retired.map(publicRetiredBuildCard).join(''):'<div class="empty-state">No public retired careers yet.</div>')+'</div></div>';
+    const showcaseHtml=_showcaseCardHtml(p.myCardsShowcase,64);
+    $('public-profile-content').innerHTML=cardArt+'<div class="cloud-profile-card"><div class="cloud-profile-head"><div class="cloud-mini-avatar">'+showcaseHtml+'</div><div><div class="name">'+(p.username||'Player')+'</div><div class="sub">Read-only public boxer profile</div></div></div>'+metrics+'</div><div class="compact-section"><h2>Retired Career Highlights</h2><div class="retired-grid">'+(retired.length?retired.map(publicRetiredBuildCard).join(''):'<div class="empty-state">No public retired careers yet.</div>')+'</div></div>';
     screen('public-profile-detail-screen');
   }catch(e){ console.error(e); showToast('Profile Error','Unable to load this public profile.'); }
 }
