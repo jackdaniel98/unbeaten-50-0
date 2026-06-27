@@ -1845,6 +1845,22 @@ body.final-card-open{overflow:hidden}
 .settings-section[open]>summary::after{transform:rotate(270deg);color:var(--gold)}
 .settings-section-body{padding:14px 16px;display:flex;flex-direction:column;gap:9px}
 
+/* ---------- Display Name bar (My Cards + Settings) ---------- */
+.display-name-bar{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--bg-2);border-bottom:1px solid var(--line);flex-shrink:0}
+.display-name-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;white-space:nowrap}
+.display-name-value{flex:1;min-width:0;font-size:.88rem;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.display-name-change-btn{padding:4px 12px!important;font-size:.68rem!important;min-height:30px!important;flex-shrink:0}
+/* ---------- Change Name Modal ---------- */
+.change-name-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9000;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.change-name-overlay.hidden{display:none}
+.change-name-sheet{width:min(480px,100%);background:#0c0d12;border:1px solid rgba(255,255,255,.1);border-radius:20px 20px 0 0;padding:24px 20px max(24px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}
+.change-name-sheet h3{margin:0;font-size:1.1rem;font-weight:800;color:var(--text)}
+.change-name-sub{margin:0;font-size:.73rem;color:var(--muted);line-height:1.5}
+.change-name-input{width:100%;background:#0a0b0f;border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:12px 14px;font-size:1rem;color:var(--text);font-family:inherit;box-sizing:border-box;outline:none;transition:border-color .18s}
+.change-name-input:focus{border-color:rgba(227,178,60,.55)}
+.change-name-error{font-size:.75rem;color:#f87171;min-height:1em;line-height:1.4}
+.change-name-actions{display:flex;gap:8px;margin-top:4px}
+.change-name-actions .btn{flex:1}
 /* Toasts */
 #toast-stack{bottom:16px;width:min(92vw,420px);gap:9px}
 .toast{
@@ -2456,6 +2472,11 @@ body.final-card-open{overflow:hidden}
     <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
   </div>
   <div id="mcc-showcase" class="mcc-showcase"></div>
+  <div class="display-name-bar">
+    <span class="display-name-label">Display Name</span>
+    <span id="mcc-display-name" class="display-name-value">-</span>
+    <button type="button" class="btn ghost display-name-change-btn" onclick="openChangeDisplayName()">Change</button>
+  </div>
   <div class="mcc-filter-row" role="tablist" aria-label="Filter cards">
     <button type="button" class="mcc-filter active" data-filter="all" onclick="setMyCardsFilter('all')" role="tab">All</button>
     <button type="button" class="mcc-filter" data-filter="owned" onclick="setMyCardsFilter('owned')" role="tab">Owned</button>
@@ -2998,6 +3019,8 @@ body.final-card-open{overflow:hidden}
   <details class="settings-section">
     <summary>Account</summary>
     <div class="settings-section-body">
+      <div class="account-detail"><span>Display Name</span><strong id="settings-display-name">-</strong></div>
+      <button type="button" class="btn ghost" onclick="openChangeDisplayName()">Change Display Name</button>
       <div class="account-detail"><span>Status</span><strong id="account-status">Signed in</strong></div>
       <div class="account-detail"><span>Email</span><strong id="account-email">-</strong></div>
       <div class="account-detail"><span>User ID</span><strong id="account-uid">-</strong></div>
@@ -3012,6 +3035,19 @@ body.final-card-open{overflow:hidden}
   <button id="help-menu-btn" type="button" class="btn ghost" onclick="openHelp()">Help</button>
   <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
+
+<div id="change-name-modal" class="change-name-overlay hidden" onclick="if(event.target===this)closeChangeDisplayName()">
+  <div class="change-name-sheet" onclick="event.stopPropagation()">
+    <h3>Change Display Name</h3>
+    <p class="change-name-sub">3–20 characters. Letters, numbers, spaces, underscores and hyphens.</p>
+    <input id="change-name-input" type="text" class="change-name-input" maxlength="20" placeholder="Enter display name" onkeydown="if(event.key==='Enter')saveChangeDisplayName()" />
+    <div id="change-name-error" class="change-name-error"></div>
+    <div class="change-name-actions">
+      <button type="button" class="btn ghost" onclick="closeChangeDisplayName()">Cancel</button>
+      <button type="button" class="btn gold" onclick="saveChangeDisplayName()">Save</button>
+    </div>
+  </div>
+</div>
 
 <section id="global-hof-screen" class="screen">
   <h2>Top 30 Greatest Careers Of All Time</h2>
@@ -6851,7 +6887,7 @@ const COLLECTIBLE_CARDS = [
   {id:'cc021',num:21,name:'Phoenix Roar',    rarity:'rare',     boost:'+4% Power',   image:'assets/collectible/card_021.png'},
   {id:'cc022',num:22,name:'Storm Reed',      rarity:'rare',     boost:'+4% Speed',   image:'assets/collectible/card_022.png'},
   {id:'cc023',num:23,name:'Iron Doyle',      rarity:'rare',     boost:'+4% Defense', image:'assets/collectible/card_023.png'},
-  {id:'cc024',num:24,name:'Nova Slade',      rarity:'rare',     boost:'+4% Stamina', image:'assets/collectible/card_024.png'},
+  {id:'cc024',num:24,name:'Mr Showman',      rarity:'rare',     boost:'+4% Stamina', image:'assets/collectible/card_024.png'},
   {id:'cc025',num:25,name:'Lance Fury',      rarity:'rare',     boost:'+5% Power',   image:'assets/collectible/card_025.png'},
   {id:'cc026',num:26,name:'Titan Cross',     rarity:'rare',     boost:'+5% Speed',   image:'assets/collectible/card_026.png'},
   {id:'cc027',num:27,name:'The Phantom',     rarity:'legendary',boost:'+8% Power',   image:'assets/collectible/card_027.png'},
@@ -7304,11 +7340,11 @@ function validateIdentityText(value, label, min=2, max=20, allowNumbers=false){
   return {ok:true,msg:''};
 }
 function validateUsername(value){
-  const text=cleanName(value);
-  if(text.length<3||text.length>20) return {ok:false,msg:'Username must be 3-20 characters.'};
-  if(!/^[A-Za-z0-9 ]+$/.test(text)) return {ok:false,msg:'Username can only use letters, numbers and spaces.'};
-  if(/^[0-9 ]+$/.test(text)) return {ok:false,msg:'Username cannot be numbers only.'};
-  const banned=validateFighterName(text.replace(/[0-9]/g,'A'));
+  const text=(value||'').trim();
+  if(text.length<3||text.length>20) return {ok:false,msg:'Display name must be 3–20 characters.'};
+  if(!/^[A-Za-z0-9 _-]+$/.test(text)) return {ok:false,msg:'Only letters, numbers, spaces, underscores and hyphens allowed.'};
+  if(/^[0-9 _-]+$/.test(text)) return {ok:false,msg:'Display name cannot be numbers/symbols only.'};
+  const banned=validateFighterName(text.replace(/[^A-Za-z]/g,'A'));
   if(!banned.ok&&banned.msg==="This fighter name is not allowed.") return banned;
   return {ok:true,msg:''};
 }
@@ -10036,6 +10072,7 @@ function openMyCards(){
   _mccFilter='all';
   document.querySelectorAll('.mcc-filter').forEach(el=>el.classList.toggle('active',el.dataset.filter==='all'));
   renderMccShowcase();
+  refreshDisplayNameUI();
   renderMyCardsGrid();
   const btn=$('mcc-pack-btn');
   if(btn) btn.disabled=safeMoney(activeCardProfile().playMoney)<COLLECTOR_PACK_COST;
@@ -11038,7 +11075,39 @@ function shareCareer(){
   }
   shareCardWithText(txt,'UNBEATEN: 50-0 — '+fighterName+' '+record);
 }
-function openAccountSettings(){ updateAuthUI(); screen('account-settings-screen'); }
+function openAccountSettings(){ updateAuthUI(); refreshDisplayNameUI(); screen('account-settings-screen'); }
+function refreshDisplayNameUI(name){
+  const n=name||(loadProfileFoundation().username)||'Player';
+  const mccEl=$('mcc-display-name'), settEl=$('settings-display-name');
+  if(mccEl) mccEl.textContent=n;
+  if(settEl) settEl.textContent=n;
+}
+function openChangeDisplayName(){
+  const p=loadProfileFoundation();
+  const modal=$('change-name-modal'), input=$('change-name-input');
+  if(!modal||!input) return;
+  input.value=p.username||'';
+  $('change-name-error').textContent='';
+  modal.classList.remove('hidden');
+  setTimeout(()=>input.focus(),80);
+}
+function closeChangeDisplayName(){
+  const modal=$('change-name-modal');
+  if(modal) modal.classList.add('hidden');
+}
+function saveChangeDisplayName(){
+  const input=$('change-name-input'), errEl=$('change-name-error');
+  if(!input||!errEl) return;
+  const raw=(input.value||'').trim();
+  const v=validateUsername(raw);
+  if(!v.ok){ errEl.textContent=v.msg; return; }
+  mutateCardProfile(t=>{ t.username=raw; });
+  if(S.player) S.player.username=raw;
+  closeChangeDisplayName();
+  refreshDisplayNameUI(raw);
+  showToast('Display Name Updated','Now showing as: '+raw);
+  requestCloudSync();
+}
 function backToMenu(fromHof=false){ if(!fromHof&&S.career&&S.player&&S.player.Name&&S.career.currentFight<=50) saveCareer(); refreshMenu(); screen('menu-screen'); }
 window.onload = () => {
   selectMode(S.mode);
