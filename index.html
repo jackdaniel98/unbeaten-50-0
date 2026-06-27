@@ -2250,6 +2250,25 @@ body.final-card-open{overflow:hidden}
 .mcc-detail-unowned-notice{text-align:center;font-size:.72rem;color:var(--muted);padding:8px 0 16px;font-style:italic}
 .mcc-detail-actions{display:flex;flex-direction:column;gap:8px}
 .mcc-fav-btn-active{border-color:var(--red)!important;color:var(--red)!important}
+
+/* ── My Cards: hero showcase ── */
+.mcc-showcase{padding:20px 16px 16px;min-height:auto}
+.mcc-showcase-wrap{position:relative;overflow:hidden;border-radius:14px;background:linear-gradient(155deg,rgba(227,178,60,.07) 0%,rgba(10,11,16,.5) 100%);border:1px solid rgba(227,178,60,.24);padding:10px 10px 8px;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 24px -6px rgba(227,178,60,.2)}
+#mcc-showcase .mcc-showcase-wrap>img,
+#mcc-showcase .mcc-showcase-wrap>div[class*="mcc-rarity"]{width:min(90%,200px)!important;height:auto!important}
+
+/* ── Holo-shine: showcase sweep (1 element, GPU, loops every 5 s) ── */
+@keyframes holoSweep{
+  0%,100%{transform:skewX(-18deg) translateX(-200%);opacity:0}
+  5%{opacity:1}
+  48%{transform:skewX(-18deg) translateX(250%);opacity:1}
+  50%{opacity:0}
+}
+.mcc-showcase-wrap::after{content:'';position:absolute;top:0;left:0;width:55%;height:100%;background:linear-gradient(90deg,transparent 0%,rgba(227,178,60,.07) 20%,rgba(120,210,255,.11) 34%,rgba(255,255,255,.34) 47%,rgba(200,140,255,.11) 58%,rgba(130,240,160,.07) 73%,transparent 100%);pointer-events:none;z-index:3;animation:holoSweep 5s ease-in-out infinite;will-change:transform}
+
+/* ── Holo-shine: grid tap glint (static diagonal, no continuous animation) ── */
+.mcc-cell.owned::after{content:'';position:absolute;inset:0;background:linear-gradient(125deg,transparent 20%,rgba(255,255,255,.07) 36%,rgba(255,255,255,.22) 50%,rgba(255,255,255,.07) 64%,transparent 80%);pointer-events:none;z-index:2;opacity:0;transition:opacity .18s}
+.mcc-cell.owned:active::after{opacity:1;transition:opacity 0s}
 </style>
 </head>
 <body>
