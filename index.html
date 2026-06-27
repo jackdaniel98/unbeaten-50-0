@@ -3267,6 +3267,7 @@ function handleNameInput(){
   const result=validateFighterName(value);
   err.innerText=result.msg;
   err.classList.toggle('ok', result.ok);
+  if(result.ok) saveFighterName(value);
 }
 function makeId(prefix){ return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10); }
 function markLocalUpdated(){
@@ -6952,6 +6953,10 @@ const ACHIEVEMENT_DEFINITIONS = {
   reach_50_0:{id:'reach_50_0',name:'Reach 50-0',desc:'Complete a perfect 50-0 career.',reward:'tattoo_50',bonusReward:'badge_50',check:c=>c.wins>=50&&c.losses===0&&c.draws===0}
 };
 const KEYS = {records:'unbeaten_final_records_v10',career:'unbeaten_final_career_v10',profile:'unbeaten_profile_foundation_v1',retired:'unbeaten_retired_careers_v1',cloudStamp:'unbeaten_cloud_stamp_v1',migration:'unbeaten_auth_migration_v1',migrationBackups:'unbeaten_migration_backups_v1'};
+const FIGHTER_NAME_KEY='unbeaten_saved_fighter_name';
+function getSavedFighterName(){ try{ return localStorage.getItem(FIGHTER_NAME_KEY)||''; }catch{ return ''; } }
+function saveFighterName(name){ const n=cleanName(String(name||'').trim()); if(!n||n.length<2) return; try{ localStorage.setItem(FIGHTER_NAME_KEY,n); }catch{} }
+function getDraftFighterName(){ const saved=getSavedFighterName(); if(saved) return saved; const fallback=boxerDisplayName(loadProfileFoundation()); return fallback||'Custom Contender'; }
 const NIL = {bestRecord:'0-0',mostMoney:0,mostKOs:0,bestTier:'None'};
 const S = {mode:'standard',player:null,career:null,opponent:null,legend:null,fight:null,traitsRolled:0,awaiting:false,perfect:false,batch:false,pendingHof:false,fast:false,spinTraitBusy:false};
 const $ = id => document.getElementById(id), rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, choice=arr=>arr[Math.floor(Math.random()*arr.length)], clamp=(n,a,b)=>Math.max(a,Math.min(b,n)), cash=v=>'$'+Math.floor(v).toLocaleString(), deep=o=>JSON.parse(JSON.stringify(o)), sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -9416,7 +9421,7 @@ function simulateCreationDraftDistribution(count){ count=count||10000; const eli
 try{ if(typeof window!=='undefined'){ window.simulateCreationDraftDistribution=simulateCreationDraftDistribution; window.validateCreationFighterPool=validateCreationFighterPool; window.getEligibleCreationFighterPool=getEligibleCreationFighterPool; } }catch(e){}
 function perfectChance(l){ const avg=avgLegend(l), elite=STATS.filter(st=>l[st]>=97).length; let c=.02; if(avg>=95) c+=.06; if(elite>=3) c+=.05; if((l.Pool||'standard')==='crossover') c+=.03; return Math.random()<clamp(c,.02,.16); }
 function pillHTML(pool){ if(pool==='crossover') return '<span class="legend-pill crossover">Crossover Chaos</span>'; if(pool==='cult') return '<span class="legend-pill cult">Cult Icon</span>'; if(pool==='prospect') return '<span class="legend-pill prospect">Future Star</span>'; if(pool==='gatekeeper') return '<span class="legend-pill gatekeeper">Gatekeeper</span>'; if(pool==='low') return '<span class="legend-pill low">Bad Roll</span>'; if(pool==='spoiler') return '<span class="legend-pill spoiler">Spoiler</span>'; return '<span class="legend-pill standard">Legend Source</span>'; }
-function beginNewCareerDraft(){ fresh(); $('trait-list').innerHTML=''; $('trait-result').innerText='???'; $('trait-spin-btn').disabled=false; $('trait-spin-btn').innerText='Spin Trait #1'; $('fighter-name-input').value=boxerDisplayName(loadProfileFoundation()); $('draft-archetype').innerText='Undetermined'; $('synergy-panel').innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; $('slot-mid').innerText='???'; $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('spin-btn').disabled=false; $('reroll-btn').disabled=true; buildDraft(); updateDraftTop(); saveCareer(); screen('draft-screen'); }
+function beginNewCareerDraft(){ fresh(); $('trait-list').innerHTML=''; $('trait-result').innerText='???'; $('trait-spin-btn').disabled=false; $('trait-spin-btn').innerText='Spin Trait #1'; $('fighter-name-input').value=getDraftFighterName(); $('draft-archetype').innerText='Undetermined'; $('synergy-panel').innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; $('slot-mid').innerText='???'; $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('spin-btn').disabled=false; $('reroll-btn').disabled=true; buildDraft(); updateDraftTop(); saveCareer(); screen('draft-screen'); }
 function startNewCareer(){ beginNewCareerDraft(); }
 function continueCareer(){ const d=loadCareer(); if(!d){ refreshMenu(); return; } S.mode=normaliseModeId(d.mode||d.career.mode); S.player=d.player; S.career=d.career; S.career.mode=normaliseModeId(S.career.mode||S.mode); S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; S.awaiting=false; S.perfect=false; if(!S.opponent&&S.career.currentFight<=50) generateOpponent(); checkAchievements(false); updateSynergyPanel(); updateHub(); screen('hub-screen'); }
 function deleteSave(){ clearCareer(); }
@@ -9509,6 +9514,7 @@ function goToHub(){
   const nameCheck=validateFighterName(nm);
   if(!nameCheck.ok){ err.innerText=nameCheck.msg; err.classList.remove('ok'); input.focus(); return; }
   S.player.Name=nm;
+  saveFighterName(nm);
   // username is the account display name — never overwrite with the boxer's fighter name
   if(S.traitsRolled<2){ alert('Spin both traits first.'); return; }
   if(STATS.some(st=>S.player.Stats[st]==null)){ alert('Complete the draft first.'); return; }
