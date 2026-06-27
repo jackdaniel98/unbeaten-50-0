@@ -1610,7 +1610,7 @@ body.final-card-open{overflow:hidden}
 .screen::-webkit-scrollbar-thumb,.log::-webkit-scrollbar-thumb,.sim-body::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 .screen::-webkit-scrollbar-track,.log::-webkit-scrollbar-track,.sim-body::-webkit-scrollbar-track{background:transparent}
 
-/* Build Your Card: isolated editor/store UI. It does not appear in career gameplay. */
+/* Legacy modular card editor styles remain for old saves, but the live collectible loop now uses finished cards only. */
 .play-money-hud{
   position:fixed;top:max(7px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));z-index:1400;
   display:flex;align-items:center;gap:4px;max-width:46vw;padding:5px 8px;border:1px solid rgba(230,194,71,.42);
@@ -2225,6 +2225,7 @@ body.final-card-open{overflow:hidden}
 .mcc-cell-num{position:absolute;bottom:4px;right:5px;font-size:.53rem;font-weight:900;color:rgba(255,255,255,.5);font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:.04em;line-height:1;text-shadow:0 1px 2px #000}
 .mcc-cell-name{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-size:.49rem;font-weight:700;color:#fff;text-shadow:0 1px 3px #000;padding:0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mcc-cell-fav{position:absolute;top:4px;right:5px;font-size:.65rem;color:var(--red);text-shadow:0 1px 2px #000}
+.mcc-cell-count{position:absolute;right:6px;bottom:6px;padding:2px 6px;border-radius:999px;background:rgba(0,0,0,.72);border:1px solid rgba(227,178,60,.42);color:var(--gold);font-size:.58rem;font-weight:1000;line-height:1.4;z-index:3}
 .mcc-rarity-common{background:linear-gradient(160deg,#1f2229 0%,#2a2d36 100%)}
 .mcc-rarity-uncommon{background:linear-gradient(160deg,#0d2217 0%,#163323 100%)}
 .mcc-rarity-rare{background:linear-gradient(160deg,#0a1630 0%,#0f2248 100%)}
@@ -2327,11 +2328,10 @@ body.final-card-open{overflow:hidden}
 
 <section id="menu-screen" class="screen">
   <div class="menu-actions">
-    <button id="card-editor-menu-btn" type="button" class="btn" data-screen-target="card-editor-screen">Card Editor</button>
-    <button id="card-store-menu-btn" type="button" class="btn" data-screen-target="card-store-screen">Store</button>
+    <button id="card-store-menu-btn" type="button" class="btn" data-screen-target="card-store-screen">Pack Store</button>
     <button id="continue-btn" type="button" class="btn blue hidden" data-screen-target="hub-screen">Continue Career</button>
     <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">Draft New Boxer</button>
-    <!-- Character creation, cosmetic store, and achievements are temporarily disabled and may return later as Build Your Card. -->
+    <!-- Legacy modular avatar/cosmetic screens are deprecated. The live collection loop uses finished cards only. -->
     <button id="settings-menu-btn" type="button" class="btn ghost" onclick="openAccountSettings()">Settings</button>
     <button id="my-profile-menu-btn" type="button" class="btn ghost" onclick="openMyProfile()">My Profile</button>
     <button id="collection-book-menu-btn" type="button" class="btn ghost" onclick="openCollectionBook()">Collection Book</button>
@@ -2393,16 +2393,16 @@ body.final-card-open{overflow:hidden}
 
 <section id="card-store-screen" class="screen">
   <div class="card-screen-head">
-    <h2>Store</h2>
+    <h2>Pack Store</h2>
     <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
   </div>
   <div class="card-store-top">
     <div id="card-store-preview"></div>
-    <div class="card-store-summary"><strong id="card-store-category-title">Art Shop</strong><span id="card-store-category-count">Choose a collection</span></div>
+    <div class="card-store-summary"><strong id="card-store-category-title">Pack Store</strong><span id="card-store-category-count">Open finished collectible cards</span></div>
   </div>
   <div id="card-pack-panel" class="card-pack-panel"></div>
-  <div id="featured-weekly-section"></div>
-  <div id="card-store-buckets" class="card-store-buckets"></div>
+  <div id="featured-weekly-section" class="hidden"></div>
+  <div id="card-store-buckets" class="card-store-buckets hidden"></div>
   <div id="card-store-browser" class="hidden">
     <div class="card-store-browser-head">
       <button type="button" class="icon-btn" onclick="showCardStoreBuckets()" aria-label="Back to store collections" title="Back to store collections">&#8592;</button>
@@ -2821,7 +2821,7 @@ body.final-card-open{overflow:hidden}
       <h3>What is Play Money?</h3>
       <p>Play Money is the in-game currency you earn from fights and milestones. It is used for cosmetic card items in the Store. It is not real money and is never purchased.</p>
       <h3>Card cosmetics &amp; the Store</h3>
-      <p>The Store and Card Editor let you customise your fighter card with cosmetic frames, auras, backgrounds and characters. These are visual only and do not change fight outcomes.</p>
+      <p>The Pack Store and My Cards screens let you open finished collectible cards, track duplicates, and build your collection. Cards are the main long-term collection loop and do not replace the core 50-0 career challenge.</p>
       <h3>Leaderboards &amp; cloud saves</h3>
       <p>Signing in lets your careers sync to the cloud, appear on global leaderboards, and be viewed by other players. Your progress is saved locally as well.</p>
       <div class="help-early">UNBEATEN: 50-0 is in active development. Some features are early access and may change as the game improves.</div>
@@ -2875,7 +2875,7 @@ body.final-card-open{overflow:hidden}
   </div>
 </div>
 
-<div id="pack-modal" class="final-card-modal pack-modal hidden" role="dialog" aria-modal="true" aria-label="Opening Mystery Art Pack" onclick="if(event.target===this) closePackModal()">
+<div id="pack-modal" class="final-card-modal pack-modal hidden" role="dialog" aria-modal="true" aria-label="Opening Collector Pack" onclick="if(event.target===this) closePackModal()">
   <div class="pack-stage">
     <div id="pack-orb" class="pack-orb"></div>
     <div id="pack-reveal" class="pack-reveal hidden"></div>
@@ -2894,7 +2894,7 @@ body.final-card-open{overflow:hidden}
     <h2>Daily Spin</h2>
     <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
   </div>
-  <p class="subtle">Spin once every 24 hours to win Play Money. Hit <strong>7 days in a row</strong> to earn a bonus <strong>Free Mystery Pack</strong>!</p>
+  <p class="subtle">Spin once every 24 hours to win Play Money. Hit <strong>7 days in a row</strong> to earn a bonus <strong>Free Collector Pack</strong>!</p>
   <div id="wheel-streak-panel" class="wheel-streak-panel">
     <div id="wheel-streak-track" class="wheel-streak-track"></div>
     <div id="wheel-streak-info" class="wheel-streak-info"></div>
@@ -6834,6 +6834,40 @@ const COLLECTIBLE_CARDS = [
 ];
 // cc001 is always auto-granted (see createProfileFoundation). Others are test-owned only — remove when packs are live.
 const DEFAULT_OWNED_COLLECTIBLE_CARDS = ['cc001','cc003','cc006','cc010','cc015','cc019'];
+function validCollectibleId(id){ return COLLECTIBLE_CARDS.some(c=>c.id===id); }
+function createMyCards(existing=[]){
+  return Array.from(new Set([...(Array.isArray(existing)?existing:[]).filter(validCollectibleId)]));
+}
+function createMyCardCounts(existingCounts={}, existingCards=[]){
+  const counts={};
+  DEFAULT_OWNED_COLLECTIBLE_CARDS.forEach(id=>{ if(validCollectibleId(id)) counts[id]=Math.max(1, safeMoney(counts[id]||1)); });
+  createMyCards(existingCards).forEach(id=>{ counts[id]=Math.max(1, safeMoney(counts[id]||1)); });
+  if(existingCounts && typeof existingCounts==='object'){
+    Object.entries(existingCounts).forEach(([id,count])=>{
+      if(validCollectibleId(id)) counts[id]=Math.max(counts[id]||0, safeMoney(count));
+    });
+  }
+  Object.keys(counts).forEach(id=>{ if(counts[id]<=0) delete counts[id]; });
+  return counts;
+}
+function collectibleOwnedIdsFromCounts(counts={}){
+  return Object.keys(counts||{}).filter(id=>validCollectibleId(id)&&safeMoney(counts[id])>0);
+}
+function collectiblePullWeight(card){
+  const n=Math.max(1, safeMoney(card?.num||1));
+  return 1 / Math.pow(n, 1.35);
+}
+function rollCollectibleCard(pool=COLLECTIBLE_CARDS){
+  const cards=(pool||[]).filter(c=>c&&validCollectibleId(c.id));
+  if(!cards.length) return null;
+  const total=cards.reduce((sum,c)=>sum+collectiblePullWeight(c),0);
+  let roll=Math.random()*total;
+  for(const card of cards){
+    roll-=collectiblePullWeight(card);
+    if(roll<=0) return card;
+  }
+  return cards[cards.length-1];
+}
 const ACHIEVEMENT_DEFINITIONS = {
   first_win:{id:'first_win',name:'First Win',desc:'Win your first professional bout.',reward:'gloves_red_reward',check:c=>c.wins>=1},
   prospect_10_0:{id:'prospect_10_0',name:'10-0 Prospect',desc:'Reach 10 wins with no losses or draws.',reward:'gloves_bronze',check:c=>c.wins>=10&&c.losses===0&&c.draws===0},
@@ -6937,10 +6971,10 @@ function closeHelp(){ const m=$('help-modal'); if(!m) return; m.classList.add('h
 const ONB_KEY='unbeaten_onboarding_complete';
 const ONB_STEPS=[
   {icon:'🥊',title:'Welcome to UNBEATEN: 50-0',body:'The ultimate boxing career challenge. Build your fighter, create your card, and go <strong>50 fights without a single loss</strong>. Think you can stay unbeaten?'},
-  {icon:'🎨',title:'Build Your Card',body:'Draft your boxer by locking in attributes from boxing legends. Then visit the <strong>Card Editor</strong> to pick your character, frame, aura, and background — make the card yours.'},
-  {icon:'⚡',title:'Traits & Character Boosts',body:'You roll <strong>traits</strong> during your draft — perks and flaws that shape your career. Equip a character in the Card Editor to unlock their unique <strong>Signature Boost</strong> in fights.'},
+  {icon:'🎴',title:'Collect Fighter Cards',body:'Open packs with <strong>Play Money</strong> and collect finished fighter cards. Lower-numbered cards are easier to pull; higher-numbered cards are rarer chase cards.'},
+  {icon:'⚡',title:'Traits & Card Collection',body:'You still roll <strong>traits</strong> during your draft — perks and flaws that shape your career. Your card collection is a separate long-term reward loop for packs, duplicates, and showcase cards.'},
   {icon:'🚀',title:'Sim Your Career',body:'On the Active Career screen, hit <strong>Sim All</strong> to auto-run all 50 fights at once. Watch the results roll in and find out if your build can go the distance.'},
-  {icon:'🪙',title:'Earn & Unlock',body:'Every career earns <strong>Play Money</strong>. Spin the Daily Spin, open Art Packs in the Store, and collect new characters, frames, and backgrounds. Then run again with a better card.'}
+  {icon:'🪙',title:'Earn & Unlock',body:'Every career earns <strong>Play Money</strong>. Spin the Daily Spin, open Collector Packs in the Pack Store, and fill your collection book with complete cards.'}
 ];
 let _onbStep=0;
 function maybeShowOnboarding(){
@@ -7118,6 +7152,8 @@ function migrateCareerSave(data){
 function createProfileFoundation(existing={}){
   const nameParts=cleanName(existing.Name||'').split(' ').filter(Boolean);
   const ownedCardItems=createOwnedCardItems(existing.ownedCardItems);
+  const myCardCounts=createMyCardCounts(existing.myCardCounts, existing.myCards);
+  const myCards=collectibleOwnedIdsFromCounts(myCardCounts);
   const profile={
     profileModelVersion:PROFILE_MODEL_VERSION,
     playerId:existing.playerId||makeId('player'),
@@ -7140,9 +7176,10 @@ function createProfileFoundation(existing={}){
     cardNickname:cleanName(existing.cardNickname||''),
     ownedCardItems,
     equippedCardItems:createEquippedCardItems(existing.equippedCardItems,ownedCardItems),
-    myCards:Array.isArray(existing.myCards)?[...new Set([...DEFAULT_OWNED_COLLECTIBLE_CARDS,...existing.myCards.filter(id=>COLLECTIBLE_CARDS.some(c=>c.id===id))])]:DEFAULT_OWNED_COLLECTIBLE_CARDS.slice(),
-    myCardsShowcase:COLLECTIBLE_CARDS.some(c=>c.id===existing.myCardsShowcase)?existing.myCardsShowcase:'cc001',
-    myCardsFavourites:Array.isArray(existing.myCardsFavourites)?existing.myCardsFavourites.filter(id=>COLLECTIBLE_CARDS.some(c=>c.id===id)):[],
+    myCards,
+    myCardCounts,
+    myCardsShowcase:validCollectibleId(existing.myCardsShowcase)?existing.myCardsShowcase:'cc001',
+    myCardsFavourites:Array.isArray(existing.myCardsFavourites)?existing.myCardsFavourites.filter(validCollectibleId):[],
     profileSetupComplete:!!existing.profileSetupComplete
   };
   return profile;
@@ -7179,6 +7216,10 @@ function applyProfileFoundation(player, profile=loadProfileFoundation()){
   player.cardNickname=profile.cardNickname;
   player.ownedCardItems=createOwnedCardItems(profile.ownedCardItems);
   player.equippedCardItems=createEquippedCardItems(profile.equippedCardItems,player.ownedCardItems);
+  player.myCards=createMyCards(profile.myCards);
+  player.myCardCounts=createMyCardCounts(profile.myCardCounts, player.myCards);
+  player.myCardsShowcase=validCollectibleId(profile.myCardsShowcase)?profile.myCardsShowcase:'cc001';
+  player.myCardsFavourites=Array.isArray(profile.myCardsFavourites)?profile.myCardsFavourites.filter(validCollectibleId):[];
   player.profileModelVersion=PROFILE_MODEL_VERSION;
   return player;
 }
@@ -7206,6 +7247,7 @@ function saveProfileFromPlayer(player){
     ownedCardItems:player.ownedCardItems,
     equippedCardItems:player.equippedCardItems,
     myCards:player.myCards,
+    myCardCounts:player.myCardCounts,
     myCardsShowcase:player.myCardsShowcase,
     myCardsFavourites:player.myCardsFavourites,
     profileSetupComplete:player.profileSetupComplete
@@ -7608,9 +7650,18 @@ function saveBoxerCreator(){
 }
 function cancelBoxerCreator(){ screen(boxerCreatorReturnScreen||'menu-screen'); }
 function loadMyCardsData(){ return loadProfileFoundation(); }
-function saveMyCardsOwned(ids){ const p=loadProfileFoundation(); p.myCards=ids; saveProfileFoundation(p); }
+function saveMyCardsOwned(ids){ const p=loadProfileFoundation(); p.myCardCounts=createMyCardCounts(p.myCardCounts, ids); p.myCards=collectibleOwnedIdsFromCounts(p.myCardCounts); saveProfileFoundation(p); }
 function saveMyCardsShowcase(id){ const p=loadProfileFoundation(); p.myCardsShowcase=id||null; saveProfileFoundation(p); }
 function saveMyCardsFavourites(ids){ const p=loadProfileFoundation(); p.myCardsFavourites=ids; saveProfileFoundation(p); }
+function grantCollectibleCard(target, cardId){
+  if(!validCollectibleId(cardId)) return {isNew:false,count:0};
+  target.myCardCounts=createMyCardCounts(target.myCardCounts, target.myCards);
+  const prev=safeMoney(target.myCardCounts[cardId]);
+  target.myCardCounts[cardId]=prev+1;
+  target.myCards=collectibleOwnedIdsFromCounts(target.myCardCounts);
+  if(!validCollectibleId(target.myCardsShowcase)) target.myCardsShowcase='cc001';
+  return {isNew:prev===0,count:target.myCardCounts[cardId]};
+}
 
 // ── Collector Pack ────────────────────────────────────────────────────────
 const COLLECTOR_PACK_COST = 2000;
@@ -7623,27 +7674,27 @@ function openCollectorPack(){
     showToast('Not Enough Play Money','You need '+COLLECTOR_PACK_COST.toLocaleString()+' PM to open a Collector Pack.');
     return;
   }
-  const pool = COLLECTIBLE_CARDS.filter(c => c.image);
+  const pool = COLLECTIBLE_CARDS;
   if(!pool.length){ showToast('No cards available yet.',''); return; }
-  const card = pool[Math.floor(Math.random() * pool.length)];
-  const currentOwned = new Set(profile.myCards || []);
-  const isNew = !currentOwned.has(card.id);
+  const card = rollCollectibleCard(pool);
+  if(!card){ showToast('No cards available yet.',''); return; }
+  const counts=createMyCardCounts(profile.myCardCounts, profile.myCards);
+  const isNew = safeMoney(counts[card.id])===0;
+  let ownedCount=isNew?1:safeMoney(counts[card.id])+1;
   mutateCardProfile(t => {
     t.playMoney = Math.max(0, safeMoney(t.playMoney) - COLLECTOR_PACK_COST);
-    if(isNew){
-      if(!Array.isArray(t.myCards)) t.myCards = DEFAULT_OWNED_COLLECTIBLE_CARDS.slice();
-      t.myCards = [...new Set([...t.myCards, card.id])];
-    }
+    const result=grantCollectibleCard(t, card.id);
+    ownedCount=result.count;
   });
   updateWalletDisplays();
-  _playCollectorPackAnim(card, isNew);
+  _playCollectorPackAnim(card, isNew, ownedCount);
 }
 
-function _playCollectorPackAnim(card, isNew){
+function _playCollectorPackAnim(card, isNew, ownedCount){
   const modal = $('coll-pack-modal');
   const orb = $('coll-pack-orb');
   const reveal = $('coll-pack-reveal');
-  if(!modal || !orb || !reveal){ _finishCollectorReveal(card, isNew); return; }
+  if(!modal || !orb || !reveal){ _finishCollectorReveal(card, isNew, null, ownedCount); return; }
   reveal.classList.add('hidden'); reveal.innerHTML = '';
   modal.classList.remove('hidden');
   document.body.classList.add('final-card-open');
@@ -7671,7 +7722,7 @@ function _playCollectorPackAnim(card, isNew){
       if(card.rarity==='legendary') spawnCollSparks(finalColor, 34);
       else if(card.rarity==='rare') spawnCollSparks(finalColor, 18);
       else if(card.rarity==='uncommon') spawnCollSparks(finalColor, 10);
-      setTimeout(() => _finishCollectorReveal(card, isNew, finalColor), 640);
+      setTimeout(() => _finishCollectorReveal(card, isNew, finalColor, ownedCount), 640);
     }
   };
   setTimeout(cycle, 260);
@@ -7694,11 +7745,11 @@ function spawnCollSparks(color, count){
   setTimeout(() => { if(wrap.parentNode) wrap.remove(); }, 1500);
 }
 
-function _finishCollectorReveal(card, isNew, finalColor){
+function _finishCollectorReveal(card, isNew, finalColor, ownedCount){
   const reveal = $('coll-pack-reveal'); if(!reveal) return;
   const color = finalColor || COLL_RARITY_COLORS[card.rarity] || '#cbd5e1';
   const rarityName = card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1);
-  const badgeText = isNew ? '✦ NEW CARD ✦' : 'Already Owned';
+  const badgeText = isNew ? 'NEW CARD' : 'DUPLICATE';
   const badgeCls = isNew ? 'new' : 'dup';
   reveal.innerHTML =
     '<div class="coll-flip-wrap" id="coll-flip-wrap">'+
@@ -7713,6 +7764,7 @@ function _finishCollectorReveal(card, isNew, finalColor){
     '<div class="coll-reveal-name" id="coll-rname">'+htmlEscape(card.name)+'</div>'+
     '<div class="coll-reveal-rarity '+('mcc-rarity-badge-'+card.rarity)+'" id="coll-rrarity" style="background:'+color+'22;color:'+color+'">'+rarityName+'</div>'+
     '<div class="coll-reveal-boost" id="coll-rboost">'+htmlEscape(card.boost)+'</div>'+
+    '<div class="coll-reveal-boost visible" style="font-size:.7rem;color:var(--text-dim);margin-top:6px">Owned: x'+safeMoney(ownedCount||1)+'</div>'+
     '<button class="btn gold coll-reveal-continue" id="coll-continue-btn" onclick="closeCollectorReveal()">Continue</button>';
   reveal.classList.remove('hidden');
   // Trigger card flip after brief paint delay
@@ -8107,6 +8159,20 @@ function renderFeaturedWeekly(){
   section.innerHTML=html;
 }
 function renderCardStore(){
+  activeCardStoreCategory=null;
+  const storeProfile=activeCardProfile();
+  if($('card-store-preview')){
+    const showcase=COLLECTIBLE_CARDS.find(c=>c.id===storeProfile.myCardsShowcase)||COLLECTIBLE_CARDS[0];
+    $('card-store-preview').innerHTML=showcase?_mccArtHTML(showcase,180):'';
+  }
+  if($('card-store-category-title')) $('card-store-category-title').innerText='Pack Store';
+  if($('card-store-category-count')) $('card-store-category-count').innerText='Finished collectible cards only';
+  if($('card-store-buckets')){ $('card-store-buckets').classList.add('hidden'); $('card-store-buckets').innerHTML=''; }
+  if($('card-store-browser')) $('card-store-browser').classList.add('hidden');
+  if($('featured-weekly-section')){ $('featured-weekly-section').classList.add('hidden'); $('featured-weekly-section').innerHTML=''; }
+  renderPackPanel();
+  updateWalletDisplays();
+  return;
   const profile=activeCardProfile(), allItems=Object.values(CARD_ITEM_DEFINITIONS), owned=createOwnedCardItems(profile.ownedCardItems);
   if($('card-store-preview')) $('card-store-preview').innerHTML=modularCardMarkup(profile);
   const buckets=$('card-store-buckets'), browser=$('card-store-browser'), browsing=!!activeCardStoreCategory;
@@ -8282,30 +8348,21 @@ function finishPackReveal(item, isDuplicate, refundAmt, color){
 function closePackModal(){ const m=$('pack-modal'); if(m) m.classList.add('hidden'); document.body.classList.remove('final-card-open'); try{ renderCardStore(); renderCardEditor(); }catch(e){} }
 function renderPackPanel(){
   const panel=$('card-pack-panel'); if(!panel) return;
-  const browsing=!!activeCardStoreCategory; panel.classList.toggle('hidden', browsing);
-  if(browsing){ panel.innerHTML=''; return; }
   const profile=activeCardProfile(), bal=safeMoney(profile.playMoney);
-  const cost=PACK_CONFIG.cost, tenCost=PACK_TEN_COST;
-  const canAfford1=bal>=cost, canAfford10=bal>=tenCost;
-  const odds=Object.entries(PACK_RARITY_WEIGHTS), totalW=odds.reduce((s,e)=>s+e[1],0);
-  const oddsHtml=odds.map(e=>'<span class="pack-odd rarity-'+e[0]+'">'+e[0]+' '+Math.round((e[1]/totalW)*100)+'%</span>').join('');
-  const needMore1=!canAfford1?'<div class="pack-need-more">Need '+(cost-bal)+' more PM</div>':'';
-  const needMore10=!canAfford10?'<div class="pack-need-more">Need '+(tenCost-bal)+' more PM for 10</div>':'';
   const canAffordColl=bal>=COLLECTOR_PACK_COST;
+  const ownedCount=collectibleOwnedIdsFromCounts(createMyCardCounts(profile.myCardCounts, profile.myCards)).length;
+  const total=COLLECTIBLE_CARDS.length;
+  const oddsHtml=[
+    '<span class="pack-odd rarity-common">Low # common</span>',
+    '<span class="pack-odd rarity-uncommon">Mid # uncommon</span>',
+    '<span class="pack-odd rarity-rare">High # rare</span>',
+    '<span class="pack-odd rarity-legendary">Top # chase</span>'
+  ].join('');
   panel.innerHTML='<div class="card-pack">'
-    +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">?</span></div>'
-    +'<div class="card-pack-info"><strong>Mystery Art Pack</strong><span>One random frame, aura, character or background.</span>'
-    +'<div class="pack-odds">'+oddsHtml+'</div>'
-    +'<div class="pack-refund">Duplicate? You get '+Math.floor(cost*PACK_CONFIG.refundPct)+' PM back. 10-pack guarantees 1 Uncommon+.</div>'
-    +'<div class="pack-btn-pair">'
-    +'<button class="btn gold" '+(canAfford1?'':'disabled')+' onclick="openArtPack()">Open Pack \u2022 '+cost+' PM</button>'
-    +'<button class="btn blue" '+(canAfford10?'':'disabled')+' onclick="openArtPackTen()" title="10% discount">Open 10 Packs \u2022 '+tenCost+' PM</button>'
-    +'</div>'
-    +needMore1+needMore10
-    +'</div></div>'
-    +'<div class="card-pack" style="margin-top:10px">'
     +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">\u2605</span></div>'
-    +'<div class="card-pack-info"><strong>Collector Pack</strong><span>1 Collector Card \u00b7 Rarity-weighted draw \u00b7 Adds to My Cards.</span>'
+    +'<div class="card-pack-info"><strong>Collector Pack</strong><span>1 finished collectible card. Lower card numbers are easier to pull; higher numbers are rarer and more valuable.</span>'
+    +'<div class="pack-odds">'+oddsHtml+'</div>'
+    +'<div class="pack-refund">Collection progress: '+ownedCount+' / '+total+'. Duplicates are tracked for future rewards.</div>'
     +'<button class="btn gold" style="margin-top:9px" '+(canAffordColl?'':'disabled')+' onclick="openCollectorPack()">Open Pack \u2022 2,000 PM</button>'
     +(canAffordColl?'':'<div class="pack-need-more">Need '+(COLLECTOR_PACK_COST-bal).toLocaleString()+' more PM</div>')
     +'</div></div>';
@@ -8451,7 +8508,7 @@ function renderWheelStreakPanel(){
     return '<div class="'+cls+'"><div class="wheel-streak-day-num">Day '+s.day+'</div><div class="wheel-streak-day-icon">'+(done?'✓':s.icon)+'</div></div>';
   }).join('');
   if(ready){
-    if(nextDay===7) info.innerHTML='<strong>Day 7 Bonus!</strong> — <span class="streak-day7-tease">🎁 Spin now to claim a FREE Mystery Pack!</span>';
+    if(nextDay===7) info.innerHTML='<strong>Day 7 Bonus!</strong> — <span class="streak-day7-tease">🎁 Spin now to claim a FREE Collector Pack!</span>';
     else if(curDay===0) info.innerHTML='Start your daily streak! <span class="streak-day7-tease">7 days in a row = Free Pack 🎁</span>';
     else info.innerHTML='<strong>Day '+nextDay+' of 7</strong> — Spin now to continue your streak';
   } else {
@@ -8511,7 +8568,19 @@ function refreshWheelAvailability(){
 function pickWheelSegment(){ const total=WHEEL_SEGMENTS.reduce((s,x)=>s+x.weight,0); let roll=Math.random()*total; for(let i=0;i<WHEEL_SEGMENTS.length;i++){ roll-=WHEEL_SEGMENTS[i].weight; if(roll<=0) return i; } return WHEEL_SEGMENTS.length-1; }
 function playWheelTicks(duration){ if(typeof isMuted!=='undefined'&&isMuted) return; let t=0,gap=40; const tick=()=>{ if(t>=duration) return; try{ playTone(1500,'square',0.02,0.05); }catch(e){} t+=gap; gap=Math.min(380,gap*1.11); setTimeout(tick,gap); }; tick(); }
 function playWheelWin(amount){ if(typeof isMuted!=='undefined'&&isMuted) return; try{ playArp(amount>=8?[523.25,659.25,783.99,1046.50,1318.51]:[523.25,659.25,783.99],'triangle',90,0.45,0.08); }catch(e){} }
-function grantFreePack(){ const pool=getPackPool(); if(!pool.length){ showToast('Pack','No pack items available.'); return; } const item=rollPackItem(pool); if(!item) return; const owned=createOwnedCardItems(activeCardProfile().ownedCardItems); const isDup=owned.includes(item.id); const consolation=5; mutateCardProfile(t=>{ if(isDup){ t.playMoney=safeMoney(t.playMoney)+consolation; } else { t.ownedCardItems=createOwnedCardItems([...(t.ownedCardItems||[]),item.id]); } }); playPackAnimation(item,isDup,consolation); }
+function grantFreePack(){
+  const card=rollCollectibleCard(COLLECTIBLE_CARDS);
+  if(!card){ showToast('Pack','No collectible cards available.'); return; }
+  const profile=activeCardProfile();
+  const counts=createMyCardCounts(profile.myCardCounts, profile.myCards);
+  const isNew=safeMoney(counts[card.id])===0;
+  let ownedCount=isNew?1:safeMoney(counts[card.id])+1;
+  mutateCardProfile(t=>{
+    const result=grantCollectibleCard(t, card.id);
+    ownedCount=result.count;
+  });
+  _playCollectorPackAnim(card,isNew,ownedCount);
+}
 function spinDailyWheel(){
   if(wheelSpinning) return;
   if(!dailyWheelReady(activeCardProfile())){ showToast('Daily Spin','Come back later for your next spin.'); return; }
@@ -9433,8 +9502,11 @@ function renderProfileFoundation(){
   if($('hub-profile-name')) $('hub-profile-name').innerText=boxerDisplayName(profile);
   if($('hub-profile-country')) $('hub-profile-country').innerText=(profile.nickname?'"'+profile.nickname+'" • ':'')+profile.country;
   renderFighterCard(profile);
-  if($('hub-card-preview')) $('hub-card-preview').innerHTML=modularCardMarkup();
-  const _hbb=$('hub-active-boost');
+  if($('hub-card-preview')){
+    const showcase=COLLECTIBLE_CARDS.find(c=>c.id===profile.myCardsShowcase)||COLLECTIBLE_CARDS[0];
+    $('hub-card-preview').innerHTML=showcase?_mccArtHTML(showcase,180):'';
+  }
+  const _hbb=null;
   if(_hbb){ const _boosts=getEquippedCharacterBoosts(),_bArr=Object.values(_boosts); if(_bArr.length){ const _charName=equippedCardAssets(activeCardProfile())?.character?.name||''; _hbb.style.display='flex'; _hbb.innerHTML=(_charName?'<div class="hub-boost-badge-header">'+htmlEscape(_charName)+' — Active Boost'+(_bArr.length>1?'s':'')+'</div>':'')+_bArr.map(b=>'<div class="hub-boost-badge"><span class="hub-boost-badge-name">'+(b.icon||'⚡')+' '+htmlEscape(b.name)+'</span><span class="hub-boost-badge-desc">'+htmlEscape(b.desc)+'</span></div>').join('')+'<p class="hub-boost-note">Only your equipped character\'s boost applies — swap in Card Editor.</p>'; }else{ _hbb.style.display='flex'; _hbb.innerHTML='<p class="hub-boost-note">Equip a character in the Card Editor to activate a signature boost.</p>'; } }
   if($('profile-username')) $('profile-username').innerText=S.player.username||'-';
   if($('profile-player-id')) $('profile-player-id').innerText=S.player.playerId||'-';
@@ -9927,6 +9999,7 @@ function renderMccShowcase(){
   const box=document.getElementById('mcc-showcase');
   if(!box) return;
   const p=loadMyCardsData();
+  const counts=createMyCardCounts(p.myCardCounts, p.myCards);
   const card=COLLECTIBLE_CARDS.find(c=>c.id===p.myCardsShowcase);
   if(!card){
     box.innerHTML='<div class="mcc-showcase-empty">No showcase card selected.<br>Tap any owned card to set one.</div>';
@@ -9935,12 +10008,13 @@ function renderMccShowcase(){
   box.innerHTML='<div class="mcc-showcase-wrap">'+
     '<div class="mcc-showcase-label">Showcase</div>'+
     _mccArtHTML(card,140)+
-    '<div style="font-size:.7rem;color:var(--text-dim);font-weight:700;text-align:center;margin-top:4px">'+htmlEscape(card.name)+'</div>'+
+    '<div style="font-size:.7rem;color:var(--text-dim);font-weight:700;text-align:center;margin-top:4px">'+htmlEscape(card.name)+' · x'+safeMoney(counts[card.id]||1)+'</div>'+
   '</div>';
 }
 function renderMyCardsGrid(){
   const p=loadMyCardsData();
-  const owned=new Set(p.myCards||[]);
+  const counts=createMyCardCounts(p.myCardCounts, p.myCards);
+  const owned=new Set(collectibleOwnedIdsFromCounts(counts));
   const favs=new Set(p.myCardsFavourites||[]);
   let cards=COLLECTIBLE_CARDS.slice();
   if(_mccFilter==='owned') cards=cards.filter(c=>owned.has(c.id));
@@ -9948,8 +10022,8 @@ function renderMyCardsGrid(){
   else if(_mccFilter==='favs') cards=cards.filter(c=>favs.has(c.id));
   const countEl=document.getElementById('mcc-count');
   if(countEl){
-    const ownedCount=owned.size, total=COLLECTIBLE_CARDS.length;
-    countEl.textContent=(_mccFilter==='all'?ownedCount+' / '+total+' owned':cards.length+' card'+(cards.length!==1?'s':''));
+    const ownedCount=owned.size, total=COLLECTIBLE_CARDS.length, dupes=Object.values(counts).reduce((sum,count)=>sum+Math.max(0,safeMoney(count)-1),0);
+    countEl.textContent=(_mccFilter==='all'?ownedCount+' / '+total+' collected · '+dupes+' duplicate'+(dupes!==1?'s':''):cards.length+' card'+(cards.length!==1?'s':''));
   }
   const grid=document.getElementById('mcc-grid');
   if(!grid) return;
@@ -9967,6 +10041,7 @@ function renderMyCardsGrid(){
         :'<div class="mcc-cell-art '+_mccRarityClass(card.rarity)+'">🥊</div>';
       return '<div class="mcc-cell owned" onclick="openMyCardDetail(\''+card.id+'\')" role="button" tabindex="0" aria-label="'+htmlEscape(card.name)+'">'+
         cellArt+
+        (safeMoney(counts[card.id])>1?'<div class="mcc-cell-count">x'+safeMoney(counts[card.id])+'</div>':'')+
         (isFav?'<div class="mcc-cell-fav" aria-hidden="true">&#9829;</div>':'')+
       '</div>';
     } else {
@@ -9982,7 +10057,8 @@ function openMyCardDetail(id){
   if(!card) return;
   _mccDetailId=id;
   const p=loadMyCardsData();
-  const owned=new Set(p.myCards||[]);
+  const counts=createMyCardCounts(p.myCardCounts, p.myCards);
+  const owned=new Set(collectibleOwnedIdsFromCounts(counts));
   const favs=new Set(p.myCardsFavourites||[]);
   const isOwned=owned.has(id);
   const isFav=favs.has(id);
@@ -10004,6 +10080,7 @@ function openMyCardDetail(id){
     '<span class="mcc-detail-rarity '+_mccRarityBadgeClass(card.rarity)+'">'+card.rarity+'</span>';
   const boostEl=document.getElementById('mcc-detail-boost');
   if(boostEl) boostEl.innerHTML='<span class="mcc-detail-boost-label">Boost (display only)</span><span class="mcc-detail-boost-value">'+htmlEscape(card.boost)+'</span>';
+  if(boostEl && isOwned) boostEl.innerHTML+='<span class="mcc-detail-boost-label">Owned Copies</span><span class="mcc-detail-boost-value">x'+safeMoney(counts[id]||1)+'</span>';
   const showcaseBtn=document.getElementById('mcc-showcase-btn');
   if(showcaseBtn){
     showcaseBtn.disabled=!isOwned;
@@ -10973,8 +11050,8 @@ function kdCheck(target,attackerName,defenderName,dmg,a,d,round,winnerKey){ cons
 function simRound(){ const r=S.fight.round,p1=roundStrength('p1',r),p2=roundStrength('p2',r); let h1=Math.max(1,Math.floor((p1.Speed+p1.Accuracy+p1['Ring IQ']-(p2.Defence+p2.Footwork))/22)+3+rand(0,1)), h2=Math.max(1,Math.floor((p2.Speed+p2.Accuracy+p2['Ring IQ']-(p1.Defence+p1.Footwork))/22)+3+rand(0,1)); let d1=Math.max(4,Math.floor(h1*(p1.Power/19.5))), d2=Math.max(4,Math.floor(h2*(p2.Power/19.8))); if(hasTrait('ko_artist')&&(S.fight.p2.hp/S.fight.p2.maxHp)<.5) d1=Math.floor(d1*1.18); if(hasTrait('body_snatcher')&&Math.random()<.35) S.fight.p2.stamina=Math.max(8,S.fight.p2.stamina-rand(4,8)); if(hasTrait('ice_in_veins')&&Math.abs(S.fight.p1.score-S.fight.p2.score)<=2&&r>=8) d1+=3; if(hasTrait('volume_puncher')) d1+=2; const _srb=getEquippedCharacterBoosts(); if(_srb.streak_hunter&&S.career.winStreak>=3) d1+=3; if(_srb.underdog_bite&&(S.opponent.Rating-calculateOverall())>=5) d1+=2; if(_srb.comeback_spirit&&(S.career.history[0]||'').includes('❌')) d1+=3; if(_srb.ice_veins&&Math.abs(S.fight.p1.score-S.fight.p2.score)<=1) d1+=3; if(_srb.title_aura&&S.opponent.TitleOnLine) d1+=3; d1=Math.floor(d1*(.88+Math.random()*.28)); d2=Math.floor(d2*(.88+Math.random()*.26)); if(Math.random()<(p1.Accuracy/200)){ d1=Math.floor(d1*1.4); addLog('crit',S.player.Name+' clips '+S.opponent.Name+' with a perfect counter.'); } if(Math.random()<(p2.Accuracy/210)){ d2=Math.floor(d2*1.32); addLog('crit',S.opponent.Name+' lands a sharp counter.'); } S.fight.p2.hp-=d1; S.fight.p1.hp-=d2; S.fight.p1Dmg+=d1; S.fight.p2Dmg+=d2; if(d1>d2+8) S.fight.p1Dom++; else if(d2>d1+8) S.fight.p2Dom++; addLog('action','R'+r+': '+S.player.Name+' lands '+h1+' scoring shots ('+d1+' dmg). '+S.opponent.Name+' answers with '+h2+' clean connects ('+d2+' dmg).'); if(d1>=13&&Math.random()<.24) maybeDoctor(p1,'p2'); if(!S.fight.done&&d2>=13&&Math.random()<.22) maybeDoctor(p2,'p1'); if(S.fight.done) return; let drain1=18,drain2=18; if(hasTrait('gas_out')&&r>=6) drain1*=1.6; if(hasTrait('second_wind')&&r>=7) drain1-=4; if(hasTrait('volume_puncher')&&r>=5) drain2+=2; S.fight.p1.stamina=Math.max(5,S.fight.p1.stamina-drain1+(p1.Recovery/9)); S.fight.p2.stamina=Math.max(5,S.fight.p2.stamina-drain2+(p2.Recovery/9)); const p1Collapse=S.fight.p1.stamina/S.fight.p1.maxStamina<.25,p2Collapse=S.fight.p2.stamina/S.fight.p2.maxStamina<.25; if(p1Collapse) d2=Math.floor(d2*1.25); if(p2Collapse) d1=Math.floor(d1*1.25); const caught1=maybeCaught(S.fight.p2,S.player.Name,S.opponent.Name,p1,p2,r,'p1'); if(caught1&&caught1.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=caught1.detail; return; } const caught2=maybeCaught(S.fight.p1,S.opponent.Name,S.player.Name,p2,p1,r,'p2'); if(caught2&&caught2.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=caught2.detail; return; } if(!S.fight.done&&(S.fight.p2.hp<=0||d1>S.fight.p2.maxHp*.105)){ const kd=kdCheck(S.fight.p2,S.player.Name,S.opponent.Name,d1,p1,p2,r,'p1'); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p1'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('brittle_hands')) S.fight.flags.p1BrokenHands=true; } if(!S.fight.done&&(S.fight.p1.hp<=0||d2>S.fight.p1.maxHp*.105)){ const kd=kdCheck(S.fight.p1,S.opponent.Name,S.player.Name,d2,p2,p1,r,'p2'); if(kd&&kd.ko){ S.fight.done=true; S.fight.winner='p2'; S.fight.method='KO'; S.fight.detail=kd.detail; return; } else if(kd&&hasTrait('quit_risk')) S.fight.flags.p1QuitTriggered=true; } const p2Weak=(S.fight.p2.hp/S.fight.p2.maxHp)<.24||(S.fight.p2.stamina/S.fight.p2.maxStamina)<.22, p1Weak=(S.fight.p1.hp/S.fight.p1.maxHp)<.24||(S.fight.p1.stamina/S.fight.p1.maxStamina)<.22; if(!S.fight.done&&r>=7&&p2Weak&&canFightFinish('p1','accumulation')){ let chance=.14; if(r>=9) chance+=.12; if(S.fight.p1Dom>=3) chance+=.10; if(S.fight.p1Dmg>S.fight.p2Dmg+40) chance+=.10; if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.18) chance+=.08; if(_srb.knockout_machine) chance+=0.05; if(_srb.belt_collector&&S.opponent.TitleOnLine) chance+=(_srb.belt_collector.value||0.03); if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p1'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); addLog('system',S.opponent.Name+' cannot continue. '+S.fight.detail+'.'); return; } } if(!S.fight.done&&r>=7&&p1Weak&&canFightFinish('p2','accumulation')){ let chance=.11; if(r>=9) chance+=.08; if(S.fight.p2Dom>=3) chance+=.08; if(S.fight.p2Dmg>S.fight.p1Dmg+40) chance+=.08; if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.18) chance+=.08; if(_srb.defensive_shell) chance=Math.max(0,chance-0.08); if(Math.random()<chance){ S.fight.done=true; S.fight.winner='p2'; S.fight.method=Math.random()<.55?'TKO':'RTD'; S.fight.detail=choice(['Referee Stoppage','Accumulation TKO','Corner Retirement','Towel Thrown In']); S.fight.lossReason=(S.fight.p1.stamina/S.fight.p1.maxStamina)<.18?'gassed':'accumulation'; addLog('system',S.player.Name+' cannot continue. '+S.fight.detail+'.'); return; } } let score1=10,score2=9; const ctrl1=(p1.Speed+p1.Accuracy+p1['Ring IQ']+d1*.9)+(hasTrait('ice_in_veins')?3:0)+(hasTrait('ring_general')?3:0)-(hasTrait('low_iq')?4:0), ctrl2=(p2.Speed+p2.Accuracy+p2['Ring IQ']+d2*.9); if(Math.abs(ctrl1-ctrl2)<4){ if(Math.random()<.05){score1=10;score2=10;} else if(ctrl1>=ctrl2){score1=10;score2=9;} else {score1=9;score2=10;} } else if(ctrl2>ctrl1){ score1=9; score2=10; } if(_srb.final_bell&&r>=9) score1+=2; if(_srb.clutch_rounds&&r>=10) score1+=1; if(_srb.title_aura&&S.opponent.TitleOnLine) score1+=1; S.fight.p1.score+=score1; S.fight.p2.score+=score2; }
 function scoreDecision(){ S.fight.done=true; const diff=S.fight.p1.score-S.fight.p2.score, ad=Math.abs(diff); let winner=S.fight.intendedWinner||'p1'; if(winner==='p2'&&ad<=2&&(hasTrait('ring_general')||hasTrait('ice_in_veins'))&&Math.random()<.28) winner='p1'; S.fight.winner=winner; if(ad===0) S.fight.method='MD'; else if(ad===1) S.fight.method='SD'; else if(ad<=3) S.fight.method=Math.random()<.55?'SD':'MD'; else S.fight.method='UD'; S.fight.detail=choice(ad>=7?['Comfortable On The Cards','Took The Championship Rounds']:ad>=4?['Controlled The Fight','Clear Decision']:['Razor-Close Cards','Narrow But Fair']); if(winner==='p2'&&!S.fight.lossReason){ if((S.fight.p1.stamina/S.fight.p1.maxStamina)<.22) S.fight.lossReason='gassed'; else if((S.fight.balance?.styleMatchup||0)<=-3) S.fight.lossReason='style'; else S.fight.lossReason='decision'; } }
 function fightInsight(kind){ const extra=[]; if(S.fight.p1Dom>S.fight.p2Dom+1) extra.push('The cleaner work and control dominated the rounds.'); if(S.fight.p1Dmg>S.fight.p2Dmg+35) extra.push('The damage output was clearly tilting the fight.'); if((S.fight.p2.stamina/S.fight.p2.maxStamina)<.28) extra.push('The opponent faded badly as stamina drained.'); if(['TKO','RTD'].includes(S.fight.method)) extra.push('Sustained punishment forced the stoppage.'); const dom=choice(extra.length?extra:['The style edge kept stacking up over the rounds.']); if(kind==='win') return sourceText()+'. '+weakText().charAt(0).toUpperCase()+weakText().slice(1)+' was exposed. '+dom; if(kind==='loss'){ const reason=S.fight.lossReason||'decision'; const copy={decision:'Lost close cards after the fight drifted away late.',accumulation:'Sustained damage built up until the danger became real.',gassed:'Stamina collapsed after the middle rounds and the opponent took over.',caught:'A clean caught-shot opened the door, then recovery failed the count.',style:'The opponent style countered this build and stole the key exchanges.'}; return copy[reason]||copy.decision; } return 'Neither fighter truly separated from the other over 12 rounds.'; }
-// Character creation, cosmetic store, and achievements are temporarily disabled and may return later as Build Your Card.
-const TEMP_DISABLED_BUILD_YOUR_CARD_SCREENS=new Set(['boxer-creator-screen','store-screen','collection-screen']);
+// Legacy modular avatar/cosmetic screens are deprecated; the live collection loop uses finished cards only.
+const TEMP_DISABLED_BUILD_YOUR_CARD_SCREENS=new Set(['boxer-creator-screen','store-screen','collection-screen','card-editor-screen']);
 function showScreen(targetId){
   if(TEMP_DISABLED_BUILD_YOUR_CARD_SCREENS.has(targetId)) targetId='menu-screen';
   if(!isAuthScreenAllowed(targetId)) targetId='login-screen';
