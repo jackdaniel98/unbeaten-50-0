@@ -7719,11 +7719,10 @@ function closeCollectorReveal(){
   document.body.classList.remove('final-card-open');
   renderMyCardsGrid();
   renderMccShowcase();
+  const bal = safeMoney(activeCardProfile().playMoney);
   const btn = $('mcc-pack-btn');
-  if(btn){
-    const bal = safeMoney(activeCardProfile().playMoney);
-    btn.disabled = bal < COLLECTOR_PACK_COST;
-  }
+  if(btn) btn.disabled = bal < COLLECTOR_PACK_COST;
+  renderPackPanel();
 }
 function getRecords(){ try{ return {...NIL, ...JSON.parse(localStorage.getItem(KEYS.records)||'{}')}; }catch{ return {...NIL}; } }
 function saveRecords(r){ localStorage.setItem(KEYS.records, JSON.stringify(r)); }
@@ -8273,6 +8272,7 @@ function renderPackPanel(){
   const oddsHtml=odds.map(e=>'<span class="pack-odd rarity-'+e[0]+'">'+e[0]+' '+Math.round((e[1]/totalW)*100)+'%</span>').join('');
   const needMore1=!canAfford1?'<div class="pack-need-more">Need '+(cost-bal)+' more PM</div>':'';
   const needMore10=!canAfford10?'<div class="pack-need-more">Need '+(tenCost-bal)+' more PM for 10</div>':'';
+  const canAffordColl=bal>=COLLECTOR_PACK_COST;
   panel.innerHTML='<div class="card-pack">'
     +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">?</span></div>'
     +'<div class="card-pack-info"><strong>Mystery Art Pack</strong><span>One random frame, aura, character or background.</span>'
@@ -8283,6 +8283,12 @@ function renderPackPanel(){
     +'<button class="btn blue" '+(canAfford10?'':'disabled')+' onclick="openArtPackTen()" title="10% discount">Open 10 Packs \u2022 '+tenCost+' PM</button>'
     +'</div>'
     +needMore1+needMore10
+    +'</div></div>'
+    +'<div class="card-pack" style="margin-top:10px">'
+    +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">\u2605</span></div>'
+    +'<div class="card-pack-info"><strong>Collector Pack</strong><span>1 Collector Card \u00b7 Rarity-weighted draw \u00b7 Adds to My Cards.</span>'
+    +'<button class="btn gold" style="margin-top:9px" '+(canAffordColl?'':'disabled')+' onclick="openCollectorPack()">Open Pack \u2022 2,000 PM</button>'
+    +(canAffordColl?'':'<div class="pack-need-more">Need '+(COLLECTOR_PACK_COST-bal).toLocaleString()+' more PM</div>')
     +'</div></div>';
 }
 try{ if(typeof window!=='undefined'){ window.openArtPack=openArtPack; window.closePackModal=closePackModal; window.rollPackItem=rollPackItem; window.getPackPool=getPackPool; } }catch(e){}
