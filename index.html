@@ -1330,6 +1330,26 @@ body.final-card-open{overflow:hidden}
 .colbook-ms-prog{height:4px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
 .colbook-ms-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,rgba(227,178,60,.5),var(--gold))}
 .colbook-ms-progtext{font-size:.6rem;color:rgba(255,255,255,.32);margin-top:3px}
+/* ===== Collection Book — collectible card slots ===== */
+.colbook-rarity-section{margin-bottom:18px}
+.colbook-rarity-head{display:flex;align-items:center;justify-content:space-between;padding:7px 0 9px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:9px}
+.colbook-rarity-head h3{font-family:'Bebas Neue',Impact,sans-serif;font-size:.95rem;letter-spacing:.05em;margin:0;text-transform:uppercase}
+.colbook-rarity-sub{font-size:.58rem;color:rgba(255,255,255,.3);margin-top:1px}
+.colbook-rarity-pct{font-size:.78rem;font-weight:900}
+.colbook-cc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:4px}
+.colbook-cc-slot{border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.07);background:#0a0b0f;display:flex;flex-direction:column}
+.colbook-cc-slot.cc-owned{border-color:rgba(227,178,60,.32);box-shadow:0 0 8px rgba(227,178,60,.09)}
+.colbook-cc-slot.cc-owned.cc-r-rare{border-color:rgba(91,141,239,.4);box-shadow:0 0 8px rgba(91,141,239,.12)}
+.colbook-cc-slot.cc-owned.cc-r-legendary{border-color:rgba(227,178,60,.55);box-shadow:0 2px 14px rgba(227,178,60,.18)}
+.colbook-cc-slot.cc-locked{opacity:.38;filter:grayscale(.8)}
+.colbook-cc-art{aspect-ratio:2/3;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#060810;flex-shrink:0}
+.colbook-cc-art img{width:100%;height:100%;object-fit:cover;display:block}
+.colbook-cc-art-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:rgba(255,255,255,.08)}
+.colbook-cc-foot{padding:4px 5px 5px;background:#0b0c10;flex:1}
+.colbook-cc-foot-num{font-size:.43rem;color:rgba(255,255,255,.22);font-weight:700;letter-spacing:.04em;line-height:1}
+.colbook-cc-foot-name{font-size:.52rem;font-weight:900;color:#fff;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.colbook-cc-foot-boost{font-size:.43rem;color:var(--gold);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.colbook-cc-foot-dupe{font-size:.43rem;color:rgba(255,255,255,.28);line-height:1.2}
 /* ===== Weekly Objectives ===== */
 .weekly-badge{display:inline-block;background:#fb923c;color:#1a0800;font-size:.52rem;font-weight:900;padding:1px 6px;border-radius:999px;margin-left:6px;vertical-align:middle;line-height:1.6}
 .weekly-badge.hidden{display:none}
@@ -8980,41 +9000,42 @@ function openWeeklyObjectives(){
 }
 // ===== Collection Book =====
 (function(){
-  const _all=Object.values(CARD_ITEM_DEFINITIONS);
-  const _cc=CARD_CATEGORIES.reduce((o,c)=>{o[c]=_all.filter(i=>i.category===c).length;return o;},{});
-  const _ct=_all.length;
+  const _total=COLLECTIBLE_CARDS.length;
   window.COLLECTION_MILESTONES=[
-    {id:'char_5',   label:'Collect 5 Characters',   type:'cat', category:'character',  count:5,          reward:{pm:50,   label:'50 PM'}},
-    {id:'char_10',  label:'Collect 10 Characters',  type:'cat', category:'character',  count:10,         reward:{pm:100,  label:'100 PM (Pack Credit)'}},
-    {id:'char_all', label:'Complete Character Set',  type:'cat', category:'character',  count:_cc.character, reward:{pm:500,  label:'500 PM'}},
-    {id:'total_10', label:'10 Items Collected',      type:'total',                       count:10,         reward:{pm:75,   label:'75 PM'}},
-    {id:'total_25', label:'25 Items Collected',      type:'total',                       count:25,         reward:{pm:200,  label:'200 PM'}},
-    {id:'total_all',label:'Complete the Collection', type:'total',                       count:_ct,        reward:{pm:1000, label:'1,000 PM'}},
+    {id:'cc_5',   label:'Collect 5 Cards',       type:'total',  count:5,      reward:{pm:50,   label:'50 PM'}},
+    {id:'cc_10',  label:'Collect 10 Cards',       type:'total',  count:10,     reward:{pm:100,  label:'100 PM'}},
+    {id:'cc_20',  label:'Collect 20 Cards',       type:'total',  count:20,     reward:{pm:250,  label:'250 PM'}},
+    {id:'cc_rare',label:'Collect Any Rare Card',  type:'rarity', rarity:'rare',     count:1, reward:{pm:200,  label:'200 PM'}},
+    {id:'cc_leg', label:'Collect Any Legendary',  type:'rarity', rarity:'legendary',count:1, reward:{pm:500,  label:'500 PM'}},
+    {id:'cc_all', label:'Complete the Collection',type:'total',  count:_total, reward:{pm:2000, label:'2,000 PM'}},
   ];
 })();
-const COLLECTION_RARITY_ORDER=['common','uncommon','rare','luxury','legendary'];
 function loadCollectionClaimed(){try{return new Set(JSON.parse(localStorage.getItem('unbeaten_coll_milestones')||'[]'));}catch{return new Set();}}
 function saveCollectionClaimed(s){try{localStorage.setItem('unbeaten_coll_milestones',JSON.stringify([...s]));}catch{}}
-function getCollectionCounts(ownedArr){
-  const owned=new Set(ownedArr||[]);
-  const cats={};
-  CARD_CATEGORIES.forEach(c=>{cats[c]={owned:0,total:0};});
-  Object.values(CARD_ITEM_DEFINITIONS).forEach(item=>{
-    if(cats[item.category]){cats[item.category].total++;if(owned.has(item.id))cats[item.category].owned++;}
+function getCollectionCounts(ownedIds){
+  const ownedSet=new Set(Array.isArray(ownedIds)?ownedIds:[]);
+  const byRarity={};
+  COLLECTIBLE_CARDS.forEach(c=>{
+    if(!byRarity[c.rarity]) byRarity[c.rarity]={owned:0,total:0};
+    byRarity[c.rarity].total++;
+    if(ownedSet.has(c.id)) byRarity[c.rarity].owned++;
   });
-  const totalOwned=Object.values(cats).reduce((s,c)=>s+c.owned,0);
-  const totalAll=Object.values(CARD_ITEM_DEFINITIONS).length;
-  return{cats,totalOwned,totalAll};
+  const totalOwned=COLLECTIBLE_CARDS.filter(c=>ownedSet.has(c.id)).length;
+  return{byRarity,totalOwned,totalAll:COLLECTIBLE_CARDS.length};
 }
 function claimCollectionMilestone(id){
   const ms=(COLLECTION_MILESTONES||[]).find(m=>m.id===id);
   if(!ms) return;
   const claimed=loadCollectionClaimed();
   if(claimed.has(id)) return;
-  const profile=activeCardProfile();
-  const ownedArr=createOwnedCardItems(profile.ownedCardItems);
-  const{cats,totalOwned}=getCollectionCounts(ownedArr);
-  const current=ms.type==='total'?totalOwned:(cats[ms.category]?.owned||0);
+  const p=loadMyCardsData();
+  const counts=createMyCardCounts(p.myCardCounts,p.myCards);
+  const ownedIds=Object.keys(counts).filter(k=>counts[k]>0&&validCollectibleId(k));
+  const ownedSet=new Set(ownedIds);
+  const{byRarity,totalOwned}=getCollectionCounts(ownedIds);
+  let current=0;
+  if(ms.type==='total') current=totalOwned;
+  else if(ms.type==='rarity') current=[...ownedSet].filter(id=>{const c=COLLECTIBLE_CARDS.find(x=>x.id===id);return c&&c.rarity===ms.rarity;}).length;
   if(current<ms.count) return;
   claimed.add(id);
   saveCollectionClaimed(claimed);
@@ -9023,66 +9044,81 @@ function claimCollectionMilestone(id){
   openCollectionBook();
 }
 function openCollectionBook(){
-  const profile=activeCardProfile();
-  const ownedArr=createOwnedCardItems(profile.ownedCardItems);
-  const ownedSet=new Set(ownedArr);
-  const{cats,totalOwned,totalAll}=getCollectionCounts(ownedArr);
+  const p=loadMyCardsData();
+  const counts=createMyCardCounts(p.myCardCounts,p.myCards);
+  const ownedIds=Object.keys(counts).filter(k=>counts[k]>0&&validCollectibleId(k));
+  const ownedSet=new Set(ownedIds);
   const claimed=loadCollectionClaimed();
-  const catLabels={character:'Characters',aura:'Auras',background:'Backgrounds',frame:'Frames'};
-  // Total bar
+  const{byRarity,totalOwned,totalAll}=getCollectionCounts(ownedIds);
+  const RARITY_ORDER=['common','uncommon','rare','legendary'];
+  const RARITY_LABEL={common:'Common',uncommon:'Uncommon',rare:'Rare',legendary:'Legendary'};
+  const RARITY_COLOR={common:'#9ca3af',uncommon:'#36c47e',rare:'#5b8def',legendary:'#e3b23c'};
+  // Total progress bar
   const totalEl=$('colbook-total');
   if(totalEl){
-    const pct=Math.round(totalOwned/totalAll*100);
+    const pct=totalAll>0?Math.round(totalOwned/totalAll*100):0;
     totalEl.innerHTML=
       '<div class="colbook-total-wrap">'+
-        '<div class="colbook-total-row"><span class="colbook-total-label">Total Collection</span><span class="colbook-total-count">'+totalOwned+' / '+totalAll+'</span></div>'+
+        '<div class="colbook-total-row"><span class="colbook-total-label">Collection Progress</span><span class="colbook-total-count">'+totalOwned+' / '+totalAll+' cards</span></div>'+
         '<div class="colbook-bar"><div class="colbook-bar-fill" style="width:'+pct+'%"></div></div>'+
+        '<div style="font-size:.58rem;color:rgba(255,255,255,.25);margin-top:4px;text-align:right">'+pct+'% complete</div>'+
       '</div>';
   }
-  // Category sections
+  // Rarity sections — sticker-book grid
   const catsEl=$('colbook-cats');
   if(catsEl){
     catsEl.innerHTML='';
-    CARD_CATEGORIES.forEach(cat=>{
-      const items=Object.values(CARD_ITEM_DEFINITIONS).filter(i=>i.category===cat);
-      const catStat=cats[cat];
-      const catPct=catStat.total>0?Math.round(catStat.owned/catStat.total*100):0;
-      const head=document.createElement('button');
-      head.type='button';
-      head.className='colbook-cat-head';
+    RARITY_ORDER.forEach(rarity=>{
+      const cards=COLLECTIBLE_CARDS.filter(c=>c.rarity===rarity);
+      const stat=byRarity[rarity]||{owned:0,total:cards.length};
+      const pct=stat.total>0?Math.round(stat.owned/stat.total*100):0;
+      const color=RARITY_COLOR[rarity]||'#fff';
+      const section=document.createElement('div');
+      section.className='colbook-rarity-section';
+      // Header
+      const head=document.createElement('div');
+      head.className='colbook-rarity-head';
       head.innerHTML=
-        '<div style="flex:1;min-width:0">'+
-          '<h3>'+htmlEscape(catLabels[cat]||cat)+'</h3>'+
-          '<div class="colbook-bar" style="margin-top:5px"><div class="colbook-bar-fill" style="width:'+catPct+'%"></div></div>'+
+        '<div>'+
+          '<h3 style="color:'+color+'">'+RARITY_LABEL[rarity]+'</h3>'+
+          '<div class="colbook-rarity-sub">'+stat.owned+' / '+stat.total+' cards</div>'+
         '</div>'+
-        '<span class="colbook-cat-count" style="margin-left:10px">'+catStat.owned+'/'+catStat.total+'</span>';
-      const body=document.createElement('div');
-      body.className='colbook-cat-body';
-      const sorted=[...items].sort((a,b)=>{
-        const ao=ownedSet.has(a.id)?0:1, bo=ownedSet.has(b.id)?0:1;
-        if(ao!==bo) return ao-bo;
-        return COLLECTION_RARITY_ORDER.indexOf(a.rarity)-COLLECTION_RARITY_ORDER.indexOf(b.rarity);
+        '<span class="colbook-rarity-pct" style="color:'+color+'">'+pct+'%</span>';
+      // Rarity progress bar
+      const bar=document.createElement('div');
+      bar.className='colbook-bar';
+      bar.style.marginBottom='9px';
+      bar.innerHTML='<div class="colbook-bar-fill" style="width:'+pct+'%;background:'+color+'"></div>';
+      // Card grid
+      const grid=document.createElement('div');
+      grid.className='colbook-cc-grid';
+      cards.forEach(card=>{
+        const isOwned=ownedSet.has(card.id);
+        const count=counts[card.id]||0;
+        const slot=document.createElement('div');
+        slot.className='colbook-cc-slot'+(isOwned?' cc-owned cc-r-'+rarity:' cc-locked');
+        const artDiv=document.createElement('div');
+        artDiv.className='colbook-cc-art';
+        if(isOwned&&card.image){
+          artDiv.innerHTML='<img src="'+htmlEscape(card.image)+'" alt="'+htmlEscape(card.name)+'" loading="lazy">';
+        } else {
+          artDiv.innerHTML='<div class="colbook-cc-art-placeholder">'+(isOwned?'🥊':'#'+String(card.num).padStart(2,'0'))+'</div>';
+        }
+        const foot=document.createElement('div');
+        foot.className='colbook-cc-foot';
+        foot.innerHTML=
+          '<div class="colbook-cc-foot-num">#'+String(card.num).padStart(2,'0')+'</div>'+
+          '<div class="colbook-cc-foot-name">'+(isOwned?htmlEscape(card.name):'???')+'</div>'+
+          (isOwned?'<div class="colbook-cc-foot-boost">'+htmlEscape(card.boost)+'</div>':'')+
+          (isOwned&&count>1?'<div class="colbook-cc-foot-dupe">x'+count+'</div>':'');
+        slot.appendChild(artDiv);
+        slot.appendChild(foot);
+        grid.appendChild(slot);
       });
-      sorted.forEach(item=>{
-        const isOwned=ownedSet.has(item.id);
-        const tile=document.createElement('div');
-        tile.className='col-item-tile '+(isOwned?'owned':'locked');
-        tile.innerHTML=
-          '<div class="col-item-img-wrap">'+
-            (isOwned
-              ?'<img src="'+htmlEscape(item.asset)+'" alt="" loading="lazy">'
-              :'<div class="col-item-img-lock">🔒</div>')+
-          '</div>'+
-          '<div class="col-item-info">'+
-            '<div class="col-item-name">'+htmlEscape(item.name)+'</div>'+
-            '<span class="col-item-rarity cr-'+htmlEscape(item.rarity||'common')+'">'+htmlEscape(item.rarity||'common')+'</span>'+
-            '<span class="col-item-badge '+(isOwned?'owned':'locked')+'">'+(isOwned?'✓ Owned':'Locked')+'</span>'+
-          '</div>';
-        body.appendChild(tile);
-      });
-      head.onclick=()=>body.classList.toggle('collapsed');
-      catsEl.appendChild(head);
-      catsEl.appendChild(body);
+      section.appendChild(head);
+      section.appendChild(bar);
+      section.appendChild(grid);
+      catsEl.appendChild(section);
     });
   }
   // Milestones
@@ -9091,7 +9127,9 @@ function openCollectionBook(){
     msEl.innerHTML='';
     (COLLECTION_MILESTONES||[]).forEach(ms=>{
       const isClaimed=claimed.has(ms.id);
-      const current=ms.type==='total'?totalOwned:(cats[ms.category]?.owned||0);
+      let current=0;
+      if(ms.type==='total') current=totalOwned;
+      else if(ms.type==='rarity') current=[...ownedSet].filter(id=>{const c=COLLECTIBLE_CARDS.find(x=>x.id===id);return c&&c.rarity===ms.rarity;}).length;
       const pct=Math.min(100,Math.round(current/ms.count*100));
       const isReady=current>=ms.count&&!isClaimed;
       const card=document.createElement('div');
@@ -9103,11 +9141,8 @@ function openCollectionBook(){
           '<div class="colbook-ms-prog"><div class="colbook-ms-fill" style="width:'+pct+'%"></div></div>'+
           '<div class="colbook-ms-progtext">'+(isClaimed?'✓ Claimed':current+' / '+ms.count)+'</div>'+
         '</div>'+
-        (isReady
-          ?'<button class="btn gold" style="font-size:.68rem;min-height:36px;padding:0 12px;flex-shrink:0" onclick="claimCollectionMilestone(\''+htmlEscape(ms.id)+'\')">Claim</button>'
-          :isClaimed
-            ?'<span style="font-size:1rem;color:rgba(255,255,255,.25);flex-shrink:0">✓</span>'
-            :'');
+        (isReady?'<button class="btn gold" style="font-size:.68rem;min-height:36px;padding:0 12px;flex-shrink:0" onclick="claimCollectionMilestone(\''+htmlEscape(ms.id)+'\')">Claim</button>':
+          isClaimed?'<span style="font-size:1rem;color:rgba(255,255,255,.25);flex-shrink:0">✓</span>':'');
       msEl.appendChild(card);
     });
   }
