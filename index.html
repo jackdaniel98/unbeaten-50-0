@@ -1612,16 +1612,10 @@ body.final-card-open{overflow:hidden}
   .fighter-card-avatar{height:138px}
   .fighter-card-stats{gap:5px;margin-top:9px}
   .account-actions{gap:7px}
-  #menu-screen.active{display:flex;flex-direction:column}
-  #menu-screen>*{order:20}
-  #menu-screen>.worldwide-stats-title,#menu-screen>.global-stats{order:1}
   #menu-screen>.worldwide-stats-title{margin-top:2px}
-  #menu-screen>.menu-actions{order:2;margin-top:2px!important;padding-top:0!important}
-  #menu-screen>.current-rank-panel{order:3}
+  #menu-screen>.menu-actions{margin-top:2px!important;padding-top:0!important}
 }
-@media(max-width:520px){
-  #menu-screen>.worldwide-stats-title,#menu-screen>.global-stats{order:-1}
-}
+@media(max-width:520px){}
 @media(min-width:521px){
   body{padding:24px 12px}
   .app{margin:auto 0;min-height:auto;max-height:calc(100dvh - 48px)}
@@ -2368,21 +2362,6 @@ body.final-card-open{overflow:hidden}
 </section>
 
 <section id="menu-screen" class="screen">
-  <div class="menu-actions">
-    <button id="card-store-menu-btn" type="button" class="btn" data-screen-target="card-store-screen">Pack Store</button>
-    <button id="continue-btn" type="button" class="btn blue hidden" data-screen-target="hub-screen">Continue Career</button>
-    <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">Draft New Boxer</button>
-    <!-- Legacy modular avatar/cosmetic screens are deprecated. The live collection loop uses finished cards only. -->
-    <button id="settings-menu-btn" type="button" class="btn ghost" onclick="openAccountSettings()">Settings</button>
-    <button id="my-profile-menu-btn" type="button" class="btn ghost" onclick="openMyProfile()">My Profile</button>
-    <button id="collection-book-menu-btn" type="button" class="btn ghost" onclick="openCollectionBook()">Collection Book</button>
-    <button id="my-cards-menu-btn" type="button" class="btn ghost" onclick="openMyCards()">My Cards</button>
-    <button id="weekly-obj-menu-btn" type="button" class="btn ghost" onclick="openWeeklyObjectives()">Weekly Objectives<span id="weekly-badge" class="weekly-badge hidden">0</span></button>
-    <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
-    <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Hall Of Fame</button>
-    <button id="report-bug-menu-btn" type="button" class="btn ghost" onclick="openBugReport()">Report Game Bug</button>
-    <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save">Delete Current Save</button>
-  </div>
   <h2 class="worldwide-stats-title">Worldwide Stats</h2>
   <div class="global-stats">
     <div class="stat-pill">
@@ -2403,6 +2382,19 @@ body.final-card-open{overflow:hidden}
     <div class="rank-hero-number" id="rank-alltime">--</div>
     <div class="rank-hero-sub">This Season: <strong id="rank-seasonal">--</strong></div>
     <div class="rank-hero-cta">Every fight counts — climb to #1 🏆</div>
+  </div>
+  <div class="menu-actions">
+    <button id="card-store-menu-btn" type="button" class="btn" data-screen-target="card-store-screen">Pack Store</button>
+    <button id="continue-btn" type="button" class="btn blue hidden" data-screen-target="hub-screen">Continue Career</button>
+    <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">Draft New Boxer</button>
+    <button id="settings-menu-btn" type="button" class="btn ghost" onclick="openAccountSettings()">Settings</button>
+    <button id="collection-book-menu-btn" type="button" class="btn ghost" onclick="openCollectionBook()">Collection Book</button>
+    <button id="my-cards-menu-btn" type="button" class="btn ghost" onclick="openMyCards()">My Cards</button>
+    <button id="weekly-obj-menu-btn" type="button" class="btn ghost" onclick="openWeeklyObjectives()">Weekly Objectives<span id="weekly-badge" class="weekly-badge hidden">0</span></button>
+    <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
+    <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Leaderboards</button>
+    <button id="report-bug-menu-btn" type="button" class="btn ghost" onclick="openBugReport()">Report Game Bug</button>
+    <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save">Delete Current Save</button>
   </div>
 </section>
 
