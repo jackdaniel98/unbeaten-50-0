@@ -6759,38 +6759,39 @@ const CARD_ITEM_DEFINITIONS = {
 const DEFAULT_OWNED_CARD_ITEMS = Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.base).map(item=>item.id);
 const DEFAULT_EQUIPPED_CARD_ITEMS = {character:'character_standard_contender',aura:'aura_corner_smoke',background:'background_standard_fight_night',frame:'frame_standard_contender'};
 const COLLECTIBLE_CARDS = [
-  {id:'cc001',num:1,name:'Street Spark',rarity:'common',boost:'+1% Defense'},
-  {id:'cc002',num:2,name:'Danny Hawk',rarity:'common',boost:'+1% Speed'},
-  {id:'cc003',num:3,name:'Mike Stone',rarity:'common',boost:'+1% Power'},
-  {id:'cc004',num:4,name:'Leon Brash',rarity:'common',boost:'+1% Stamina'},
-  {id:'cc005',num:5,name:'Ray Okafor',rarity:'common',boost:'+1% Defense'},
-  {id:'cc006',num:6,name:'Tony Blaze',rarity:'common',boost:'+1% Speed'},
-  {id:'cc007',num:7,name:'Eddie Cross',rarity:'common',boost:'+1% Power'},
-  {id:'cc008',num:8,name:'Pablo Cruz',rarity:'common',boost:'+1% Stamina'},
-  {id:'cc009',num:9,name:'Sam Flint',rarity:'common',boost:'+1% Defense'},
-  {id:'cc010',num:10,name:'Kyle Rush',rarity:'common',boost:'+1% Speed'},
-  {id:'cc011',num:11,name:'Marco Diaz',rarity:'common',boost:'+1% Power'},
-  {id:'cc012',num:12,name:'Joel Price',rarity:'common',boost:'+1% Stamina'},
-  {id:'cc013',num:13,name:'Vincent Kane',rarity:'uncommon',boost:'+2% Power'},
-  {id:'cc014',num:14,name:'Rico Bell',rarity:'uncommon',boost:'+2% Speed'},
-  {id:'cc015',num:15,name:'Damon Cole',rarity:'uncommon',boost:'+2% Defense'},
-  {id:'cc016',num:16,name:'Trent Nash',rarity:'uncommon',boost:'+2% Stamina'},
-  {id:'cc017',num:17,name:'Byron Fox',rarity:'uncommon',boost:'+3% Power'},
-  {id:'cc018',num:18,name:'Shane Wild',rarity:'uncommon',boost:'+2% Speed'},
-  {id:'cc019',num:19,name:'Derek Moon',rarity:'uncommon',boost:'+2% Defense'},
-  {id:'cc020',num:20,name:'Curtis Jay',rarity:'uncommon',boost:'+2% Stamina'},
-  {id:'cc021',num:21,name:'Phoenix Roar',rarity:'rare',boost:'+4% Power'},
-  {id:'cc022',num:22,name:'Storm Reed',rarity:'rare',boost:'+4% Speed'},
-  {id:'cc023',num:23,name:'Iron Doyle',rarity:'rare',boost:'+4% Defense'},
-  {id:'cc024',num:24,name:'Nova Slade',rarity:'rare',boost:'+4% Stamina'},
-  {id:'cc025',num:25,name:'Lance Fury',rarity:'rare',boost:'+5% Power'},
-  {id:'cc026',num:26,name:'Titan Cross',rarity:'rare',boost:'+5% Speed'},
-  {id:'cc027',num:27,name:'The Phantom',rarity:'legendary',boost:'+8% Power'},
-  {id:'cc028',num:28,name:'Gold Rush',rarity:'legendary',boost:'+8% Speed'},
-  {id:'cc029',num:29,name:'King Stone',rarity:'legendary',boost:'+10% Defense'},
-  {id:'cc030',num:30,name:'The Immortal',rarity:'legendary',boost:'+10% All Stats'},
+  {id:'cc001',num:1, name:'Street Spark',    rarity:'common',   boost:'+1% Defense', image:'assets/collectible/card_001.png'},
+  {id:'cc002',num:2, name:'Crimson Jackal',  rarity:'common',   boost:'+1% Speed',   image:'assets/collectible/card_002.png'},
+  {id:'cc003',num:3, name:'Midnight Hammer', rarity:'common',   boost:'+1% Power',   image:'assets/collectible/card_003.png'},
+  {id:'cc004',num:4, name:'Copper Fang',     rarity:'common',   boost:'+1% Stamina', image:'assets/collectible/card_004.png'},
+  {id:'cc005',num:5, name:'Ivory Storm',     rarity:'common',   boost:'+1% Defense', image:'assets/collectible/card_005.png'},
+  {id:'cc006',num:6, name:'Jade Titan',      rarity:'common',   boost:'+1% Speed',   image:'assets/collectible/card_006.png'},
+  {id:'cc007',num:7, name:'Bronze Reign',    rarity:'common',   boost:'+1% Power',   image:'assets/collectible/card_007.png'},
+  {id:'cc008',num:8, name:'Neon Mauler',     rarity:'common',   boost:'+1% Stamina', image:'assets/collectible/card_008.png'},
+  {id:'cc009',num:9, name:'Royal Tempest',   rarity:'common',   boost:'+1% Defense', image:'assets/collectible/card_009.png'},
+  {id:'cc010',num:10,name:'Obsidian King',   rarity:'common',   boost:'+1% Speed',   image:'assets/collectible/card_010.png'},
+  {id:'cc011',num:11,name:'Ember Phantom',   rarity:'common',   boost:'+1% Power',   image:'assets/collectible/card_011.png'},
+  {id:'cc012',num:12,name:'Shadow Viper',    rarity:'common',   boost:'+1% Stamina', image:'assets/collectible/card_012.png'},
+  {id:'cc013',num:13,name:'Frostbite',       rarity:'uncommon', boost:'+2% Power',   image:'assets/collectible/card_013.png'},
+  {id:'cc014',num:14,name:'Venom Reign',     rarity:'uncommon', boost:'+2% Speed',   image:'assets/collectible/card_014.png'},
+  {id:'cc015',num:15,name:'Tempest Howl',    rarity:'uncommon', boost:'+2% Defense', image:'assets/collectible/card_015.png'},
+  {id:'cc016',num:16,name:'Gilded Rogue',    rarity:'uncommon', boost:'+2% Stamina', image:'assets/collectible/card_016.png'},
+  {id:'cc017',num:17,name:'Bloodline',       rarity:'uncommon', boost:'+3% Power',   image:'assets/collectible/card_017.png'},
+  {id:'cc018',num:18,name:'Arctic Knell',    rarity:'uncommon', boost:'+2% Speed',   image:'assets/collectible/card_018.png'},
+  {id:'cc019',num:19,name:'Arcane Breaker',  rarity:'uncommon', boost:'+2% Defense', image:'assets/collectible/card_019.png'},
+  {id:'cc020',num:20,name:'Break The Limit', rarity:'uncommon', boost:'+2% Stamina', image:'assets/collectible/card_020.png'},
+  {id:'cc021',num:21,name:'Phoenix Roar',    rarity:'rare',     boost:'+4% Power'},
+  {id:'cc022',num:22,name:'Storm Reed',      rarity:'rare',     boost:'+4% Speed'},
+  {id:'cc023',num:23,name:'Iron Doyle',      rarity:'rare',     boost:'+4% Defense'},
+  {id:'cc024',num:24,name:'Nova Slade',      rarity:'rare',     boost:'+4% Stamina'},
+  {id:'cc025',num:25,name:'Lance Fury',      rarity:'rare',     boost:'+5% Power'},
+  {id:'cc026',num:26,name:'Titan Cross',     rarity:'rare',     boost:'+5% Speed'},
+  {id:'cc027',num:27,name:'The Phantom',     rarity:'legendary',boost:'+8% Power'},
+  {id:'cc028',num:28,name:'Gold Rush',       rarity:'legendary',boost:'+8% Speed'},
+  {id:'cc029',num:29,name:'King Stone',      rarity:'legendary',boost:'+10% Defense'},
+  {id:'cc030',num:30,name:'The Immortal',    rarity:'legendary',boost:'+10% All Stats'},
 ];
-const DEFAULT_OWNED_COLLECTIBLE_CARDS = ['cc001'];
+// cc001 is always auto-granted (see createProfileFoundation). Others are test-owned only — remove when packs are live.
+const DEFAULT_OWNED_COLLECTIBLE_CARDS = ['cc001','cc003','cc006','cc010','cc015','cc019'];
 const ACHIEVEMENT_DEFINITIONS = {
   first_win:{id:'first_win',name:'First Win',desc:'Win your first professional bout.',reward:'gloves_red_reward',check:c=>c.wins>=1},
   prospect_10_0:{id:'prospect_10_0',name:'10-0 Prospect',desc:'Reach 10 wins with no losses or draws.',reward:'gloves_bronze',check:c=>c.wins>=10&&c.losses===0&&c.draws===0},
@@ -9742,6 +9743,7 @@ function setMyCardsFilter(f){
 function _mccRarityClass(rarity){ return 'mcc-rarity-'+rarity; }
 function _mccRarityBadgeClass(rarity){ return 'mcc-rarity-badge-'+rarity; }
 function _mccArtHTML(card,sizePx){
+  if(card.image) return '<img src="'+card.image+'" style="width:'+sizePx+'px;aspect-ratio:2/3;object-fit:cover;border-radius:var(--radius);display:block;" alt="'+htmlEscape(card.name)+'" loading="lazy">';
   const style='width:'+sizePx+'px;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:'+(sizePx*0.35)+'px;border-radius:var(--radius);overflow:hidden;';
   return '<div class="'+_mccRarityClass(card.rarity)+'" style="'+style+'">🥊</div>';
 }
@@ -9784,16 +9786,17 @@ function renderMyCardsGrid(){
     const isFav=favs.has(card.id);
     const numStr='#'+String(card.num).padStart(3,'0');
     if(isOwned){
+      const cellArt=card.image
+        ?'<div class="mcc-cell-art"><img src="'+card.image+'" style="width:100%;height:100%;object-fit:cover;" alt="" loading="lazy"></div>'
+        :'<div class="mcc-cell-art '+_mccRarityClass(card.rarity)+'">🥊</div>';
       return '<div class="mcc-cell owned" onclick="openMyCardDetail(\''+card.id+'\')" role="button" tabindex="0" aria-label="'+htmlEscape(card.name)+'">'+
-        '<div class="mcc-cell-art '+_mccRarityClass(card.rarity)+'">🥊</div>'+
-        '<div class="mcc-cell-name">'+htmlEscape(card.name)+'</div>'+
+        cellArt+
         (isFav?'<div class="mcc-cell-fav" aria-hidden="true">&#9829;</div>':'')+
-        '<div class="mcc-cell-num">'+numStr+'</div>'+
       '</div>';
     } else {
       return '<div class="mcc-cell unowned" onclick="openMyCardDetail(\''+card.id+'\')" role="button" tabindex="0" aria-label="Card '+numStr+' locked">'+
         '<div class="mcc-cell-art" style="background:#0e0f14;color:rgba(255,255,255,.15);font-size:1.4rem">🔒</div>'+
-        '<div class="mcc-cell-num">'+numStr+'</div>'+
+        '<div class="mcc-cell-num">🔒 '+numStr+'</div>'+
       '</div>';
     }
   }).join('');
@@ -9808,7 +9811,15 @@ function openMyCardDetail(id){
   const isOwned=owned.has(id);
   const isFav=favs.has(id);
   const artEl=document.getElementById('mcc-detail-art');
-  if(artEl){ artEl.className='mcc-detail-art '+_mccRarityClass(card.rarity); artEl.innerHTML='<span style="font-size:2.4rem">🥊</span>'; }
+  if(artEl){
+    if(card.image){
+      artEl.className='mcc-detail-art';
+      artEl.innerHTML='<img src="'+card.image+'" style="width:100%;height:100%;object-fit:cover;" alt="'+htmlEscape(card.name)+'" loading="lazy">';
+    } else {
+      artEl.className='mcc-detail-art '+_mccRarityClass(card.rarity);
+      artEl.innerHTML='<span style="font-size:2.4rem">🥊</span>';
+    }
+  }
   const nameEl=document.getElementById('mcc-detail-name');
   if(nameEl) nameEl.textContent=card.name;
   const metaEl=document.getElementById('mcc-detail-meta');
