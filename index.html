@@ -7171,7 +7171,7 @@ function ensurePlayerFoundation(player){
   const fullName=cleanName([player.boxerFirstName, player.boxerLastName].filter(Boolean).join(' '));
   player.profileModelVersion=PROFILE_MODEL_VERSION;
   player.playerId=id;
-  player.username=cleanName(player.username||player.Name||'Custom Contender');
+  player.username=cleanName(player.username)||'Custom Contender';
   player.boxerFirstName=cleanName(player.boxerFirstName||String(player.Name||'Custom').split(' ')[0]||'Custom');
   player.boxerLastName=cleanName(player.boxerLastName||String(player.Name||'Contender').split(' ').slice(1).join(' ')||'Contender');
   player.Nickname=cleanName(player.Nickname||'The Contender');
@@ -7230,7 +7230,7 @@ function createProfileFoundation(existing={}){
   const profile={
     profileModelVersion:PROFILE_MODEL_VERSION,
     playerId:existing.playerId||makeId('player'),
-    username:cleanName(existing.username||existing.Name||'Custom Contender'),
+    username:cleanName(existing.username)||'Custom Contender',
     boxerFirstName:cleanName(existing.boxerFirstName||nameParts[0]||'Custom'),
     boxerLastName:cleanName(existing.boxerLastName||nameParts.slice(1).join(' ')||'Contender'),
     nickname:cleanName(existing.nickname||existing.Nickname||'The Contender'),
@@ -7694,7 +7694,7 @@ function handleCreatorInput(){
   renderCreatorAvatar();
 }
 function fillCreatorForm(profile=loadProfileFoundation()){
-  $('creator-username').value=profile.username||'';
+  $('creator-username').value=getProfileDisplayName()!=='Custom Contender'?getProfileDisplayName():(profile.username||'');
   $('creator-first-name').value=profile.boxerFirstName||'';
   $('creator-last-name').value=profile.boxerLastName||'';
   $('creator-nickname').value=profile.nickname||'';
@@ -9510,7 +9510,7 @@ function goToHub(){
   const nameCheck=validateFighterName(nm);
   if(!nameCheck.ok){ err.innerText=nameCheck.msg; err.classList.remove('ok'); input.focus(); return; }
   S.player.Name=nm;
-  if(!S.player.username||S.player.username==='Custom Contender') S.player.username=nm;
+  // username is the account display name — never overwrite with the boxer's fighter name
   if(S.traitsRolled<2){ alert('Spin both traits first.'); return; }
   if(STATS.some(st=>S.player.Stats[st]==null)){ alert('Complete the draft first.'); return; }
   if(!S.career.id) S.career.id=makeId('career');
@@ -9605,7 +9605,7 @@ function renderProfileFoundation(){
   }
   const _hbb=null;
   if(_hbb){ const _boosts=getEquippedCharacterBoosts(),_bArr=Object.values(_boosts); if(_bArr.length){ const _charName=equippedCardAssets(activeCardProfile())?.character?.name||''; _hbb.style.display='flex'; _hbb.innerHTML=(_charName?'<div class="hub-boost-badge-header">'+htmlEscape(_charName)+' — Active Boost'+(_bArr.length>1?'s':'')+'</div>':'')+_bArr.map(b=>'<div class="hub-boost-badge"><span class="hub-boost-badge-name">'+(b.icon||'⚡')+' '+htmlEscape(b.name)+'</span><span class="hub-boost-badge-desc">'+htmlEscape(b.desc)+'</span></div>').join('')+'<p class="hub-boost-note">Only your equipped character\'s boost applies — swap in Card Editor.</p>'; }else{ _hbb.style.display='flex'; _hbb.innerHTML='<p class="hub-boost-note">Equip a character in the Card Editor to activate a signature boost.</p>'; } }
-  if($('profile-username')) $('profile-username').innerText=S.player.username||'-';
+  if($('profile-username')) $('profile-username').innerText=getProfileDisplayName();
   if($('profile-player-id')) $('profile-player-id').innerText=S.player.playerId||'-';
   if($('profile-avatar-style')) $('profile-avatar-style').innerText=[S.player.avatar?.skinTone,S.player.avatar?.hairStyle,S.player.avatar?.gloves].filter(Boolean).join(' / ')||'classic';
   if($('profile-cosmetics')) $('profile-cosmetics').innerText=(S.player.unlockedCosmetics||[]).length+' unlocked';
@@ -10072,7 +10072,7 @@ function openMyCards(){
   _mccFilter='all';
   document.querySelectorAll('.mcc-filter').forEach(el=>el.classList.toggle('active',el.dataset.filter==='all'));
   renderMccShowcase();
-  refreshDisplayNameUI();
+  renderProfileDisplayNameEverywhere();
   renderMyCardsGrid();
   const btn=$('mcc-pack-btn');
   if(btn) btn.disabled=safeMoney(activeCardProfile().playMoney)<COLLECTOR_PACK_COST;
@@ -10344,7 +10344,19 @@ function localSaveSummary(data){
 function restoreCloudPayload(payload){
   if(!payload) return;
   restoringCloud=true;
-  saveProfileFoundation(antiCheatProfile(payload.profile||{}));
+  const localProfile=loadProfileFoundation();
+  const cloudProfile=antiCheatProfile(payload.profile||{});
+  // If the player set a real display name locally that the cloud doesn't have yet, keep it.
+  // This protects against a page-refresh race where the cloud push hadn't completed yet.
+  const localName=localProfile.username||'';
+  const cloudName=cloudProfile.username||'';
+  const isCustomLocal=localName&&localName!=='Custom Contender';
+  const isDefaultCloud=!cloudName||cloudName==='Custom Contender';
+  if(isCustomLocal&&isDefaultCloud){
+    cloudProfile.username=localName;
+    console.log('[SYNC] Kept local display name "'+localName+'" — cloud had default.');
+  }
+  saveProfileFoundation(cloudProfile);
   saveRetiredCareers(Array.isArray(payload.retiredCareers)?payload.retiredCareers:[]);
   if(payload.records) saveRecords(payload.records);
   if(payload.activeCareer) localStorage.setItem(KEYS.career, JSON.stringify(antiCheatCareerData(payload.activeCareer)));
@@ -11075,18 +11087,35 @@ function shareCareer(){
   }
   shareCardWithText(txt,'UNBEATEN: 50-0 — '+fighterName+' '+record);
 }
-function openAccountSettings(){ updateAuthUI(); refreshDisplayNameUI(); screen('account-settings-screen'); }
-function refreshDisplayNameUI(name){
-  const n=name||(loadProfileFoundation().username)||'Player';
-  const mccEl=$('mcc-display-name'), settEl=$('settings-display-name');
+function getProfileDisplayName(){
+  if(S.player&&S.player.username&&S.player.username!=='Custom Contender') return S.player.username;
+  const p=loadProfileFoundation();
+  return (p.username&&p.username!=='Custom Contender')?p.username:'Custom Contender';
+}
+function setProfileDisplayName(name){
+  if(!name||typeof name!=='string') return false;
+  const raw=(name||'').trim();
+  const v=validateUsername(raw);
+  if(!v.ok){ console.warn('[DISPLAY NAME] Invalid:',v.msg); return false; }
+  mutateCardProfile(t=>{ t.username=raw; });
+  if(S.player) S.player.username=raw;
+  renderProfileDisplayNameEverywhere(raw);
+  if(currentUser) syncNow(false).catch(e=>console.warn('[DISPLAY NAME] Cloud push failed:',e));
+  return true;
+}
+function renderProfileDisplayNameEverywhere(name){
+  const n=name||getProfileDisplayName();
+  const mccEl=$('mcc-display-name'), settEl=$('settings-display-name'), hubEl=$('profile-username');
   if(mccEl) mccEl.textContent=n;
   if(settEl) settEl.textContent=n;
+  if(hubEl) hubEl.textContent=n;
 }
+function refreshDisplayNameUI(name){ renderProfileDisplayNameEverywhere(name); }
+function openAccountSettings(){ updateAuthUI(); renderProfileDisplayNameEverywhere(); screen('account-settings-screen'); }
 function openChangeDisplayName(){
-  const p=loadProfileFoundation();
   const modal=$('change-name-modal'), input=$('change-name-input');
   if(!modal||!input) return;
-  input.value=p.username||'';
+  input.value=getProfileDisplayName();
   $('change-name-error').textContent='';
   modal.classList.remove('hidden');
   setTimeout(()=>input.focus(),80);
@@ -11101,12 +11130,10 @@ function saveChangeDisplayName(){
   const raw=(input.value||'').trim();
   const v=validateUsername(raw);
   if(!v.ok){ errEl.textContent=v.msg; return; }
-  mutateCardProfile(t=>{ t.username=raw; });
-  if(S.player) S.player.username=raw;
+  const ok=setProfileDisplayName(raw);
+  if(!ok){ errEl.textContent='Could not save display name.'; return; }
   closeChangeDisplayName();
-  refreshDisplayNameUI(raw);
   showToast('Display Name Updated','Now showing as: '+raw);
-  requestCloudSync();
 }
 function backToMenu(fromHof=false){ if(!fromHof&&S.career&&S.player&&S.player.Name&&S.career.currentFight<=50) saveCareer(); refreshMenu(); screen('menu-screen'); }
 window.onload = () => {
