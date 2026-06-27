@@ -1630,10 +1630,7 @@ body.final-card-open{overflow:hidden}
 }
 .modular-card-art{position:absolute;left:7%;right:7%;top:7%;bottom:20%;overflow:hidden;z-index:0;background:#050506;isolation:isolate;border-radius:18px}
 .modular-card img{position:absolute;display:block;pointer-events:none;user-select:none}
-.modular-card-background,.modular-card-frame{inset:0;width:100%;height:100%}
-.modular-card-background{z-index:0;object-fit:cover}
-.modular-card-aura,.modular-card-character{left:0;top:0;width:100%;height:90%;object-fit:contain;object-position:center bottom}
-.modular-card-aura{z-index:1;opacity:.92;mix-blend-mode:screen}.modular-card-character{z-index:2}.modular-card-frame{z-index:3}
+.modular-card-character{left:0;top:0;width:100%;height:90%;object-fit:contain;object-position:center bottom;z-index:1}
 .modular-card::after{content:'';position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.5) 78%,rgba(0,0,0,.72) 100%);pointer-events:none}
 .modular-card-copy{position:absolute;z-index:4;color:#f8fafc;text-align:center;text-shadow:0 1px 3px #000,0 2px 10px rgba(0,0,0,.9);pointer-events:none}
 .modular-card-ovr{display:none}
@@ -6753,9 +6750,9 @@ const COSMETIC_DEFINITIONS = {
 };
 const DEFAULT_UNLOCKED_COSMETICS = ['robe_default','gloves_default','shorts_default','boots_default','tattoo_default','aura_default','entrance_default','badge_default'];
 const DEFAULT_EQUIPPED_COSMETICS = {robe:'robe_default',gloves:'gloves_default',shorts:'shorts_default',boots:'boots_default',tattoo:'tattoo_default',aura:'aura_default',entrance:'entrance_default',badge:'badge_default'};
-const CARD_CATEGORIES = ['character','aura','background','frame'];
-const CARD_STORE_CATEGORIES = ['aura','background','character','frame'];
-const CARD_CATEGORY_LABELS = {character:'Skins',aura:'Aura',background:'Backgrounds',frame:'Frames'};
+const CARD_CATEGORIES = ['character'];
+const CARD_STORE_CATEGORIES = ['character'];
+const CARD_CATEGORY_LABELS = {character:'Skins'};
 const CARD_RARITY_MINIMUM_PRICES = {common:2700,uncommon:3600,rare:10800,luxury:21600,legendary:36000};
 const CARD_ITEM_DEFINITIONS = {
   character_standard_contender:{id:'character_standard_contender',category:'character',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/character_standard_contender.png',boosts:[{id:'clutch_rounds',icon:'⏰',name:'Clutch Rounds',desc:'+1 scorecard point in rounds 10-12',value:1}]},
@@ -6775,34 +6772,6 @@ const CARD_ITEM_DEFINITIONS = {
   character_samuel:{id:'character_samuel',category:'character',name:'Samuel',rarity:'legendary',price:45000,asset:'assets/card/character_samuel.png',boosts:[{id:'power_surge',icon:'💥',name:'Power Surge',desc:'+6 KD chance when opponent is below 50% HP',value:6},{id:'legacy_builder',icon:'📜',name:'Legacy Builder',desc:'+12% final legacy score',value:0.12}]},
   character_lizard_warrior:{id:'character_lizard_warrior',category:'character',name:'Lizard Warrior',rarity:'legendary',price:41000,asset:'assets/card/character_lizard_warrior.png',boosts:[{id:'iron_jaw',icon:'🛡',name:'Iron Jaw',desc:'+10 to beat-the-count survival roll when knocked down',value:10},{id:'belt_collector',icon:'🏆',name:'Belt Collector',desc:'+5% TKO stoppage chance in title fights when opponent is weakened',value:0.05}]},
   character_ironclad:{id:'character_ironclad',category:'character',name:'Ironclad',rarity:'luxury',price:25800,asset:'assets/card/character_ironclad.png',boosts:[{id:'survive_once',icon:'💪',name:'Survive Once',desc:'Once per career, survive a KO blow that would end the fight'},{id:'iron_jaw',icon:'🛡',name:'Iron Jaw',desc:'+4 to beat-the-count survival roll when knocked down',value:4}]},
-  aura_corner_smoke:{id:'aura_corner_smoke',category:'aura',name:'Corner Smoke',rarity:'common',price:0,base:true,asset:'assets/card/aura_corner_smoke.png'},
-  aura_crystal_shards:{id:'aura_crystal_shards',category:'aura',name:'Crystal Shards',rarity:'common',price:0,base:true,asset:'assets/card/aura_crystal_shards.png'},
-  aura_flames:{id:'aura_flames',category:'aura',name:'Flames',rarity:'common',price:0,base:true,asset:'assets/card/aura_flames.png'},
-  aura_purple_haze:{id:'aura_purple_haze',category:'aura',name:'Purple Haze',rarity:'common',price:0,base:true,asset:'assets/card/aura_purple_haze.png'},
-  aura_shatter:{id:'aura_shatter',category:'aura',name:'Shatter',rarity:'common',price:0,base:true,asset:'assets/card/aura_shatter.png'},
-  aura_shocking:{id:'aura_shocking',category:'aura',name:'Shocking',rarity:'common',price:0,base:true,asset:'assets/card/aura_shocking.png'},
-  aura_showtime:{id:'aura_showtime',category:'aura',name:'Showtime',rarity:'common',price:0,base:true,asset:'assets/card/aura_showtime.png'},
-  aura_smokey:{id:'aura_smokey',category:'aura',name:'Smokey',rarity:'common',price:0,base:true,asset:'assets/card/aura_smokey.png'},  background_standard_fight_night:{id:'background_standard_fight_night',category:'background',name:'Standard Fight Night',rarity:'common',price:0,base:true,asset:'assets/card/background_standard_fight_night.png'},
-  background_beetra:{id:'background_beetra',category:'background',name:'Beetra',rarity:'rare',price:8000,asset:'assets/card/background_beetra.png'},
-  background_blizzard:{id:'background_blizzard',category:'background',name:'Blizzard',rarity:'uncommon',price:2000,asset:'assets/card/background_blizzard.png'},
-  background_elix:{id:'background_elix',category:'background',name:'Elix',rarity:'common',price:500,asset:'assets/card/background_elix.png'},
-  background_showtime:{id:'background_showtime',category:'background',name:'Showtime',rarity:'luxury',price:10000,asset:'assets/card/background_showtime.png'},
-  background_underworld_arena:{id:'background_underworld_arena',category:'background',name:'Underworld',rarity:'rare',price:9500,asset:'assets/card/background_underworld.png'},
-  background_storm_temple:{id:'background_storm_temple',category:'background',name:'Storm Temple',rarity:'luxury',price:10000,asset:'assets/card/background_storm_temple.png'},
-  background_virt:{id:'background_virt',category:'background',name:'Virt',rarity:'uncommon',price:3000,asset:'assets/card/background_virt.png'},
-  background_wavy:{id:'background_wavy',category:'background',name:'Wavy',rarity:'common',price:300,asset:'assets/card/background_wavy.png'},
-  frame_standard_contender:{id:'frame_standard_contender',category:'frame',name:'Standard Contender',rarity:'common',price:0,base:true,asset:'assets/card/frame_standard_contender.png'},
-  frame_coral:{id:'frame_coral',category:'frame',name:'Coral',rarity:'common',price:0,base:true,asset:'assets/card/frame.coral.png'},
-  frame_gringe:{id:'frame_gringe',category:'frame',name:'Gringe',rarity:'common',price:0,base:true,asset:'assets/card/frame.gringe.png'},
-  frame_haven:{id:'frame_haven',category:'frame',name:'Haven',rarity:'common',price:0,base:true,asset:'assets/card/frame.haven.png'},
-  frame_meany:{id:'frame_meany',category:'frame',name:'Meany',rarity:'common',price:0,base:true,asset:'assets/card/frame.meany.png'},
-  frame_purpaz:{id:'frame_purpaz',category:'frame',name:'Purpaz',rarity:'common',price:0,base:true,asset:'assets/card/frame.purpaz.png'},
-  frame_tekky:{id:'frame_tekky',category:'frame',name:'Tekky',rarity:'common',price:0,base:true,asset:'assets/card/frame.tekky.png'},
-  frame_gliss:{id:'frame_gliss',category:'frame',name:'Gliss',rarity:'common',price:0,base:true,asset:'assets/card/frame_gliss.png'},
-  frame_sleek:{id:'frame_sleek',category:'frame',name:'Sleek',rarity:'common',price:0,base:true,asset:'assets/card/frame_sleek.png'},
-  frame_goat:{id:'frame_goat',category:'frame',name:'Goat',rarity:'common',price:0,base:true,asset:'assets/card/frame_goat.png'},
-  // New freebies
-  aura_cosmos:{id:'aura_cosmos',category:'aura',name:'Cosmos',rarity:'rare',price:0,base:true,asset:'assets/card/aura_cosmos.png'},
   character_fishman:{id:'character_fishman',category:'character',name:'Fish Man',rarity:'rare',price:11500,asset:'assets/card/asset-characters-fishman.png',boosts:[{id:'defensive_shell',icon:'🛡',name:'Defensive Shell',desc:'-8% TKO stoppage chance when you are weakened (round 7+)'}]},
   character_nora:{id:'character_nora',category:'character',name:'Nora',rarity:'luxury',price:23500,asset:'assets/card/character-nora.png',boosts:[{id:'crowd_favourite',icon:'🎤',name:'Crowd Favourite',desc:'+8% purse on every fight'}]},
   character_otto:{id:'character_otto',category:'character',name:'Otto',rarity:'rare',price:12800,asset:'assets/card/character-otto.png',boosts:[{id:'power_surge',icon:'💥',name:'Power Surge',desc:'+4 KD chance when opponent is below 50% HP',value:4}]},
@@ -6811,7 +6780,7 @@ const CARD_ITEM_DEFINITIONS = {
   character_beamz:{id:'character_beamz',category:'character',name:'Beamz',rarity:'legendary',price:41400,asset:'assets/card/character-beamz.png',boosts:[{id:'power_surge',icon:'💥',name:'Power Surge',desc:'+8 KD chance when opponent is below 50% HP',value:8}]},
 };
 const DEFAULT_OWNED_CARD_ITEMS = Object.values(CARD_ITEM_DEFINITIONS).filter(item=>item.base).map(item=>item.id);
-const DEFAULT_EQUIPPED_CARD_ITEMS = {character:'character_standard_contender',aura:'aura_corner_smoke',background:'background_standard_fight_night',frame:'frame_standard_contender'};
+const DEFAULT_EQUIPPED_CARD_ITEMS = {character:'character_standard_contender'};
 const COLLECTIBLE_CARDS = [
   {id:'cc001',num:1, name:'Street Spark',    rarity:'common',   boost:'+1% Defense', image:'assets/collectible/card_001.png'},
   {id:'cc002',num:2, name:'Crimson Jackal',  rarity:'common',   boost:'+1% Speed',   image:'assets/collectible/card_002.png'},
@@ -7847,11 +7816,8 @@ function modularCardMarkup(profile=activeCardProfile()){
   const assets=equippedCardAssets(profile), data=cardDisplayData(profile);
   return '<div class="modular-card" role="img" aria-label="'+htmlEscape(data.name)+' fighter card">'+
     '<div class="modular-card-art">'+
-    '<img class="modular-card-background" src="'+assets.background.asset+'" onerror="_imgErr(this)" alt="">'+
-    '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" onerror="_imgErr(this)" alt="">'+
     '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" onerror="_imgErr(this)" alt="">'+
     '</div>'+
-    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onerror="_imgErr(this)" alt="">'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(data.name)+'</strong><span>'+htmlEscape(data.nickname)+'</span></div>'+
   '</div>';
 }
@@ -7903,11 +7869,8 @@ function modularCardMarkupFrom(opts){
   const name=cleanName(opts.name||'Fighter')||'Fighter', nickname=cleanName(opts.nickname||'The Contender')||'The Contender', ovr=opts.ovr||50, stats=opts.stats||[];
   return '<div class="modular-card" role="img" aria-label="'+htmlEscape(name)+' fighter card">'+
     '<div class="modular-card-art">'+
-    '<img class="modular-card-background" src="'+assets.background.asset+'" onerror="_imgErr(this)" alt="">'+
-    '<img class="modular-card-aura" src="'+assets.aura.asset+'" onload="bgRemove(this,true)" onerror="_imgErr(this)" alt="">'+
     '<img class="modular-card-character" src="'+assets.character.asset+'" onload="bgRemove(this,false,'+!!assets.character.darkBg+')" onerror="_imgErr(this)" alt="">'+
     '</div>'+
-    '<img class="modular-card-frame" src="'+assets.frame.asset+'" onerror="_imgErr(this)" alt="">'+
     '<div class="modular-card-copy modular-card-name"><strong>'+htmlEscape(name)+'</strong><span>'+htmlEscape(nickname)+'</span></div>'+
   '</div>';
 }
@@ -8597,14 +8560,11 @@ function drawCoveredCardImage(ctx,img,x,y,width,height){
 }
 async function renderCardShareBlob(profile=activeCardProfile()){
   const assets=equippedCardAssets(profile), data=cardDisplayData(profile);
-  const [background,aura,character,frame]=await Promise.all([assets.background,assets.aura,assets.character,assets.frame].map(item=>loadCardCanvasImage(item.asset)));
+  const [character]=await Promise.all([assets.character].map(item=>loadCardCanvasImage(item.asset)));
   if(document.fonts?.ready) await document.fonts.ready;
   const canvas=document.createElement('canvas'); canvas.width=1006; canvas.height=1564;
   const ctx=canvas.getContext('2d');
-  drawCoveredCardImage(ctx,background,0,0,1006,1564);
-  drawContainedCardImage(ctx,aura,0,110,1006,1080);
   drawContainedCardImage(ctx,character,0,110,1006,1080);
-  ctx.drawImage(frame,0,0,1006,1564);
   ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.shadowColor='rgba(0,0,0,.9)'; ctx.shadowBlur=7;
   ctx.fillStyle='#f6d768'; ctx.font='72px "Bebas Neue", Impact, sans-serif'; ctx.fillText(String(data.ovr),175,1290);
   ctx.fillStyle='#fff'; ctx.font='900 20px Inter, sans-serif'; ctx.fillText('OVR',175,1337);
@@ -8912,11 +8872,6 @@ function openWeeklyObjectives(){
     {id:'char_5',   label:'Collect 5 Characters',   type:'cat', category:'character',  count:5,          reward:{pm:50,   label:'50 PM'}},
     {id:'char_10',  label:'Collect 10 Characters',  type:'cat', category:'character',  count:10,         reward:{pm:100,  label:'100 PM (Pack Credit)'}},
     {id:'char_all', label:'Complete Character Set',  type:'cat', category:'character',  count:_cc.character, reward:{pm:500,  label:'500 PM'}},
-    {id:'aura_5',   label:'Collect 5 Auras',        type:'cat', category:'aura',       count:5,          reward:{pm:50,   label:'50 PM'}},
-    {id:'aura_all', label:'Complete Aura Set',       type:'cat', category:'aura',       count:_cc.aura,   reward:{pm:200,  label:'200 PM'}},
-    {id:'bg_5',     label:'Collect 5 Backgrounds',  type:'cat', category:'background', count:5,          reward:{pm:50,   label:'50 PM'}},
-    {id:'bg_all',   label:'Complete Background Set', type:'cat', category:'background', count:_cc.background, reward:{pm:200, label:'200 PM'}},
-    {id:'frame_all',label:'Complete Frame Set',      type:'cat', category:'frame',      count:_cc.frame,  reward:{pm:200,  label:'200 PM'}},
     {id:'total_10', label:'10 Items Collected',      type:'total',                       count:10,         reward:{pm:75,   label:'75 PM'}},
     {id:'total_25', label:'25 Items Collected',      type:'total',                       count:25,         reward:{pm:200,  label:'200 PM'}},
     {id:'total_all',label:'Complete the Collection', type:'total',                       count:_ct,        reward:{pm:1000, label:'1,000 PM'}},
@@ -10873,7 +10828,7 @@ function shareCareer(){
       ?'🏆 Belts: '+belts.join(' · ')
       :'No titles held';
   const assets=equippedCardAssets(profile);
-  const cardParts=[assets.character?.name,assets.aura?.name,assets.frame?.name,assets.background?.name].filter(Boolean);
+  const cardParts=[assets.character?.name].filter(Boolean);
   const cardLine=cardParts.length?'\n🃏 Card: '+cardParts.join(' / '):'';
   let txt;
   if(is50){
