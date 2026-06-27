@@ -3000,6 +3000,7 @@ body.final-card-open{overflow:hidden}
   <div class="tabs">
     <button id="tab-permanent" class="btn ghost tab-btn active" onclick="showHofTab('permanent')">Permanent</button>
     <button id="tab-seasonal" class="btn ghost tab-btn" onclick="showHofTab('seasonal')">Seasonal</button>
+    <button id="tab-daily" class="btn ghost tab-btn" onclick="showHofTab('daily')">Daily</button>
     <button id="tab-history" class="btn ghost tab-btn" onclick="showHofTab('history')">History</button>
   </div>
   <div id="permanent-hof-tab">
@@ -3011,6 +3012,14 @@ body.final-card-open{overflow:hidden}
     </div>
     <h2>Seasonal Hall Of Fame</h2>
     <div id="seasonal-hof-list" class="leaderboard-list"><div class="empty-state">Loading season...</div></div>
+  </div>
+  <div id="daily-hof-tab" class="hidden">
+    <div class="panel">
+      <div class="row"><span>Date (UTC):</span><span id="daily-hof-date">—</span></div>
+      <div class="row"><span>Careers Completed Today:</span><span id="daily-hof-count">—</span></div>
+    </div>
+    <h2>Today's Leaderboard</h2>
+    <div id="daily-hof-list" class="leaderboard-list"><div class="empty-state">Loading today's leaderboard...</div></div>
   </div>
   <div id="history-hof-tab" class="hidden">
     <h2>Season History</h2>
@@ -10845,10 +10854,33 @@ async function submitCareerToHallOfFame(){
   rememberSubmittedId(id);
   requestCloudSync();
 }
-function hofCard(entry, rank, showSeason=false){
+function hofCard(entry, rank, showSeason=false, showTime=false){
   const record=entry.record || ((entry.wins||0)+'-'+(entry.losses||0)+(entry.draws>0?'-'+entry.draws:''));
   const key=cacheLeaderboardBuild(entry);
-  return '<button type="button" class="leaderboard-card leaderboard-card-button" onclick="openLeaderboardBuild(\''+key+'\')"><div class="rank">#'+rank+'</div><div class="name">'+htmlEscape(entry.fighterName||'Unknown Fighter')+'</div><div class="sub"><span class="score">Legacy Score: '+(entry.careerLegacyScore||0)+'</span><br>Record: '+htmlEscape(record)+'<br>KO Wins: '+(entry.koWins||0)+(showSeason?'<br>Season '+(entry.seasonNumber||''):'')+'</div><span class="leaderboard-view-build">View Fighter Build</span></button>';
+  const timeStr=showTime&&entry.careerEndDate?'<br>'+new Date(entry.careerEndDate).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',timeZoneName:'short'}):'';
+  return '<button type="button" class="leaderboard-card leaderboard-card-button" onclick="openLeaderboardBuild(\''+key+'\')"><div class="rank">#'+rank+'</div><div class="name">'+htmlEscape(entry.fighterName||'Unknown Fighter')+'</div><div class="sub"><span class="score">Legacy Score: '+(entry.careerLegacyScore||0)+'</span><br>Record: '+htmlEscape(record)+'<br>KO Wins: '+(entry.koWins||0)+(showSeason?'<br>Season '+(entry.seasonNumber||''):'')+(showTime?timeStr:'')+'</div><span class="leaderboard-view-build">View Fighter Build</span></button>';
+}
+async function loadDailyLeaderboard(){
+  const box=$('daily-hof-list');
+  box.innerHTML='<div class="empty-state">Loading today\'s leaderboard...</div>';
+  try{
+    const now=new Date();
+    const today=now.toISOString().slice(0,10);
+    const tomorrow=new Date(now.getTime()+86400000).toISOString().slice(0,10);
+    if($('daily-hof-date')) $('daily-hof-date').innerText=today+' (UTC)';
+    const snap=await db.collection('completed_careers')
+      .where('careerEndDate','>=',today)
+      .where('careerEndDate','<',tomorrow)
+      .limit(100)
+      .get();
+    const rows=snap.docs.map(d=>d.data()).sort((a,b)=>(b.careerLegacyScore||0)-(a.careerLegacyScore||0));
+    if($('daily-hof-count')) $('daily-hof-count').innerText=rows.length+(rows.length===100?' (showing top 100)':'');
+    box.innerHTML=rows.length?rows.map((entry,i)=>hofCard(entry,i+1,false,true)).join(''):'<div class="empty-state">No careers completed today yet — be the first!</div>';
+  }catch(e){
+    console.error(e);
+    const hint=(e.message||'').toLowerCase().includes('index')?' A Firestore index may be needed.':'';
+    box.innerHTML='<div class="empty-state">Unable to load daily leaderboard.'+hint+'</div>';
+  }
 }
 async function loadPermanentHallOfFame(){
   const box=$('permanent-hof-list');
@@ -10892,18 +10924,20 @@ function startSeasonCountdown(season){
   seasonTimer=setInterval(tick,60000);
 }
 function showHofTab(tab){
-  ['permanent','seasonal','history'].forEach(t=>{
+  ['permanent','seasonal','daily','history'].forEach(t=>{
     $('tab-'+t).classList.toggle('active',t===tab);
     $(t+'-hof-tab').classList.toggle('hidden',t!==tab);
   });
   if(tab==='permanent') loadPermanentHallOfFame();
   if(tab==='seasonal') loadSeasonalHallOfFame();
+  if(tab==='daily') loadDailyLeaderboard();
   if(tab==='history') loadSeasonHistory();
 }
 function openHallOfFame(){
   screen('global-hof-screen');
   showHofTab('permanent');
   loadSeasonalHallOfFame();
+  loadDailyLeaderboard();
   loadSeasonHistory();
 }
 function better(cand,rec){ const parse=r=>{ const p=(r||'0-0').split('-').map(n=>parseInt(n,10)||0); return {w:p[0]||0,l:p[1]||0,d:p[2]||0}; }; const b=parse(rec), c={w:cand.wins,l:cand.losses,d:cand.draws}; if(rec==='0-0'&&c.w>0) return true; if(c.l<b.l) return true; if(c.l>b.l) return false; if(c.w>b.w) return true; if(c.w<b.w) return false; return c.d<b.d; }
