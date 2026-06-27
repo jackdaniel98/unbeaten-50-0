@@ -2165,6 +2165,46 @@ body.final-card-open{overflow:hidden}
 .card-store-thumb.thumb-error::after,.card-store-bucket-art.thumb-error::after{content:'?';display:flex;align-items:center;justify-content:center;width:100%;color:rgba(255,255,255,.18);font-size:1.4rem;font-weight:900;pointer-events:none}
 /* ── Sim list scroll optimisation ── */
 .sim-list-wrap{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+/* ── My Cards — pack banner ──────────────────────────────────────────────── */
+.mcc-pack-banner{display:flex;align-items:center;gap:12px;padding:10px 16px;background:linear-gradient(90deg,rgba(227,178,60,.08) 0%,rgba(227,178,60,.04) 100%);border-bottom:1px solid rgba(227,178,60,.18)}
+.mcc-pack-banner-info{flex:1;min-width:0}
+.mcc-pack-banner-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1rem;letter-spacing:.06em;color:var(--gold);line-height:1}
+.mcc-pack-banner-sub{font-size:.66rem;color:var(--text-dim);font-weight:600;margin-top:2px}
+.mcc-pack-open-btn{flex-shrink:0;padding:9px 18px;font-size:.78rem}
+/* ── Collector pack modal ────────────────────────────────────────────────── */
+.coll-pack-modal{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.88)}
+.coll-pack-modal.hidden{display:none}
+.coll-pack-stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:100dvh;padding:24px 20px calc(24px + var(--safe-bottom))}
+/* Reuse .pack-orb from existing system — just needs the right parent */
+.coll-pack-reveal{width:100%;display:flex;flex-direction:column;align-items:center;gap:0}
+.coll-pack-reveal.hidden{display:none}
+/* Card flip */
+.coll-flip-wrap{perspective:700px;width:min(180px,48vw);aspect-ratio:2/3;margin:0 auto 20px;position:relative}
+.coll-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.4,0,.2,1)}
+.coll-flip-inner.flipped{transform:rotateY(180deg)}
+.coll-flip-face{position:absolute;inset:0;border-radius:var(--radius-lg);overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.coll-flip-back{background:radial-gradient(circle at 60% 35%,#1e2130 0%,#0a0b0f 100%);display:flex;align-items:center;justify-content:center;font-size:2.8rem;box-shadow:0 0 0 2px rgba(227,178,60,.25),0 8px 32px rgba(0,0,0,.6)}
+.coll-flip-front{transform:rotateY(180deg)}
+.coll-flip-front img{width:100%;height:100%;object-fit:cover;display:block}
+/* Rarity glow — applied to the flip-wrap after reveal */
+.coll-glow-common  {filter:drop-shadow(0 0 10px rgba(203,213,225,.55))}
+.coll-glow-uncommon{filter:drop-shadow(0 0 14px rgba(134,239,172,.7))}
+.coll-glow-rare    {filter:drop-shadow(0 0 20px rgba(96,165,250,.8));animation:coll-glow-pulse 1.4s ease-in-out infinite}
+.coll-glow-legendary{filter:drop-shadow(0 0 28px rgba(251,146,60,.9));animation:coll-glow-pulse .9s ease-in-out infinite}
+@keyframes coll-glow-pulse{0%,100%{opacity:1}50%{opacity:.72}}
+/* Badge + info below card */
+.coll-reveal-badge{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.55rem;letter-spacing:.08em;line-height:1;opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s}
+.coll-reveal-badge.visible{opacity:1;transform:none}
+.coll-reveal-badge.new{color:var(--gold);text-shadow:0 0 18px rgba(227,178,60,.6)}
+.coll-reveal-badge.dup{color:var(--text-dim)}
+.coll-reveal-name{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem;color:#fff;letter-spacing:.04em;text-align:center;margin-top:6px;opacity:0;transition:opacity .3s .1s}
+.coll-reveal-name.visible{opacity:1}
+.coll-reveal-rarity{padding:3px 12px;border-radius:14px;font-size:.62rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase;margin-top:6px;opacity:0;transition:opacity .3s .18s}
+.coll-reveal-rarity.visible{opacity:1}
+.coll-reveal-boost{font-size:.76rem;color:var(--text-dim);margin-top:6px;text-align:center;opacity:0;transition:opacity .3s .24s}
+.coll-reveal-boost.visible{opacity:1}
+.coll-reveal-continue{margin-top:22px;opacity:0;transform:translateY(6px);transition:opacity .3s .38s,transform .3s .38s;width:min(280px,80vw)}
+.coll-reveal-continue.visible{opacity:1;transform:none}
 /* ── My Cards Collection (mcc) ────────────────────────────────────────────── */
 .mcc-head{display:flex;align-items:center;gap:12px;padding:16px 16px 12px;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--line)}
 .mcc-head h2{flex:1;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.45rem;letter-spacing:.04em;color:var(--gold);margin:0;line-height:1}
@@ -2375,6 +2415,13 @@ body.final-card-open{overflow:hidden}
     <div class="play-money-inline"><span aria-hidden="true">&#x1FA99;</span> <strong data-play-money>0</strong></div>
   </div>
   <div id="mcc-showcase" class="mcc-showcase"></div>
+  <div class="mcc-pack-banner">
+    <div class="mcc-pack-banner-info">
+      <div class="mcc-pack-banner-title">Collector Pack</div>
+      <div class="mcc-pack-banner-sub">1 random card · 2,000 PM</div>
+    </div>
+    <button type="button" class="btn gold mcc-pack-open-btn" id="mcc-pack-btn" onclick="openCollectorPack()">Open Pack</button>
+  </div>
   <div class="mcc-filter-row" role="tablist" aria-label="Filter cards">
     <button type="button" class="mcc-filter active" data-filter="all" onclick="setMyCardsFilter('all')" role="tab">All</button>
     <button type="button" class="mcc-filter" data-filter="owned" onclick="setMyCardsFilter('owned')" role="tab">Owned</button>
@@ -2816,6 +2863,13 @@ body.final-card-open{overflow:hidden}
   <div class="pack-stage">
     <div id="pack-orb" class="pack-orb"></div>
     <div id="pack-reveal" class="pack-reveal hidden"></div>
+  </div>
+</div>
+
+<div id="coll-pack-modal" class="coll-pack-modal hidden" role="dialog" aria-modal="true" aria-label="Opening Collector Pack">
+  <div class="coll-pack-stage">
+    <div id="coll-pack-orb" class="pack-orb"></div>
+    <div id="coll-pack-reveal" class="coll-pack-reveal hidden"></div>
   </div>
 </div>
 
@@ -7043,6 +7097,10 @@ function ensurePlayerFoundation(player){
   player.ownedCardItems=createOwnedCardItems(player.ownedCardItems);
   player.equippedCardItems=createEquippedCardItems(player.equippedCardItems,player.ownedCardItems);
   player.profileSetupComplete=!!player.profileSetupComplete||!!fullName;
+  if(!Array.isArray(player.myCards)) player.myCards=DEFAULT_OWNED_COLLECTIBLE_CARDS.slice();
+  else player.myCards=[...new Set([...DEFAULT_OWNED_COLLECTIBLE_CARDS,...player.myCards.filter(id=>COLLECTIBLE_CARDS.some(c=>c.id===id))])];
+  if(!COLLECTIBLE_CARDS.some(c=>c.id===player.myCardsShowcase)) player.myCardsShowcase='cc001';
+  if(!Array.isArray(player.myCardsFavourites)) player.myCardsFavourites=[];
   return player;
 }
 function migrateCareerSave(data){
@@ -7159,6 +7217,9 @@ function saveProfileFromPlayer(player){
     cardNickname:player.cardNickname,
     ownedCardItems:player.ownedCardItems,
     equippedCardItems:player.equippedCardItems,
+    myCards:player.myCards,
+    myCardsShowcase:player.myCardsShowcase,
+    myCardsFavourites:player.myCardsFavourites,
     profileSetupComplete:player.profileSetupComplete
   });
 }
@@ -7562,6 +7623,139 @@ function loadMyCardsData(){ return loadProfileFoundation(); }
 function saveMyCardsOwned(ids){ const p=loadProfileFoundation(); p.myCards=ids; saveProfileFoundation(p); }
 function saveMyCardsShowcase(id){ const p=loadProfileFoundation(); p.myCardsShowcase=id||null; saveProfileFoundation(p); }
 function saveMyCardsFavourites(ids){ const p=loadProfileFoundation(); p.myCardsFavourites=ids; saveProfileFoundation(p); }
+
+// ── Collector Pack ────────────────────────────────────────────────────────
+const COLLECTOR_PACK_COST = 2000;
+const COLL_RARITY_COLORS = {common:'#cbd5e1',uncommon:'#86efac',rare:'#60a5fa',legendary:'#fb923c'};
+
+function openCollectorPack(){
+  const profile = activeCardProfile();
+  const bal = safeMoney(profile.playMoney);
+  if(bal < COLLECTOR_PACK_COST){
+    showToast('Not Enough Play Money','You need '+COLLECTOR_PACK_COST.toLocaleString()+' PM to open a Collector Pack.');
+    return;
+  }
+  const pool = COLLECTIBLE_CARDS.filter(c => c.image);
+  if(!pool.length){ showToast('No cards available yet.',''); return; }
+  const card = pool[Math.floor(Math.random() * pool.length)];
+  const currentOwned = new Set(profile.myCards || []);
+  const isNew = !currentOwned.has(card.id);
+  mutateCardProfile(t => {
+    t.playMoney = Math.max(0, safeMoney(t.playMoney) - COLLECTOR_PACK_COST);
+    if(isNew){
+      if(!Array.isArray(t.myCards)) t.myCards = DEFAULT_OWNED_COLLECTIBLE_CARDS.slice();
+      t.myCards = [...new Set([...t.myCards, card.id])];
+    }
+  });
+  updateWalletDisplays();
+  _playCollectorPackAnim(card, isNew);
+}
+
+function _playCollectorPackAnim(card, isNew){
+  const modal = $('coll-pack-modal');
+  const orb = $('coll-pack-orb');
+  const reveal = $('coll-pack-reveal');
+  if(!modal || !orb || !reveal){ _finishCollectorReveal(card, isNew); return; }
+  reveal.classList.add('hidden'); reveal.innerHTML = '';
+  modal.classList.remove('hidden');
+  document.body.classList.add('final-card-open');
+  const order = ['common','uncommon','rare','legendary'];
+  orb.className = 'pack-orb spinning';
+  orb.style.removeProperty('--pack-final');
+  orb.style.setProperty('--pack-glow', COLL_RARITY_COLORS.common);
+  try{ initAudio(); }catch(e){}
+  let i = 0, ticks = 0, speed = 130;
+  const maxTicks = 20;
+  const finalColor = COLL_RARITY_COLORS[card.rarity] || '#cbd5e1';
+  const cycle = () => {
+    if(modal.classList.contains('hidden')) return;
+    orb.style.setProperty('--pack-glow', COLL_RARITY_COLORS[order[i % order.length]]);
+    try{ if(typeof isMuted==='undefined'||!isMuted) playTone(380+(i%order.length)*110,'sine',0.05,0.034); }catch(e){}
+    i++; ticks++;
+    if(ticks < maxTicks){
+      speed = ticks < 12 ? Math.max(65, speed * 0.92) : speed * 1.18;
+      setTimeout(cycle, speed);
+    } else {
+      orb.style.setProperty('--pack-final', finalColor);
+      orb.style.setProperty('--pack-glow', finalColor);
+      orb.className = 'pack-orb burst rarity-'+(card.rarity==='uncommon'?'uncommon':card.rarity==='rare'?'rare':card.rarity==='legendary'?'legendary':'common');
+      playPackRevealSound(card.rarity);
+      if(card.rarity==='legendary') spawnCollSparks(finalColor, 34);
+      else if(card.rarity==='rare') spawnCollSparks(finalColor, 18);
+      else if(card.rarity==='uncommon') spawnCollSparks(finalColor, 10);
+      setTimeout(() => _finishCollectorReveal(card, isNew, finalColor), 640);
+    }
+  };
+  setTimeout(cycle, 260);
+}
+
+function spawnCollSparks(color, count){
+  const stage = document.querySelector('.coll-pack-stage'); if(!stage) return;
+  let wrap = stage.querySelector('.pack-spark-wrap');
+  if(wrap) wrap.remove();
+  wrap = document.createElement('div'); wrap.className = 'pack-spark-wrap'; stage.appendChild(wrap);
+  for(let i = 0; i < count; i++){
+    const sp = document.createElement('div'); sp.className = 'pack-spark';
+    const angle = (i / count) * 360 + (Math.random() * 28 - 14);
+    const dist = 60 + Math.random() * 100;
+    const rad = angle * Math.PI / 180;
+    const tx = Math.round(Math.cos(rad) * dist), ty = Math.round(Math.sin(rad) * dist);
+    sp.style.cssText = 'background:'+color+';--tx:'+tx+'px;--ty:'+ty+'px;--dur:'+(0.5+Math.random()*0.5).toFixed(2)+'s;--del:'+(Math.random()*0.2).toFixed(2)+'s';
+    wrap.appendChild(sp);
+  }
+  setTimeout(() => { if(wrap.parentNode) wrap.remove(); }, 1500);
+}
+
+function _finishCollectorReveal(card, isNew, finalColor){
+  const reveal = $('coll-pack-reveal'); if(!reveal) return;
+  const color = finalColor || COLL_RARITY_COLORS[card.rarity] || '#cbd5e1';
+  const rarityName = card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1);
+  const badgeText = isNew ? '✦ NEW CARD ✦' : 'Already Owned';
+  const badgeCls = isNew ? 'new' : 'dup';
+  reveal.innerHTML =
+    '<div class="coll-flip-wrap" id="coll-flip-wrap">'+
+      '<div class="coll-flip-inner" id="coll-flip-inner">'+
+        '<div class="coll-flip-face coll-flip-back">🥊</div>'+
+        '<div class="coll-flip-face coll-flip-front">'+
+          (card.image ? '<img src="'+card.image+'" alt="'+htmlEscape(card.name)+'" loading="eager">' : '<div class="'+('mcc-rarity-'+card.rarity)+'" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.8rem">🥊</div>')+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="coll-reveal-badge '+badgeCls+'" id="coll-badge">'+htmlEscape(badgeText)+'</div>'+
+    '<div class="coll-reveal-name" id="coll-rname">'+htmlEscape(card.name)+'</div>'+
+    '<div class="coll-reveal-rarity '+('mcc-rarity-badge-'+card.rarity)+'" id="coll-rrarity" style="background:'+color+'22;color:'+color+'">'+rarityName+'</div>'+
+    '<div class="coll-reveal-boost" id="coll-rboost">'+htmlEscape(card.boost)+'</div>'+
+    '<button class="btn gold coll-reveal-continue" id="coll-continue-btn" onclick="closeCollectorReveal()">Continue</button>';
+  reveal.classList.remove('hidden');
+  // Trigger card flip after brief paint delay
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const inner = $('coll-flip-inner');
+      const wrap = $('coll-flip-wrap');
+      if(inner){ inner.classList.add('flipped'); }
+      // After flip, reveal info elements
+      setTimeout(() => {
+        if(wrap) wrap.classList.add('coll-glow-'+card.rarity);
+        ['coll-badge','coll-rname','coll-rrarity','coll-rboost','coll-continue-btn'].forEach(id => {
+          const el = $(id); if(el) el.classList.add('visible');
+        });
+      }, 740);
+    }, 80);
+  });
+}
+
+function closeCollectorReveal(){
+  const modal = $('coll-pack-modal');
+  if(modal) modal.classList.add('hidden');
+  document.body.classList.remove('final-card-open');
+  renderMyCardsGrid();
+  renderMccShowcase();
+  const btn = $('mcc-pack-btn');
+  if(btn){
+    const bal = safeMoney(activeCardProfile().playMoney);
+    btn.disabled = bal < COLLECTOR_PACK_COST;
+  }
+}
 function getRecords(){ try{ return {...NIL, ...JSON.parse(localStorage.getItem(KEYS.records)||'{}')}; }catch{ return {...NIL}; } }
 function saveRecords(r){ localStorage.setItem(KEYS.records, JSON.stringify(r)); }
 function persistCareer(){ if(S.player){ ensurePlayerFoundation(S.player); saveProfileFromPlayer(S.player); } localStorage.setItem(KEYS.career, JSON.stringify({mode:S.mode,player:S.player,career:S.career,opponent:S.opponent,traitsRolled:S.traitsRolled})); markLocalUpdated(); }
@@ -9729,6 +9923,8 @@ function openMyCards(){
   document.querySelectorAll('.mcc-filter').forEach(el=>el.classList.toggle('active',el.dataset.filter==='all'));
   renderMccShowcase();
   renderMyCardsGrid();
+  const btn=$('mcc-pack-btn');
+  if(btn) btn.disabled=safeMoney(activeCardProfile().playMoney)<COLLECTOR_PACK_COST;
   showScreen('my-cards-screen');
 }
 function closeMyCards(){
