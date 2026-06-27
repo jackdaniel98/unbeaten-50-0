@@ -2539,7 +2539,7 @@ body.final-card-open{overflow:hidden}
   <div id="synergy-panel" class="hidden"></div>
   <div class="panel"><div class="row"><span>Suggested Archetype:</span><span id="draft-archetype">Undetermined</span></div></div>
   <div style="margin-bottom:14px">
-    <input id="fighter-name-input" class="name-input" type="text" maxlength="20" placeholder="Enter Fighter Name" oninput="handleNameInput()" />
+    <input id="fighter-name-input" class="name-input" type="text" maxlength="20" placeholder="Enter Fighter Name" oninput="handleNameInput()" onchange="handleNameInput()" />
     <div id="fighter-name-error" class="validation-msg"></div>
   </div>
   <button id="advance-btn" class="btn gold" onclick="goToHub()">Advance To Career Hub</button>
@@ -6948,7 +6948,17 @@ const KEYS = {records:'unbeaten_final_records_v10',career:'unbeaten_final_career
 const FIGHTER_NAME_KEY='unbeaten_saved_fighter_name';
 function getSavedFighterName(){ try{ return localStorage.getItem(FIGHTER_NAME_KEY)||''; }catch{ return ''; } }
 function saveFighterName(name){ const n=cleanName(String(name||'').trim()); if(!n||n.length<2) return; try{ localStorage.setItem(FIGHTER_NAME_KEY,n); }catch{} }
-function getDraftFighterName(){ const saved=getSavedFighterName(); if(saved) return saved; const fallback=boxerDisplayName(loadProfileFoundation()); return fallback||'Custom Contender'; }
+function getDraftFighterName(){
+  const saved=getSavedFighterName();
+  console.log('[DRAFT NAME] FIGHTER_NAME_KEY value:',JSON.stringify(saved));
+  const prof=loadProfileFoundation();
+  console.log('[DRAFT NAME] profile.boxerFirstName:',JSON.stringify(prof.boxerFirstName),'| profile.boxerLastName:',JSON.stringify(prof.boxerLastName));
+  console.log('[DRAFT NAME] profile.username:',JSON.stringify(prof.username));
+  try{ if(typeof auth!=='undefined'&&auth&&auth.currentUser) console.log('[DRAFT NAME] auth.displayName:',JSON.stringify(auth.currentUser.displayName)); }catch(e){}
+  if(saved) console.log('[DRAFT NAME] Using saved key value:',JSON.stringify(saved));
+  else console.log('[DRAFT NAME] No saved key — input will be blank (profile fallback removed)');
+  return saved||'';
+}
 const NIL = {bestRecord:'0-0',mostMoney:0,mostKOs:0,bestTier:'None'};
 const S = {mode:'standard',player:null,career:null,opponent:null,legend:null,fight:null,traitsRolled:0,awaiting:false,perfect:false,batch:false,pendingHof:false,fast:false,spinTraitBusy:false};
 const $ = id => document.getElementById(id), rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, choice=arr=>arr[Math.floor(Math.random()*arr.length)], clamp=(n,a,b)=>Math.max(a,Math.min(b,n)), cash=v=>'$'+Math.floor(v).toLocaleString(), deep=o=>JSON.parse(JSON.stringify(o)), sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -10343,6 +10353,10 @@ function restoreCloudPayload(payload){
   restoringCloud=true;
   const localProfile=loadProfileFoundation();
   const cloudProfile=antiCheatProfile(payload.profile||{});
+  console.log('[DRAFT NAME] restoreCloudPayload — cloud profile.boxerFirstName:',JSON.stringify(cloudProfile.boxerFirstName),'| boxerLastName:',JSON.stringify(cloudProfile.boxerLastName),'| username:',JSON.stringify(cloudProfile.username));
+  console.log('[DRAFT NAME] restoreCloudPayload — local FIGHTER_NAME_KEY:',JSON.stringify(getSavedFighterName()),'(will NOT be touched by cloud restore)');
+  const userSaveData=payload;
+  console.log('[DRAFT NAME] restoreCloudPayload — full cloud payload keys:',Object.keys(userSaveData||{}));
   // If the player set a real display name locally that the cloud doesn't have yet, keep it.
   // This protects against a page-refresh race where the cloud push hadn't completed yet.
   const localName=localProfile.username||'';
