@@ -7128,10 +7128,11 @@ function ensurePlayerFoundation(player){
   player.ownedCardItems=createOwnedCardItems(player.ownedCardItems);
   player.equippedCardItems=createEquippedCardItems(player.equippedCardItems,player.ownedCardItems);
   player.profileSetupComplete=!!player.profileSetupComplete||!!fullName;
-  if(!Array.isArray(player.myCards)) player.myCards=DEFAULT_OWNED_COLLECTIBLE_CARDS.slice();
-  else player.myCards=[...new Set([...DEFAULT_OWNED_COLLECTIBLE_CARDS,...player.myCards.filter(id=>COLLECTIBLE_CARDS.some(c=>c.id===id))])];
-  if(!COLLECTIBLE_CARDS.some(c=>c.id===player.myCardsShowcase)) player.myCardsShowcase='cc001';
+  player.myCardCounts=createMyCardCounts(player.myCardCounts, player.myCards);
+  player.myCards=collectibleOwnedIdsFromCounts(player.myCardCounts);
+  if(!validCollectibleId(player.myCardsShowcase)) player.myCardsShowcase='cc001';
   if(!Array.isArray(player.myCardsFavourites)) player.myCardsFavourites=[];
+  else player.myCardsFavourites=player.myCardsFavourites.filter(validCollectibleId);
   return player;
 }
 function migrateCareerSave(data){
