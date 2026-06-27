@@ -641,6 +641,11 @@ h2:first-child{margin-top:6px}
 .leaderboard-card-button:active{transform:scale(.99)}
 .leaderboard-card-button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .leaderboard-view-build{display:block;margin-top:9px;color:var(--gold);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+.lc-inner{display:flex;align-items:center;gap:12px}
+.lc-text{flex:1;min-width:0}
+.lc-showcase{flex-shrink:0;width:54px}
+.lc-showcase img{width:54px;aspect-ratio:2/3;object-fit:cover;border-radius:6px;display:block;border:1px solid rgba(227,178,60,.25)}
+.lc-showcase-fallback{width:54px;aspect-ratio:2/3;border-radius:6px;background:#0a0b0f;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
 .empty-state{color:var(--text-dim);text-align:center;padding:26px 12px;font-size:.88rem}
 .breakdown-panel{display:none}
 .breakdown-panel.active{display:block}
@@ -9901,6 +9906,7 @@ function careerSnapshot(){
     ownedCardItems:S.player.ownedCardItems||null,
     cardName:S.player.cardName||'',
     cardNickname:S.player.cardNickname||'',
+    myCardsShowcase:validCollectibleId(S.player.myCardsShowcase)?S.player.myCardsShowcase:'cc001',
     fighterBuild:fighterBuildSnapshot(S.player,stats),
     careerEndDate:new Date().toISOString(),
     submittedAt:firebase.firestore.FieldValue.serverTimestamp()
@@ -10838,9 +10844,10 @@ function leaderboardProfileRow(id,p,field,rank){
   if(field==='completed50And0Careers') retired.sort((a,b)=>Number((b.wins===50&&b.losses===0&&b.draws===0))-Number((a.wins===50&&a.losses===0&&a.draws===0))||(b.legacyScore||0)-(a.legacyScore||0));
   else retired.sort((a,b)=>(b.legacyScore||b.careerLegacyScore||0)-(a.legacyScore||a.careerLegacyScore||0));
   const entry=field==='walletBalance'?(p.activeFighter||retired[0]):(retired[0]||p.activeFighter);
-  if(!entry) return "<button type=\"button\" class=\"leaderboard-card leaderboard-card-button\" onclick=\"openPublicProfileDetail('"+id+"')\"><div class=\"rank\">#"+rank+"</div><div class=\"name\">"+htmlEscape(p.username||'Player')+"</div><div class=\"sub\"><span class=\"score\">"+label+"</span><br>50-0: "+(p.completed50And0Careers||0)+"</div><span class=\"leaderboard-view-build\">View Player Profile</span></button>";
+  const showcaseHtml=_showcaseCardHtml(p.myCardsShowcase||'cc001',54);
+  if(!entry) return "<button type=\"button\" class=\"leaderboard-card leaderboard-card-button\" onclick=\"openPublicProfileDetail('"+id+"')\"><div class=\"lc-inner\"><div class=\"lc-text\"><div class=\"rank\">#"+rank+"</div><div class=\"name\">"+htmlEscape(p.username||'Player')+"</div><div class=\"sub\"><span class=\"score\">"+label+"</span><br>50-0: "+(p.completed50And0Careers||0)+"</div><span class=\"leaderboard-view-build\">View Player Profile</span></div><div class=\"lc-showcase\">"+showcaseHtml+"</div></div></button>";
   const key=cacheLeaderboardBuild(entry,id);
-  return "<button type=\"button\" class=\"leaderboard-card leaderboard-card-button\" onclick=\"openLeaderboardBuild('"+key+"')\"><div class=\"rank\">#"+rank+"</div><div class=\"name\">"+htmlEscape(entry.fighterName||entry.boxerName||p.username||'Player')+"</div><div class=\"sub\"><span class=\"score\">"+label+"</span><br>Player: "+htmlEscape(p.username||'Player')+"<br>50-0: "+(p.completed50And0Careers||0)+"</div><span class=\"leaderboard-view-build\">View Fighter Build</span></button>";
+  return "<button type=\"button\" class=\"leaderboard-card leaderboard-card-button\" onclick=\"openLeaderboardBuild('"+key+"')\"><div class=\"lc-inner\"><div class=\"lc-text\"><div class=\"rank\">#"+rank+"</div><div class=\"name\">"+htmlEscape(entry.fighterName||entry.boxerName||p.username||'Player')+"</div><div class=\"sub\"><span class=\"score\">"+label+"</span><br>Player: "+htmlEscape(p.username||'Player')+"<br>50-0: "+(p.completed50And0Careers||0)+"</div><span class=\"leaderboard-view-build\">View Fighter Build</span></div><div class=\"lc-showcase\">"+showcaseHtml+"</div></div></button>";
 }
 async function ensureCurrentSeason(){
   const ref=db.collection('seasons').doc('current');
@@ -10886,7 +10893,8 @@ function hofCard(entry, rank, showSeason=false, showTime=false){
   const record=entry.record || ((entry.wins||0)+'-'+(entry.losses||0)+(entry.draws>0?'-'+entry.draws:''));
   const key=cacheLeaderboardBuild(entry);
   const timeStr=showTime&&entry.careerEndDate?'<br>'+new Date(entry.careerEndDate).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',timeZoneName:'short'}):'';
-  return '<button type="button" class="leaderboard-card leaderboard-card-button" onclick="openLeaderboardBuild(\''+key+'\')"><div class="rank">#'+rank+'</div><div class="name">'+htmlEscape(entry.fighterName||'Unknown Fighter')+'</div><div class="sub"><span class="score">Legacy Score: '+(entry.careerLegacyScore||0)+'</span><br>Record: '+htmlEscape(record)+'<br>KO Wins: '+(entry.koWins||0)+(showSeason?'<br>Season '+(entry.seasonNumber||''):'')+(showTime?timeStr:'')+'</div><span class="leaderboard-view-build">View Fighter Build</span></button>';
+  const showcaseHtml=_showcaseCardHtml(entry.myCardsShowcase||'cc001',54);
+  return '<button type="button" class="leaderboard-card leaderboard-card-button" onclick="openLeaderboardBuild(\''+key+'\')"><div class="lc-inner"><div class="lc-text"><div class="rank">#'+rank+'</div><div class="name">'+htmlEscape(entry.fighterName||'Unknown Fighter')+'</div><div class="sub"><span class="score">Legacy Score: '+(entry.careerLegacyScore||0)+'</span><br>Record: '+htmlEscape(record)+'<br>KO Wins: '+(entry.koWins||0)+(showSeason?'<br>Season '+(entry.seasonNumber||''):'')+(showTime?timeStr:'')+'</div><span class="leaderboard-view-build">View Fighter Build</span></div><div class="lc-showcase">'+showcaseHtml+'</div></div></button>';
 }
 async function loadDailyLeaderboard(){
   const box=$('daily-hof-list');
@@ -10937,7 +10945,8 @@ async function loadSeasonHistory(){
     box.innerHTML=snap.empty?'<div class="empty-state">No completed seasons yet.</div>':snap.docs.map(d=>{
       const s=d.data(), w=s.winner||{};
       const key=cacheLeaderboardBuild(w);
-      return '<button type="button" class="leaderboard-card leaderboard-card-button" onclick="openLeaderboardBuild(\''+key+'\')"><div class="rank">Season '+(s.seasonNumber||'')+' Winner</div><div class="name">'+htmlEscape(w.fighterName||'No winner')+'</div><div class="sub"><span class="score">Legacy Score '+(w.careerLegacyScore||0)+'</span></div><span class="leaderboard-view-build">View Fighter Build</span></button>';
+      const showcaseHtml=_showcaseCardHtml(w.myCardsShowcase||'cc001',54);
+      return '<button type="button" class="leaderboard-card leaderboard-card-button" onclick="openLeaderboardBuild(\''+key+'\')"><div class="lc-inner"><div class="lc-text"><div class="rank">Season '+(s.seasonNumber||'')+' Winner</div><div class="name">'+htmlEscape(w.fighterName||'No winner')+'</div><div class="sub"><span class="score">Legacy Score '+(w.careerLegacyScore||0)+'</span></div><span class="leaderboard-view-build">View Fighter Build</span></div><div class="lc-showcase">'+showcaseHtml+'</div></div></button>';
     }).join('');
   }catch(e){ box.innerHTML='<div class="empty-state">Unable to load season history.</div>'; console.error(e); }
 }
