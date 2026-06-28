@@ -12312,8 +12312,8 @@ let MP = {
   mode:null, isBot:false, matchId:null, matchData:null,
   profile:null, opponent:null, myBuild:null, draftState:null,
   searchInterval:null, draftTimerInterval:null,
-  queueUnsub:null, matchUnsub:null, lobbyCode:null,
-  _handledPhase:null,
+  queueUnsub:null, matchUnsub:null, lobbyUnsub:null, lobbyCode:null,
+  searchBusy:false, _handledPhase:null,
 };
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -12355,6 +12355,40 @@ function mpGetStats(){ return (typeof STATS!=='undefined'&&Array.isArray(STATS)&
 
 // helper – get screen element by id
 function mpScreen(id){ return document.getElementById(id); }
+function mpShowScreen(id){
+  const el=mpScreen(id);
+  if(!el) return false;
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  el.classList.add('active');
+  return true;
+}
+function screen(id){
+  if(String(id||'').indexOf('mp-')===0) return mpShowScreen(id);
+  return showScreen(id);
+}
+function mpIsMissingIndexError(e){
+  const msg=String((e&&e.message)||'').toLowerCase();
+  return (e&&e.code==='failed-precondition')||(msg.includes('index')&&msg.includes('matchmaking_queue'));
+}
+function mpScoresForViewer(result,myUid){
+  if(!result) return {my:0,opp:0};
+  if(result.myUid&&result.myUid!==myUid) return {my:result.oppScore||0,opp:result.myScore||0};
+  return {my:result.myScore||0,opp:result.oppScore||0};
+}
+function mpAwardPlayMoney(pm){
+  const amount=Math.min(MP_PM_WIN,safeMoney(pm||0));
+  if(amount<=0) return;
+  if(typeof mutateCardProfile==='function'){
+    mutateCardProfile(function(profile){ profile.playMoney=safeMoney(profile.playMoney)+amount; });
+    return;
+  }
+  if(typeof S!=='undefined'&&S.player){
+    ensurePlayerFoundation(S.player);
+    S.player.playMoney=safeMoney(S.player.playMoney)+amount;
+    if(typeof updateWalletDisplays==='function') updateWalletDisplays();
+    if(typeof saveCareer==='function') saveCareer();
+  }
+}
 
 // ══════════════════════════════════════════════════════════════════════════
 // PROFILE
@@ -12446,7 +12480,10 @@ async function mpTryClaimOpponent(mode,myElo){
         if(claimed) return claimed;
       }catch(e){ console.warn('[MP] claim txn failed:',e.message); }
     }
-  }catch(e){ console.warn('[MP] tryClaimOpponent error:',e); }
+  }catch(e){
+    console.warn('[MP] tryClaimOpponent error:',e);
+    if(mpIsMissingIndexError(e)) return {fallbackToBot:true,reason:'missing-index'};
+  }
   return null;
 }
 
@@ -12483,7 +12520,7 @@ function mpBuildMatchDoc(mode,me,opp,matchId,now,isBot){
     result:null,fightHighlights:null,
     eloChanges:null,rewards:null,
     simulationOwnerUid:null,simulationComplete:false,
-    eloApplied:false,rewardsApplied:false,towelUid:null,
+    eloApplied:false,rewardsApplied:false,rewardAppliedUids:[],towelUid:null,
   };
 }
 async function mpCreateBotMatch(mode,myElo){
@@ -12511,13 +12548,15 @@ async function mpCreateBotMatch(mode,myElo){
 // MATCH LIFECYCLE
 // ══════════════════════════════════════════════════════════════════════════
 async function mpEnterMatch(matchId){
+  if(MP.matchUnsub){ MP.matchUnsub(); MP.matchUnsub=null; }
+  clearInterval(MP.searchInterval); MP.searchInterval=null;
+  clearInterval(MP.draftTimerInterval); MP.draftTimerInterval=null;
   MP.matchId=matchId; MP._handledPhase=null;
   try{
     const snap=await db.collection('multiplayer_matches').doc(matchId).get();
     if(!snap.exists){ showToast&&showToast('Error','Match not found.','warning'); screen('mp-home'); return; }
     MP.matchData=snap.data();
     mpSetOpponent(MP.matchData);
-    if(MP.matchUnsub){ MP.matchUnsub(); MP.matchUnsub=null; }
     MP.matchUnsub=db.collection('multiplayer_matches').doc(matchId).onSnapshot(function(s2){
       if(!s2.exists) return;
       MP.matchData=s2.data();
@@ -12541,19 +12580,26 @@ function mpOnPhaseChange(data){
   if(phase==='matched'){
     MP._handledPhase=phase;
     mpShowMatchup(data);
+  } else if(phase==='drafting'){
+    const myUid=currentUser&&currentUser.uid;
+    const myStatus=myUid&&data.players&&data.players[myUid]&&data.players[myUid].draftStatus;
+    if(myStatus==='submitted'){ MP._handledPhase=phase; mpShowDraftWaiting(); }
+    else startMpDraft();
   } else if(phase==='build_reveal'){
-    MP._handledPhase=phase;
     // Only show reveal once both builds present
     const myUid=currentUser&&currentUser.uid;
-    const myBuild=myUid&&data.players[myUid]&&data.players[myUid].finalBuild;
+    const myBuild=myUid&&data.players&&data.players[myUid]&&data.players[myUid].finalBuild;
     const oppUid=data.playerOrder&&data.playerOrder.find(function(u){ return u!==myUid; });
-    const oppBuild=oppUid&&data.players[oppUid]&&data.players[oppUid].finalBuild;
-    if(myBuild&&oppBuild) mpShowReveal(data);
+    const oppBuild=oppUid&&data.players&&data.players[oppUid]&&data.players[oppUid].finalBuild;
+    if(!myBuild||!oppBuild) return;
+    MP._handledPhase=phase;
+    mpShowReveal(data);
     // else onSnapshot will fire again when opp submits
   } else if(phase==='simulating'){
     MP._handledPhase=phase;
     mpShowFightWaiting();
   } else if(phase==='complete'){
+    if(!data.result) return;
     MP._handledPhase=phase;
     mpShowFightResult(data);
   }
@@ -12562,9 +12608,10 @@ function mpCleanup(){
   clearInterval(MP.searchInterval); clearInterval(MP.draftTimerInterval);
   if(MP.queueUnsub){ MP.queueUnsub(); MP.queueUnsub=null; }
   if(MP.matchUnsub){ MP.matchUnsub(); MP.matchUnsub=null; }
+  if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
   Object.assign(MP,{mode:null,isBot:false,matchId:null,matchData:null,
     opponent:null,myBuild:null,draftState:null,
-    searchInterval:null,draftTimerInterval:null,lobbyCode:null,_handledPhase:null});
+    searchInterval:null,draftTimerInterval:null,lobbyCode:null,searchBusy:false,_handledPhase:null});
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -12583,6 +12630,24 @@ function closeMpHome(){ mpCleanup(); showScreen('menu-screen'); }
 // ══════════════════════════════════════════════════════════════════════════
 // SEARCH FLOW
 // ══════════════════════════════════════════════════════════════════════════
+async function mpStartBotMatchFromSearch(mode,myElo,sub,btn){
+  clearInterval(MP.searchInterval); MP.searchInterval=null;
+  if(MP.queueUnsub){ MP.queueUnsub(); MP.queueUnsub=null; }
+  await mpLeaveQueue();
+  if(sub) sub.innerText='No player found - matched with a bot!';
+  if(btn) btn.disabled=true;
+  await mpSleep(800);
+  try{
+    const botId=await mpCreateBotMatch(mode,myElo);
+    await mpEnterMatch(botId);
+  }catch(e){
+    console.error('[MP] bot match failed:',e);
+    if(sub) sub.innerText='Could not start a bot match. Check your connection and try again.';
+    if(btn) btn.disabled=false;
+    showToast&&showToast('PvP Error','Could not start matchmaking.','warning');
+    screen('mp-home');
+  }
+}
 async function startMpSearch(mode){
   if(!currentUser){ showToast&&showToast('Sign In Required','Sign in to play.','warning'); return; }
   mpCleanup();
@@ -12598,7 +12663,13 @@ async function startMpSearch(mode){
   const myElo=MP.profile.elo||MP_STARTING_ELO;
   let secs=30;
   if(tmr) tmr.innerText=secs;
-  await mpJoinQueue(mode);
+  try{ await mpJoinQueue(mode); }
+  catch(e){
+    console.warn('[MP] joinQueue failed:',e);
+    if(sub) sub.innerText='Matchmaking queue unavailable - starting a bot match...';
+    await mpStartBotMatchFromSearch(mode,myElo,sub,btn);
+    return;
+  }
   // Listen for being claimed
   MP.queueUnsub=mpListenOwnQueue(async function(matchId){
     if(MP.matchId) return;
@@ -12615,7 +12686,12 @@ async function startMpSearch(mode){
     if(tmr) tmr.innerText=Math.max(0,secs);
     if(secs>0){
       const found=await mpTryClaimOpponent(mode,myElo);
-      if(found&&!MP.matchId){
+      if(found&&found.fallbackToBot&&!MP.matchId){
+        if(sub) sub.innerText='Matchmaking index missing - starting a bot match...';
+        await mpStartBotMatchFromSearch(mode,myElo,sub,btn);
+        return;
+      }
+      if(found&&found.matchId&&!MP.matchId){
         clearInterval(MP.searchInterval); MP.searchInterval=null;
         if(MP.queueUnsub){ MP.queueUnsub(); MP.queueUnsub=null; }
         if(sub) sub.innerText='Opponent found!';
@@ -12623,14 +12699,8 @@ async function startMpSearch(mode){
         await mpEnterMatch(found.matchId);
       }
     } else {
-      clearInterval(MP.searchInterval); MP.searchInterval=null;
-      if(MP.queueUnsub){ MP.queueUnsub(); MP.queueUnsub=null; }
-      await mpLeaveQueue();
-      if(sub) sub.innerText='No player found — matched with a bot!';
-      if(btn) btn.disabled=true;
-      await mpSleep(800);
-      const botId=await mpCreateBotMatch(mode,myElo);
-      await mpEnterMatch(botId);
+      await mpStartBotMatchFromSearch(mode,myElo,sub,btn);
+      return;
     }
   },1000);
 }
@@ -12674,21 +12744,52 @@ function mpShowMatchup(data){
 // ══════════════════════════════════════════════════════════════════════════
 // DRAFT — each player drafts privately, submits to Firestore
 // ══════════════════════════════════════════════════════════════════════════
-function startMpDraft(){
-  if(!MP.matchId||!MP.matchData||!currentUser) return;
-  // Advance phase to drafting (first caller wins; others are no-ops)
-  db.runTransaction(async function(txn){
-    const ref=db.collection('multiplayer_matches').doc(MP.matchId);
-    const s=await txn.get(ref);
-    if(s.exists&&s.data().phase==='matched')
-      txn.update(ref,{phase:'drafting',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-  }).catch(function(e){ console.warn('[MP] phase->drafting:',e); });
-  db.collection('multiplayer_matches').doc(MP.matchId).update({
-    ['players.'+currentUser.uid+'.draftStatus']:'drafting',
-    updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
-  }).catch(function(e){ console.warn('[MP] draftStatus update:',e); });
+function mpShowDraftWaiting(){
   screen('mp-draft');
-  const me=MP.matchData.players[currentUser.uid];
+  clearInterval(MP.draftTimerInterval);
+  const opts=$('mp-draft-options');
+  if(opts) opts.innerHTML='<div style="text-align:center;padding:16px;color:var(--gold);font-size:.82rem">Build submitted!<br><span style="color:var(--text-dim);font-size:.68rem">Waiting for opponent to finish their draft...</span></div>';
+  const sl=$('mp-draft-stat-label'); if(sl) sl.innerText='Waiting for opponent...';
+  const tm=$('mp-draft-timer'); if(tm){ tm.innerText='--'; tm.className='mp-draft-timer'; }
+}
+async function startMpDraft(){
+  if(!MP.matchId||!MP.matchData||!currentUser) return;
+  let latestData=null;
+  try{
+    const ref=db.collection('multiplayer_matches').doc(MP.matchId);
+    latestData=await db.runTransaction(async function(txn){
+      const s=await txn.get(ref);
+      if(!s.exists) throw new Error('Match not found');
+      const d=s.data();
+      const phase=d.phase;
+      if(phase!=='matched'&&phase!=='drafting') return d;
+      const now=firebase.firestore.FieldValue.serverTimestamp();
+      const update={updatedAt:now};
+      if(phase==='matched') update.phase='drafting';
+      if(d.players&&d.players[currentUser.uid]&&d.players[currentUser.uid].draftStatus!=='submitted')
+        update['players.'+currentUser.uid+'.draftStatus']='drafting';
+      txn.update(ref,update);
+      d.phase='drafting';
+      if(d.players&&d.players[currentUser.uid]&&d.players[currentUser.uid].draftStatus!=='submitted')
+        d.players[currentUser.uid].draftStatus='drafting';
+      return d;
+    });
+  }catch(e){
+    console.warn('[MP] startDraft:',e);
+    showToast&&showToast('PvP Error','Could not start the draft. Try again.','warning');
+    screen('mp-matchup');
+    return;
+  }
+  if(!latestData) return;
+  MP.matchData=latestData;
+  if(latestData.phase!=='drafting'){
+    mpOnPhaseChange(latestData);
+    return;
+  }
+  const me=latestData.players&&latestData.players[currentUser.uid];
+  if(me&&me.draftStatus==='submitted'){ MP._handledPhase='drafting'; mpShowDraftWaiting(); return; }
+  MP._handledPhase='drafting';
+  screen('mp-draft');
   const booster=(me&&me.cardBooster)||{stat:'Power',val:1};
   const statNames=mpGetStats();
   const stats={};
@@ -12803,24 +12904,29 @@ async function mpSubmitBuild(){
   const sl=$('mp-draft-stat-label'); if(sl) sl.innerText='Waiting for opponent...';
   const now=firebase.firestore.FieldValue.serverTimestamp();
   const updateKey='players.'+currentUser.uid;
-  await db.collection('multiplayer_matches').doc(MP.matchId).update({
-    [updateKey+'.finalBuild']:finalBuild,
-    [updateKey+'.draftStatus']:'submitted',
-    [updateKey+'.submittedAt']:now,
-    updatedAt:now,
-  });
-  // If both submitted, advance to build_reveal
   try{
+    await db.collection('multiplayer_matches').doc(MP.matchId).update({
+      [updateKey+'.finalBuild']:finalBuild,
+      [updateKey+'.draftStatus']:'submitted',
+      [updateKey+'.submittedAt']:now,
+      updatedAt:now,
+    });
+    // If both submitted, advance to build_reveal
     await db.runTransaction(async function(txn){
       const ref=db.collection('multiplayer_matches').doc(MP.matchId);
       const latest=await txn.get(ref);
       if(!latest.exists) return;
       const d=latest.data();
-      if(d.phase!=='drafting') return;
       const allDone=d.playerOrder.every(function(u){ return d.players[u]&&d.players[u].draftStatus==='submitted'; });
-      if(allDone) txn.update(ref,{phase:'build_reveal',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      const canReveal=d.phase!=='build_reveal'&&d.phase!=='simulating'&&d.phase!=='complete';
+      if(allDone&&canReveal) txn.update(ref,{phase:'build_reveal',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
     });
-  }catch(e){ console.warn('[MP] build_reveal transition:',e); }
+  }catch(e){
+    console.warn('[MP] submitBuild:',e);
+    if(opts) opts.innerHTML='<div style="text-align:center;padding:16px;color:#e05252;font-size:.82rem">Could not submit build.<br><span style="color:var(--text-dim);font-size:.68rem">Check your connection and try again.</span></div>';
+    if(sl) sl.innerText='Draft submit failed';
+    showToast&&showToast('PvP Error','Could not submit your build.','warning');
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -13005,12 +13111,13 @@ function mpShowFightResult(data){
     log.innerHTML=html;
     setTimeout(function(){ log.scrollTop=log.scrollHeight; },50);
   }
-  const iWon2=result.winnerUid===myUid;
+  const iWon2=result.winnerUid===myUid, isDraw2=result.winnerUid==='draw';
+  const scores=mpScoresForViewer(result,myUid);
   const myHp=$('mp-fight-my-hp'), oppHp=$('mp-fight-opp-hp');
-  if(myHp)  myHp.style.width=(iWon2?'60':'15')+'%';
-  if(oppHp) oppHp.style.width=(iWon2?'15':'60')+'%';
-  if($('mp-fight-my-score'))    $('mp-fight-my-score').innerText=result.myScore||0;
-  if($('mp-fight-opp-score'))   $('mp-fight-opp-score').innerText=result.oppScore||0;
+  if(myHp)  myHp.style.width=(isDraw2?'40':iWon2?'60':'15')+'%';
+  if(oppHp) oppHp.style.width=(isDraw2?'40':iWon2?'15':'60')+'%';
+  if($('mp-fight-my-score'))    $('mp-fight-my-score').innerText=scores.my;
+  if($('mp-fight-opp-score'))   $('mp-fight-opp-score').innerText=scores.opp;
   const roundsPlayed=(data.fightHighlights||[]).length;
   if($('mp-fight-round-label')) $('mp-fight-round-label').innerText='RND '+roundsPlayed;
   const btn=$('mp-fight-next-btn');
@@ -13029,12 +13136,13 @@ function mpRenderResult(data){
   const oppPD=data.players&&data.players[oppUid];
   const result=data.result;
   const iWon=result.winnerUid===myUid, isDraw=result.winnerUid==='draw';
+  const scores=mpScoresForViewer(result,myUid);
   const title=$('mp-result-title');
   if(title){ title.className='mp-result-title '+(iWon?'win':isDraw?'draw':'loss'); title.innerText=iWon?'VICTORY':isDraw?'DRAW':'DEFEAT'; }
   if($('mp-result-method')) $('mp-result-method').innerText=result.method+(result.method!=='Decision'?' — Round '+result.roundEnded:'');
-  if($('mp-result-p1-score')) $('mp-result-p1-score').innerText=result.myScore||0;
+  if($('mp-result-p1-score')) $('mp-result-p1-score').innerText=scores.my;
   if($('mp-result-p1-who'))   $('mp-result-p1-who').innerText=(myPD&&myPD.displayName)||'You';
-  if($('mp-result-p2-score')) $('mp-result-p2-score').innerText=result.oppScore||0;
+  if($('mp-result-p2-score')) $('mp-result-p2-score').innerText=scores.opp;
   if($('mp-result-p2-who'))   $('mp-result-p2-who').innerText=(oppPD&&oppPD.displayName)||'Opponent';
   const isRanked=data.mode==='ranked';
   if($('mp-result-ranked-tag'))  $('mp-result-ranked-tag').hidden=!isRanked;
@@ -13057,7 +13165,7 @@ function mpRenderResult(data){
     if($('mp-result-tier'))       $('mp-result-tier').innerText=getEloTierName((myPD&&myPD.eloBefore)||MP_STARTING_ELO);
   }
   // PM reward
-  const pm=(data.rewards&&data.rewards[myUid])||0;
+  const pm=Math.min(MP_PM_WIN,safeMoney((data.rewards&&data.rewards[myUid])||0));
   if($('mp-result-pm-val')) $('mp-result-pm-val').innerText='+'+pm.toLocaleString()+' PM';
   // Record
   const p=MP.profile||{};
@@ -13072,20 +13180,29 @@ function mpRenderResult(data){
 async function mpApplyEloAndRewards(data){
   if(!data||!data.result||!currentUser) return;
   const matchRef=db.collection('multiplayer_matches').doc(data.matchId);
+  const myUid=currentUser.uid;
   let canApply=false;
   try{
     canApply=await db.runTransaction(async function(txn){
       const s=await txn.get(matchRef);
-      if(!s.exists||s.data().eloApplied) return false;
-      txn.update(matchRef,{eloApplied:true});
+      if(!s.exists) return false;
+      const d=s.data();
+      const applied=Array.isArray(d.rewardAppliedUids)?d.rewardAppliedUids:[];
+      if(applied.includes(myUid)) return false;
+      txn.update(matchRef,{
+        rewardAppliedUids:firebase.firestore.FieldValue.arrayUnion(myUid),
+        rewardsApplied:true,
+        eloApplied:true,
+      });
       return true;
     });
   }catch(e){ console.warn('[MP] eloApply claim:',e); }
   if(!canApply) return;
-  const myUid=currentUser.uid;
+  try{ await ensureMpProfile(); }
+  catch(e){ console.warn('[MP] ensure profile before reward:',e); }
   const result=data.result;
   const ec=data.eloChanges&&data.eloChanges[myUid];
-  const pm=(data.rewards&&data.rewards[myUid])||0;
+  const pm=Math.min(MP_PM_WIN,safeMoney((data.rewards&&data.rewards[myUid])||0));
   const iWon=result.winnerUid===myUid, isDraw=result.winnerUid==='draw';
   const isKO=iWon&&(result.method==='KO'||result.method==='TKO');
   const profileUp={
@@ -13096,14 +13213,7 @@ async function mpApplyEloAndRewards(data){
   };
   if(data.mode==='ranked'&&ec) profileUp.elo=ec.after;
   await saveMpProfile(profileUp);
-  if(pm>0){
-    try{
-      if(typeof safeMoney==='function') safeMoney(pm);
-      if(typeof updateWalletDisplays==='function') updateWalletDisplays();
-      if(typeof saveCareer==='function') saveCareer();
-    }catch(e){ console.warn('[MP] PM award:',e); }
-  }
-  try{ await matchRef.update({rewardsApplied:true}); }catch(e){}
+  try{ mpAwardPlayMoney(pm); }catch(e){ console.warn('[MP] PM award:',e); }
   // Refresh record display
   const p=MP.profile||{};
   if($('mp-result-record')) $('mp-result-record').innerHTML='<strong>'+(p.pvpWins||0)+'W – '+(p.pvpLosses||0)+'L – '+(p.pvpDraws||0)+'D</strong> (KO: '+(p.pvpKos||0)+')';
@@ -13190,11 +13300,16 @@ async function openMpInvite(){
   if($('mp-invite-code-display')) $('mp-invite-code-display').innerText='– – – – – –';
   const st=$('mp-invite-status');
   if(st){ st.innerText=''; st.className='mp-invite-status'; }
+  const js=$('mp-join-status');
+  if(js){ js.innerText=''; js.className='mp-invite-status'; }
 }
 async function createMpInviteCode(){
+  if(!currentUser){ showToast&&showToast('Sign In Required','Sign in to create a lobby.','warning'); return; }
   await ensureMpProfile();
   const code=Math.random().toString(36).substr(2,6).toUpperCase();
   MP.lobbyCode=code;
+  MP.mode='friendly'; MP.isBot=false;
+  if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
   if($('mp-invite-code-display')) $('mp-invite-code-display').innerText=code;
   const st=$('mp-invite-status');
   if(st){ st.innerText='Creating lobby...'; st.className='mp-invite-status'; }
@@ -13202,9 +13317,22 @@ async function createMpInviteCode(){
     await db.collection('pvp_lobbies').doc(code).set({
       code:code,hostUid:currentUser.uid,hostName:MP.profile.displayName||'Boxer',
       hostCardId:MP.profile.equippedCardId||'cc001',hostElo:MP.profile.elo||MP_STARTING_ELO,
+      hostWins:MP.profile.pvpWins||0,hostLosses:MP.profile.pvpLosses||0,hostDraws:MP.profile.pvpDraws||0,hostKos:MP.profile.pvpKos||0,
       status:'waiting',createdAt:firebase.firestore.FieldValue.serverTimestamp(),
     });
     if(st){ st.innerText='Ready! Share this code with your friend.'; st.className='mp-invite-status ok'; }
+    MP.lobbyUnsub=db.collection('pvp_lobbies').doc(code).onSnapshot(async function(snap){
+      if(!snap.exists||MP.matchId) return;
+      const lobby=snap.data();
+      if(lobby.status==='matched'&&lobby.matchId){
+        if(st){ st.innerText='Friend joined! Loading match...'; st.className='mp-invite-status ok'; }
+        if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+        await mpEnterMatch(lobby.matchId);
+      }
+    },function(e){
+      console.warn('[MP] lobby listener:',e);
+      if(st){ st.innerText='Lobby listener failed. Try a new code.'; st.className='mp-invite-status error'; }
+    });
   }catch(e){
     if(st){ st.innerText='Failed to create lobby. Try again.'; st.className='mp-invite-status error'; }
   }
@@ -13213,22 +13341,30 @@ async function joinMpByCode(){
   const inp=$('mp-join-code-input');
   const code=((inp&&inp.value)||'').trim().toUpperCase();
   const st=$('mp-join-status');
+  if(!currentUser){ if(st){ st.innerText='Sign in to join a lobby.'; st.className='mp-invite-status error'; } return; }
   if(code.length<4){ if(st){ st.innerText='Please enter a valid code.'; st.className='mp-invite-status error'; } return; }
   try{
-    const snap=await db.collection('pvp_lobbies').doc(code).get();
-    if(!snap.exists||snap.data().status!=='waiting'){
-      if(st){ st.innerText='Lobby not found or already started.'; st.className='mp-invite-status error'; } return;
-    }
-    const lobby=snap.data();
     await ensureMpProfile();
     MP.mode='friendly'; MP.isBot=false;
     const matchId=db.collection('multiplayer_matches').doc().id;
     const now=firebase.firestore.FieldValue.serverTimestamp();
-    const guestEntry={uid:currentUser.uid,displayName:MP.profile.displayName||'Boxer',elo:MP.profile.elo||MP_STARTING_ELO,equippedCardId:MP.profile.equippedCardId||'cc001',pvpWins:MP.profile.pvpWins||0,pvpLosses:MP.profile.pvpLosses||0,pvpDraws:MP.profile.pvpDraws||0,pvpKos:MP.profile.pvpKos||0};
-    const hostEntry={uid:lobby.hostUid,displayName:lobby.hostName||'Boxer',elo:lobby.hostElo||MP_STARTING_ELO,equippedCardId:lobby.hostCardId||'cc001',pvpWins:0,pvpLosses:0,pvpDraws:0,pvpKos:0};
-    await db.collection('multiplayer_matches').doc(matchId).set(mpBuildMatchDoc('friendly',guestEntry,hostEntry,matchId,now,false));
-    await db.collection('pvp_lobbies').doc(code).update({status:'matched',matchId:matchId,guestUid:currentUser.uid});
-    await mpEnterMatch(matchId);
+    const lobbyRef=db.collection('pvp_lobbies').doc(code);
+    const matchRef=db.collection('multiplayer_matches').doc(matchId);
+    const joined=await db.runTransaction(async function(txn){
+      const snap=await txn.get(lobbyRef);
+      if(!snap.exists) return {error:'Lobby not found or already started.'};
+      const lobby=snap.data();
+      if(lobby.status!=='waiting') return {error:'Lobby not found or already started.'};
+      if(lobby.hostUid===currentUser.uid) return {error:'You cannot join your own lobby code.'};
+      const guestEntry={uid:currentUser.uid,displayName:MP.profile.displayName||'Boxer',elo:MP.profile.elo||MP_STARTING_ELO,equippedCardId:MP.profile.equippedCardId||'cc001',pvpWins:MP.profile.pvpWins||0,pvpLosses:MP.profile.pvpLosses||0,pvpDraws:MP.profile.pvpDraws||0,pvpKos:MP.profile.pvpKos||0};
+      const hostEntry={uid:lobby.hostUid,displayName:lobby.hostName||'Boxer',elo:lobby.hostElo||MP_STARTING_ELO,equippedCardId:lobby.hostCardId||'cc001',pvpWins:lobby.hostWins||0,pvpLosses:lobby.hostLosses||0,pvpDraws:lobby.hostDraws||0,pvpKos:lobby.hostKos||0};
+      txn.set(matchRef,mpBuildMatchDoc('friendly',guestEntry,hostEntry,matchId,now,false));
+      txn.update(lobbyRef,{status:'matched',matchId:matchId,guestUid:currentUser.uid,guestName:MP.profile.displayName||'Boxer',updatedAt:now});
+      return {matchId:matchId};
+    });
+    if(joined.error){ if(st){ st.innerText=joined.error; st.className='mp-invite-status error'; } return; }
+    if(st){ st.innerText='Joined! Loading match...'; st.className='mp-invite-status ok'; }
+    await mpEnterMatch(joined.matchId);
   }catch(e){
     if(st){ st.innerText='Error joining lobby. Try again.'; st.className='mp-invite-status error'; }
     console.error('[MP] joinByCode:',e);

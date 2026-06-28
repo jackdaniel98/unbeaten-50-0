@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Merge these multiplayer rules into the live console rules before deploy
+    // if the console already contains rules for the rest of the app.
+    match /multiplayer_profiles/{uid} {
+      allow read: if signedIn();
+      allow create, update, delete: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /matchmaking_queue/{uid} {
+      allow read, write: if signedIn();
+    }
+
+    match /multiplayer_matches/{matchId} {
+      allow read, write: if signedIn();
+    }
+
+    match /pvp_lobbies/{code} {
+      allow read, write: if signedIn();
+    }
+  }
+}
