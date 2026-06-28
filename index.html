@@ -2089,14 +2089,49 @@ body.final-card-open{overflow:hidden}
 .synergy-flash.teal{background:radial-gradient(circle at 50% 45%,rgba(20,184,166,.34),rgba(227,178,60,.12) 42%,transparent 70%)}
 @keyframes synergyFlash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
 
-/* ===== Synergy-pick selection screen ===== */
-.syn-pick-card{background:var(--panel);border:2px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px;margin-bottom:10px;cursor:pointer;transition:border-color var(--t) var(--ease),background var(--t) var(--ease),box-shadow var(--t) var(--ease);-webkit-tap-highlight-color:transparent;user-select:none}
-.syn-pick-card:active{opacity:.82}
-.syn-pick-card.selected{border-color:var(--gold);background:linear-gradient(110deg,var(--panel) 0%,var(--gold-soft) 60%,var(--panel) 100%);box-shadow:0 0 0 1px var(--gold-glow),var(--shadow-card)}
-.syn-pick-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.syn-pick-check{width:22px;height:22px;min-width:22px;border:2px solid var(--line-2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all var(--t) var(--ease);background:transparent;margin-top:1px}
+/* ===== Synergy-pick selection screen — mobile-first upgrade UI ===== */
+#synergy-pick-screen{padding:0!important;overflow:hidden!important}
+.syn-counter-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;flex-shrink:0;border-bottom:1px solid var(--line);background:var(--bg-2);gap:10px}
+.syn-counter-title{font-size:.76rem;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.9px}
+.syn-counter-title strong{color:var(--gold)}
+.syn-counter-badge{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.2rem;letter-spacing:.5px;color:var(--text);background:var(--panel);border:1px solid var(--line);padding:3px 14px;border-radius:999px;min-width:54px;text-align:center;transition:color .18s ease,border-color .18s ease}
+.syn-counter-badge.ready{color:var(--gold);border-color:rgba(227,178,60,.45)}
+.syn-names-bar{padding:6px 16px;min-height:30px;flex-shrink:0;display:flex;gap:7px;flex-wrap:wrap;align-items:center;background:var(--bg);border-bottom:1px solid var(--line)}
+.syn-names-hint{font-size:.68rem;color:var(--muted)}
+.syn-name-chip{background:rgba(227,178,60,.1);border:1px solid rgba(227,178,60,.3);border-radius:999px;padding:2px 9px;font-size:.65rem;font-weight:700;color:var(--gold);white-space:nowrap}
+.syn-pick-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 4px}
+.syn-sticky-footer{flex-shrink:0;padding:10px 14px max(14px,env(safe-area-inset-bottom));background:linear-gradient(0deg,#08090c 60%,transparent);border-top:1px solid var(--line)}
+/* Compact synergy cards */
+.syn-pick-card{background:var(--panel);border:1.5px solid var(--line);border-left-width:3px;border-radius:var(--radius-sm);padding:9px 11px 9px 12px;margin-bottom:7px;cursor:pointer;transition:border-color .18s ease,background .18s ease,box-shadow .18s ease,transform .1s ease;-webkit-tap-highlight-color:transparent;user-select:none;display:flex;gap:9px;align-items:flex-start}
+.syn-pick-card:active{transform:scale(.97);opacity:.88}
+.syn-pick-card.selected{border-color:var(--gold)!important;border-left-color:var(--gold)!important;background:linear-gradient(135deg,var(--panel) 0%,rgba(227,178,60,.07) 100%);box-shadow:0 0 0 1px rgba(227,178,60,.22),var(--shadow-card)}
+@keyframes synSelect{0%{transform:scale(1)}40%{transform:scale(1.028)}100%{transform:scale(1)}}
+.syn-pick-card.just-selected{animation:synSelect .22s ease}
+@media(prefers-reduced-motion:reduce){.syn-pick-card.just-selected{animation:none}.syn-pick-card{transition:none}}
+.syn-card-body{flex:1;min-width:0}
+.syn-card-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px}
+.syn-card-name{font-size:.87rem;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:3px}
+.syn-card-bonuses{font-size:.75rem;font-weight:700;color:#5fe3d2;letter-spacing:.1px;margin-bottom:3px}
+.syn-card-advice{font-size:.66rem;color:var(--muted);line-height:1.35}
+.syn-recommended-star{font-size:.59rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;opacity:.9}
+/* Tier badges */
+.syn-tier-badge{font-size:.57rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:2px 7px;border-radius:999px;border:1px solid;display:inline-block;line-height:1.4}
+.synergy-tier-best{border-left-color:var(--gold)!important}
+.synergy-tier-best .syn-tier-badge{background:rgba(227,178,60,.15);color:#f0c844;border-color:rgba(227,178,60,.45)}
+.synergy-tier-great{border-left-color:#5b8def!important}
+.synergy-tier-great .syn-tier-badge{background:rgba(91,141,239,.12);color:#7eb3ff;border-color:rgba(91,141,239,.38)}
+.synergy-tier-good{border-left-color:var(--green)!important}
+.synergy-tier-good .syn-tier-badge{background:rgba(54,196,126,.1);color:var(--green);border-color:rgba(54,196,126,.38)}
+.synergy-tier-okay{border-left-color:rgba(150,158,180,.35)!important}
+.synergy-tier-okay .syn-tier-badge{background:rgba(150,158,180,.08);color:#94a3b8;border-color:rgba(150,158,180,.25)}
+.synergy-tier-weak{border-left-color:rgba(90,95,110,.3)!important}
+.synergy-tier-weak .syn-tier-badge{background:rgba(90,95,110,.07);color:#60646f;border-color:rgba(90,95,110,.2)}
+.synergy-recommended{box-shadow:0 0 0 1px rgba(227,178,60,.2),0 2px 12px rgba(227,178,60,.08)}
+/* Check circle */
+.syn-pick-check{width:22px;height:22px;min-width:22px;border:2px solid var(--line-2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;transition:all .18s ease;background:transparent;margin-top:1px;flex-shrink:0;color:transparent}
 .syn-pick-card.selected .syn-pick-check{background:var(--gold);border-color:var(--gold);color:#000}
-.syn-pick-bonuses{margin-top:7px;font-size:.78rem;font-weight:700;color:#5fe3d2;letter-spacing:.2px}
+/* keep legacy class intact */
+.syn-pick-bonuses{margin-top:6px;font-size:.75rem;font-weight:700;color:#5fe3d2;letter-spacing:.1px}
 
 /* ===== Attribute rating tiers (match rarity tabs) ===== */
 .attr-premium{color:#ffdf7e !important;text-shadow:0 0 10px rgba(255,213,107,.55)}
@@ -2614,14 +2649,15 @@ body.final-card-open{overflow:hidden}
 </section>
 
 <section id="synergy-pick-screen" class="screen">
-  <h2>Choose 2 Synergies to Keep</h2>
-  <p class="subtle">You unlocked <strong id="syn-pick-total">0</strong> synergies. Pick exactly <strong>2</strong> to carry into your career — the rest are voided and contribute nothing to your rating or fights.</p>
-  <div class="overall-banner">
-    <div class="label">Selected</div>
-    <div id="syn-pick-counter" class="value">0 / 2</div>
+  <div class="syn-counter-bar">
+    <div class="syn-counter-title">Choose <strong>2</strong> Synergies</div>
+    <div id="syn-pick-counter" class="syn-counter-badge">0 / 2</div>
   </div>
-  <div id="syn-pick-list"></div>
-  <button id="syn-confirm-btn" class="btn gold" onclick="confirmSynergyPick()" disabled>Confirm Selection</button>
+  <div id="syn-pick-names-bar" class="syn-names-bar"><span class="syn-names-hint">Tap to select 2</span></div>
+  <div id="syn-pick-list" class="syn-pick-list"></div>
+  <div class="syn-sticky-footer">
+    <button id="syn-confirm-btn" class="btn gold" onclick="confirmSynergyPick()" disabled>Choose 2 More</button>
+  </div>
 </section>
 
 <section id="hub-screen" class="screen">
@@ -9599,30 +9635,102 @@ function completeDraft(){
   saveCareer();
   screen('hub-screen');
 }
+function scoreSynergyForBuild(syn){
+  const SURV=['Chin','Heart','Stamina','Recovery','Defence'];
+  const WT={Chin:2.2,Heart:2.2,Stamina:1.8,Recovery:1.8,Defence:1.6,Power:1.4,Speed:1.3,'Ring IQ':1.3,Accuracy:1.2,Footwork:1.1};
+  const stats=(S.player&&S.player.Stats)||{};
+  let score=0;
+  Object.entries(syn.bonuses||{}).forEach(([stat,boost])=>{
+    if(!boost||boost<=0) return;
+    const cur=stats[stat]||50;
+    const w=WT[stat]||1.2;
+    const weak=cur<68?2.0:cur<74?1.6:cur<80?1.3:cur<85?1.0:cur<90?0.8:0.6;
+    let s=boost*w*weak;
+    [70,75,80,85,90].forEach(t=>{if(cur<t&&(cur+boost)>=t)s+=1.5;});
+    if(SURV.includes(stat)) s*=1.15;
+    score+=s;
+  });
+  return Math.round(score*10)/10;
+}
+function synergyTierInfo(score){
+  if(score>=13) return{label:'BEST PICK',cls:'synergy-tier-best'};
+  if(score>=8)  return{label:'GREAT',cls:'synergy-tier-great'};
+  if(score>=5)  return{label:'GOOD',cls:'synergy-tier-good'};
+  if(score>=2.5)return{label:'OKAY',cls:'synergy-tier-okay'};
+  return{label:'LOW IMPACT',cls:'synergy-tier-weak'};
+}
+function synergyAdviceText(syn){
+  const SURV=new Set(['Chin','Heart','Stamina','Recovery','Defence']);
+  const stats=(S.player&&S.player.Stats)||{};
+  const lines=[];
+  Object.entries(syn.bonuses||{}).forEach(([stat,boost])=>{
+    if(!boost||boost<=0) return;
+    const cur=stats[stat]||50;
+    const after=cur+boost;
+    const surv=SURV.has(stat);
+    const thresh=[70,75,80,85,90].find(t=>cur<t&&after>=t);
+    if(cur<68)           lines.push('Fixes weak '+stat);
+    else if(cur<74&&surv)lines.push('Bolsters '+stat);
+    else if(thresh)      lines.push(stat+' past '+thresh);
+    else if(after>=90&&surv)lines.push(stat+' to elite');
+    else if(cur>=88)     lines.push(stat+' already strong');
+    else                 lines.push('+'+boost+' '+stat);
+  });
+  return lines.length?lines.slice(0,3).join(' · '):'Minor boost.';
+}
 function renderSynergyPick(){
   const synergies=S.player.HiddenBonuses||[];
-  const total=$('syn-pick-total'); if(total) total.innerText=synergies.length;
   const counter=$('syn-pick-counter');
   const btn=$('syn-confirm-btn');
   const list=$('syn-pick-list');
+  const namesBar=$('syn-pick-names-bar');
+  if(!list) return;
   list.innerHTML='';
+  // Score & sort best-first
+  const scored=synergies.map(syn=>({syn,score:scoreSynergyForBuild(syn)})).sort((a,b)=>b.score-a.score);
+  const topTwo=new Set(scored.slice(0,2).map(e=>e.syn.id));
   function updateUI(){
-    const n=list.querySelectorAll('.syn-pick-card.selected').length;
-    if(counter) counter.innerText=n+' / 2';
-    if(btn) btn.disabled=n!==2;
+    const sel=list.querySelectorAll('.syn-pick-card.selected');
+    const n=sel.length;
+    if(counter){counter.innerText=n+' / 2';counter.classList.toggle('ready',n===2);}
+    if(btn){btn.disabled=n!==2;btn.textContent=n===2?'Start Career →':'Choose '+(2-n)+' More';}
+    if(namesBar){
+      namesBar.innerHTML='';
+      if(n===0){const h=document.createElement('span');h.className='syn-names-hint';h.textContent='Tap synergies to select 2';namesBar.appendChild(h);return;}
+      Array.from(sel).forEach(c=>{
+        const sy=synergies.find(s=>s.id===c.dataset.synId);
+        if(sy){const chip=document.createElement('span');chip.className='syn-name-chip';chip.textContent=sy.name;namesBar.appendChild(chip);}
+      });
+    }
   }
-  synergies.forEach(syn=>{
-    const plus=Object.entries(syn.bonuses||{}).filter(([,v])=>v!==0).map(([k,v])=>(v>0?'+':'')+v+' '+k).join(', ');
+  scored.forEach(({syn,score})=>{
+    const tier=synergyTierInfo(score);
+    const isRec=topTwo.has(syn.id);
+    const plus=Object.entries(syn.bonuses||{}).filter(([,v])=>v!==0).map(([k,v])=>(v>0?'+':'')+v+' '+k).join(' · ');
+    const advice=synergyAdviceText(syn);
     const card=document.createElement('div');
-    card.className='syn-pick-card';
+    card.className='syn-pick-card '+tier.cls+(isRec?' synergy-recommended':'');
     card.dataset.synId=syn.id;
-    card.innerHTML='<div class="syn-pick-header"><div class="trait-title"><span class="synergy-spark">✦</span> '+htmlEscape(syn.name)+'</div><div class="syn-pick-check"></div></div>'
-      +'<div style="font-size:.83rem;color:var(--text-dim);margin-top:4px;line-height:1.5">'+htmlEscape(syn.desc)+'</div>'
-      +(plus?'<div class="syn-pick-bonuses">'+htmlEscape(plus)+'</div>':'');
+    card.innerHTML=
+      '<div class="syn-card-body">'+
+        '<div class="syn-card-top">'+
+          '<span class="syn-tier-badge">'+htmlEscape(tier.label)+'</span>'+
+          (isRec?'<span class="syn-recommended-star">★ Recommended</span>':'')+
+        '</div>'+
+        '<div class="syn-card-name">'+htmlEscape(syn.name)+'</div>'+
+        (plus?'<div class="syn-card-bonuses">'+htmlEscape(plus)+'</div>':'')+
+        (advice?'<div class="syn-card-advice">'+htmlEscape(advice)+'</div>':'')+
+      '</div>'+
+      '<div class="syn-pick-check"></div>';
     card.addEventListener('click',()=>{
-      const alreadySelected=card.classList.contains('selected');
-      if(!alreadySelected&&list.querySelectorAll('.syn-pick-card.selected').length>=2) return;
+      const alreadySel=card.classList.contains('selected');
+      if(!alreadySel&&list.querySelectorAll('.syn-pick-card.selected').length>=2) return;
       card.classList.toggle('selected');
+      const chk=card.querySelector('.syn-pick-check');
+      if(chk) chk.textContent=card.classList.contains('selected')?'✓':'';
+      card.classList.remove('just-selected');
+      void card.offsetWidth;
+      if(card.classList.contains('selected')) card.classList.add('just-selected');
       updateUI();
     });
     list.appendChild(card);
