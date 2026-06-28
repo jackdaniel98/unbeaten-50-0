@@ -3645,6 +3645,14 @@ body.final-card-open{overflow:hidden}
       <button class="btn ghost" style="min-height:38px;font-size:.77rem" onclick="startMpSearch('friendly')">FIND FRIENDLY</button>
     </div>
   </div>
+  <div class="mp-mode-card" style="border-color:rgba(227,178,60,.25);background:linear-gradient(135deg,#131519 0%,#1a1c20 100%)">
+    <div class="mp-mode-icon">🤖</div>
+    <div class="mp-mode-body">
+      <div class="mp-mode-title">vs Bot</div>
+      <div class="mp-mode-desc">Build your fighter using the full Career draft — attributes, traits &amp; synergies — then fight a bot. No ELO change.</div>
+      <button class="btn gold" style="min-height:38px;font-size:.77rem" onclick="startPvpBotDraft()">BUILD &amp; FIGHT BOT</button>
+    </div>
+  </div>
   <div class="mp-mode-card invite">
     <div class="mp-mode-icon">🔗</div>
     <div class="mp-mode-body">
@@ -10314,6 +10322,7 @@ function goToHub(){
   completeDraft();
 }
 function completeDraft(){
+  if(typeof MP!=='undefined'&&MP.pvpBotMode){ _pvpBotAfterDraft(); return; }
   recalcRank();
   generateOpponent();
   updateHub();
@@ -10378,7 +10387,7 @@ function renderSynergyPick(){
     const sel=list.querySelectorAll('.syn-pick-card.selected');
     const n=sel.length;
     if(counter){counter.innerText=n+' / 2';counter.classList.toggle('ready',n===2);}
-    if(btn){btn.disabled=n!==2;btn.textContent=n===2?'Start Career →':'Choose '+(2-n)+' More';}
+    if(btn){btn.disabled=n!==2;btn.textContent=n===2?(typeof MP!=='undefined'&&MP.pvpBotMode?'Fight Bot →':'Start Career →'):'Choose '+(2-n)+' More';}
     if(namesBar){
       namesBar.innerHTML='';
       if(n===0){const h=document.createElement('span');h.className='syn-names-hint';h.textContent='Tap synergies to select 2';namesBar.appendChild(h);return;}
@@ -12314,6 +12323,7 @@ let MP = {
   searchInterval:null, draftTimerInterval:null,
   queueUnsub:null, matchUnsub:null, lobbyUnsub:null, lobbyCode:null,
   searchBusy:false, _handledPhase:null,
+  pvpBotMode:false, _pvpBotCareerBackup:undefined,
 };
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -12681,9 +12691,15 @@ function mpCleanup(){
   if(MP.queueUnsub){ MP.queueUnsub(); MP.queueUnsub=null; }
   if(MP.matchUnsub){ MP.matchUnsub(); MP.matchUnsub=null; }
   if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+  if(MP.pvpBotMode&&MP._pvpBotCareerBackup!==undefined){
+    clearTimeout(pendingCloudSync);
+    if(MP._pvpBotCareerBackup) localStorage.setItem(KEYS.career,MP._pvpBotCareerBackup);
+    else localStorage.removeItem(KEYS.career);
+  }
   Object.assign(MP,{mode:null,isBot:false,matchId:null,matchData:null,
     opponent:null,myBuild:null,draftState:null,
-    searchInterval:null,draftTimerInterval:null,lobbyCode:null,searchBusy:false,_handledPhase:null});
+    searchInterval:null,draftTimerInterval:null,lobbyCode:null,searchBusy:false,_handledPhase:null,
+    pvpBotMode:false,_pvpBotCareerBackup:undefined});
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -13553,6 +13569,75 @@ function mpBotTraits(){
 function mpBotSynergies(){
   if(typeof SYNERGY==='undefined'||!Array.isArray(SYNERGY)||!SYNERGY.length) return [];
   return SYNERGY.slice().sort(function(){ return Math.random()-.5; }).slice(0,1).map(function(s){ return {name:s.name||s,bonus:s.bonus||''}; });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PvP vs Bot — full single-player draft flow, bot generated after
+// ══════════════════════════════════════════════════════════════════════════
+async function startPvpBotDraft(){
+  if(!currentUser){ showToast&&showToast('Sign In Required','Sign in to play vs bot.','warning'); return; }
+  mpCleanup();
+  MP.pvpBotMode=true;
+  try{ await ensureMpProfile(); }
+  catch(e){
+    showToast&&showToast('Error','Could not load your profile.','warning');
+    MP.pvpBotMode=false; screen('mp-home'); return;
+  }
+  MP._pvpBotCareerBackup=localStorage.getItem(KEYS.career)||null;
+  beginNewCareerDraft();
+  const advBtn=$('advance-btn');
+  if(advBtn){ advBtn.textContent='Continue to PvP Match →'; }
+}
+
+async function _pvpBotAfterDraft(){
+  const stats=Object.assign({},S.player&&S.player.Stats);
+  const traits=((S.player&&S.player.Traits)||[]).map(mpPublicTrait);
+  const synergies=((S.player&&S.player.HiddenBonuses)||[]).map(mpPublicSynergy);
+  clearTimeout(pendingCloudSync);
+  if(MP._pvpBotCareerBackup!==undefined){
+    if(MP._pvpBotCareerBackup) localStorage.setItem(KEYS.career,MP._pvpBotCareerBackup);
+    else localStorage.removeItem(KEYS.career);
+    MP._pvpBotCareerBackup=undefined;
+    try{
+      const d=loadCareer();
+      if(d){ S.mode=d.mode||'standard'; S.player=d.player; S.career=d.career; S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; }
+    }catch(e){}
+  }
+  const matchId=db.collection('multiplayer_matches').doc().id;
+  const botUid='bot_'+Date.now();
+  const myElo=(MP.profile&&MP.profile.elo)||MP_STARTING_ELO;
+  const botElo=mpBotElo(myElo);
+  const botCard=mpBotCard();
+  const botBooster=getMpBooster(botCard);
+  const botRec=mpBotRecord(botElo);
+  const botStats=mpBotStats(botElo);
+  const botName=mpBotName();
+  const now=firebase.firestore.FieldValue.serverTimestamp();
+  const botProfile=Object.assign({uid:botUid,displayName:botName,elo:botElo,equippedCardId:botCard},botRec);
+  const doc=mpBuildMatchDoc('ranked',MP.profile,botProfile,matchId,now,true);
+  const botBuild={stats:botStats,traits:mpBotTraits(),synergies:mpBotSynergies(),cardId:botCard,booster:botBooster,ovr:calcMpOvr(botStats)};
+  doc.players[botUid].draftStatus='submitted';
+  doc.players[botUid].finalBuild=botBuild;
+  doc.players[botUid].submittedAt=now;
+  const myCardId=(MP.profile&&MP.profile.equippedCardId)||'cc001';
+  const myBooster=getMpBooster(myCardId);
+  const statVals={};
+  mpGetStats().forEach(function(s){ statVals[s]=typeof stats[s]==='number'?stats[s]:70; });
+  const myBuild={stats:statVals,traits:traits,synergies:synergies,cardId:myCardId,booster:myBooster,ovr:calcMpBuildOvr(statVals,traits,synergies)};
+  doc.players[currentUser.uid].draftStatus='submitted';
+  doc.players[currentUser.uid].finalBuild=myBuild;
+  doc.players[currentUser.uid].submittedAt=now;
+  doc.phase='build_reveal';
+  MP.myBuild=myBuild;
+  MP.mode='ranked';
+  try{
+    await db.collection('multiplayer_matches').doc(matchId).set(doc);
+    await mpEnterMatch(matchId);
+  }catch(e){
+    console.error('[MP] pvpBotAfterDraft:',e);
+    showToast&&showToast('PvP Error','Could not set up bot match. Try again.','warning');
+    screen('mp-home'); renderMpHome();
+  }
 }
 </script>
 </body>
