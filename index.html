@@ -1193,6 +1193,165 @@ h2:first-child{margin-top:6px}
   .hub-card-hero{padding:12px 0 10px;gap:8px}
   .hub-card-hero .modular-card{width:min(100%,180px)!important}
 }
+
+/* ===== MULTIPLAYER / PvP ===== */
+.mp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px}
+.mp-header-back{background:none;border:1.5px solid var(--line);border-radius:var(--radius);color:var(--text);font-size:.8rem;font-weight:700;padding:8px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:var(--tap)}
+.mp-brand{font-family:'Bebas Neue',Impact,sans-serif;font-size:.95rem;letter-spacing:1px;color:var(--gold);flex:1;text-align:center}
+.mp-beta-badge{background:rgba(227,178,60,.12);border:1px solid rgba(227,178,60,.35);border-radius:999px;font-size:.54rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);padding:2px 8px;white-space:nowrap}
+.mp-pm-pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:.7rem;font-weight:700;color:#fff;white-space:nowrap}
+.mp-pm-pill .pm-val{color:var(--gold)}
+.mp-player-card{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--panel);border:1.5px solid rgba(227,178,60,.22);border-radius:var(--radius);margin-bottom:12px}
+.mp-player-thumb{width:48px;height:48px;border-radius:6px;overflow:hidden;flex-shrink:0;background:#0a0b0e;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.mp-player-info{flex:1;min-width:0}
+.mp-player-name{font-size:.92rem;font-weight:900;color:#fff;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-player-elo{font-size:.7rem;color:var(--gold);font-weight:700}
+.mp-player-tier{font-size:.57rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.mp-player-record{font-size:.62rem;color:var(--text-dim)}
+.mp-player-record strong{color:#fff}
+.mp-mode-card{display:flex;align-items:flex-start;gap:11px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px}
+.mp-mode-card.friendly{border-left-color:#4ade80}
+.mp-mode-card.invite{border-left-color:#38bdf8}
+.mp-mode-icon{font-size:1.2rem;flex-shrink:0;margin-top:2px}
+.mp-mode-body{flex:1;min-width:0}
+.mp-mode-title{font-size:.92rem;font-weight:900;color:#fff;margin-bottom:3px}
+.mp-mode-desc{font-size:.67rem;color:var(--text-dim);line-height:1.45;margin-bottom:8px}
+.mp-utility-row{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.mp-link-btn{background:none;border:none;padding:9px 0;font-size:.76rem;font-weight:700;color:var(--text-dim);cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent;width:100%}
+.mp-search-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px 0 20px}
+.mp-search-ring{width:66px;height:66px;border-radius:50%;border:3px solid rgba(227,178,60,.18);border-top-color:var(--gold);animation:mpSpin 1s linear infinite}
+@keyframes mpSpin{to{transform:rotate(360deg)}}
+.mp-search-label{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem;letter-spacing:1px;color:#fff}
+.mp-search-timer{font-size:2.5rem;font-family:'Bebas Neue',Impact,sans-serif;color:var(--gold);line-height:1}
+.mp-search-sub{font-size:.69rem;color:var(--text-dim);text-align:center;max-width:240px}
+.mp-vs-row{display:flex;align-items:stretch;gap:8px}
+.mp-vs-fighter{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 9px;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.mp-vs-fighter.me{border-left:2px solid var(--gold)}
+.mp-vs-fighter.opp{border-right:2px solid #38bdf8}
+.mp-vs-badge{font-size:.5rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;padding:2px 7px;border-radius:999px}
+.mp-vs-badge.me{background:rgba(227,178,60,.12);color:var(--gold);border:1px solid rgba(227,178,60,.28)}
+.mp-vs-badge.opp{background:rgba(56,189,248,.1);color:#38bdf8;border:1px solid rgba(56,189,248,.22)}
+.mp-vs-card-thumb{width:66px;border-radius:5px;overflow:hidden}
+.mp-vs-card-thumb img{width:100%;display:block}
+.mp-vs-name{font-size:.82rem;font-weight:900;color:#fff;text-align:center;line-height:1.2;word-break:break-word}
+.mp-vs-elo{font-size:.61rem;color:var(--gold);font-weight:700}
+.mp-vs-record{font-size:.57rem;color:var(--text-dim)}
+.mp-vs-card-name{font-size:.55rem;color:var(--text-dim);text-align:center}
+.mp-vs-booster{background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:4px;padding:4px 6px;font-size:.54rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#4ade80;text-align:center;width:100%;white-space:pre-line;line-height:1.4}
+.mp-vs-divider{display:flex;align-items:center;justify-content:center;min-width:32px}
+.mp-vs-vs{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.45rem;color:var(--gold);text-shadow:0 0 10px rgba(227,178,60,.3)}
+.mp-vs-mode-tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.54rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;background:rgba(227,178,60,.1);color:var(--gold);border:1px solid rgba(227,178,60,.28)}
+.mp-draft-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:8px}
+.mp-draft-timer{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;color:var(--gold);background:var(--panel);border:1px solid rgba(227,178,60,.28);border-radius:var(--radius);padding:4px 13px;min-width:54px;text-align:center;transition:color .15s}
+.mp-draft-timer.urgent{color:#e05252;border-color:rgba(224,82,82,.42);animation:urgentPulse .5s ease infinite alternate}
+@keyframes urgentPulse{from{opacity:1}to{opacity:.55}}
+.mp-draft-progress{display:flex;gap:4px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.mp-dp-dot{width:9px;height:9px;border-radius:50%;background:var(--line);transition:background .15s;flex-shrink:0}
+.mp-dp-dot.done{background:var(--gold)}
+.mp-dp-dot.active{background:rgba(227,178,60,.45)}
+.mp-draft-stat-label{font-size:.61rem;font-weight:900;text-transform:uppercase;letter-spacing:.09em;color:var(--text-dim)}
+.mp-draft-options{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+.mp-draft-option{background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:11px 13px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .12s,background .1s;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mp-draft-option:active{background:rgba(227,178,60,.05);border-color:rgba(227,178,60,.48)}
+.mp-draft-option-legend{font-size:.86rem;font-weight:900;color:#fff;margin-bottom:1px}
+.mp-draft-option-pool{font-size:.55rem;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.mp-draft-option-val{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.75rem;color:var(--gold);flex-shrink:0}
+.mp-draft-locked{display:flex;flex-direction:column;gap:2px}
+.mp-draft-locked-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.mp-draft-locked-row:last-child{border-bottom:none}
+.mp-draft-locked-stat{font-size:.67rem;font-weight:700;color:var(--text-dim)}
+.mp-draft-locked-val{font-family:'Bebas Neue',Impact,sans-serif;font-size:.95rem;color:var(--gold)}
+.mp-draft-locked-src{font-size:.57rem;color:var(--text-dim);flex:1;text-align:center;padding:0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.mp-draft-ovr-banner{background:rgba(227,178,60,.07);border:1px solid rgba(227,178,60,.18);border-radius:var(--radius-sm);padding:7px 12px;text-align:center;font-size:.68rem;color:var(--text-dim);margin-bottom:8px}
+.mp-draft-ovr-banner strong{color:var(--gold);font-size:1.02rem}
+.mp-tape-header{text-align:center;margin-bottom:10px}
+.mp-tape-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;letter-spacing:1px;color:var(--gold)}
+.mp-tape-sub{font-size:.65rem;color:var(--text-dim)}
+.mp-tape-fighters{display:grid;grid-template-columns:1fr 30px 1fr;gap:5px;margin-bottom:10px;align-items:start}
+.mp-tape-col{display:flex;flex-direction:column;gap:4px}
+.mp-tape-col.opp{align-items:flex-end;text-align:right}
+.mp-tape-name{font-size:.78rem;font-weight:900;color:#fff;line-height:1.2}
+.mp-tape-ovr{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.8rem;color:var(--gold);line-height:1}
+.mp-tape-ovr.winning{color:#4ade80}
+.mp-tape-ovr.losing{color:#e05252}
+.mp-tape-divider-col{display:flex;align-items:center;justify-content:center}
+.mp-tape-stat-rows{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:10px}
+.mp-tape-stat-row{display:grid;grid-template-columns:1fr 70px 1fr;gap:4px;padding:5px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center}
+.mp-tape-stat-row:last-child{border-bottom:none}
+.mp-tape-sv{font-family:'Bebas Neue',Impact,sans-serif;font-size:.94rem;font-variant-numeric:tabular-nums}
+.mp-tape-sv.me{color:#fff;text-align:left}
+.mp-tape-sv.opp{color:#fff;text-align:right}
+.mp-tape-sv.higher{color:#4ade80}
+.mp-tape-sn{font-size:.52rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);text-align:center}
+.mp-tape-boost{font-size:.49rem;color:#4ade80;font-weight:700}
+.mp-tape-traits{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
+.mp-tape-trait-chip{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:999px;font-size:.5rem;padding:1px 5px;color:var(--text-dim)}
+.mp-fight-header{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px}
+.mp-fight-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1rem;color:var(--gold);letter-spacing:.4px;margin-bottom:7px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-fight-bars{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin-bottom:5px}
+.mp-fight-bar-col{display:flex;flex-direction:column;gap:3px;min-width:0}
+.mp-fight-bar-name{font-size:.57rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-fight-bar-name.me{color:var(--gold)}
+.mp-fight-bar-name.opp{color:#38bdf8;text-align:right}
+.mp-fight-bar-track{height:5px;border-radius:999px;background:var(--line);overflow:hidden}
+.mp-fight-bar-fill{height:100%;border-radius:999px;transition:width .35s ease}
+.mp-fight-bar-fill.me{background:var(--gold)}
+.mp-fight-bar-fill.opp{background:#38bdf8}
+.mp-fight-round-badge{font-family:'Bebas Neue',Impact,sans-serif;font-size:.82rem;color:var(--text-dim);text-align:center;min-width:38px}
+.mp-fight-scores{display:grid;grid-template-columns:1fr auto 1fr;gap:5px;align-items:center}
+.mp-score-block{background:#0a0b0e;border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.mp-score-block.me{border-left:2px solid var(--gold)}
+.mp-score-block.opp{border-right:2px solid #38bdf8;text-align:right}
+.mp-score-val{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.2rem;color:var(--gold)}
+.mp-score-val.opp{color:#38bdf8}
+.mp-score-label{font-size:.48rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim)}
+.mp-fight-log{background:#06080c;border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;min-height:150px;max-height:290px;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:.69rem;line-height:1.65;color:var(--text);display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
+.mp-round-header{color:var(--gold);font-weight:900;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;border-top:1px solid rgba(255,255,255,.05);padding-top:5px;margin-top:3px}
+.mp-round-header:first-child{border-top:none;margin-top:0;padding-top:0}
+.mp-hl-kd{color:#e05252;font-weight:700}
+.mp-hl-action{color:var(--text-dim)}
+.mp-hl-win{color:#4ade80;font-weight:700;font-size:.74rem;padding-top:4px}
+.mp-result-banner{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 14px 12px;margin-bottom:10px;text-align:center}
+.mp-result-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:2rem;letter-spacing:1px;margin-bottom:4px;line-height:1}
+.mp-result-title.win{color:#4ade80}
+.mp-result-title.loss{color:#e05252}
+.mp-result-title.draw{color:var(--gold)}
+.mp-result-method{font-size:.74rem;color:var(--text-dim);margin-bottom:8px}
+.mp-result-scores{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.mp-result-score-card{background:#0a0b0e;border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+.mp-result-score-val{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.7rem;color:#fff}
+.mp-result-score-who{font-size:.54rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em}
+.mp-result-elo-row{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.76rem;margin-bottom:5px;flex-wrap:wrap}
+.mp-elo-change{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem}
+.mp-elo-change.positive{color:#4ade80}
+.mp-elo-change.negative{color:#e05252}
+.mp-elo-change.neutral{color:var(--text-dim)}
+.mp-result-pm-row{background:rgba(227,178,60,.07);border:1px solid rgba(227,178,60,.2);border-radius:var(--radius-sm);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.mp-result-pm-label{font-size:.62rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim)}
+.mp-result-pm-val{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.18rem;color:var(--gold)}
+.mp-result-record-row{font-size:.65rem;color:var(--text-dim);text-align:center;margin-bottom:8px}
+.mp-result-record-row strong{color:#fff}
+.mp-lb-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.mp-lb-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.35rem;letter-spacing:.5px;color:var(--gold)}
+.mp-lb-sub{font-size:.58rem;color:var(--text-dim)}
+.mp-lb-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:5px}
+.mp-lb-row.me{border-color:rgba(227,178,60,.4);border-left:2px solid var(--gold)}
+.mp-lb-rank{font-family:'Bebas Neue',Impact,sans-serif;font-size:.93rem;color:var(--text-dim);min-width:22px;text-align:center}
+.mp-lb-rank.top3{color:var(--gold)}
+.mp-lb-thumb{width:30px;height:30px;border-radius:4px;overflow:hidden;flex-shrink:0;background:#0a0b0e}
+.mp-lb-thumb img{width:100%;display:block}
+.mp-lb-info{flex:1;min-width:0}
+.mp-lb-name{font-size:.77rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-lb-tier{font-size:.53rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.mp-lb-elo{font-family:'Bebas Neue',Impact,sans-serif;font-size:.98rem;color:var(--gold);min-width:40px;text-align:right}
+.mp-lb-rec{font-size:.55rem;color:var(--text-dim);text-align:right}
+.mp-lb-loading,.mp-lb-empty{text-align:center;padding:20px;color:var(--text-dim);font-size:.74rem}
+.mp-invite-code-big{font-family:'Bebas Neue',Impact,sans-serif;font-size:2.5rem;letter-spacing:.18em;color:var(--gold);text-align:center;background:var(--panel);border:1.5px solid rgba(227,178,60,.28);border-radius:var(--radius);padding:13px;margin:10px 0;text-shadow:0 0 14px rgba(227,178,60,.22)}
+.mp-invite-input{width:100%;background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);padding:13px 16px;font-size:1rem;font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:.16em;color:#fff;text-align:center;margin-bottom:8px;-webkit-appearance:none;box-sizing:border-box}
+.mp-invite-input:focus{outline:none;border-color:rgba(227,178,60,.48)}
+.mp-invite-status{font-size:.68rem;text-align:center;margin:6px 0;min-height:16px}
+.mp-invite-status.error{color:#e05252}
+.mp-invite-status.ok{color:#4ade80}
 .final-card-modal{
   position:fixed;inset:0;z-index:2700;display:flex;align-items:flex-start;justify-content:center;
   padding:max(14px,var(--safe-top)) 12px max(14px,var(--safe-bottom));overflow-y:auto;
@@ -2529,6 +2688,7 @@ body.final-card-open{overflow:hidden}
     <button id="my-cards-menu-btn" type="button" class="btn ghost" onclick="openMyCards()">My Cards</button>
     <button id="weekly-obj-menu-btn" type="button" class="btn ghost" onclick="openWeeklyObjectives()">Weekly Objectives<span id="weekly-badge" class="weekly-badge hidden">0</span></button>
     <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
+    <button id="mp-menu-btn" type="button" class="btn gold" onclick="openMultiplayer()">⚔️ Multiplayer / PvP</button>
     <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Leaderboards</button>
     <button id="report-bug-menu-btn" type="button" class="btn ghost" onclick="openBugReport()">Report Game Bug</button>
     <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save">Delete Current Save</button>
@@ -11572,6 +11732,270 @@ window.onload=function(event){
 };
 </script>
 
+<!-- ========== MULTIPLAYER / PvP SCREENS ========== -->
+
+<!-- 1. MP Home -->
+<section id="mp-home" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="closeMpHome()">‹ Menu</button>
+    <span class="mp-brand">UNBEATEN · PvP</span>
+    <div style="display:flex;gap:5px;align-items:center">
+      <span class="mp-beta-badge">BETA</span>
+      <div class="mp-pm-pill" id="mp-home-pm">PM: <span class="pm-val">0</span></div>
+    </div>
+  </div>
+  <div class="mp-player-card">
+    <div class="mp-player-thumb" id="mp-home-card-thumb"></div>
+    <div class="mp-player-info">
+      <div class="mp-player-name" id="mp-home-name">Boxer</div>
+      <div class="mp-player-elo" id="mp-home-elo">ELO: 700</div>
+      <div class="mp-player-tier" id="mp-home-tier">Silver Prospect</div>
+      <div class="mp-player-record" id="mp-home-record"><strong>0W – 0L – 0D</strong></div>
+      <div class="mp-player-record" id="mp-home-kos" style="margin-top:1px">KO Wins: 0</div>
+    </div>
+  </div>
+  <div class="mp-mode-card">
+    <div class="mp-mode-icon">⚔️</div>
+    <div class="mp-mode-body">
+      <div class="mp-mode-title">Ranked Match</div>
+      <div class="mp-mode-desc">Search for an opponent. If nobody is found after 30 seconds, you'll face a bot. ELO and record on the line.</div>
+      <button class="btn gold" style="min-height:38px;font-size:.77rem" onclick="startMpSearch('ranked')">FIND RANKED MATCH</button>
+    </div>
+  </div>
+  <div class="mp-mode-card friendly">
+    <div class="mp-mode-icon">🤝</div>
+    <div class="mp-mode-body">
+      <div class="mp-mode-title">Friendly Match</div>
+      <div class="mp-mode-desc">Casual match. No ELO change. Great for practicing your draft.</div>
+      <button class="btn ghost" style="min-height:38px;font-size:.77rem" onclick="startMpSearch('friendly')">FIND FRIENDLY</button>
+    </div>
+  </div>
+  <div class="mp-mode-card invite">
+    <div class="mp-mode-icon">🔗</div>
+    <div class="mp-mode-body">
+      <div class="mp-mode-title">Play a Friend</div>
+      <div class="mp-mode-desc">Create a code and share it with a friend. Casual, no ELO change.</div>
+      <button class="btn blue" style="min-height:38px;font-size:.77rem" onclick="openMpInvite()">CREATE INVITE CODE</button>
+    </div>
+  </div>
+  <div class="mp-utility-row">
+    <button class="btn ghost" onclick="openMpLeaderboard()">🏆 Online Leaderboard</button>
+    <button class="mp-link-btn" onclick="closeMpHome()">Return to Menu</button>
+  </div>
+</section>
+
+<!-- 2. MP Search -->
+<section id="mp-search" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="cancelMpSearch()">‹ Cancel</button>
+    <span class="mp-brand" id="mp-search-mode-label">RANKED</span>
+    <span class="mp-beta-badge">SEARCHING</span>
+  </div>
+  <div class="mp-search-wrap">
+    <div class="mp-search-ring"></div>
+    <div class="mp-search-label">Searching...</div>
+    <div class="mp-search-timer" id="mp-search-timer">30</div>
+    <div class="mp-search-sub" id="mp-search-status">Looking for an opponent worldwide...</div>
+  </div>
+  <div class="panel" style="text-align:center;padding:14px">
+    <div style="font-size:.66rem;color:var(--text-dim);margin-bottom:10px">No match found after 30 s? You'll face a bot automatically.</div>
+    <button id="mp-cancel-search-btn" class="btn ghost" onclick="cancelMpSearch()">Cancel Search</button>
+  </div>
+</section>
+
+<!-- 3. MP Matchup / VS Screen -->
+<section id="mp-matchup" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="cancelMpSearch();screen('mp-home')">‹ Back</button>
+    <span class="mp-brand">MATCH FOUND</span>
+    <span class="mp-vs-mode-tag" id="mp-matchup-mode-tag">RANKED</span>
+  </div>
+  <div style="text-align:center;margin-bottom:8px">
+    <span id="mp-matchup-bot-tag" class="mp-beta-badge" style="background:rgba(56,189,248,.1);color:#38bdf8;border-color:rgba(56,189,248,.3)">BOT MATCH</span>
+  </div>
+  <div class="mp-vs-row">
+    <div class="mp-vs-fighter me">
+      <div class="mp-vs-badge me">YOU</div>
+      <div class="mp-vs-card-thumb" id="mp-matchup-my-thumb"></div>
+      <div class="mp-vs-name" id="mp-matchup-my-name">Boxer</div>
+      <div class="mp-vs-elo" id="mp-matchup-my-elo">ELO 700</div>
+      <div class="mp-vs-record" id="mp-matchup-my-record">0W-0L</div>
+      <div class="mp-vs-card-name" id="mp-matchup-my-card-name">Street Spark</div>
+      <div class="mp-vs-booster" id="mp-matchup-my-booster">MULTIPLAYER BOOSTER&#10;+1 Defence</div>
+    </div>
+    <div class="mp-vs-divider"><div class="mp-vs-vs">VS</div></div>
+    <div class="mp-vs-fighter opp">
+      <div class="mp-vs-badge opp">OPP</div>
+      <div class="mp-vs-card-thumb" id="mp-matchup-opp-thumb"></div>
+      <div class="mp-vs-name" id="mp-matchup-opp-name">Opponent</div>
+      <div class="mp-vs-elo" id="mp-matchup-opp-elo">ELO 700</div>
+      <div class="mp-vs-record" id="mp-matchup-opp-record">0W-0L</div>
+      <div class="mp-vs-card-name" id="mp-matchup-opp-card-name">Street Spark</div>
+      <div class="mp-vs-booster" id="mp-matchup-opp-booster">MULTIPLAYER BOOSTER&#10;+1 Power</div>
+    </div>
+  </div>
+  <div style="margin-top:12px;display:flex;flex-direction:column;gap:7px">
+    <button class="btn gold" onclick="startMpDraft()">Start Draft →</button>
+    <button class="btn ghost" onclick="cancelMpSearch();screen('mp-home')">Back to Lobby</button>
+  </div>
+</section>
+
+<!-- 4. MP Draft -->
+<section id="mp-draft" class="screen">
+  <div class="mp-draft-header">
+    <div>
+      <div style="font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)">PvP Draft</div>
+      <div id="mp-draft-stat-label" class="mp-draft-stat-label">Select your POWER — 1/10</div>
+    </div>
+    <div id="mp-draft-timer" class="mp-draft-timer">90</div>
+  </div>
+  <div id="mp-draft-dots" class="mp-draft-progress"></div>
+  <div id="mp-draft-ovr-banner" class="mp-draft-ovr-banner">Draft your fighter — pick from 3 legends per stat</div>
+  <div id="mp-draft-options" class="mp-draft-options"></div>
+  <details class="hub-section" style="margin-top:2px">
+    <summary style="font-size:.68rem;color:var(--text-dim)">Locked stats so far</summary>
+    <div class="hub-section-body" style="padding-top:4px">
+      <div id="mp-draft-locked" class="mp-draft-locked">
+        <div style="color:var(--muted);font-size:.64rem">Draft your attributes one by one.</div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- 5. MP Reveal / Tale of the Tape -->
+<section id="mp-reveal" class="screen">
+  <div class="mp-tape-header">
+    <div class="mp-tape-title">TALE OF THE TAPE</div>
+    <div class="mp-tape-sub">Both builds revealed — compare before the fight</div>
+  </div>
+  <div class="mp-tape-fighters">
+    <div class="mp-tape-col">
+      <div id="mp-reveal-my-card" style="width:54px;border-radius:5px;overflow:hidden"></div>
+      <div class="mp-tape-name" id="mp-reveal-my-name">You</div>
+      <div class="mp-tape-ovr" id="mp-reveal-my-ovr">70</div>
+      <div class="mp-vs-booster" style="font-size:.52rem;padding:3px 5px;width:auto" id="mp-reveal-my-booster">BOOSTER · +1 Power</div>
+      <div class="mp-tape-traits" id="mp-reveal-my-traits"></div>
+    </div>
+    <div class="mp-tape-divider-col"><div class="mp-vs-vs" style="font-size:1.15rem">VS</div></div>
+    <div class="mp-tape-col opp">
+      <div id="mp-reveal-opp-card" style="width:54px;border-radius:5px;overflow:hidden"></div>
+      <div class="mp-tape-name" id="mp-reveal-opp-name">Opponent</div>
+      <div class="mp-tape-ovr" id="mp-reveal-opp-ovr">70</div>
+      <div class="mp-vs-booster" style="font-size:.52rem;padding:3px 5px;width:auto" id="mp-reveal-opp-booster">BOOSTER · +1 Power</div>
+      <div class="mp-tape-traits" id="mp-reveal-opp-traits"></div>
+    </div>
+  </div>
+  <div id="mp-reveal-stat-rows" class="mp-tape-stat-rows"></div>
+  <button class="btn gold" onclick="startMpFight()">SIM FIGHT →</button>
+  <button class="btn ghost" style="margin-top:6px;font-size:.74rem" onclick="screen('mp-matchup')">‹ Back to Matchup</button>
+</section>
+
+<!-- 6. MP Fight -->
+<section id="mp-fight" class="screen">
+  <div class="mp-fight-header">
+    <div class="mp-fight-title" id="mp-fight-title">PvP Fight — 12 Rounds</div>
+    <div class="mp-fight-bars">
+      <div class="mp-fight-bar-col">
+        <div class="mp-fight-bar-name me" id="mp-fight-my-name">You</div>
+        <div class="mp-fight-bar-track"><div class="mp-fight-bar-fill me" id="mp-fight-my-hp" style="width:100%"></div></div>
+      </div>
+      <div class="mp-fight-round-badge" id="mp-fight-round-label">RND 1</div>
+      <div class="mp-fight-bar-col">
+        <div class="mp-fight-bar-name opp" id="mp-fight-opp-name">Opp</div>
+        <div class="mp-fight-bar-track"><div class="mp-fight-bar-fill opp" id="mp-fight-opp-hp" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="mp-fight-scores" style="margin-top:5px">
+      <div class="mp-score-block me">
+        <div class="mp-score-val" id="mp-fight-my-score">0</div>
+        <div class="mp-score-label">Points</div>
+      </div>
+      <div></div>
+      <div class="mp-score-block opp">
+        <div class="mp-score-val opp" id="mp-fight-opp-score">0</div>
+        <div class="mp-score-label">Points</div>
+      </div>
+    </div>
+  </div>
+  <div id="mp-fight-log" class="mp-fight-log"></div>
+  <button id="mp-fight-next-btn" class="btn gold" disabled>Simulating...</button>
+  <button class="btn ghost" style="margin-top:6px;font-size:.72rem;min-height:38px;color:#e05252;border-color:rgba(224,82,82,.3)" onclick="mpThrowInTowel()">🏳 Throw in the Towel</button>
+</section>
+
+<!-- 7. MP Result -->
+<section id="mp-result" class="screen">
+  <div class="mp-result-banner">
+    <div class="mp-result-title win" id="mp-result-title">VICTORY</div>
+    <div class="mp-result-method" id="mp-result-method">Unanimous Decision</div>
+    <div class="mp-result-scores">
+      <div class="mp-result-score-card">
+        <div class="mp-result-score-val" id="mp-result-p1-score">–</div>
+        <div class="mp-result-score-who" id="mp-result-p1-who">You</div>
+      </div>
+      <div class="mp-result-score-card">
+        <div class="mp-result-score-val" id="mp-result-p2-score">–</div>
+        <div class="mp-result-score-who" id="mp-result-p2-who">Opponent</div>
+      </div>
+    </div>
+    <div class="mp-result-elo-row">
+      <span id="mp-result-ranked-tag" class="mp-vs-mode-tag">RANKED</span>
+      <span id="mp-result-friendly-tag" class="mp-vs-mode-tag" style="background:rgba(74,222,128,.1);color:#4ade80;border-color:rgba(74,222,128,.28)" hidden>FRIENDLY</span>
+    </div>
+    <div class="mp-result-elo-row" style="margin-top:6px">
+      <span style="font-size:.7rem;color:var(--text-dim)">ELO <span id="mp-result-elo-old">700</span></span>
+      <span class="mp-elo-change neutral" id="mp-result-elo-change">+0</span>
+      <span style="font-size:.8rem;font-weight:900;color:#fff">→ <span id="mp-result-elo-new">700</span></span>
+    </div>
+    <div style="font-size:.58rem;color:var(--text-dim);margin-top:2px" id="mp-result-tier">Silver Prospect</div>
+  </div>
+  <div class="mp-result-pm-row">
+    <span class="mp-result-pm-label">Play Money Earned</span>
+    <span class="mp-result-pm-val" id="mp-result-pm-val">+300 PM</span>
+  </div>
+  <div class="mp-result-record-row" id="mp-result-record"><strong>0W – 0L – 0D</strong> (KO: 0)</div>
+  <button class="btn gold" onclick="openMpLeaderboard()">🏆 View Leaderboard</button>
+  <button class="btn blue" style="margin-top:7px" onclick="startMpSearch(MP.mode||'ranked')">Find Another Match</button>
+  <button class="btn ghost" style="margin-top:7px" onclick="screen('mp-home');renderMpHome()">Back to PvP Lobby</button>
+  <button class="btn ghost" style="margin-top:7px" onclick="closeMpHome()">Return to Menu</button>
+</section>
+
+<!-- 8. MP Leaderboard -->
+<section id="mp-leaderboard" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="screen('mp-home')">‹ Back</button>
+    <div style="flex:1">
+      <div class="mp-lb-title">PvP Leaderboard</div>
+      <div class="mp-lb-sub">Ranked by ELO · Top 50 players</div>
+    </div>
+    <span class="mp-beta-badge">LIVE</span>
+  </div>
+  <div id="mp-lb-list"><div class="mp-lb-loading">Loading...</div></div>
+  <button class="btn ghost" style="margin-top:8px" onclick="screen('mp-home')">Back to PvP Lobby</button>
+</section>
+
+<!-- 9. MP Invite / Play a Friend -->
+<section id="mp-invite" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="screen('mp-home')">‹ Back</button>
+    <span class="mp-brand">PLAY A FRIEND</span>
+    <span class="mp-beta-badge">CASUAL</span>
+  </div>
+  <div class="panel" style="margin-bottom:10px">
+    <div style="font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px">Create Lobby</div>
+    <div style="font-size:.7rem;color:var(--text-dim);margin-bottom:10px">Generate a 6-character code, then share it with your friend.</div>
+    <button class="btn gold" style="min-height:40px" onclick="createMpInviteCode()">Generate Code</button>
+    <div class="mp-invite-code-big" id="mp-invite-code-display">– – – – – –</div>
+    <div class="mp-invite-status ok" id="mp-invite-status"></div>
+  </div>
+  <div style="text-align:center;padding:6px 0;font-size:.66rem;color:var(--muted)">— OR —</div>
+  <div class="panel">
+    <div style="font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px">Join a Lobby</div>
+    <input id="mp-join-code-input" class="mp-invite-input" type="text" maxlength="6" placeholder="ABC123" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+    <div class="mp-invite-status" id="mp-join-status"></div>
+    <button class="btn blue" style="min-height:40px" onclick="joinMpByCode()">Join Lobby</button>
+  </div>
+</section>
+
 <!-- PWA: Add to Home Screen nudge -->
 <div id="pwa-nudge" class="pwa-nudge hidden" role="status" aria-live="polite">
   <span class="pwa-nudge-icon">📲</span>
@@ -11656,6 +12080,783 @@ window.onload=function(event){
     if (n) n.classList.add('hidden');
   };
 }());
+</script>
+
+<script>
+// ===== MULTIPLAYER / PvP SYSTEM — Stage 1-6 =====
+
+// ── Constants ────────────────────────────────────────────────────────────
+const MP_STARTING_ELO = 700;
+const MP_K_REAL = 32;
+const MP_K_BOT  = 16;
+const MP_PM_WIN  = 300;
+const MP_PM_DRAW = 100;
+const MP_PM_LOSS = 50;
+const MP_DRAFT_SECS = 90;
+
+const MP_ELO_TIERS = [
+  {min:1700,name:'Undisputed',       color:'#e3b23c'},
+  {min:1500,name:'Elite Champion',   color:'#c084fc'},
+  {min:1300,name:'Champion',         color:'#38bdf8'},
+  {min:1150,name:'Title Challenger', color:'#4ade80'},
+  {min:1000,name:'Ranked Contender', color:'#facc15'},
+  {min:850, name:'Gold Contender',   color:'#fb923c'},
+  {min:700, name:'Silver Prospect',  color:'#94a3b8'},
+  {min:0,   name:'Bronze Prospect',  color:'#8B7355'},
+];
+
+const MP_BOT_NAMES = [
+  'Ryan Walker','Mason Brooks','Leo Harrison','Tyler Morgan','Callum Price',
+  'Ethan Carter','Dylan Hayes','Oscar Bennett','Jayden Foster','Reece Collins',
+  'ShadowHook','IronTempo','SouthpawKing','ClutchCounter','BlitzRhino',
+  'ApexRounds','GhostJab','CardCollector','FinalBell','NoMercyMike',
+  'JabFactory','RingGeneral','StoneHands','NightBrawler','TitanPulse',
+];
+
+// Multiplayer boosters: flat stat additions (not % like career boosts)
+const MP_BOOSTERS = {
+  cc001:{stat:'Defence',val:1},  cc002:{stat:'Speed',val:1},
+  cc003:{stat:'Power',val:1},    cc004:{stat:'Stamina',val:1},
+  cc005:{stat:'Chin',val:1},     cc006:{stat:'Speed',val:1},
+  cc007:{stat:'Power',val:1},    cc008:{stat:'Stamina',val:1},
+  cc009:{stat:'Chin',val:1},     cc010:{stat:'Speed',val:1},
+  cc011:{stat:'Power',val:1},    cc012:{stat:'Recovery',val:1},
+  cc013:{stat:'Power',val:2},    cc014:{stat:'Speed',val:2},
+  cc015:{stat:'Defence',val:2},  cc016:{stat:'Stamina',val:2},
+  cc017:{stat:'Power',val:2},    cc018:{stat:'Speed',val:2},
+  cc019:{stat:'Defence',val:2},  cc020:{stat:'Stamina',val:2},
+  cc021:{stat:'Power',val:3},    cc022:{stat:'Speed',val:3},
+  cc023:{stat:'Defence',val:3},  cc024:{stat:'Stamina',val:3},
+  cc025:{stat:'Power',val:3},    cc026:{stat:'Speed',val:3},
+  cc027:{stat:'Power',val:4},    cc028:{stat:'Speed',val:4},
+  cc029:{stat:'Defence',val:4},  cc030:{stat:'Heart',val:3},
+  cc031:{stat:'Power',val:3},    cc032:{stat:'Power',val:4},
+  cc033:{stat:'Defence',val:3},  cc034:{stat:'Power',val:3},
+  cc035:{stat:'Recovery',val:4}, cc036:{stat:'Speed',val:4},
+  cc037:{stat:'Chin',val:4},     cc038:{stat:'Accuracy',val:4},
+  cc039:{stat:'Heart',val:3},
+};
+
+// ── State ──────────────────────────────────────────────────────────────────
+let MP = {
+  mode:null, isBot:false, matchId:null,
+  profile:null, opponent:null,
+  myBuild:null, draftState:null,
+  fight:null, result:null,
+  searchInterval:null, draftTimerInterval:null, queueUnsub:null,
+  lobbyCode:null,
+};
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function getMpBooster(cardId){
+  const b=MP_BOOSTERS[cardId||'cc001']||{stat:'Power',val:1};
+  return {stat:b.stat,val:b.val,label:'+'+b.val+' '+b.stat};
+}
+function getEloTier(elo){
+  for(const t of MP_ELO_TIERS) if((elo||0)>=t.min) return t;
+  return MP_ELO_TIERS[MP_ELO_TIERS.length-1];
+}
+function getEloTierName(elo){ return getEloTier(elo).name; }
+function calcEloChange(myElo,oppElo,result,isBot){
+  const k=isBot?MP_K_BOT:MP_K_REAL;
+  const E=1/(1+Math.pow(10,(oppElo-myElo)/400));
+  const score=result==='win'?1:result==='draw'?.5:0;
+  return Math.round(k*(score-E));
+}
+function formatMpRecord(p){
+  if(!p) return '0W – 0L – 0D';
+  return (p.pvpWins||0)+'W – '+(p.pvpLosses||0)+'L – '+(p.pvpDraws||0)+'D';
+}
+function mpCardThumb(cardId,sizePx){ return _showcaseCardHtml(cardId||'cc001',sizePx||48); }
+function getRandomBotName(){ return MP_BOT_NAMES[Math.floor(Math.random()*MP_BOT_NAMES.length)]; }
+function generateBotEloNearPlayer(myElo){ return Math.max(400,Math.round(myElo+(Math.random()-.5)*240)); }
+function generateBotRecord(elo){
+  const base=Math.max(0,elo-MP_STARTING_ELO);
+  const w=Math.floor(base/30)+Math.floor(Math.random()*8);
+  const l=Math.max(0,Math.floor(w*(.1+Math.random()*.25)));
+  const kos=Math.floor(w*(.3+Math.random()*.4));
+  return {pvpWins:w,pvpLosses:l,pvpDraws:0,pvpKos:kos,pvpMatchesPlayed:w+l};
+}
+function generateBotEquippedCard(){ return COLLECTIBLE_CARDS[Math.floor(Math.random()*COLLECTIBLE_CARDS.length)].id; }
+function generateBotDraftBuild(targetElo){
+  const q=Math.min(1,Math.max(.35,(targetElo-400)/1200));
+  const stats={};
+  STATS.forEach(st=>{const base=60+Math.floor(q*24);stats[st]=clamp(base+Math.floor((Math.random()-.5)*20),48,96);});
+  return stats;
+}
+function generateBotTraits(){
+  const pos=TRAITS.filter(t=>t.type==='positive');
+  const t1=pos[Math.floor(Math.random()*pos.length)];
+  const rest=pos.filter(t=>t.id!==t1.id);
+  const t2=rest[Math.floor(Math.random()*rest.length)];
+  return [t1,t2].filter(Boolean);
+}
+function generateBotSynergies(){
+  const all=[...SYNERGY,...(typeof EXTRA_SYNERGY!=='undefined'?EXTRA_SYNERGY:[])];
+  const i=Math.floor(Math.random()*all.length);
+  const j=(i+1+Math.floor(Math.random()*(all.length-1)))%all.length;
+  return [all[i],all[j]].filter(Boolean);
+}
+
+// ── Firestore ─────────────────────────────────────────────────────────────
+async function loadMpProfile(){
+  if(!currentUser) return null;
+  try {
+    const snap=await db.collection('multiplayer_profiles').doc(currentUser.uid).get();
+    if(snap.exists) return snap.data();
+    const profile={
+      uid:currentUser.uid,
+      displayName:currentUser.displayName||S.player?.Name||'Boxer',
+      elo:MP_STARTING_ELO, bestElo:MP_STARTING_ELO,
+      pvpWins:0,pvpLosses:0,pvpDraws:0,pvpKos:0,pvpMatchesPlayed:0,
+      equippedCardId:S.player?.myCardsShowcase||'cc001',
+      lastMatchAt:null,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+    };
+    await db.collection('multiplayer_profiles').doc(currentUser.uid).set(profile);
+    return profile;
+  } catch(e){ console.warn('[MP] loadMpProfile',e); return null; }
+}
+async function saveMpProfile(updates){
+  if(!currentUser) return;
+  try {
+    await db.collection('multiplayer_profiles').doc(currentUser.uid).set(
+      {...updates,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}
+    );
+  } catch(e){ console.warn('[MP] saveMpProfile',e); }
+}
+async function joinMatchmakingQueue(mode){
+  if(!currentUser||!MP.profile) return;
+  try {
+    await db.collection('matchmaking_queue').doc(currentUser.uid).set({
+      uid:currentUser.uid,
+      displayName:MP.profile.displayName||'Boxer',
+      elo:MP.profile.elo||MP_STARTING_ELO,
+      equippedCardId:MP.profile.equippedCardId||'cc001',
+      mode, searchingAt:firebase.firestore.FieldValue.serverTimestamp(),
+    });
+  } catch(e){ console.warn('[MP] joinQueue',e); }
+}
+async function leaveMatchmakingQueue(){
+  if(!currentUser) return;
+  try { await db.collection('matchmaking_queue').doc(currentUser.uid).delete(); } catch(e){}
+}
+async function findOpponentInQueue(mode,myElo){
+  if(!currentUser) return null;
+  try {
+    const snap=await db.collection('matchmaking_queue').where('mode','==',mode).limit(10).get();
+    const others=snap.docs.map(d=>d.data()).filter(d=>d.uid!==currentUser.uid);
+    if(!others.length) return null;
+    others.sort((a,b)=>Math.abs((a.elo||700)-myElo)-Math.abs((b.elo||700)-myElo));
+    return others[0];
+  } catch(e){ console.warn('[MP] findOpp',e); return null; }
+}
+async function loadMpLeaderboard(){
+  try {
+    const snap=await db.collection('multiplayer_profiles').orderBy('elo','desc').limit(50).get();
+    return snap.docs.map(d=>d.data());
+  } catch(e){ console.warn('[MP] lb',e); return []; }
+}
+
+// ── Draft Logic ────────────────────────────────────────────────────────────
+function initMpDraft(){
+  MP.draftState={step:0,picks:{},options:{},timerSecs:MP_DRAFT_SECS};
+  STATS.forEach(stat=>{
+    const pool=LEGENDS.slice().sort(()=>Math.random()-.5);
+    MP.draftState.options[stat]=pool.slice(0,3).map(l=>({
+      legend:l.Name, value:l[stat], pool:l.Pool||'standard',
+    }));
+  });
+}
+function getMpDraftStatsFinal(){
+  const stats={};
+  STATS.forEach(st=>{const p=MP.draftState.picks[st];stats[st]=p?p.value:72;});
+  return stats;
+}
+function autoCompleteMpDraft(){
+  STATS.forEach(st=>{
+    if(!MP.draftState.picks[st]){
+      const opts=MP.draftState.options[st];
+      MP.draftState.picks[st]=opts.reduce((a,b)=>a.value>=b.value?a:b);
+    }
+  });
+}
+function calcMpOvr(stats,traits,synergies){
+  const s={...stats};
+  (traits||[]).forEach(t=>{
+    if(t.id==='iron_chin'){s.Chin+=4;s.Recovery+=5;}
+    if(t.id==='glass_cannon'){s.Power+=8;s.Chin-=10;}
+    if(t.id==='counter_puncher'){s.Defence+=6;s['Ring IQ']+=6;}
+    if(t.id==='ring_general'){s['Ring IQ']+=4;s.Accuracy+=3;}
+    if(t.id==='generational_talent') STATS.forEach(st=>s[st]+=3);
+    if(t.id==='supertank'){s.Chin+=7;s.Heart+=5;s.Recovery+=5;}
+    if(t.id==='volume_puncher'){s.Accuracy+=2;s.Stamina+=1;}
+  });
+  (synergies||[]).forEach(syn=>Object.entries(syn.bonuses||{}).forEach(([st,amt])=>{if(s[st]!==undefined)s[st]+=amt;}));
+  STATS.forEach(st=>s[st]=clamp(Math.round(s[st]),1,99));
+  let ovr=STATS.reduce((sum,st)=>sum+(s[st]||70),0)/STATS.length;
+  (traits||[]).forEach(t=>{if(t.type==='positive')ovr+=({common:1,uncommon:2,rare:3,epic:4,legendary:5}[t.rarity]||1);else ovr-=({common:1,uncommon:2,cursed:4}[t.rarity]||1);});
+  (synergies||[]).forEach(()=>ovr+=2);
+  return clamp(Math.round(ovr),40,99);
+}
+function getMpEffStats(build){
+  const s={...(build.stats||{})};
+  (build.traits||[]).forEach(t=>{
+    if(t.id==='iron_chin'){s.Chin+=4;s.Recovery+=5;}
+    if(t.id==='glass_cannon'){s.Power+=8;s.Chin-=10;}
+    if(t.id==='counter_puncher'){s.Defence+=6;s['Ring IQ']+=6;}
+    if(t.id==='ring_general'){s['Ring IQ']+=4;s.Accuracy+=3;}
+    if(t.id==='generational_talent') STATS.forEach(st=>s[st]+=3);
+    if(t.id==='supertank'){s.Chin+=7;s.Heart+=5;s.Recovery+=5;}
+    if(t.id==='volume_puncher'){s.Accuracy+=2;s.Stamina+=1;}
+  });
+  (build.synergies||[]).forEach(syn=>Object.entries(syn.bonuses||{}).forEach(([st,amt])=>{if(s[st]!==undefined)s[st]+=amt;}));
+  if(build.booster&&s[build.booster.stat]!==undefined) s[build.booster.stat]+=build.booster.val;
+  STATS.forEach(st=>s[st]=clamp(Math.round(s[st]||70),1,99));
+  return s;
+}
+
+// ── PvP Fight Simulation ──────────────────────────────────────────────────
+function pvpSimFight(myBuild,oppBuild,myName,oppName){
+  const p1=getMpEffStats(myBuild), p2=getMpEffStats(oppBuild);
+  const t1=myBuild.traits||[], t2=oppBuild.traits||[];
+  const state={
+    p1:{hp:p1.Chin*4+p1.Heart*2,maxHp:p1.Chin*4+p1.Heart*2,stamina:p1.Stamina*5,maxStamina:p1.Stamina*5,score:0},
+    p2:{hp:p2.Chin*4+p2.Heart*2,maxHp:p2.Chin*4+p2.Heart*2,stamina:p2.Stamina*5,maxStamina:p2.Stamina*5,score:0},
+    done:false,winner:null,method:null,detail:null,p1Dom:0,p2Dom:0,
+  };
+  const rounds=[];
+  function ht1(id){return t1.some(t=>t.id===id);}
+  function ht2(id){return t2.some(t=>t.id===id);}
+  function rs1(r){const s={...p1};if(ht1('fast_starter')&&r<=3){s.Speed+=8;s.Accuracy+=8;}if(ht1('slow_starter')&&r<=3){s.Speed-=10;s.Accuracy-=10;}if(ht1('late_finisher')&&r>=9){s.Power+=8;s.Heart+=8;}if(ht1('brittle_hands')&&r>=6)s.Power-=12;STATS.forEach(k=>s[k]=clamp(Math.round(s[k]),1,99));return s;}
+  function rs2(r){const s={...p2};if(ht2('fast_starter')&&r<=3){s.Speed+=8;s.Accuracy+=8;}if(ht2('slow_starter')&&r<=3){s.Speed-=10;s.Accuracy-=10;}if(ht2('late_finisher')&&r>=9){s.Power+=8;s.Heart+=8;}if(ht2('brittle_hands')&&r>=6)s.Power-=12;if(ht1('southpaw_enigma'))s.Accuracy-=4;STATS.forEach(k=>s[k]=clamp(Math.round(s[k]),1,99));return s;}
+  const PUNCHES=['Right Hand','Left Hook','Counter','Uppercut','Body Shot','Combination','Overhand'];
+  function punchW(){return PUNCHES[Math.floor(Math.random()*PUNCHES.length)];}
+  const HL_TEMPLATES=[
+    '%N1 controls with the jab. %N2 looks for a counter late.',
+    '%N2 lands the harder shots. %N1 ties up to weather the storm.',
+    'Tight round — both fighters trading in close. Neither separates.',
+    '%N1 picks his shots cleanly. %N2 struggles to close the gap.',
+    '%N2 presses forward. %N1 stays disciplined on the back foot.',
+    'Clean boxing from %N1. %N2 lands occasional power shots.',
+    '%N2 fires a right hand that shakes %N1 — but no follow-up.',
+    '%N1 unleashes a sharp combination that %N2 eats in full.',
+    'Both fighters measuring each other carefully. Tight on the cards.',
+    '%N2 works the body. %N1 responds with the jab upstairs.',
+    '%N1 drops his hands — %N2 nearly capitalises with a hook.',
+    'Fast pace. %N1 lands cleaner. %N2 lands harder. Too close.',
+  ];
+  function hlTemplate(n1,n2,tmpl){return tmpl.replace(/%N1/g,n1).replace(/%N2/g,n2);}
+
+  for(let r=1;r<=12&&!state.done;r++){
+    const s1=rs1(r),s2=rs2(r);
+    let h1=Math.max(1,Math.floor((s1.Speed+s1.Accuracy+s1['Ring IQ']-(s2.Defence+s2.Footwork))/22)+3+rand(0,1));
+    let h2=Math.max(1,Math.floor((s2.Speed+s2.Accuracy+s2['Ring IQ']-(s1.Defence+s1.Footwork))/22)+3+rand(0,1));
+    let d1=Math.max(4,Math.floor(h1*(s1.Power/19.5)));
+    let d2=Math.max(4,Math.floor(h2*(s2.Power/19.8)));
+    if(ht1('ko_artist')&&(state.p2.hp/state.p2.maxHp)<.5)d1=Math.floor(d1*1.18);
+    if(ht2('ko_artist')&&(state.p1.hp/state.p1.maxHp)<.5)d2=Math.floor(d2*1.18);
+    if(ht1('volume_puncher'))d1+=2;
+    if(ht2('volume_puncher'))d2+=2;
+    if(ht1('ice_in_veins')&&Math.abs(state.p1.score-state.p2.score)<=2&&r>=8)d1+=3;
+    if(ht2('ice_in_veins')&&Math.abs(state.p1.score-state.p2.score)<=2&&r>=8)d2+=3;
+    d1=Math.floor(d1*(.88+Math.random()*.28));
+    d2=Math.floor(d2*(.88+Math.random()*.26));
+    state.p2.hp-=d1; state.p1.hp-=d2;
+    if(d1>d2+8)state.p1Dom++;else if(d2>d1+8)state.p2Dom++;
+    let drain1=18,drain2=18;
+    if(ht1('gas_out')&&r>=6)drain1*=1.6;
+    if(ht2('gas_out')&&r>=6)drain2*=1.6;
+    if(ht1('second_wind')&&r>=7)drain1-=4;
+    if(ht2('second_wind')&&r>=7)drain2-=4;
+    state.p1.stamina=Math.max(5,state.p1.stamina-drain1+(s1.Recovery/9));
+    state.p2.stamina=Math.max(5,state.p2.stamina-drain2+(s2.Recovery/9));
+    let highlight=null, roundWinner=null;
+    // KO/KD check p2
+    if(!state.done&&(state.p2.hp<=0||d1>state.p2.maxHp*.105)){
+      const survive=clamp(s2.Recovery+s2.Heart*.24-d1*1.12,5,90);
+      if(Math.random()*100>survive){
+        state.done=true;state.winner='p1';state.method='KO';state.detail=punchW();
+        highlight='💥 '+myName+' lands a devastating '+state.detail.toLowerCase()+'! '+oppName+' is down and out!';
+        roundWinner='p1';
+      } else {
+        state.p2.hp=Math.max(state.p2.hp,Math.floor(state.p2.maxHp*.16));
+        highlight='🚨 Knockdown! '+oppName+' hits the canvas in round '+r+' but beats the count!';
+      }
+    }
+    // KO/KD check p1
+    if(!state.done&&(state.p1.hp<=0||d2>state.p1.maxHp*.105)){
+      const survive=clamp(s1.Recovery+s1.Heart*.24-d2*1.12,5,90);
+      if(Math.random()*100>survive){
+        state.done=true;state.winner='p2';state.method='KO';state.detail=punchW();
+        highlight=(highlight?highlight+' ':'')+'💥 '+oppName+' KOs '+myName+' with a '+state.detail.toLowerCase()+'! Fight over!';
+        roundWinner='p2';
+      } else {
+        state.p1.hp=Math.max(state.p1.hp,Math.floor(state.p1.maxHp*.16));
+        highlight=(highlight?highlight+' ':'')+'🚨 '+myName+' down in round '+r+'! Beats the count and fights on!';
+      }
+    }
+    // Lucky punch
+    if(!state.done&&Math.random()<.025){
+      const lw=Math.random()<.5?'p1':'p2';
+      state.done=true;state.winner=lw;state.method='KO';state.detail='Flash KO';
+      highlight=lw==='p1'
+        ?'⚡ Flash KO! '+myName+' catches '+oppName+' out of nowhere — it\'s over!'
+        :'⚡ Flash KO! '+oppName+' lands a hail mary — '+myName+' is sparked out!';
+      roundWinner=lw;
+    }
+    // TKO late rounds
+    if(!state.done&&r>=7){
+      const p2Weak=(state.p2.hp/state.p2.maxHp)<.22,p1Weak=(state.p1.hp/state.p1.maxHp)<.22;
+      const sc=.12+(r>=9?.10:0);
+      if(p2Weak&&Math.random()<sc+(state.p1Dom>=3?.08:0)){
+        state.done=true;state.winner='p1';state.method='TKO';state.detail='Referee Stoppage';
+        highlight='⏹ '+oppName+' can\'t take more punishment — referee waves it off. '+myName+' wins by TKO!';
+        roundWinner='p1';
+      } else if(p1Weak&&Math.random()<sc+(state.p2Dom>=3?.08:0)){
+        state.done=true;state.winner='p2';state.method='TKO';state.detail='Referee Stoppage';
+        highlight='⏹ '+myName+' absorbs too much — referee steps in. '+oppName+' wins by TKO!';
+        roundWinner='p2';
+      }
+    }
+    // Score round
+    if(!state.done||roundWinner){
+      let sc1=10,sc2=9;
+      const ctrl1=s1.Speed+s1.Accuracy+s1['Ring IQ']+d1*.9,ctrl2=s2.Speed+s2.Accuracy+s2['Ring IQ']+d2*.9;
+      if(ctrl2>ctrl1+4){sc1=9;sc2=10;}else if(Math.abs(ctrl1-ctrl2)<=3&&Math.random()<.06){sc1=10;sc2=10;}
+      state.p1.score+=sc1;state.p2.score+=sc2;
+      if(!roundWinner)roundWinner=sc1>sc2?'p1':sc2>sc1?'p2':null;
+    }
+    if(!highlight){
+      const tmpl=HL_TEMPLATES[(r-1)%HL_TEMPLATES.length];
+      highlight=hlTemplate(myName,oppName,tmpl);
+      if(roundWinner==='p1') highlight+=' Round to '+myName+'.';
+      else if(roundWinner==='p2') highlight+=' Round to '+oppName+'.';
+    }
+    rounds.push({
+      rNum:r, highlight, done:state.done,
+      p1HpPct:Math.max(0,state.p1.hp/state.p1.maxHp),
+      p2HpPct:Math.max(0,state.p2.hp/state.p2.maxHp),
+      p1Score:state.p1.score, p2Score:state.p2.score,
+    });
+  }
+  // Decision
+  if(!state.done){
+    const diff=state.p1.score-state.p2.score;
+    if(diff===0){
+      state.winner=Math.random()<.18?'draw':(Math.random()<.5?'p1':'p2');
+      state.method=state.winner==='draw'?'Draw':'MD';
+    } else {
+      state.winner=diff>0?'p1':'p2';
+      const ad=Math.abs(diff);
+      state.method=ad>=7?'UD':ad>=4?(Math.random()<.5?'MD':'UD'):(Math.random()<.5?'SD':'MD');
+    }
+    state.detail=choice(['Judges Scorecards','Championship Rounds','Close All The Way','Narrow But Fair']);
+  }
+  return {rounds,winner:state.winner,method:state.method,detail:state.detail,
+          p1Score:state.p1.score,p2Score:state.p2.score};
+}
+
+// ── Navigation / Cleanup ──────────────────────────────────────────────────
+function openMultiplayer(){
+  if(!currentUser||!authMigrationComplete){
+    showToast('Sign In Required','Please sign in to access Multiplayer.','warning');
+    return;
+  }
+  screen('mp-home');
+  renderMpHome();
+}
+function closeMpHome(){ mpCleanup(); screen('menu-screen'); }
+function mpCleanup(){
+  clearInterval(MP.draftTimerInterval);
+  clearInterval(MP.searchInterval);
+  if(MP.queueUnsub){MP.queueUnsub();MP.queueUnsub=null;}
+  leaveMatchmakingQueue().catch(()=>{});
+}
+
+// ── MP Home ────────────────────────────────────────────────────────────────
+async function renderMpHome(){
+  MP.profile=await loadMpProfile();
+  const p=MP.profile;
+  const elo=p?.elo||MP_STARTING_ELO;
+  const cardId=p?.equippedCardId||S.player?.myCardsShowcase||'cc001';
+  if($('mp-home-card-thumb')) $('mp-home-card-thumb').innerHTML=mpCardThumb(cardId,46);
+  if($('mp-home-name'))    $('mp-home-name').innerText=p?.displayName||currentUser?.displayName||'Boxer';
+  if($('mp-home-elo'))     $('mp-home-elo').innerText='ELO: '+elo;
+  if($('mp-home-tier'))    $('mp-home-tier').innerText=getEloTierName(elo);
+  if($('mp-home-record'))  $('mp-home-record').innerHTML='<strong>'+formatMpRecord(p)+'</strong>';
+  if($('mp-home-kos'))     $('mp-home-kos').innerText='KO Wins: '+(p?.pvpKos||0);
+  if($('mp-home-pm'))      $('mp-home-pm').innerHTML='PM: <span class="pm-val">'+((S.player?.playMoney||0)).toLocaleString()+'</span>';
+}
+
+// ── Search ────────────────────────────────────────────────────────────────
+async function startMpSearch(mode){
+  if(!MP.profile) MP.profile=await loadMpProfile();
+  MP.mode=mode;
+  screen('mp-search');
+  if($('mp-search-mode-label')) $('mp-search-mode-label').innerText=mode==='ranked'?'FINDING RANKED MATCH':'FINDING FRIENDLY';
+  if($('mp-search-status'))     $('mp-search-status').innerText='Searching for an opponent worldwide...';
+  if($('mp-cancel-search-btn')) $('mp-cancel-search-btn').disabled=false;
+  const myElo=MP.profile?.elo||MP_STARTING_ELO;
+  let secs=30;
+  if($('mp-search-timer')) $('mp-search-timer').innerText=secs;
+  clearInterval(MP.searchInterval);
+  await joinMatchmakingQueue(mode);
+  MP.searchInterval=setInterval(async()=>{
+    secs--;
+    if($('mp-search-timer')) $('mp-search-timer').innerText=secs;
+    if(secs>0){
+      const opp=await findOpponentInQueue(mode,myElo);
+      if(opp){
+        clearInterval(MP.searchInterval);
+        await leaveMatchmakingQueue();
+        if($('mp-search-status')) $('mp-search-status').innerText='Opponent found!';
+        MP.isBot=false;
+        const oppBooster=getMpBooster(opp.equippedCardId);
+        const oppRecord=generateBotRecord(opp.elo||MP_STARTING_ELO);
+        MP.opponent={
+          uid:opp.uid,name:opp.displayName||'Opponent',elo:opp.elo||MP_STARTING_ELO,
+          ...oppRecord,cardId:opp.equippedCardId||'cc001',booster:oppBooster,isBot:false,
+          build:{stats:generateBotDraftBuild(opp.elo||MP_STARTING_ELO),traits:generateBotTraits(),synergies:generateBotSynergies(),booster:oppBooster},
+        };
+        await sleep(600);
+        showMpMatchup();
+      }
+    } else {
+      clearInterval(MP.searchInterval);
+      await leaveMatchmakingQueue();
+      if($('mp-search-status')) $('mp-search-status').innerText='No player found — matched with a bot!';
+      const botElo=generateBotEloNearPlayer(myElo);
+      const botCard=generateBotEquippedCard();
+      const botBooster=getMpBooster(botCard);
+      MP.isBot=true;
+      MP.opponent={
+        uid:'bot_'+Date.now(),name:getRandomBotName(),elo:botElo,
+        ...generateBotRecord(botElo),cardId:botCard,booster:botBooster,isBot:true,
+        build:{stats:generateBotDraftBuild(botElo),traits:generateBotTraits(),synergies:generateBotSynergies(),booster:botBooster},
+      };
+      await sleep(800);
+      showMpMatchup();
+    }
+  },1000);
+}
+function cancelMpSearch(){ clearInterval(MP.searchInterval); leaveMatchmakingQueue(); }
+
+// ── VS / Matchup ──────────────────────────────────────────────────────────
+function showMpMatchup(){
+  screen('mp-matchup');
+  const myElo=MP.profile?.elo||MP_STARTING_ELO;
+  const myCardId=MP.profile?.equippedCardId||'cc001';
+  const myBooster=getMpBooster(myCardId);
+  const myName=MP.profile?.displayName||currentUser?.displayName||'You';
+  const opp=MP.opponent;
+  if($('mp-matchup-my-thumb'))      $('mp-matchup-my-thumb').innerHTML=mpCardThumb(myCardId,66);
+  if($('mp-matchup-my-name'))       $('mp-matchup-my-name').innerText=myName;
+  if($('mp-matchup-my-elo'))        $('mp-matchup-my-elo').innerText='ELO '+myElo;
+  if($('mp-matchup-my-record'))     $('mp-matchup-my-record').innerText=formatMpRecord(MP.profile);
+  if($('mp-matchup-my-card-name'))  $('mp-matchup-my-card-name').innerText=(COLLECTIBLE_CARDS.find(c=>c.id===myCardId)||COLLECTIBLE_CARDS[0]).name;
+  if($('mp-matchup-my-booster'))    $('mp-matchup-my-booster').innerText='MULTIPLAYER BOOSTER\n'+myBooster.label;
+  if($('mp-matchup-opp-thumb'))     $('mp-matchup-opp-thumb').innerHTML=mpCardThumb(opp.cardId,66);
+  if($('mp-matchup-opp-name'))      $('mp-matchup-opp-name').innerText=opp.name;
+  if($('mp-matchup-opp-elo'))       $('mp-matchup-opp-elo').innerText='ELO '+(opp.elo||MP_STARTING_ELO);
+  if($('mp-matchup-opp-record'))    $('mp-matchup-opp-record').innerText=(opp.pvpWins||0)+'W-'+(opp.pvpLosses||0)+'L';
+  if($('mp-matchup-opp-card-name')) $('mp-matchup-opp-card-name').innerText=(COLLECTIBLE_CARDS.find(c=>c.id===opp.cardId)||COLLECTIBLE_CARDS[0]).name;
+  if($('mp-matchup-opp-booster'))   $('mp-matchup-opp-booster').innerText='MULTIPLAYER BOOSTER\n'+(opp.booster?.label||'+1 Power');
+  if($('mp-matchup-mode-tag'))      $('mp-matchup-mode-tag').innerText=MP.mode==='ranked'?'RANKED':'FRIENDLY';
+  if($('mp-matchup-bot-tag'))       $('mp-matchup-bot-tag').hidden=!MP.isBot;
+}
+
+// ── Draft ─────────────────────────────────────────────────────────────────
+function startMpDraft(){ initMpDraft(); screen('mp-draft'); renderMpDraftStep(); startMpDraftTimer(); }
+function startMpDraftTimer(){
+  MP.draftState.timerSecs=MP_DRAFT_SECS;
+  clearInterval(MP.draftTimerInterval);
+  MP.draftTimerInterval=setInterval(()=>{
+    MP.draftState.timerSecs--;
+    const t=$('mp-draft-timer');
+    if(t){t.innerText=MP.draftState.timerSecs;t.classList.toggle('urgent',MP.draftState.timerSecs<=15);}
+    if(MP.draftState.timerSecs<=0){clearInterval(MP.draftTimerInterval);autoCompleteMpDraft();finalizeMpDraft();}
+  },1000);
+}
+function renderMpDraftStep(){
+  const ds=MP.draftState;
+  const stat=STATS[ds.step];
+  const dots=$('mp-draft-dots');
+  if(dots) dots.innerHTML=STATS.map((s,i)=>`<div class="mp-dp-dot ${ds.picks[s]?'done':i===ds.step?'active':''}"></div>`).join('');
+  const lbl=$('mp-draft-stat-label');
+  if(lbl) lbl.innerText='Select your '+stat.toUpperCase()+' — '+(ds.step+1)+'/10';
+  const container=$('mp-draft-options');
+  if(container) container.innerHTML=ds.options[stat].map((opt,i)=>`
+    <div class="mp-draft-option" onclick="selectMpDraftOption(${i})">
+      <div>
+        <div class="mp-draft-option-legend">${htmlEscape(opt.legend)}</div>
+        <div class="mp-draft-option-pool">${htmlEscape(opt.pool)}</div>
+      </div>
+      <div class="mp-draft-option-val">${opt.value}</div>
+    </div>`).join('');
+  const locked=$('mp-draft-locked');
+  if(locked){
+    const entries=STATS.filter(s=>ds.picks[s]);
+    locked.innerHTML=entries.length
+      ?entries.map(s=>{const p=ds.picks[s];return `<div class="mp-draft-locked-row"><span class="mp-draft-locked-stat">${s}</span><span class="mp-draft-locked-src">${htmlEscape(p.legend)}</span><span class="mp-draft-locked-val">${p.value}</span></div>`;}).join('')
+      :'<div style="color:var(--muted);font-size:.63rem">Draft your attributes one by one.</div>';
+  }
+  if(Object.keys(ds.picks).length>0){
+    const ps={}; STATS.forEach(s=>ps[s]=ds.picks[s]?ds.picks[s].value:72);
+    const ovr=calcMpOvr(ps,[],[]);
+    const banner=$('mp-draft-ovr-banner');
+    if(banner) banner.innerHTML='Running OVR: <strong>'+ovr+'</strong>';
+  }
+  const t=$('mp-draft-timer');
+  if(t) t.innerText=ds.timerSecs;
+}
+function selectMpDraftOption(idx){
+  const ds=MP.draftState;
+  ds.picks[STATS[ds.step]]=ds.options[STATS[ds.step]][idx];
+  ds.step++;
+  if(ds.step>=10){clearInterval(MP.draftTimerInterval);finalizeMpDraft();}
+  else renderMpDraftStep();
+}
+function finalizeMpDraft(){
+  autoCompleteMpDraft();
+  const myCardId=MP.profile?.equippedCardId||'cc001';
+  MP.myBuild={
+    stats:getMpDraftStatsFinal(),
+    traits:generateBotTraits(),
+    synergies:generateBotSynergies(),
+    booster:getMpBooster(myCardId),
+    cardId:myCardId,
+  };
+  showMpReveal();
+}
+
+// ── Reveal ────────────────────────────────────────────────────────────────
+function showMpReveal(){
+  screen('mp-reveal');
+  const myName=MP.profile?.displayName||currentUser?.displayName||'You';
+  const opp=MP.opponent;
+  const mb=MP.myBuild, ob=opp.build;
+  const myOvr=calcMpOvr(mb.stats,mb.traits,mb.synergies);
+  const oppOvr=calcMpOvr(ob.stats,ob.traits,ob.synergies);
+  const myEff=getMpEffStats(mb), oppEff=getMpEffStats(ob);
+  if($('mp-reveal-my-name'))    $('mp-reveal-my-name').innerText=myName;
+  if($('mp-reveal-opp-name'))   $('mp-reveal-opp-name').innerText=opp.name;
+  const myOE=$('mp-reveal-my-ovr'),oppOE=$('mp-reveal-opp-ovr');
+  if(myOE){myOE.innerText=myOvr;myOE.className='mp-tape-ovr'+(myOvr>oppOvr?' winning':myOvr<oppOvr?' losing':'');}
+  if(oppOE){oppOE.innerText=oppOvr;oppOE.className='mp-tape-ovr'+(oppOvr>myOvr?' winning':oppOvr<myOvr?' losing':'');}
+  if($('mp-reveal-my-card'))    $('mp-reveal-my-card').innerHTML=mpCardThumb(mb.cardId||'cc001',54);
+  if($('mp-reveal-opp-card'))   $('mp-reveal-opp-card').innerHTML=mpCardThumb(opp.cardId||'cc001',54);
+  if($('mp-reveal-my-booster')) $('mp-reveal-my-booster').innerText='MULTIPLAYER BOOSTER · '+(mb.booster?.label||'+1 Power');
+  if($('mp-reveal-opp-booster'))$('mp-reveal-opp-booster').innerText='MULTIPLAYER BOOSTER · '+(ob.booster?.label||'+1 Power');
+  const rows=$('mp-reveal-stat-rows');
+  if(rows) rows.innerHTML=STATS.map(st=>{
+    const mv=myEff[st]||70,ov=oppEff[st]||70;
+    const myBst=mb.booster?.stat===st?`<span class="mp-tape-boost">+${mb.booster.val}</span>`:'';
+    const oppBst=ob.booster?.stat===st?`<span class="mp-tape-boost">+${ob.booster.val}</span>`:'';
+    return `<div class="mp-tape-stat-row">
+      <div class="mp-tape-sv me${mv>ov?' higher':''}">${mv}${myBst}</div>
+      <div class="mp-tape-sn">${st.length>7?st.substr(0,7).toUpperCase():st.toUpperCase()}</div>
+      <div class="mp-tape-sv opp${ov>mv?' higher':''}">${ov}${oppBst}</div>
+    </div>`;
+  }).join('');
+  if($('mp-reveal-my-traits'))   $('mp-reveal-my-traits').innerHTML=(mb.traits||[]).map(t=>`<span class="mp-tape-trait-chip">${htmlEscape(t.name)}</span>`).join('')||'<span class="mp-tape-trait-chip">—</span>';
+  if($('mp-reveal-opp-traits'))  $('mp-reveal-opp-traits').innerHTML=(ob.traits||[]).map(t=>`<span class="mp-tape-trait-chip">${htmlEscape(t.name)}</span>`).join('')||'<span class="mp-tape-trait-chip">—</span>';
+}
+
+// ── Fight ─────────────────────────────────────────────────────────────────
+function startMpFight(){
+  screen('mp-fight');
+  const myName=MP.profile?.displayName||currentUser?.displayName||'You';
+  const opp=MP.opponent;
+  if($('mp-fight-my-name'))    $('mp-fight-my-name').innerText=myName;
+  if($('mp-fight-opp-name'))   $('mp-fight-opp-name').innerText=opp.name;
+  if($('mp-fight-title'))      $('mp-fight-title').innerText=myName+' vs '+opp.name+' — 12 Rounds';
+  if($('mp-fight-log'))        $('mp-fight-log').innerHTML='';
+  if($('mp-fight-round-label'))$('mp-fight-round-label').innerText='RND 1';
+  if($('mp-fight-my-hp'))      $('mp-fight-my-hp').style.width='100%';
+  if($('mp-fight-opp-hp'))     $('mp-fight-opp-hp').style.width='100%';
+  if($('mp-fight-my-score'))   $('mp-fight-my-score').innerText='0';
+  if($('mp-fight-opp-score'))  $('mp-fight-opp-score').innerText='0';
+  const result=pvpSimFight(MP.myBuild,opp.build,myName,opp.name);
+  MP.fight=result;
+  const log=$('mp-fight-log');
+  const nextBtn=$('mp-fight-next-btn');
+  if(nextBtn){nextBtn.disabled=true;nextBtn.innerText='Simulating...';}
+  let idx=0;
+  async function showRound(){
+    if(idx>=result.rounds.length){if(nextBtn){nextBtn.disabled=false;nextBtn.innerText='See Result →';nextBtn.onclick=showMpResult;}return;}
+    const r=result.rounds[idx];
+    if(log){
+      const h=document.createElement('div');h.className='mp-round-header';h.innerText='ROUND '+r.rNum;log.appendChild(h);
+      const hl=document.createElement('div');hl.className=r.highlight.includes('💥')||r.highlight.includes('🚨')||r.highlight.includes('⚡')||r.highlight.includes('⏹')?'mp-hl-kd':'mp-hl-action';hl.innerText=r.highlight;log.appendChild(hl);
+      log.scrollTop=log.scrollHeight;
+    }
+    if($('mp-fight-my-hp'))      $('mp-fight-my-hp').style.width=Math.max(0,r.p1HpPct*100)+'%';
+    if($('mp-fight-opp-hp'))     $('mp-fight-opp-hp').style.width=Math.max(0,r.p2HpPct*100)+'%';
+    if($('mp-fight-my-score'))   $('mp-fight-my-score').innerText=r.p1Score;
+    if($('mp-fight-opp-score'))  $('mp-fight-opp-score').innerText=r.p2Score;
+    if($('mp-fight-round-label'))$('mp-fight-round-label').innerText=r.done?'FINAL':'RND '+(r.rNum+1);
+    if(r.done){
+      if(log){
+        const fin=document.createElement('div');fin.className='mp-hl-win';
+        fin.innerText=result.winner==='p1'?'🏆 '+myName+' wins by '+result.method+(result.detail?' · '+result.detail:'')+'!':result.winner==='p2'?'💔 '+opp.name+' wins by '+result.method+(result.detail?' · '+result.detail:'')+'!':'🤝 Draw — '+result.detail;
+        log.appendChild(fin);log.scrollTop=log.scrollHeight;
+      }
+      if(nextBtn){nextBtn.disabled=false;nextBtn.innerText='See Result →';nextBtn.onclick=showMpResult;}
+    } else {
+      idx++;
+      await sleep(650);
+      showRound();
+    }
+  }
+  idx=0;showRound();
+}
+function mpThrowInTowel(){
+  if(!confirm('Throw in the towel? This counts as a loss in Ranked matches.')) return;
+  clearInterval(MP.draftTimerInterval);
+  if(!MP.fight) MP.fight={winner:'p2',method:'RTD',detail:'Threw In The Towel',p1Score:0,p2Score:0,rounds:[]};
+  MP.fight.winner='p2';MP.fight.method='RTD';MP.fight.detail='Threw In The Towel';
+  showMpResult();
+}
+
+// ── Result ────────────────────────────────────────────────────────────────
+async function showMpResult(){
+  screen('mp-result');
+  const fr=MP.fight;
+  if(!fr){screen('mp-home');return;}
+  const myName=MP.profile?.displayName||currentUser?.displayName||'You';
+  const opp=MP.opponent;
+  const myOldElo=MP.profile?.elo||MP_STARTING_ELO;
+  const oppElo=opp?.elo||MP_STARTING_ELO;
+  const rk=fr.winner==='p1'?'win':fr.winner==='p2'?'loss':'draw';
+  const isRanked=MP.mode==='ranked';
+  const eloChange=isRanked?calcEloChange(myOldElo,oppElo,rk,MP.isBot):0;
+  const newElo=Math.max(100,myOldElo+eloChange);
+  const pmReward=rk==='win'?MP_PM_WIN:rk==='draw'?MP_PM_DRAW:MP_PM_LOSS;
+  const newW=(MP.profile?.pvpWins||0)+(rk==='win'?1:0);
+  const newL=(MP.profile?.pvpLosses||0)+(rk==='loss'?1:0);
+  const newD=(MP.profile?.pvpDraws||0)+(rk==='draw'?1:0);
+  const newKos=(MP.profile?.pvpKos||0)+(['KO','TKO'].includes(fr.method)&&rk==='win'?1:0);
+  if($('mp-result-title')){$('mp-result-title').innerText=rk==='win'?'VICTORY':rk==='draw'?'DRAW':'DEFEAT';$('mp-result-title').className='mp-result-title '+rk;}
+  if($('mp-result-method'))     $('mp-result-method').innerText=fr.method+(fr.detail?' · '+fr.detail:'');
+  if($('mp-result-p1-score'))   $('mp-result-p1-score').innerText=fr.p1Score||'–';
+  if($('mp-result-p1-who'))     $('mp-result-p1-who').innerText=myName;
+  if($('mp-result-p2-score'))   $('mp-result-p2-score').innerText=fr.p2Score||'–';
+  if($('mp-result-p2-who'))     $('mp-result-p2-who').innerText=opp?.name||'Opponent';
+  if($('mp-result-elo-old'))    $('mp-result-elo-old').innerText=myOldElo;
+  const eloEl=$('mp-result-elo-change');
+  if(eloEl){eloEl.innerText=(eloChange>=0?'+':'')+eloChange;eloEl.className='mp-elo-change '+(eloChange>0?'positive':eloChange<0?'negative':'neutral');}
+  if($('mp-result-elo-new'))    $('mp-result-elo-new').innerText=newElo;
+  if($('mp-result-tier'))       $('mp-result-tier').innerText=getEloTierName(newElo);
+  if($('mp-result-ranked-tag')) $('mp-result-ranked-tag').hidden=!isRanked;
+  if($('mp-result-friendly-tag'))$('mp-result-friendly-tag').hidden=isRanked;
+  if($('mp-result-pm-val'))     $('mp-result-pm-val').innerText='+'+pmReward.toLocaleString()+' PM';
+  if($('mp-result-record'))     $('mp-result-record').innerHTML='<strong>'+newW+'W – '+newL+'L – '+newD+'D</strong> (KO: '+newKos+')';
+  MP.result={rk,eloChange,newElo,pmReward,newW,newL,newD,newKos};
+  await applyMpResult();
+}
+async function applyMpResult(){
+  if(!currentUser||!MP.result) return;
+  const r=MP.result,isRanked=MP.mode==='ranked';
+  if(MP.profile){
+    MP.profile.pvpWins=r.newW;MP.profile.pvpLosses=r.newL;MP.profile.pvpDraws=r.newD;
+    MP.profile.pvpKos=r.newKos;MP.profile.pvpMatchesPlayed=(MP.profile.pvpMatchesPlayed||0)+1;
+    if(isRanked){MP.profile.elo=r.newElo;MP.profile.bestElo=Math.max(MP.profile.bestElo||0,r.newElo);}
+  }
+  if(S.player&&r.pmReward>0){S.player.playMoney=safeMoney(S.player.playMoney)+r.pmReward;saveCareer();updateWalletDisplays();}
+  try {
+    const updates={
+      pvpWins:r.newW,pvpLosses:r.newL,pvpDraws:r.newD,pvpKos:r.newKos,
+      pvpMatchesPlayed:(MP.profile?.pvpMatchesPlayed||1),
+      lastMatchAt:firebase.firestore.FieldValue.serverTimestamp(),
+      equippedCardId:MP.profile?.equippedCardId||'cc001',
+      displayName:MP.profile?.displayName||currentUser.displayName||'Boxer',
+    };
+    if(isRanked){updates.elo=r.newElo;updates.bestElo=Math.max(MP.profile?.bestElo||0,r.newElo);}
+    await saveMpProfile(updates);
+  } catch(e){console.warn('[MP] applyResult',e);}
+}
+
+// ── Leaderboard ───────────────────────────────────────────────────────────
+async function openMpLeaderboard(){
+  screen('mp-leaderboard');
+  const list=$('mp-lb-list');
+  if(list) list.innerHTML='<div class="mp-lb-loading">Loading...</div>';
+  const entries=await loadMpLeaderboard();
+  if(!list) return;
+  if(!entries.length){list.innerHTML='<div class="mp-lb-empty">No ranked players yet. Play a ranked match to appear here!</div>';return;}
+  const myUid=currentUser?.uid;
+  list.innerHTML=entries.map((e,i)=>{
+    const isMe=e.uid===myUid;
+    const tier=getEloTier(e.elo||0);
+    return `<div class="mp-lb-row${isMe?' me':''}">
+      <div class="mp-lb-rank${i<3?' top3':''}">${i+1}</div>
+      <div class="mp-lb-thumb">${mpCardThumb(e.equippedCardId||'cc001',30)}</div>
+      <div class="mp-lb-info">
+        <div class="mp-lb-name">${htmlEscape(e.displayName||'Boxer')}</div>
+        <div class="mp-lb-tier" style="color:${tier.color}">${tier.name}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="mp-lb-elo">${e.elo||MP_STARTING_ELO}</div>
+        <div class="mp-lb-rec">${e.pvpWins||0}W-${e.pvpLosses||0}L</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Invite ────────────────────────────────────────────────────────────────
+function openMpInvite(){
+  screen('mp-invite');
+  if($('mp-invite-code-display')) $('mp-invite-code-display').innerText='– – – – – –';
+  if($('mp-invite-status'))       {$('mp-invite-status').innerText='';$('mp-invite-status').className='mp-invite-status';}
+  if($('mp-join-code-input'))     $('mp-join-code-input').value='';
+  if($('mp-join-status'))         {$('mp-join-status').innerText='';$('mp-join-status').className='mp-invite-status';}
+}
+async function createMpInviteCode(){
+  if(!currentUser||!MP.profile){showToast('Sign In Required','','warning');return;}
+  const code=Math.random().toString(36).substr(2,6).toUpperCase();
+  MP.lobbyCode=code;
+  try {
+    await db.collection('pvp_lobbies').doc(code).set({
+      code,hostUid:currentUser.uid,
+      hostName:MP.profile.displayName||currentUser.displayName||'Boxer',
+      hostElo:MP.profile.elo||MP_STARTING_ELO,
+      hostCardId:MP.profile.equippedCardId||'cc001',
+      status:'waiting',
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    if($('mp-invite-code-display')) $('mp-invite-code-display').innerText=code;
+    if($('mp-invite-status')){$('mp-invite-status').innerText='Share this code with your friend!';$('mp-invite-status').className='mp-invite-status ok';}
+  } catch(e){
+    if($('mp-invite-status')){$('mp-invite-status').innerText='Error creating lobby. Try again.';$('mp-invite-status').className='mp-invite-status error';}
+  }
+}
+async function joinMpByCode(){
+  const code=($('mp-join-code-input')?.value||'').trim().toUpperCase();
+  const statusEl=$('mp-join-status');
+  if(code.length<4){if(statusEl){statusEl.innerText='Please enter a valid code.';statusEl.className='mp-invite-status error';}return;}
+  try {
+    const snap=await db.collection('pvp_lobbies').doc(code).get();
+    if(!snap.exists||snap.data().status!=='waiting'){
+      if(statusEl){statusEl.innerText='Lobby not found or already started.';statusEl.className='mp-invite-status error';}return;
+    }
+    const lobby=snap.data();
+    MP.mode='invite';MP.isBot=false;
+    const hostCard=lobby.hostCardId||'cc001';
+    const hostBooster=getMpBooster(hostCard);
+    const hostElo=lobby.hostElo||MP_STARTING_ELO;
+    MP.opponent={
+      uid:lobby.hostUid,name:lobby.hostName||'Boxer',elo:hostElo,
+      pvpWins:0,pvpLosses:0,pvpDraws:0,pvpKos:0,
+      cardId:hostCard,booster:hostBooster,isBot:false,
+      build:{stats:generateBotDraftBuild(hostElo),traits:generateBotTraits(),synergies:generateBotSynergies(),booster:hostBooster},
+    };
+    await db.collection('pvp_lobbies').doc(code).update({status:'matched'});
+    showMpMatchup();
+  } catch(e){
+    if(statusEl){statusEl.innerText='Error joining lobby. Try again.';statusEl.className='mp-invite-status error';}
+  }
+}
 </script>
 </body>
 </html>
