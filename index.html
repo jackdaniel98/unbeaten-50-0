@@ -1601,7 +1601,6 @@ body.final-card-open{overflow:hidden}
   .btn{margin-bottom:8px}
   header h1{letter-spacing:2px}
   .stats-grid{grid-template-columns:1fr}
-  .draft-grid{grid-template-columns:1fr}
   .quad{grid-template-columns:1fr 1fr}
 }
 @media(max-width:430px){
@@ -1628,6 +1627,74 @@ body.final-card-open{overflow:hidden}
 .screen::-webkit-scrollbar,.log::-webkit-scrollbar,.sim-body::-webkit-scrollbar{width:6px}
 .screen::-webkit-scrollbar-thumb,.log::-webkit-scrollbar-thumb,.sim-body::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 .screen::-webkit-scrollbar-track,.log::-webkit-scrollbar-track,.sim-body::-webkit-scrollbar-track{background:transparent}
+
+/* ── MOBILE DRAFT: compact slot-machine layout (≤600px) ──────────────────
+   LAYOUT-ONLY: no logic, saves, or generation logic touched.
+   Target: entire draft screen fits on iPhone 14 (390×844) without scrolling.
+   ───────────────────────────────────────────────────────────────────────── */
+@media(max-width:600px){
+
+  /* Header — hide subtitle + version text, tighten padding */
+  header{padding:10px 18px 8px}
+  header p,.version{display:none}
+
+  /* Draft / trait screen heading — smaller Bebas title */
+  #draft-screen>h2,#trait-screen>h2{
+    font-size:1.08rem;margin:2px 0 4px;letter-spacing:.3px;
+  }
+
+  /* Verbose description hidden — spin wheel and buttons are self-explanatory */
+  #draft-screen>.subtle,#trait-screen>.subtle{display:none}
+
+  /* Mode + Re-Rolls compact bar */
+  #draft-screen .compact-panel{margin-bottom:5px}
+
+  /* ── Spin card / slot machine ── */
+  #draft-screen .spin-card{padding:10px 14px 8px;margin-bottom:7px}
+  /* Slot: strip height 144px → 86px */
+  #draft-screen .slot{height:86px}
+  /* Gradient fades scaled to shorter slot */
+  #draft-screen .slot::before,#draft-screen .slot::after{height:18px}
+  #draft-screen .slot-item{font-size:.8rem}
+  #draft-screen .slot-item.win{font-size:1.42rem}
+  /* Legend pool pill + perfect banner */
+  .legend-pill{margin-top:5px;padding:4px 9px;font-size:.63rem}
+  #draft-screen .perfect{margin-top:5px;min-height:13px;font-size:.66rem}
+
+  /* ── Live OVR banner: slim strip ── */
+  #draft-screen>.overall-banner,#trait-screen>.overall-banner{
+    padding:6px 14px;margin-top:2px;margin-bottom:5px;
+  }
+  #draft-screen>.overall-banner .value,
+  #trait-screen>.overall-banner .value{font-size:1.42rem}
+  #draft-screen>.overall-banner .label,
+  #trait-screen>.overall-banner .label{font-size:.62rem;letter-spacing:.9px}
+
+  /* ── Attribute grid — keep 2-col, compact tiles ── */
+  /* (draft-grid was wrongly forced to 1-col at ≤380px — now stays 2-col everywhere) */
+  .draft-grid{gap:5px}
+  #draft-screen .draft-btn{min-height:50px;padding:7px 9px;gap:2px}
+  #draft-screen .draft-btn .top strong{font-size:1.18rem}
+  #draft-screen .draft-btn .top span{font-size:.63rem}
+  #draft-screen .draft-btn.choice .top strong{font-size:1.28rem}
+  #draft-screen .draft-btn.locked::after{top:5px;right:6px}
+  .draft-src{font-size:.57rem;min-height:10px}
+
+  /* ── Spin + Re-Roll buttons ── */
+  #draft-screen .two-col{gap:7px}
+  #draft-screen .two-col .btn{
+    min-height:42px;padding:9px 10px;font-size:.85rem;margin-bottom:0;
+  }
+
+  /* ── Restart Draft: slim danger outline ── */
+  #draft-screen>.btn.red,#trait-screen>.btn.red{
+    min-height:36px;padding:7px 12px;font-size:.7rem;margin-top:3px;
+  }
+
+  /* ── Trait screen: trait reel strip ── */
+  .trait-spin-card{padding:9px 14px}
+  .trait-reel{min-height:36px;font-size:1.05rem}
+}
 
 /* Legacy modular card editor styles remain for old saves, but the live collectible loop now uses finished cards only. */
 .play-money-hud{
