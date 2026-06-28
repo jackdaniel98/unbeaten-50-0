@@ -12349,6 +12349,12 @@ function getMpEffStats(build){
   const s={...build.stats};
   if(build.booster&&build.booster.stat&&build.booster.val!=null&&s[build.booster.stat]!=null)
     s[build.booster.stat]=(Number(s[build.booster.stat])||70)+build.booster.val;
+  (build.synergies||[]).forEach(function(syn){
+    Object.entries(syn.bonuses||{}).forEach(function(entry){
+      const st=entry[0], val=Number(entry[1])||0;
+      if(s[st]!=null) s[st]=(Number(s[st])||70)+val;
+    });
+  });
   return s;
 }
 function mpGetStats(){ return (typeof STATS!=='undefined'&&Array.isArray(STATS)&&STATS)||['Power','Speed','Defence','Stamina','Heart','IQ','Chin']; }
@@ -12388,6 +12394,72 @@ function mpAwardPlayMoney(pm){
     if(typeof updateWalletDisplays==='function') updateWalletDisplays();
     if(typeof saveCareer==='function') saveCareer();
   }
+}
+function mpLegendName(l){ return (l&&(l.name||l.Name))||'Training Camp'; }
+function mpLegendPool(l){ return (l&&(l.pool||l.Pool))||'Camp'; }
+function mpLegendStat(l,stat){
+  if(!l) return null;
+  if(l.stats&&l.stats[stat]!=null) return l.stats[stat];
+  if(l[stat]!=null) return l[stat];
+  return null;
+}
+function mpTraitOvrBonus(trait){
+  if(!trait) return 0;
+  const r=String(trait.rarity||'common').toLowerCase();
+  const type=String(trait.type||'positive').toLowerCase();
+  const n={common:1,uncommon:2,rare:3,epic:4,legendary:5,premium:5,mythic:5,cursed:4}[r]||1;
+  return type==='negative'?-n:n;
+}
+function calcMpBuildOvr(stats,traits,synergies){
+  let ovr=calcMpOvr(stats);
+  (traits||[]).forEach(function(t){ ovr+=mpTraitOvrBonus(t); });
+  (synergies||[]).forEach(function(){ ovr+=2; });
+  return Math.min(99,Math.max(40,Math.round(ovr)));
+}
+function mpPublicTrait(t){
+  return {id:t.id||t.name||'trait',name:t.name||String(t),type:t.type||'positive',rarity:t.rarity||'common',desc:t.desc||''};
+}
+function mpPublicSynergy(s){
+  return {id:s.id||s.name||'synergy',name:s.name||String(s),desc:s.desc||'',bonuses:{...(s.bonuses||{})}};
+}
+function mpTraitOptions(ds){
+  const owned=new Set((ds.traits||[]).map(function(t){ return t.id||t.name; }));
+  const traits=(typeof TRAITS!=='undefined'&&Array.isArray(TRAITS)&&TRAITS.length?TRAITS:[])
+    .filter(function(t){ return !owned.has(t.id||t.name); });
+  const pool=traits.length?traits.slice():[
+    {id:'focused',name:'Focused',type:'positive',rarity:'common',desc:'+1 draft composure.'},
+    {id:'sharp_start',name:'Sharp Start',type:'positive',rarity:'common',desc:'Starts quickly.'},
+    {id:'steady',name:'Steady',type:'positive',rarity:'common',desc:'Keeps the fight close.'},
+  ];
+  return pool.sort(function(){ return Math.random()-.5; }).slice(0,3).map(mpPublicTrait);
+}
+function mpUnlockedSynergies(statSources){
+  const src=statSources||{};
+  const list=(typeof SYNERGY!=='undefined'&&Array.isArray(SYNERGY)&&SYNERGY)||[];
+  return list.filter(function(syn){
+    const req=syn.requirements||{};
+    return Object.keys(req).every(function(st){ return src[st]===req[st]; });
+  }).map(mpPublicSynergy);
+}
+function mpBeginLocalDraft(data){
+  if(!data||!currentUser) return;
+  MP.matchData=data;
+  const me=data.players&&data.players[currentUser.uid];
+  if(me&&me.draftStatus==='submitted'){ MP._handledPhase='drafting'; mpShowDraftWaiting(); return; }
+  if(me) me.draftStatus='drafting';
+  MP._handledPhase='drafting';
+  screen('mp-draft');
+  const booster=(me&&me.cardBooster)||{stat:'Power',val:1};
+  const statNames=mpGetStats();
+  const stats={}, statSources={};
+  statNames.forEach(function(s){ stats[s]={value:70,legend:'Unassigned',pool:''}; });
+  if(booster.stat&&stats[booster.stat]){
+    stats[booster.stat]={value:70+booster.val,legend:'Card Booster',pool:'Multiplayer Booster'};
+    statSources[booster.stat]='Card Booster';
+  }
+  MP.draftState={phase:'stats',step:0,stats:stats,statSources:statSources,traits:[],synergies:[],booster:booster,secsLeft:MP_DRAFT_SECS,_opts:null,synergyOptions:[],synergyTarget:0,synergyStep:0};
+  mpRenderDraft();
+  mpStartDraftTimer();
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -12753,7 +12825,14 @@ function mpShowDraftWaiting(){
   const tm=$('mp-draft-timer'); if(tm){ tm.innerText='--'; tm.className='mp-draft-timer'; }
 }
 async function startMpDraft(){
-  if(!MP.matchId||!MP.matchData||!currentUser) return;
+  if(!currentUser) return;
+  if(!MP.matchData&&MP.matchId){
+    try{
+      const snap=await db.collection('multiplayer_matches').doc(MP.matchId).get();
+      if(snap.exists) MP.matchData=snap.data();
+    }catch(e){ console.warn('[MP] draft preload:',e); }
+  }
+  if(!MP.matchId||!MP.matchData) return;
   let latestData=null;
   try{
     const ref=db.collection('multiplayer_matches').doc(MP.matchId);
@@ -12776,7 +12855,15 @@ async function startMpDraft(){
     });
   }catch(e){
     console.warn('[MP] startDraft:',e);
-    showToast&&showToast('PvP Error','Could not start the draft. Try again.','warning');
+    if(MP.matchData&&(MP.matchData.isBot||MP.isBot)){
+      const localData=JSON.parse(JSON.stringify(MP.matchData));
+      localData.phase='drafting';
+      if(localData.players&&localData.players[currentUser.uid]) localData.players[currentUser.uid].draftStatus='drafting';
+      showToast&&showToast('PvP Draft','Starting local bot draft. Your build will sync when submitted.');
+      mpBeginLocalDraft(localData);
+      return;
+    }
+    showToast&&showToast('PvP Error','Could not start the draft. Try again.');
     screen('mp-matchup');
     return;
   }
@@ -12786,36 +12873,38 @@ async function startMpDraft(){
     mpOnPhaseChange(latestData);
     return;
   }
-  const me=latestData.players&&latestData.players[currentUser.uid];
-  if(me&&me.draftStatus==='submitted'){ MP._handledPhase='drafting'; mpShowDraftWaiting(); return; }
-  MP._handledPhase='drafting';
-  screen('mp-draft');
-  const booster=(me&&me.cardBooster)||{stat:'Power',val:1};
-  const statNames=mpGetStats();
-  const stats={};
-  statNames.forEach(function(s){ stats[s]={value:70,legend:'Unassigned',pool:''}; });
-  if(booster.stat&&stats[booster.stat]){
-    stats[booster.stat]={value:70+booster.val,legend:'Card Booster',pool:'Multiplayer Booster'};
-  }
-  MP.draftState={step:0,stats:stats,booster:booster,secsLeft:MP_DRAFT_SECS,_opts:null};
-  mpRenderDraft();
-  mpStartDraftTimer();
+  mpBeginLocalDraft(latestData);
 }
 function mpRenderDraft(){
   const ds=MP.draftState; if(!ds) return;
   const allStats=mpGetStats();
   const remaining=allStats.filter(function(s){ return ds.stats[s]&&ds.stats[s].legend==='Unassigned'; });
   const cur=remaining[0]||null;
+  const phase=ds.phase||'stats';
   // Progress dots
   const dots=$('mp-draft-dots');
-  if(dots) dots.innerHTML=allStats.map(function(s){
-    const done=ds.stats[s]&&ds.stats[s].legend&&ds.stats[s].legend!=='Unassigned';
-    const active=s===cur;
-    return '<div class="mp-dp-dot'+(done?' done':active?' active':'')+'"></div>';
-  }).join('');
+  if(dots){
+    if(phase==='stats'){
+      dots.innerHTML=allStats.map(function(s){
+        const done=ds.stats[s]&&ds.stats[s].legend&&ds.stats[s].legend!=='Unassigned';
+        const active=s===cur;
+        return '<div class="mp-dp-dot'+(done?' done':active?' active':'')+'"></div>';
+      }).join('');
+    } else {
+      const steps=phase==='traits'?2:Math.max(1,ds.synergyTarget||1);
+      const done=phase==='traits'?(ds.traits||[]).length:(ds.synergies||[]).length;
+      dots.innerHTML=Array.from({length:steps},function(_,i){
+        return '<div class="mp-dp-dot'+(i<done?' done':i===done?' active':'')+'"></div>';
+      }).join('');
+    }
+  }
   // Stat label
   const sl=$('mp-draft-stat-label');
-  if(sl) sl.innerText=cur?'CHOOSE YOUR '+cur.toUpperCase()+' — '+(allStats.indexOf(cur)+1)+'/'+allStats.length:'All attributes set!';
+  if(sl){
+    if(phase==='stats') sl.innerText=cur?'CHOOSE YOUR '+cur.toUpperCase()+' - '+(allStats.indexOf(cur)+1)+'/'+allStats.length:'All attributes set!';
+    else if(phase==='traits') sl.innerText='CHOOSE TRAIT '+((ds.traits||[]).length+1)+'/2';
+    else sl.innerText=(ds.synergyTarget||0)>0?'CHOOSE SYNERGY '+((ds.synergies||[]).length+1)+'/'+ds.synergyTarget:'SYNERGY CHECK';
+  }
   // Timer
   const tm=$('mp-draft-timer');
   if(tm){ tm.innerText=ds.secsLeft; tm.className='mp-draft-timer'+(ds.secsLeft<=15?' urgent':''); }
@@ -12823,23 +12912,52 @@ function mpRenderDraft(){
   const ov=$('mp-draft-ovr-banner');
   if(ov){
     const statObj={}; allStats.forEach(function(s){ statObj[s]=ds.stats[s]?ds.stats[s].value:70; });
-    const avg=calcMpOvr(statObj);
-    ov.innerHTML='Current OVR: <strong>'+avg+'</strong>';
+    const avg=calcMpBuildOvr(statObj,ds.traits,ds.synergies);
+    if(phase==='stats') ov.innerHTML='Current OVR: <strong>'+avg+'</strong>';
+    else if(phase==='traits') ov.innerHTML='Traits can swing your final OVR. Current: <strong>'+avg+'</strong>';
+    else ov.innerHTML='Synergies add hidden bonuses. Current: <strong>'+avg+'</strong>';
   }
   // Pick options
   const opts=$('mp-draft-options');
-  if(opts&&cur){
+  if(opts&&phase==='stats'&&cur){
     const legends=(typeof LEGENDS!=='undefined'&&Array.isArray(LEGENDS)&&LEGENDS)||[];
-    const pool=legends.filter(function(l){ return l.stats&&l.stats[cur]!=null; })
+    const pool=legends.filter(function(l){ return mpLegendStat(l,cur)!=null; })
       .sort(function(){ return Math.random()-.5; }).slice(0,3);
     while(pool.length<3) pool.push({name:'Training Camp',pool:'Generic',stats:{[cur]:mpClampStat(70+Math.floor(Math.random()*15))}});
-    ds._opts=pool.map(function(l){ return {legend:l.name,pool:l.pool||'Camp',value:mpClampStat(l.stats[cur])}; });
+    ds._opts=pool.map(function(l){ return {type:'stat',legend:mpLegendName(l),pool:mpLegendPool(l),value:mpClampStat(mpLegendStat(l,cur))}; });
     opts.innerHTML=ds._opts.map(function(o,i){
       return '<div class="mp-draft-option" onclick="mpPickDraft('+i+')">'
         +'<div><div class="mp-draft-option-legend">'+mpEscape(o.legend)+'</div>'
         +'<div class="mp-draft-option-pool">'+mpEscape(o.pool)+'</div></div>'
         +'<div class="mp-draft-option-val">'+o.value+'</div></div>';
     }).join('');
+  } else if(opts&&phase==='traits'){
+    ds._opts=mpTraitOptions(ds).map(function(t){ return {...t,draftType:'trait'}; });
+    opts.innerHTML=ds._opts.map(function(t,i){
+      const kind=(t.type||'positive').toUpperCase(), rarity=(t.rarity||'common').toUpperCase();
+      return '<div class="mp-draft-option" onclick="mpPickDraft('+i+')">'
+        +'<div><div class="mp-draft-option-legend">'+mpEscape(t.name)+'</div>'
+        +'<div class="mp-draft-option-pool">'+mpEscape(kind+' - '+rarity)+'</div>'
+        +'<div style="font-size:.62rem;color:var(--text-dim);margin-top:3px">'+mpEscape(t.desc||'')+'</div></div>'
+        +'<div class="mp-draft-option-val">'+(mpTraitOvrBonus(t)>=0?'+':'')+mpTraitOvrBonus(t)+'</div></div>';
+    }).join('');
+  } else if(opts&&phase==='synergies'){
+    const target=ds.synergyTarget||0;
+    if(target<=0){
+      ds._opts=[{type:'continue'}];
+      opts.innerHTML='<div class="mp-draft-option" onclick="mpPickDraft(0)"><div><div class="mp-draft-option-legend">No Synergy Unlocked</div><div class="mp-draft-option-pool">Continue to reveal</div></div><div class="mp-draft-option-val">GO</div></div>';
+    } else {
+      const chosen=new Set((ds.synergies||[]).map(function(s){ return s.id; }));
+      ds._opts=(ds.synergyOptions||[]).filter(function(s){ return !chosen.has(s.id); }).slice(0,3).map(function(s){ return {...s,type:'synergy'}; });
+      opts.innerHTML=ds._opts.map(function(s,i){
+        const plus=Object.entries(s.bonuses||{}).map(function(entry){ return (entry[1]>0?'+':'')+entry[1]+' '+entry[0]; }).join(', ');
+        return '<div class="mp-draft-option" onclick="mpPickDraft('+i+')">'
+          +'<div><div class="mp-draft-option-legend">'+mpEscape(s.name)+'</div>'
+          +'<div class="mp-draft-option-pool">'+mpEscape(plus||'Hidden bonus')+'</div>'
+          +'<div style="font-size:.62rem;color:var(--text-dim);margin-top:3px">'+mpEscape(s.desc||'')+'</div></div>'
+          +'<div class="mp-draft-option-val">+2</div></div>';
+      }).join('');
+    }
   } else if(opts){
     opts.innerHTML='<div style="color:var(--gold);font-size:.8rem;text-align:center;padding:12px">Draft complete!</div>';
   }
@@ -12856,13 +12974,40 @@ function mpPickDraft(idx){
   const ds=MP.draftState; if(!ds||!ds._opts) return;
   const opt=ds._opts[idx]; if(!opt) return;
   const allStats=mpGetStats();
+  if((ds.phase||'stats')==='traits'){
+    ds.traits.push(mpPublicTrait(opt));
+    if(ds.traits.length>=2) mpStartSynergyDraft();
+    else mpRenderDraft();
+    return;
+  }
+  if(ds.phase==='synergies'){
+    if(opt.type==='synergy') ds.synergies.push(mpPublicSynergy(opt));
+    if((ds.synergies||[]).length>=(ds.synergyTarget||0)||opt.type==='continue') mpSubmitBuild();
+    else mpRenderDraft();
+    return;
+  }
   const cur=allStats.find(function(s){ return ds.stats[s]&&ds.stats[s].legend==='Unassigned'; });
   if(!cur) return;
   ds.stats[cur]={value:opt.value,legend:opt.legend,pool:opt.pool};
+  ds.statSources=ds.statSources||{};
+  ds.statSources[cur]=opt.legend;
   ds.step++;
   const stillLeft=allStats.filter(function(s){ return ds.stats[s]&&ds.stats[s].legend==='Unassigned'; });
-  if(!stillLeft.length){ clearInterval(MP.draftTimerInterval); mpSubmitBuild(); }
+  if(!stillLeft.length) mpStartTraitDraft();
   else mpRenderDraft();
+}
+function mpStartTraitDraft(){
+  const ds=MP.draftState; if(!ds) return;
+  ds.phase='traits'; ds._opts=null;
+  mpRenderDraft();
+}
+function mpStartSynergyDraft(){
+  const ds=MP.draftState; if(!ds) return;
+  ds.phase='synergies'; ds._opts=null;
+  ds.synergyOptions=mpUnlockedSynergies(ds.statSources);
+  ds.synergyTarget=Math.min(2,ds.synergyOptions.length);
+  ds.synergyStep=0;
+  mpRenderDraft();
 }
 function mpStartDraftTimer(){
   clearInterval(MP.draftTimerInterval);
@@ -12877,9 +13022,15 @@ function mpStartDraftTimer(){
 function mpAutoAllocate(){
   const ds=MP.draftState; if(!ds) return;
   mpGetStats().forEach(function(s){
-    if(ds.stats[s]&&ds.stats[s].legend==='Unassigned')
+    if(ds.stats[s]&&ds.stats[s].legend==='Unassigned'){
       ds.stats[s]={value:mpClampStat(70+Math.floor(Math.random()*12)),legend:'Auto-Allocated',pool:'Timer'};
+      ds.statSources=ds.statSources||{};
+      ds.statSources[s]='Auto-Allocated';
+    }
   });
+  while((ds.traits||[]).length<2) ds.traits.push(mpTraitOptions(ds)[0]);
+  const unlocked=mpUnlockedSynergies(ds.statSources);
+  ds.synergies=unlocked.slice(0,Math.min(2,unlocked.length));
   mpSubmitBuild();
 }
 async function mpSubmitBuild(){
@@ -12894,8 +13045,10 @@ async function mpSubmitBuild(){
   const cardId=(me&&me.equippedCardId)||'cc001';
   const finalBuild={
     stats:statVals,
-    traits:mpBotTraits(),synergies:mpBotSynergies(),
-    cardId:cardId,booster:booster,ovr:calcMpOvr(statVals),
+    statSources:{...(ds.statSources||{})},
+    traits:(ds.traits||[]).map(mpPublicTrait),
+    synergies:(ds.synergies||[]).map(mpPublicSynergy),
+    cardId:cardId,booster:booster,ovr:calcMpBuildOvr(statVals,ds.traits,ds.synergies),
   };
   MP.myBuild=finalBuild;
   // Show waiting UI
@@ -12970,6 +13123,10 @@ function mpShowReveal(data){
   const oppTraits=ob.traits||[];
   if($('mp-reveal-my-traits'))  $('mp-reveal-my-traits').innerHTML=myTraits.length?myTraits.map(function(t){ return '<span class="mp-tape-trait-chip">'+mpEscape(t.name||t)+'</span>'; }).join(''):'<span class="mp-tape-trait-chip">—</span>';
   if($('mp-reveal-opp-traits')) $('mp-reveal-opp-traits').innerHTML=oppTraits.length?oppTraits.map(function(t){ return '<span class="mp-tape-trait-chip">'+mpEscape(t.name||t)+'</span>'; }).join(''):'<span class="mp-tape-trait-chip">—</span>';
+  const myDraftChips=[...(mb.traits||[]),...(mb.synergies||[]).map(function(s){ return {name:s.name||s}; })];
+  const oppDraftChips=[...(ob.traits||[]),...(ob.synergies||[]).map(function(s){ return {name:s.name||s}; })];
+  if($('mp-reveal-my-traits'))  $('mp-reveal-my-traits').innerHTML=myDraftChips.length?myDraftChips.map(function(t){ return '<span class="mp-tape-trait-chip">'+mpEscape(t.name||t)+'</span>'; }).join(''):'<span class="mp-tape-trait-chip">-</span>';
+  if($('mp-reveal-opp-traits')) $('mp-reveal-opp-traits').innerHTML=oppDraftChips.length?oppDraftChips.map(function(t){ return '<span class="mp-tape-trait-chip">'+mpEscape(t.name||t)+'</span>'; }).join(''):'<span class="mp-tape-trait-chip">-</span>';
 }
 
 // ══════════════════════════════════════════════════════════════════════════
