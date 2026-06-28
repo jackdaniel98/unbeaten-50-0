@@ -2,7 +2,7 @@
 // Caches static game assets only.
 // All cross-origin requests (Firebase, Google APIs, fonts) are passed through untouched.
 
-const CACHE_NAME = 'unbeaten-50-0-v7';
+const CACHE_NAME = 'unbeaten-50-0-v8';
 
 // Files to pre-cache immediately on install
 const PRECACHE_URLS = [
