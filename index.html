@@ -12459,14 +12459,36 @@ function pvpSimFight(myBuild,oppBuild,myName,oppName){
 
 // ── Navigation / Cleanup ──────────────────────────────────────────────────
 function openMultiplayer(){
-  if(!currentUser||!authMigrationComplete){
-    showToast('Sign In Required','Please sign in to access Multiplayer.','warning');
-    return;
+  console.log('[MP] openMultiplayer called');
+  try {
+    // Only require currentUser — let showScreen handle auth redirect
+    if(!currentUser){
+      showToast('Sign In Required','Please sign in to access Multiplayer.','warning');
+      return;
+    }
+    // Verify element exists before attempting navigation
+    const mpHomeEl=document.getElementById('mp-home');
+    console.log('[MP] mp-home element found:', !!mpHomeEl);
+    if(!mpHomeEl){
+      console.error('[MP] FATAL: mp-home screen not found in DOM. Screens in DOM:',
+        Array.from(document.querySelectorAll('.screen')).map(s=>s.id).join(', '));
+      showToast('Multiplayer Error','PvP screen missing. Try refreshing the page.','warning');
+      return;
+    }
+    // Manually add active class — bypass showScreen auth guard for MP
+    document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+    mpHomeEl.classList.add('active');
+    console.log('[MP] mp-home is now active, rendering...');
+    // Render immediately with local defaults — no Firebase dependency
+    renderMpHomeImmediate();
+    // Then update from Firebase in background
+    renderMpHomeAsync();
+  } catch(err){
+    console.error('[MP] openMultiplayer error:', err);
+    showToast('Multiplayer Error','Something went wrong opening PvP. Check console.','warning');
   }
-  screen('mp-home');
-  renderMpHome();
 }
-function closeMpHome(){ mpCleanup(); screen('menu-screen'); }
+function closeMpHome(){ mpCleanup(); showScreen('menu-screen'); }
 function mpCleanup(){
   clearInterval(MP.draftTimerInterval);
   clearInterval(MP.searchInterval);
@@ -12475,19 +12497,64 @@ function mpCleanup(){
 }
 
 // ── MP Home ────────────────────────────────────────────────────────────────
-async function renderMpHome(){
-  MP.profile=await loadMpProfile();
-  const p=MP.profile;
-  const elo=p?.elo||MP_STARTING_ELO;
-  const cardId=p?.equippedCardId||S.player?.myCardsShowcase||'cc001';
-  if($('mp-home-card-thumb')) $('mp-home-card-thumb').innerHTML=mpCardThumb(cardId,46);
-  if($('mp-home-name'))    $('mp-home-name').innerText=p?.displayName||currentUser?.displayName||'Boxer';
-  if($('mp-home-elo'))     $('mp-home-elo').innerText='ELO: '+elo;
-  if($('mp-home-tier'))    $('mp-home-tier').innerText=getEloTierName(elo);
-  if($('mp-home-record'))  $('mp-home-record').innerHTML='<strong>'+formatMpRecord(p)+'</strong>';
-  if($('mp-home-kos'))     $('mp-home-kos').innerText='KO Wins: '+(p?.pvpKos||0);
-  if($('mp-home-pm'))      $('mp-home-pm').innerHTML='PM: <span class="pm-val">'+((S.player?.playMoney||0)).toLocaleString()+'</span>';
+function renderMpHomeImmediate(){
+  console.log('[MP] renderMpHomeImmediate called');
+  try {
+    const p=MP.profile||null;
+    const elo=(p&&p.elo!=null)?p.elo:MP_STARTING_ELO;
+    const cardId=(p&&p.equippedCardId)||
+      (typeof S!=='undefined'&&S.player&&S.player.myCardsShowcase)||'cc001';
+    const name=(p&&p.displayName)||
+      (currentUser&&currentUser.displayName)||
+      (typeof S!=='undefined'&&S.player&&S.player.Name)||'Boxer';
+    const pm=(typeof S!=='undefined'&&S.player&&S.player.playMoney!=null)?
+      S.player.playMoney:0;
+
+    console.log('[MP] rendering with elo='+elo+' card='+cardId+' name='+name);
+
+    const thumbEl=document.getElementById('mp-home-card-thumb');
+    if(thumbEl){
+      try { thumbEl.innerHTML=_showcaseCardHtml(cardId,46); }
+      catch(e){ console.warn('[MP] card thumb error',e); thumbEl.innerHTML=''; }
+    }
+    const nameEl=document.getElementById('mp-home-name');
+    if(nameEl) nameEl.textContent=name;
+
+    const eloEl=document.getElementById('mp-home-elo');
+    if(eloEl) eloEl.textContent='ELO: '+elo;
+
+    const tierEl=document.getElementById('mp-home-tier');
+    if(tierEl){ try{ tierEl.textContent=getEloTierName(elo); }catch(e){ tierEl.textContent='Silver Prospect'; } }
+
+    const recEl=document.getElementById('mp-home-record');
+    if(recEl) recEl.innerHTML='<strong>'+
+      (p?(p.pvpWins||0)+'W – '+(p.pvpLosses||0)+'L – '+(p.pvpDraws||0)+'D':'0W – 0L – 0D')+
+      '</strong>';
+
+    const kosEl=document.getElementById('mp-home-kos');
+    if(kosEl) kosEl.textContent='KO Wins: '+((p&&p.pvpKos)||0);
+
+    const pmEl=document.getElementById('mp-home-pm');
+    if(pmEl) pmEl.innerHTML='PM: <span class="pm-val">'+pm.toLocaleString()+'</span>';
+
+    console.log('[MP] renderMpHomeImmediate complete');
+  } catch(err){
+    console.error('[MP] renderMpHomeImmediate error:', err);
+  }
 }
+async function renderMpHomeAsync(){
+  console.log('[MP] renderMpHomeAsync: loading Firebase profile...');
+  try {
+    const p=await loadMpProfile();
+    if(!p){ console.log('[MP] no Firebase profile (null), keeping defaults'); return; }
+    MP.profile=p;
+    console.log('[MP] Firebase profile loaded, updating UI');
+    renderMpHomeImmediate();
+  } catch(err){
+    console.warn('[MP] renderMpHomeAsync error (non-fatal):', err);
+  }
+}
+function renderMpHome(){ renderMpHomeImmediate(); renderMpHomeAsync(); }
 
 // ── Search ────────────────────────────────────────────────────────────────
 async function startMpSearch(mode){
