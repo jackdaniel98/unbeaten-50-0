@@ -619,6 +619,7 @@ h2:first-child{margin-top:6px}
 }
 .metric > span{color:var(--text-dim);font-weight:500}
 .metric strong{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.hof-pm-earned-row strong{color:var(--gold);font-weight:800}
 
 /* ---------- Tabs ---------- */
 .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:16px}
@@ -2794,11 +2795,10 @@ body.final-card-open{overflow:hidden}
     <div class="metric"><span>Final Official Record:</span><strong id="hof-record">50-0</strong></div>
     <div class="metric"><span>Total Knockouts:</span><strong id="hof-kos">0 KO</strong></div>
     <div class="metric"><span>KO Percentage:</span><strong id="hof-kopct">0%</strong></div>
-    <div class="metric"><span>Lifetime Earnings:</span><strong id="hof-earnings" class="money-dark">$0</strong></div>
-    <div class="metric"><span>Wallet Reward:</span><strong id="hof-wallet-reward">$0</strong></div>
-    <div class="metric"><span>Wallet Balance:</span><strong id="hof-wallet-balance">$0</strong></div>
-    <div class="metric"><span>Wealth Tier:</span><strong id="hof-wealth">-</strong></div>
-    <div class="metric"><span>Biggest Fight Purse:</span><strong id="hof-best-purse">$0</strong></div>
+    <div class="metric"><span>Career Purse Converted:</span><strong id="hof-pm-purse">0 PM</strong></div>
+    <div class="metric"><span>Performance Bonus:</span><strong id="hof-pm-bonus">+0 PM</strong></div>
+    <div class="metric hof-pm-earned-row"><span>Play Money Earned:</span><strong id="hof-pm-earned">+0 PM</strong></div>
+    <div class="metric"><span>Play Money Balance:</span><strong id="hof-pm-balance">0 PM</strong></div>
     <div class="metric"><span>Belts Unified:</span><strong id="hof-belts">0 / 4 Belts</strong></div>
     <div class="metric"><span>Title Defenses:</span><strong id="hof-title-def">0</strong></div>
     <div class="metric"><span>Final Rating:</span><strong id="hof-rating">50</strong></div>
@@ -7233,7 +7233,36 @@ function careerWalletReward(career=S.career){
   const earnings=safeMoney(career?.earnings||0);
   return Math.floor(earnings*(isPerfectCareer(career)?0.08:0.02));
 }
-function careerPlayMoneyReward(career=S.career){ return Math.floor(safeMoney(career?.earnings||0)/1000000); }
+function formatPM(value,plus=false){ return (plus&&value>0?'+':'')+Math.floor(value||0).toLocaleString()+' PM'; }
+function convertCareerEarningsToPM(earnings){ return Math.floor(safeMoney(earnings)/1000000); }
+function calculateCareerPerformanceBonus(career){
+  if(!career) return 0;
+  const w=career.wins||0,l=career.losses||0,d=career.draws||0,total=w+l+d;
+  const koPct=total>0?Math.floor((career.kos||0)/total*100):0;
+  const legScore=Number(career.legacyScore||career.careerLegacyScore||(career===S.career?leg().score:0))||0;
+  const finalRating=Number(career.rating||0);
+  const bestRank=Number(career.bestWorldRank||60);
+  const belts=Array.isArray(career.belts)?career.belts.length:0;
+  let bonus=0;
+  if(w===50&&l===0&&d===0)  bonus+=500;
+  else if(w===49&&l===1)    bonus+=250;
+  else if(l<=2&&w>=48)      bonus+=100;
+  if(belts===4)             bonus+=150;
+  if(bestRank===1)          bonus+=100;
+  if(finalRating>=95)       bonus+=100;
+  else if(finalRating>=90)  bonus+=50;
+  if(legScore>=1200)        bonus+=150;
+  else if(legScore>=1000)   bonus+=75;
+  if(koPct>=90)             bonus+=75;
+  else if(koPct>=75)        bonus+=40;
+  return bonus;
+}
+function calculateFinalCareerPMReward(career){
+  const purse=convertCareerEarningsToPM(career?.earnings||0);
+  const bonus=calculateCareerPerformanceBonus(career);
+  return {purse,bonus,total:purse+bonus};
+}
+function careerPlayMoneyReward(career=S.career){ return calculateFinalCareerPMReward(career).total; }
 const MULTI_50_REWARDS = [
   {count:1, cosmetic:'tattoo_50'},
   {count:2, cosmetic:'store_gloves_gold'},
@@ -7257,7 +7286,8 @@ function awardCareerCompletionEconomy(showNotifications=true){
   ensurePlayerFoundation(S.player);
   const earnings=safeMoney(S.career.earnings||0);
   const reward=careerWalletReward(S.career);
-  const playMoneyReward=careerPlayMoneyReward(S.career);
+  const pmBreakdown=calculateFinalCareerPMReward(S.career);
+  const playMoneyReward=pmBreakdown.total;
   S.career.economyRewarded=true;
   S.career.playMoneyRewarded=true;
   S.player.careerEarnings=earnings;
@@ -7270,9 +7300,8 @@ function awardCareerCompletionEconomy(showNotifications=true){
   }
   grantMulti50Rewards(S.player, showNotifications);
   saveProfileFromPlayer(S.player);
-  if(showNotifications) showToast('Wallet Reward', '+'+cash(reward)+' cosmetic wallet');
-  if(showNotifications&&playMoneyReward>0) showToast('Play Money','\uD83E\uDE99 +'+playMoneyReward.toLocaleString());
-  return {reward,playMoneyReward,already:false};
+  if(showNotifications&&playMoneyReward>0) showToast('Play Money','\uD83E\uDE99 '+formatPM(playMoneyReward,true));
+  return {reward,playMoneyReward,pmBreakdown,already:false};
 }
 function ensurePlayerFoundation(player){
   if(!player) return player;
@@ -11220,8 +11249,11 @@ function triggerHof(){
   checkAchievements(true);
   const economyAward=awardCareerCompletionEconomy(true);
   saveRetiredCareerSnapshot(economyAward);
-  if($('hof-wallet-reward')) $('hof-wallet-reward').innerText=cash(economyAward.reward||0);
-  if($('hof-wallet-balance')) $('hof-wallet-balance').innerText=cash(S.player?.walletBalance||0);
+  const pmBrkdn=economyAward.pmBreakdown||calculateFinalCareerPMReward(S.career);
+  if($('hof-pm-purse'))  $('hof-pm-purse').innerText=formatPM(pmBrkdn.purse);
+  if($('hof-pm-bonus'))  $('hof-pm-bonus').innerText=formatPM(pmBrkdn.bonus,true);
+  if($('hof-pm-earned')) $('hof-pm-earned').innerText=formatPM(pmBrkdn.total,true);
+  if($('hof-pm-balance'))$('hof-pm-balance').innerText=formatPM(S.player?.playMoney||0);
   const breakdown=$('legacy-breakdown');
   if(breakdown){ breakdown.classList.remove('active'); breakdown.innerHTML=''; }
   if (S.career.wins === 50 && S.career.losses === 0 && S.career.draws === 0 && !S.career.firebaseCounted) {
@@ -11243,7 +11275,7 @@ function triggerHof(){
   const _wfTotal=(S.career.wins||0)+(S.career.losses||0)+(S.career.draws||0);
   if(_wfTotal>=45) incrementWeeklyProgress('longCareer');
   updateWeeklyBadge();
-  const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?Math.floor((S.career.kos/total)*100):0, a=archetype(getPerm()).name, l=leg(), ovr=calculateOverall(), wealth=getWealthInfo(S.career.earnings), identity=getBuildIdentity(getPerm()); $('hof-tier').innerText=l.t; $('hof-pct').innerText='Top '+l.p+'% Career'; renderCareerWorldRanks(l.score); $('hof-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hof-kos').innerText=S.career.kos+' KO'; $('hof-kopct').innerText=koPct+'%'; $('hof-earnings').innerText=cash(S.career.earnings); $('hof-wealth').innerText=wealth[0]+' ('+wealth[1]+' Earners)'; $('hof-best-purse').innerText=cash(S.career.bestPurse||0); $('hof-belts').innerText=S.career.belts.length+' / 4 Belts'; $('hof-title-def').innerText=S.career.titleDef||0; $('hof-rating').innerText=''+S.career.rating; $('hof-ovr').innerText=''+ovr; $('hof-best-rank').innerText='#'+S.career.bestWorldRank; $('hof-score').innerText=''+l.score; $('hof-arch').innerText=a; $('hof-identity').innerText=identity; $('hof-mode').innerText=modeCfg().name; const r=getRecords(), finalRec=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); if(better(S.career,r.bestRecord)) r.bestRecord=finalRec; if(S.career.earnings>r.mostMoney) r.mostMoney=S.career.earnings; if(S.career.kos>r.mostKOs) r.mostKOs=S.career.kos; const prior={'None':0,'GOAT (50-0 UNDISPUTED)':1000}; HOF.slice().reverse().forEach((h,i)=>prior[h.t]=i+1); if((prior[l.t]||0)>(prior[r.bestTier]||0)) r.bestTier=l.t; saveRecords(r); refreshMenu(); 
+  const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?Math.floor((S.career.kos/total)*100):0, a=archetype(getPerm()).name, l=leg(), ovr=calculateOverall(), wealth=getWealthInfo(S.career.earnings), identity=getBuildIdentity(getPerm()); $('hof-tier').innerText=l.t; $('hof-pct').innerText='Top '+l.p+'% Career'; renderCareerWorldRanks(l.score); $('hof-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hof-kos').innerText=S.career.kos+' KO'; $('hof-kopct').innerText=koPct+'%'; $('hof-belts').innerText=S.career.belts.length+' / 4 Belts'; $('hof-title-def').innerText=S.career.titleDef||0; $('hof-rating').innerText=''+S.career.rating; $('hof-ovr').innerText=''+ovr; $('hof-best-rank').innerText='#'+S.career.bestWorldRank; $('hof-score').innerText=''+l.score; $('hof-arch').innerText=a; $('hof-identity').innerText=identity; $('hof-mode').innerText=modeCfg().name; const r=getRecords(), finalRec=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); if(better(S.career,r.bestRecord)) r.bestRecord=finalRec; if(S.career.earnings>r.mostMoney) r.mostMoney=S.career.earnings; if(S.career.kos>r.mostKOs) r.mostKOs=S.career.kos; const prior={'None':0,'GOAT (50-0 UNDISPUTED)':1000}; HOF.slice().reverse().forEach((h,i)=>prior[h.t]=i+1); if((prior[l.t]||0)>(prior[r.bestTier]||0)) r.bestTier=l.t; saveRecords(r); refreshMenu(); 
 }
 function showHistory(){ const p=$('full-history'); p.innerHTML=''; if(!S.career.fullHistory.length) p.innerHTML='<div style="color:var(--muted);text-align:center">No fight history recorded.</div>'; else S.career.fullHistory.forEach(line=>{ const d=document.createElement('div'); d.innerText=line; p.appendChild(d); }); screen('history-screen'); }
 function backToHof(){ screen('hof-screen'); }
