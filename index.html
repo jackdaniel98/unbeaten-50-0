@@ -3600,6 +3600,270 @@ body.final-card-open{overflow:hidden}
   </div>
 </div>
 
+<!-- ========== MULTIPLAYER / PvP SCREENS ========== -->
+
+<!-- 1. MP Home -->
+<section id="mp-home" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="closeMpHome()">‹ Menu</button>
+    <span class="mp-brand">UNBEATEN · PvP</span>
+    <div class="mp-header-actions">
+      <span class="mp-beta-badge">BETA</span>
+      <div class="mp-pm-pill" id="mp-home-pm">PM: <span class="pm-val">0</span></div>
+    </div>
+  </div>
+  <div class="mp-player-card">
+    <div class="mp-player-thumb" id="mp-home-card-thumb"></div>
+    <div class="mp-player-info">
+      <div class="mp-player-name" id="mp-home-name">Boxer</div>
+      <div class="mp-player-elo" id="mp-home-elo">ELO: 700</div>
+      <div class="mp-player-tier" id="mp-home-tier">Silver Prospect</div>
+      <div class="mp-player-record" id="mp-home-record"><strong>0W – 0L – 0D</strong></div>
+      <div class="mp-player-record" id="mp-home-kos" style="margin-top:1px">KO Wins: 0</div>
+    </div>
+  </div>
+  <div class="mp-mode-card">
+    <div class="mp-mode-icon">⚔️</div>
+    <div class="mp-mode-body">
+      <div class="mp-mode-title">Ranked Match</div>
+      <div class="mp-mode-desc">Search for an opponent. If nobody is found after 30 seconds, you'll face a bot. ELO and record on the line.</div>
+      <button class="btn gold" style="min-height:38px;font-size:.77rem" onclick="startMpSearch('ranked')">FIND RANKED MATCH</button>
+    </div>
+  </div>
+  <div class="mp-mode-card friendly">
+    <div class="mp-mode-icon">🤝</div>
+    <div class="mp-mode-body">
+      <div class="mp-mode-title">Friendly Match</div>
+      <div class="mp-mode-desc">Casual match. No ELO change. Great for practicing your draft.</div>
+      <button class="btn ghost" style="min-height:38px;font-size:.77rem" onclick="startMpSearch('friendly')">FIND FRIENDLY</button>
+    </div>
+  </div>
+  <div class="mp-mode-card invite">
+    <div class="mp-mode-icon">🔗</div>
+    <div class="mp-mode-body">
+      <div class="mp-mode-title">Play a Friend</div>
+      <div class="mp-mode-desc">Create a code and share it with a friend. Casual, no ELO change.</div>
+      <button class="btn blue" style="min-height:38px;font-size:.77rem" onclick="openMpInvite()">CREATE INVITE CODE</button>
+    </div>
+  </div>
+  <div class="mp-utility-row">
+    <button class="btn ghost" onclick="openMpLeaderboard()">🏆 Online Leaderboard</button>
+    <button class="mp-link-btn" onclick="closeMpHome()">Return to Menu</button>
+  </div>
+</section>
+
+<!-- 2. MP Search -->
+<section id="mp-search" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="cancelMpSearch()">‹ Cancel</button>
+    <span class="mp-brand" id="mp-search-mode-label">RANKED</span>
+    <span class="mp-beta-badge">SEARCHING</span>
+  </div>
+  <div class="mp-search-wrap">
+    <div class="mp-search-ring"></div>
+    <div class="mp-search-label">Searching...</div>
+    <div class="mp-search-timer" id="mp-search-timer">30</div>
+    <div class="mp-search-sub" id="mp-search-status">Looking for an opponent worldwide...</div>
+  </div>
+  <div class="panel" style="text-align:center;padding:14px">
+    <div style="font-size:.66rem;color:var(--text-dim);margin-bottom:10px">No match found after 30 s? You'll face a bot automatically.</div>
+    <button id="mp-cancel-search-btn" class="btn ghost" onclick="cancelMpSearch()">Cancel Search</button>
+  </div>
+</section>
+
+<!-- 3. MP Matchup / VS Screen -->
+<section id="mp-matchup" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="cancelMpSearch();screen('mp-home')">‹ Back</button>
+    <span class="mp-brand">MATCH FOUND</span>
+    <span class="mp-vs-mode-tag" id="mp-matchup-mode-tag">RANKED</span>
+  </div>
+  <div style="text-align:center;margin-bottom:8px">
+    <span id="mp-matchup-bot-tag" class="mp-beta-badge" style="background:rgba(56,189,248,.1);color:#38bdf8;border-color:rgba(56,189,248,.3)">BOT MATCH</span>
+  </div>
+  <div class="mp-vs-row">
+    <div class="mp-vs-fighter me">
+      <div class="mp-vs-badge me">YOU</div>
+      <div class="mp-vs-card-thumb" id="mp-matchup-my-thumb"></div>
+      <div class="mp-vs-name" id="mp-matchup-my-name">Boxer</div>
+      <div class="mp-vs-elo" id="mp-matchup-my-elo">ELO 700</div>
+      <div class="mp-vs-record" id="mp-matchup-my-record">0W-0L</div>
+      <div class="mp-vs-card-name" id="mp-matchup-my-card-name">Street Spark</div>
+      <div class="mp-vs-booster" id="mp-matchup-my-booster">MULTIPLAYER BOOSTER&#10;+1 Defence</div>
+    </div>
+    <div class="mp-vs-divider"><div class="mp-vs-vs">VS</div></div>
+    <div class="mp-vs-fighter opp">
+      <div class="mp-vs-badge opp">OPP</div>
+      <div class="mp-vs-card-thumb" id="mp-matchup-opp-thumb"></div>
+      <div class="mp-vs-name" id="mp-matchup-opp-name">Opponent</div>
+      <div class="mp-vs-elo" id="mp-matchup-opp-elo">ELO 700</div>
+      <div class="mp-vs-record" id="mp-matchup-opp-record">0W-0L</div>
+      <div class="mp-vs-card-name" id="mp-matchup-opp-card-name">Street Spark</div>
+      <div class="mp-vs-booster" id="mp-matchup-opp-booster">MULTIPLAYER BOOSTER&#10;+1 Power</div>
+    </div>
+  </div>
+  <div style="margin-top:12px;display:flex;flex-direction:column;gap:7px">
+    <button class="btn gold" onclick="startMpDraft()">Start Draft →</button>
+    <button class="btn ghost" onclick="cancelMpSearch();screen('mp-home')">Back to Lobby</button>
+  </div>
+</section>
+
+<!-- 4. MP Draft -->
+<section id="mp-draft" class="screen">
+  <div class="mp-draft-header">
+    <div>
+      <div style="font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)">PvP Draft</div>
+      <div id="mp-draft-stat-label" class="mp-draft-stat-label">Select your POWER — 1/10</div>
+    </div>
+    <div id="mp-draft-timer" class="mp-draft-timer">90</div>
+  </div>
+  <div id="mp-draft-dots" class="mp-draft-progress"></div>
+  <div id="mp-draft-ovr-banner" class="mp-draft-ovr-banner">Draft your fighter — pick from 3 legends per stat</div>
+  <div id="mp-draft-options" class="mp-draft-options"></div>
+  <details class="hub-section" style="margin-top:2px">
+    <summary style="font-size:.68rem;color:var(--text-dim)">Locked stats so far</summary>
+    <div class="hub-section-body" style="padding-top:4px">
+      <div id="mp-draft-locked" class="mp-draft-locked">
+        <div style="color:var(--muted);font-size:.64rem">Draft your attributes one by one.</div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- 5. MP Reveal / Tale of the Tape -->
+<section id="mp-reveal" class="screen">
+  <div class="mp-tape-header">
+    <div class="mp-tape-title">TALE OF THE TAPE</div>
+    <div class="mp-tape-sub">Both builds revealed — compare before the fight</div>
+  </div>
+  <div class="mp-tape-fighters">
+    <div class="mp-tape-col">
+      <div id="mp-reveal-my-card" style="width:54px;border-radius:5px;overflow:hidden"></div>
+      <div class="mp-tape-name" id="mp-reveal-my-name">You</div>
+      <div class="mp-tape-ovr" id="mp-reveal-my-ovr">70</div>
+      <div class="mp-vs-booster" style="font-size:.52rem;padding:3px 5px;width:auto" id="mp-reveal-my-booster">BOOSTER · +1 Power</div>
+      <div class="mp-tape-traits" id="mp-reveal-my-traits"></div>
+    </div>
+    <div class="mp-tape-divider-col"><div class="mp-vs-vs" style="font-size:1.15rem">VS</div></div>
+    <div class="mp-tape-col opp">
+      <div id="mp-reveal-opp-card" style="width:54px;border-radius:5px;overflow:hidden"></div>
+      <div class="mp-tape-name" id="mp-reveal-opp-name">Opponent</div>
+      <div class="mp-tape-ovr" id="mp-reveal-opp-ovr">70</div>
+      <div class="mp-vs-booster" style="font-size:.52rem;padding:3px 5px;width:auto" id="mp-reveal-opp-booster">BOOSTER · +1 Power</div>
+      <div class="mp-tape-traits" id="mp-reveal-opp-traits"></div>
+    </div>
+  </div>
+  <div id="mp-reveal-stat-rows" class="mp-tape-stat-rows"></div>
+  <button class="btn gold" onclick="startMpFight()">SIM FIGHT →</button>
+  <button class="btn ghost" style="margin-top:6px;font-size:.74rem" onclick="screen('mp-matchup')">‹ Back to Matchup</button>
+</section>
+
+<!-- 6. MP Fight -->
+<section id="mp-fight" class="screen">
+  <div class="mp-fight-header">
+    <div class="mp-fight-title" id="mp-fight-title">PvP Fight — 12 Rounds</div>
+    <div class="mp-fight-bars">
+      <div class="mp-fight-bar-col">
+        <div class="mp-fight-bar-name me" id="mp-fight-my-name">You</div>
+        <div class="mp-fight-bar-track"><div class="mp-fight-bar-fill me" id="mp-fight-my-hp" style="width:100%"></div></div>
+      </div>
+      <div class="mp-fight-round-badge" id="mp-fight-round-label">RND 1</div>
+      <div class="mp-fight-bar-col">
+        <div class="mp-fight-bar-name opp" id="mp-fight-opp-name">Opp</div>
+        <div class="mp-fight-bar-track"><div class="mp-fight-bar-fill opp" id="mp-fight-opp-hp" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="mp-fight-scores" style="margin-top:5px">
+      <div class="mp-score-block me">
+        <div class="mp-score-val" id="mp-fight-my-score">0</div>
+        <div class="mp-score-label">Points</div>
+      </div>
+      <div></div>
+      <div class="mp-score-block opp">
+        <div class="mp-score-val opp" id="mp-fight-opp-score">0</div>
+        <div class="mp-score-label">Points</div>
+      </div>
+    </div>
+  </div>
+  <div id="mp-fight-log" class="mp-fight-log"></div>
+  <button id="mp-fight-next-btn" class="btn gold" disabled>Simulating...</button>
+  <button class="btn ghost" style="margin-top:6px;font-size:.72rem;min-height:38px;color:#e05252;border-color:rgba(224,82,82,.3)" onclick="mpThrowInTowel()">🏳 Throw in the Towel</button>
+</section>
+
+<!-- 7. MP Result -->
+<section id="mp-result" class="screen">
+  <div class="mp-result-banner">
+    <div class="mp-result-title win" id="mp-result-title">VICTORY</div>
+    <div class="mp-result-method" id="mp-result-method">Unanimous Decision</div>
+    <div class="mp-result-scores">
+      <div class="mp-result-score-card">
+        <div class="mp-result-score-val" id="mp-result-p1-score">–</div>
+        <div class="mp-result-score-who" id="mp-result-p1-who">You</div>
+      </div>
+      <div class="mp-result-score-card">
+        <div class="mp-result-score-val" id="mp-result-p2-score">–</div>
+        <div class="mp-result-score-who" id="mp-result-p2-who">Opponent</div>
+      </div>
+    </div>
+    <div class="mp-result-elo-row">
+      <span id="mp-result-ranked-tag" class="mp-vs-mode-tag">RANKED</span>
+      <span id="mp-result-friendly-tag" class="mp-vs-mode-tag" style="background:rgba(74,222,128,.1);color:#4ade80;border-color:rgba(74,222,128,.28)" hidden>FRIENDLY</span>
+    </div>
+    <div class="mp-result-elo-row" style="margin-top:6px">
+      <span style="font-size:.7rem;color:var(--text-dim)">ELO <span id="mp-result-elo-old">700</span></span>
+      <span class="mp-elo-change neutral" id="mp-result-elo-change">+0</span>
+      <span style="font-size:.8rem;font-weight:900;color:#fff">→ <span id="mp-result-elo-new">700</span></span>
+    </div>
+    <div style="font-size:.58rem;color:var(--text-dim);margin-top:2px" id="mp-result-tier">Silver Prospect</div>
+  </div>
+  <div class="mp-result-pm-row">
+    <span class="mp-result-pm-label">Play Money Earned</span>
+    <span class="mp-result-pm-val" id="mp-result-pm-val">+300 PM</span>
+  </div>
+  <div class="mp-result-record-row" id="mp-result-record"><strong>0W – 0L – 0D</strong> (KO: 0)</div>
+  <button class="btn gold" onclick="openMpLeaderboard()">🏆 View Leaderboard</button>
+  <button class="btn blue" style="margin-top:7px" onclick="startMpSearch(MP.mode||'ranked')">Find Another Match</button>
+  <button class="btn ghost" style="margin-top:7px" onclick="screen('mp-home');renderMpHome()">Back to PvP Lobby</button>
+  <button class="btn ghost" style="margin-top:7px" onclick="closeMpHome()">Return to Menu</button>
+</section>
+
+<!-- 8. MP Leaderboard -->
+<section id="mp-leaderboard" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="screen('mp-home')">‹ Back</button>
+    <div style="flex:1">
+      <div class="mp-lb-title">PvP Leaderboard</div>
+      <div class="mp-lb-sub">Ranked by ELO · Top 50 players</div>
+    </div>
+    <span class="mp-beta-badge">LIVE</span>
+  </div>
+  <div id="mp-lb-list"><div class="mp-lb-loading">Loading...</div></div>
+  <button class="btn ghost" style="margin-top:8px" onclick="screen('mp-home')">Back to PvP Lobby</button>
+</section>
+
+<!-- 9. MP Invite / Play a Friend -->
+<section id="mp-invite" class="screen">
+  <div class="mp-header">
+    <button class="mp-header-back" onclick="screen('mp-home')">‹ Back</button>
+    <span class="mp-brand">PLAY A FRIEND</span>
+    <span class="mp-beta-badge">CASUAL</span>
+  </div>
+  <div class="panel" style="margin-bottom:10px">
+    <div style="font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px">Create Lobby</div>
+    <div style="font-size:.7rem;color:var(--text-dim);margin-bottom:10px">Generate a 6-character code, then share it with your friend.</div>
+    <button class="btn gold" style="min-height:40px" onclick="createMpInviteCode()">Generate Code</button>
+    <div class="mp-invite-code-big" id="mp-invite-code-display">– – – – – –</div>
+    <div class="mp-invite-status ok" id="mp-invite-status"></div>
+  </div>
+  <div style="text-align:center;padding:6px 0;font-size:.66rem;color:var(--muted)">— OR —</div>
+  <div class="panel">
+    <div style="font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px">Join a Lobby</div>
+    <input id="mp-join-code-input" class="mp-invite-input" type="text" maxlength="6" placeholder="ABC123" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+    <div class="mp-invite-status" id="mp-join-status"></div>
+    <button class="btn blue" style="min-height:40px" onclick="joinMpByCode()">Join Lobby</button>
+  </div>
+</section>
+
 </div>
 
 <script>
@@ -11904,270 +12168,6 @@ window.onload=function(event){
   if(typeof priorUnbeatenOnload==='function') priorUnbeatenOnload.call(window,event);
 };
 </script>
-
-<!-- ========== MULTIPLAYER / PvP SCREENS ========== -->
-
-<!-- 1. MP Home -->
-<section id="mp-home" class="screen">
-  <div class="mp-header">
-    <button class="mp-header-back" onclick="closeMpHome()">‹ Menu</button>
-    <span class="mp-brand">UNBEATEN · PvP</span>
-    <div class="mp-header-actions">
-      <span class="mp-beta-badge">BETA</span>
-      <div class="mp-pm-pill" id="mp-home-pm">PM: <span class="pm-val">0</span></div>
-    </div>
-  </div>
-  <div class="mp-player-card">
-    <div class="mp-player-thumb" id="mp-home-card-thumb"></div>
-    <div class="mp-player-info">
-      <div class="mp-player-name" id="mp-home-name">Boxer</div>
-      <div class="mp-player-elo" id="mp-home-elo">ELO: 700</div>
-      <div class="mp-player-tier" id="mp-home-tier">Silver Prospect</div>
-      <div class="mp-player-record" id="mp-home-record"><strong>0W – 0L – 0D</strong></div>
-      <div class="mp-player-record" id="mp-home-kos" style="margin-top:1px">KO Wins: 0</div>
-    </div>
-  </div>
-  <div class="mp-mode-card">
-    <div class="mp-mode-icon">⚔️</div>
-    <div class="mp-mode-body">
-      <div class="mp-mode-title">Ranked Match</div>
-      <div class="mp-mode-desc">Search for an opponent. If nobody is found after 30 seconds, you'll face a bot. ELO and record on the line.</div>
-      <button class="btn gold" style="min-height:38px;font-size:.77rem" onclick="startMpSearch('ranked')">FIND RANKED MATCH</button>
-    </div>
-  </div>
-  <div class="mp-mode-card friendly">
-    <div class="mp-mode-icon">🤝</div>
-    <div class="mp-mode-body">
-      <div class="mp-mode-title">Friendly Match</div>
-      <div class="mp-mode-desc">Casual match. No ELO change. Great for practicing your draft.</div>
-      <button class="btn ghost" style="min-height:38px;font-size:.77rem" onclick="startMpSearch('friendly')">FIND FRIENDLY</button>
-    </div>
-  </div>
-  <div class="mp-mode-card invite">
-    <div class="mp-mode-icon">🔗</div>
-    <div class="mp-mode-body">
-      <div class="mp-mode-title">Play a Friend</div>
-      <div class="mp-mode-desc">Create a code and share it with a friend. Casual, no ELO change.</div>
-      <button class="btn blue" style="min-height:38px;font-size:.77rem" onclick="openMpInvite()">CREATE INVITE CODE</button>
-    </div>
-  </div>
-  <div class="mp-utility-row">
-    <button class="btn ghost" onclick="openMpLeaderboard()">🏆 Online Leaderboard</button>
-    <button class="mp-link-btn" onclick="closeMpHome()">Return to Menu</button>
-  </div>
-</section>
-
-<!-- 2. MP Search -->
-<section id="mp-search" class="screen">
-  <div class="mp-header">
-    <button class="mp-header-back" onclick="cancelMpSearch()">‹ Cancel</button>
-    <span class="mp-brand" id="mp-search-mode-label">RANKED</span>
-    <span class="mp-beta-badge">SEARCHING</span>
-  </div>
-  <div class="mp-search-wrap">
-    <div class="mp-search-ring"></div>
-    <div class="mp-search-label">Searching...</div>
-    <div class="mp-search-timer" id="mp-search-timer">30</div>
-    <div class="mp-search-sub" id="mp-search-status">Looking for an opponent worldwide...</div>
-  </div>
-  <div class="panel" style="text-align:center;padding:14px">
-    <div style="font-size:.66rem;color:var(--text-dim);margin-bottom:10px">No match found after 30 s? You'll face a bot automatically.</div>
-    <button id="mp-cancel-search-btn" class="btn ghost" onclick="cancelMpSearch()">Cancel Search</button>
-  </div>
-</section>
-
-<!-- 3. MP Matchup / VS Screen -->
-<section id="mp-matchup" class="screen">
-  <div class="mp-header">
-    <button class="mp-header-back" onclick="cancelMpSearch();screen('mp-home')">‹ Back</button>
-    <span class="mp-brand">MATCH FOUND</span>
-    <span class="mp-vs-mode-tag" id="mp-matchup-mode-tag">RANKED</span>
-  </div>
-  <div style="text-align:center;margin-bottom:8px">
-    <span id="mp-matchup-bot-tag" class="mp-beta-badge" style="background:rgba(56,189,248,.1);color:#38bdf8;border-color:rgba(56,189,248,.3)">BOT MATCH</span>
-  </div>
-  <div class="mp-vs-row">
-    <div class="mp-vs-fighter me">
-      <div class="mp-vs-badge me">YOU</div>
-      <div class="mp-vs-card-thumb" id="mp-matchup-my-thumb"></div>
-      <div class="mp-vs-name" id="mp-matchup-my-name">Boxer</div>
-      <div class="mp-vs-elo" id="mp-matchup-my-elo">ELO 700</div>
-      <div class="mp-vs-record" id="mp-matchup-my-record">0W-0L</div>
-      <div class="mp-vs-card-name" id="mp-matchup-my-card-name">Street Spark</div>
-      <div class="mp-vs-booster" id="mp-matchup-my-booster">MULTIPLAYER BOOSTER&#10;+1 Defence</div>
-    </div>
-    <div class="mp-vs-divider"><div class="mp-vs-vs">VS</div></div>
-    <div class="mp-vs-fighter opp">
-      <div class="mp-vs-badge opp">OPP</div>
-      <div class="mp-vs-card-thumb" id="mp-matchup-opp-thumb"></div>
-      <div class="mp-vs-name" id="mp-matchup-opp-name">Opponent</div>
-      <div class="mp-vs-elo" id="mp-matchup-opp-elo">ELO 700</div>
-      <div class="mp-vs-record" id="mp-matchup-opp-record">0W-0L</div>
-      <div class="mp-vs-card-name" id="mp-matchup-opp-card-name">Street Spark</div>
-      <div class="mp-vs-booster" id="mp-matchup-opp-booster">MULTIPLAYER BOOSTER&#10;+1 Power</div>
-    </div>
-  </div>
-  <div style="margin-top:12px;display:flex;flex-direction:column;gap:7px">
-    <button class="btn gold" onclick="startMpDraft()">Start Draft →</button>
-    <button class="btn ghost" onclick="cancelMpSearch();screen('mp-home')">Back to Lobby</button>
-  </div>
-</section>
-
-<!-- 4. MP Draft -->
-<section id="mp-draft" class="screen">
-  <div class="mp-draft-header">
-    <div>
-      <div style="font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)">PvP Draft</div>
-      <div id="mp-draft-stat-label" class="mp-draft-stat-label">Select your POWER — 1/10</div>
-    </div>
-    <div id="mp-draft-timer" class="mp-draft-timer">90</div>
-  </div>
-  <div id="mp-draft-dots" class="mp-draft-progress"></div>
-  <div id="mp-draft-ovr-banner" class="mp-draft-ovr-banner">Draft your fighter — pick from 3 legends per stat</div>
-  <div id="mp-draft-options" class="mp-draft-options"></div>
-  <details class="hub-section" style="margin-top:2px">
-    <summary style="font-size:.68rem;color:var(--text-dim)">Locked stats so far</summary>
-    <div class="hub-section-body" style="padding-top:4px">
-      <div id="mp-draft-locked" class="mp-draft-locked">
-        <div style="color:var(--muted);font-size:.64rem">Draft your attributes one by one.</div>
-      </div>
-    </div>
-  </details>
-</section>
-
-<!-- 5. MP Reveal / Tale of the Tape -->
-<section id="mp-reveal" class="screen">
-  <div class="mp-tape-header">
-    <div class="mp-tape-title">TALE OF THE TAPE</div>
-    <div class="mp-tape-sub">Both builds revealed — compare before the fight</div>
-  </div>
-  <div class="mp-tape-fighters">
-    <div class="mp-tape-col">
-      <div id="mp-reveal-my-card" style="width:54px;border-radius:5px;overflow:hidden"></div>
-      <div class="mp-tape-name" id="mp-reveal-my-name">You</div>
-      <div class="mp-tape-ovr" id="mp-reveal-my-ovr">70</div>
-      <div class="mp-vs-booster" style="font-size:.52rem;padding:3px 5px;width:auto" id="mp-reveal-my-booster">BOOSTER · +1 Power</div>
-      <div class="mp-tape-traits" id="mp-reveal-my-traits"></div>
-    </div>
-    <div class="mp-tape-divider-col"><div class="mp-vs-vs" style="font-size:1.15rem">VS</div></div>
-    <div class="mp-tape-col opp">
-      <div id="mp-reveal-opp-card" style="width:54px;border-radius:5px;overflow:hidden"></div>
-      <div class="mp-tape-name" id="mp-reveal-opp-name">Opponent</div>
-      <div class="mp-tape-ovr" id="mp-reveal-opp-ovr">70</div>
-      <div class="mp-vs-booster" style="font-size:.52rem;padding:3px 5px;width:auto" id="mp-reveal-opp-booster">BOOSTER · +1 Power</div>
-      <div class="mp-tape-traits" id="mp-reveal-opp-traits"></div>
-    </div>
-  </div>
-  <div id="mp-reveal-stat-rows" class="mp-tape-stat-rows"></div>
-  <button class="btn gold" onclick="startMpFight()">SIM FIGHT →</button>
-  <button class="btn ghost" style="margin-top:6px;font-size:.74rem" onclick="screen('mp-matchup')">‹ Back to Matchup</button>
-</section>
-
-<!-- 6. MP Fight -->
-<section id="mp-fight" class="screen">
-  <div class="mp-fight-header">
-    <div class="mp-fight-title" id="mp-fight-title">PvP Fight — 12 Rounds</div>
-    <div class="mp-fight-bars">
-      <div class="mp-fight-bar-col">
-        <div class="mp-fight-bar-name me" id="mp-fight-my-name">You</div>
-        <div class="mp-fight-bar-track"><div class="mp-fight-bar-fill me" id="mp-fight-my-hp" style="width:100%"></div></div>
-      </div>
-      <div class="mp-fight-round-badge" id="mp-fight-round-label">RND 1</div>
-      <div class="mp-fight-bar-col">
-        <div class="mp-fight-bar-name opp" id="mp-fight-opp-name">Opp</div>
-        <div class="mp-fight-bar-track"><div class="mp-fight-bar-fill opp" id="mp-fight-opp-hp" style="width:100%"></div></div>
-      </div>
-    </div>
-    <div class="mp-fight-scores" style="margin-top:5px">
-      <div class="mp-score-block me">
-        <div class="mp-score-val" id="mp-fight-my-score">0</div>
-        <div class="mp-score-label">Points</div>
-      </div>
-      <div></div>
-      <div class="mp-score-block opp">
-        <div class="mp-score-val opp" id="mp-fight-opp-score">0</div>
-        <div class="mp-score-label">Points</div>
-      </div>
-    </div>
-  </div>
-  <div id="mp-fight-log" class="mp-fight-log"></div>
-  <button id="mp-fight-next-btn" class="btn gold" disabled>Simulating...</button>
-  <button class="btn ghost" style="margin-top:6px;font-size:.72rem;min-height:38px;color:#e05252;border-color:rgba(224,82,82,.3)" onclick="mpThrowInTowel()">🏳 Throw in the Towel</button>
-</section>
-
-<!-- 7. MP Result -->
-<section id="mp-result" class="screen">
-  <div class="mp-result-banner">
-    <div class="mp-result-title win" id="mp-result-title">VICTORY</div>
-    <div class="mp-result-method" id="mp-result-method">Unanimous Decision</div>
-    <div class="mp-result-scores">
-      <div class="mp-result-score-card">
-        <div class="mp-result-score-val" id="mp-result-p1-score">–</div>
-        <div class="mp-result-score-who" id="mp-result-p1-who">You</div>
-      </div>
-      <div class="mp-result-score-card">
-        <div class="mp-result-score-val" id="mp-result-p2-score">–</div>
-        <div class="mp-result-score-who" id="mp-result-p2-who">Opponent</div>
-      </div>
-    </div>
-    <div class="mp-result-elo-row">
-      <span id="mp-result-ranked-tag" class="mp-vs-mode-tag">RANKED</span>
-      <span id="mp-result-friendly-tag" class="mp-vs-mode-tag" style="background:rgba(74,222,128,.1);color:#4ade80;border-color:rgba(74,222,128,.28)" hidden>FRIENDLY</span>
-    </div>
-    <div class="mp-result-elo-row" style="margin-top:6px">
-      <span style="font-size:.7rem;color:var(--text-dim)">ELO <span id="mp-result-elo-old">700</span></span>
-      <span class="mp-elo-change neutral" id="mp-result-elo-change">+0</span>
-      <span style="font-size:.8rem;font-weight:900;color:#fff">→ <span id="mp-result-elo-new">700</span></span>
-    </div>
-    <div style="font-size:.58rem;color:var(--text-dim);margin-top:2px" id="mp-result-tier">Silver Prospect</div>
-  </div>
-  <div class="mp-result-pm-row">
-    <span class="mp-result-pm-label">Play Money Earned</span>
-    <span class="mp-result-pm-val" id="mp-result-pm-val">+300 PM</span>
-  </div>
-  <div class="mp-result-record-row" id="mp-result-record"><strong>0W – 0L – 0D</strong> (KO: 0)</div>
-  <button class="btn gold" onclick="openMpLeaderboard()">🏆 View Leaderboard</button>
-  <button class="btn blue" style="margin-top:7px" onclick="startMpSearch(MP.mode||'ranked')">Find Another Match</button>
-  <button class="btn ghost" style="margin-top:7px" onclick="screen('mp-home');renderMpHome()">Back to PvP Lobby</button>
-  <button class="btn ghost" style="margin-top:7px" onclick="closeMpHome()">Return to Menu</button>
-</section>
-
-<!-- 8. MP Leaderboard -->
-<section id="mp-leaderboard" class="screen">
-  <div class="mp-header">
-    <button class="mp-header-back" onclick="screen('mp-home')">‹ Back</button>
-    <div style="flex:1">
-      <div class="mp-lb-title">PvP Leaderboard</div>
-      <div class="mp-lb-sub">Ranked by ELO · Top 50 players</div>
-    </div>
-    <span class="mp-beta-badge">LIVE</span>
-  </div>
-  <div id="mp-lb-list"><div class="mp-lb-loading">Loading...</div></div>
-  <button class="btn ghost" style="margin-top:8px" onclick="screen('mp-home')">Back to PvP Lobby</button>
-</section>
-
-<!-- 9. MP Invite / Play a Friend -->
-<section id="mp-invite" class="screen">
-  <div class="mp-header">
-    <button class="mp-header-back" onclick="screen('mp-home')">‹ Back</button>
-    <span class="mp-brand">PLAY A FRIEND</span>
-    <span class="mp-beta-badge">CASUAL</span>
-  </div>
-  <div class="panel" style="margin-bottom:10px">
-    <div style="font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px">Create Lobby</div>
-    <div style="font-size:.7rem;color:var(--text-dim);margin-bottom:10px">Generate a 6-character code, then share it with your friend.</div>
-    <button class="btn gold" style="min-height:40px" onclick="createMpInviteCode()">Generate Code</button>
-    <div class="mp-invite-code-big" id="mp-invite-code-display">– – – – – –</div>
-    <div class="mp-invite-status ok" id="mp-invite-status"></div>
-  </div>
-  <div style="text-align:center;padding:6px 0;font-size:.66rem;color:var(--muted)">— OR —</div>
-  <div class="panel">
-    <div style="font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px">Join a Lobby</div>
-    <input id="mp-join-code-input" class="mp-invite-input" type="text" maxlength="6" placeholder="ABC123" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
-    <div class="mp-invite-status" id="mp-join-status"></div>
-    <button class="btn blue" style="min-height:40px" onclick="joinMpByCode()">Join Lobby</button>
-  </div>
-</section>
 
 <!-- PWA: Add to Home Screen nudge -->
 <div id="pwa-nudge" class="pwa-nudge hidden" role="status" aria-live="polite">
