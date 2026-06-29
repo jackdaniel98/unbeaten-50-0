@@ -2591,6 +2591,52 @@ body.final-card-open{overflow:hidden}
 @keyframes packPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .pack-orb.burst{box-shadow:0 0 70px 24px var(--pack-final,#cbd5e1),0 0 170px 56px var(--pack-final,#cbd5e1);animation:packBurst .62s var(--ease) forwards}
 @keyframes packBurst{0%{transform:scale(1)}38%{transform:scale(1.42)}100%{transform:scale(1.12)}}
+
+/* ===== Foil pack opener ===== */
+.pack-foil{
+  position:relative; width:200px; height:280px; border-radius:16px; overflow:hidden;
+  border:1px solid rgba(227,178,60,.55);
+  background:linear-gradient(150deg,#16140e 0%,#201a10 22%,#0e0f12 55%,#1a1610 100%);
+  box-shadow:0 24px 46px -16px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.1), 0 0 24px rgba(227,178,60,.22);
+  animation:pfFloat 4.2s ease-in-out infinite; transform-style:preserve-3d;
+}
+.pack-foil.charging{
+  animation:pfShake .42s ease-in-out infinite;
+  box-shadow:0 24px 46px -16px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.1), 0 0 46px rgba(246,216,115,.55);
+}
+.pack-foil.bursting{ animation:pfBurst .6s cubic-bezier(.4,0,.2,1) forwards; }
+.pf-sheen{ position:absolute; top:0; bottom:0; left:0; width:46%; pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.34),transparent);
+  animation:pfShimmer 3.4s ease-in-out infinite; }
+.pf-body{ position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:8px; text-align:center; padding:18px; }
+.pf-kicker{ font-size:.5rem; font-weight:800; letter-spacing:.32em; text-transform:uppercase;
+  color:rgba(246,216,115,.78); }
+.pf-name{ font-family:'Bebas Neue',sans-serif; font-size:2.6rem; line-height:.86; color:#fff;
+  text-shadow:0 2px 14px rgba(0,0,0,.6); }
+.pf-sub{ font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:.45em; color:#e3b23c; }
+.pf-foot{ font-size:.46rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+  color:rgba(255,255,255,.4); }
+.pf-rays{ position:absolute; left:50%; top:50%; width:680px; height:680px; pointer-events:none;
+  transform:translate(-50%,-50%); mix-blend-mode:screen; opacity:.55;
+  -webkit-mask-image:radial-gradient(circle,#000 8%,rgba(0,0,0,.35) 38%,transparent 66%);
+  mask-image:radial-gradient(circle,#000 8%,rgba(0,0,0,.35) 38%,transparent 66%);
+  animation:pfRays 9s linear infinite; }
+.pf-flash{ position:absolute; left:50%; top:50%; width:520px; height:520px; border-radius:50%;
+  transform:translate(-50%,-50%); pointer-events:none; mix-blend-mode:screen;
+  background:radial-gradient(circle,#fff 0%,rgba(246,216,115,.7) 32%,transparent 66%);
+  animation:pfFlash .6s ease-out forwards; }
+.pf-ring{ position:absolute; left:50%; top:50%; width:300px; height:300px; border-radius:50%;
+  transform:translate(-50%,-50%); pointer-events:none; border:3px solid rgba(246,216,115,.85);
+  animation:pfRing .6s ease-out forwards; }
+@keyframes pfFloat{0%,100%{transform:translateY(0) rotateZ(-1.4deg)}50%{transform:translateY(-12px) rotateZ(1.4deg)}}
+@keyframes pfShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-2deg)}40%{transform:rotate(2.2deg)}60%{transform:rotate(-1.6deg)}80%{transform:rotate(1.4deg)}}
+@keyframes pfBurst{0%{transform:scale(1);opacity:1;filter:brightness(1)}45%{transform:scale(1.18);opacity:1;filter:brightness(2.4)}100%{transform:scale(1.5);opacity:0;filter:brightness(3)}}
+@keyframes pfShimmer{0%{transform:translateX(-160%) skewX(-18deg)}100%{transform:translateX(220%) skewX(-18deg)}}
+@keyframes pfRays{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes pfFlash{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(2.6)}}
+@keyframes pfRing{0%{opacity:.9;transform:translate(-50%,-50%) scale(.1)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.4)}}
+
 .pack-reveal{width:min(320px,100%)}
 .pack-reveal.hidden{display:none}
 .pack-reveal-card{padding:18px 16px;border:2px solid var(--line-2);border-radius:var(--radius-lg);background:linear-gradient(180deg,var(--panel) 0%,#0b0c0f 100%);animation:packRevealIn .42s var(--ease) both}
@@ -9155,7 +9201,9 @@ function grantCollectibleCard(target, cardId){
 
 // ── Collector Pack ────────────────────────────────────────────────────────
 const COLLECTOR_PACK_COST = 2000;
+const COLLECTOR_PACK_TEN_COST = 20000;
 const COLL_RARITY_COLORS = {common:'#cbd5e1',uncommon:'#86efac',rare:'#60a5fa',legendary:'#fb923c'};
+let _collPackQueue = []; // queued entries for 10-pack sequential reveal
 
 function openCollectorPack(){
   const profile = activeCardProfile();
@@ -9177,45 +9225,97 @@ function openCollectorPack(){
     ownedCount=result.count;
   });
   updateWalletDisplays();
+  _collPackQueue = [];
   _playCollectorPackAnim(card, isNew, ownedCount);
+}
+
+function openCollectorPackTen(){
+  const profile = activeCardProfile();
+  const bal = safeMoney(profile.playMoney);
+  if(bal < COLLECTOR_PACK_TEN_COST){
+    showToast('Not Enough Play Money','You need '+COLLECTOR_PACK_TEN_COST.toLocaleString()+' PM to open 10 Collector Packs.');
+    return;
+  }
+  const pool = COLLECTIBLE_CARDS;
+  if(!pool.length){ showToast('No cards available yet.',''); return; }
+  const cards = Array.from({length:10}, ()=>rollCollectibleCard(pool)).filter(Boolean);
+  if(!cards.length){ showToast('No cards available yet.',''); return; }
+  const entries = [];
+  mutateCardProfile(t => {
+    t.playMoney = Math.max(0, safeMoney(t.playMoney) - COLLECTOR_PACK_TEN_COST);
+    cards.forEach(card => {
+      const prev = safeMoney(createMyCardCounts(t.myCardCounts, t.myCards)[card.id]);
+      const result = grantCollectibleCard(t, card.id);
+      entries.push({card, isNew: prev === 0, ownedCount: result.count});
+    });
+  });
+  updateWalletDisplays();
+  _collPackQueue = entries.slice(1);
+  _playCollectorPackAnim(entries[0].card, entries[0].isNew, entries[0].ownedCount);
 }
 
 function _playCollectorPackAnim(card, isNew, ownedCount){
   const modal = $('coll-pack-modal');
-  const orb = $('coll-pack-orb');
-  const reveal = $('coll-pack-reveal');
+  const orb   = $('coll-pack-orb');
+  const reveal= $('coll-pack-reveal');
   if(!modal || !orb || !reveal){ _finishCollectorReveal(card, isNew, null, ownedCount); return; }
   reveal.classList.add('hidden'); reveal.innerHTML = '';
   modal.classList.remove('hidden');
   document.body.classList.add('final-card-open');
-  const order = ['common','uncommon','rare','legendary'];
-  orb.className = 'pack-orb spinning';
-  orb.style.removeProperty('--pack-final');
-  orb.style.setProperty('--pack-glow', COLL_RARITY_COLORS.common);
-  try{ initAudio(); }catch(e){}
-  let i = 0, ticks = 0, speed = 130;
-  const maxTicks = 20;
   const finalColor = COLL_RARITY_COLORS[card.rarity] || '#cbd5e1';
-  const cycle = () => {
-    if(modal.classList.contains('hidden')) return;
-    orb.style.setProperty('--pack-glow', COLL_RARITY_COLORS[order[i % order.length]]);
-    try{ if(typeof isMuted==='undefined'||!isMuted) playTone(380+(i%order.length)*110,'sine',0.05,0.034); }catch(e){}
-    i++; ticks++;
-    if(ticks < maxTicks){
-      speed = ticks < 12 ? Math.max(65, speed * 0.92) : speed * 1.18;
-      setTimeout(cycle, speed);
-    } else {
-      orb.style.setProperty('--pack-final', finalColor);
-      orb.style.setProperty('--pack-glow', finalColor);
-      orb.className = 'pack-orb burst rarity-'+(card.rarity==='uncommon'?'uncommon':card.rarity==='rare'?'rare':card.rarity==='legendary'?'legendary':'common');
-      playPackRevealSound(card.rarity);
-      if(card.rarity==='legendary') spawnCollSparks(finalColor, 34);
-      else if(card.rarity==='rare') spawnCollSparks(finalColor, 18);
-      else if(card.rarity==='uncommon') spawnCollSparks(finalColor, 10);
-      setTimeout(() => _finishCollectorReveal(card, isNew, finalColor, ownedCount), 640);
+  const stage = document.querySelector('.coll-pack-stage') || orb.parentNode;
+  try{ initAudio(); }catch(e){}
+
+  // build the foil pack inside the existing orb element
+  orb.className = 'pack-foil';
+  orb.style.cssText = '';
+  orb.innerHTML =
+    '<div class="pf-sheen"></div>'+
+    '<div class="pf-body">'+
+      '<div class="pf-kicker">Collector Pack</div>'+
+      '<div class="pf-name">UNBEATEN</div>'+
+      '<div class="pf-sub">50 &ndash; 0</div>'+
+      '<div class="pf-foot">Tap to reveal</div>'+
+    '</div>';
+
+  const addOverlay = (cls, color, life)=>{
+    const el = document.createElement('div'); el.className = cls;
+    if(color){
+      el.style.background = 'repeating-conic-gradient(from 0deg, '+color+' 0deg 5deg, transparent 5deg 17deg)';
     }
+    stage.appendChild(el);
+    if(life) setTimeout(()=>{ if(el.parentNode) el.remove(); }, life);
+    return el;
   };
-  setTimeout(cycle, 260);
+
+  // 1) charge / shake after a beat
+  const t1 = setTimeout(()=>{
+    if(modal.classList.contains('hidden')) return;
+    orb.classList.add('charging');
+    addOverlay('pf-rays', 'rgba(246,216,115,.5)', null);
+    spawnCollSparks('rgba(246,216,115,.9)', 12);
+  }, 700);
+
+  // 2) burst
+  const t2 = setTimeout(()=>{
+    if(modal.classList.contains('hidden')) return;
+    orb.classList.remove('charging'); orb.classList.add('bursting');
+    addOverlay('pf-flash', null, 700);
+    addOverlay('pf-ring',  null, 700);
+    stage.querySelectorAll('.pf-rays').forEach(r=>{
+      r.style.background = 'repeating-conic-gradient(from 0deg, '+finalColor+' 0deg 5deg, transparent 5deg 17deg)';
+    });
+    try{ playPackRevealSound(card.rarity); }catch(e){}
+    if(card.rarity==='legendary') spawnCollSparks(finalColor, 34);
+    else if(card.rarity==='rare') spawnCollSparks(finalColor, 18);
+    else if(card.rarity==='uncommon') spawnCollSparks(finalColor, 10);
+  }, 2100);
+
+  // 3) hand off to the flip reveal
+  const t3 = setTimeout(()=>{
+    if(modal.classList.contains('hidden')) return;
+    _finishCollectorReveal(card, isNew, finalColor, ownedCount);
+  }, 2750);
 }
 
 function spawnCollSparks(color, count){
@@ -9255,7 +9355,7 @@ function _finishCollectorReveal(card, isNew, finalColor, ownedCount){
     '<div class="coll-reveal-rarity '+('mcc-rarity-badge-'+card.rarity)+'" id="coll-rrarity" style="background:'+color+'22;color:'+color+'">'+rarityName+'</div>'+
     '<div class="coll-reveal-boost" id="coll-rboost">'+htmlEscape(card.boost)+'</div>'+
     '<div class="coll-reveal-boost visible" style="font-size:.7rem;color:var(--text-dim);margin-top:6px">Owned: x'+safeMoney(ownedCount||1)+'</div>'+
-    '<button class="btn gold coll-reveal-continue" id="coll-continue-btn" onclick="closeCollectorReveal()">Continue</button>';
+    '<button class="btn gold coll-reveal-continue" id="coll-continue-btn" onclick="closeCollectorReveal()">'+(_collPackQueue.length?'Next Pack ('+_collPackQueue.length+' remaining)':'Continue')+'</button>';
   reveal.classList.remove('hidden');
   // Trigger card flip after brief paint delay
   requestAnimationFrame(() => {
@@ -9275,6 +9375,12 @@ function _finishCollectorReveal(card, isNew, finalColor, ownedCount){
 }
 
 function closeCollectorReveal(){
+  document.querySelectorAll('.coll-pack-stage .pf-rays').forEach(el=>el.remove());
+  if(_collPackQueue.length){
+    const next = _collPackQueue.shift();
+    _playCollectorPackAnim(next.card, next.isNew, next.ownedCount);
+    return;
+  }
   const modal = $('coll-pack-modal');
   if(modal) modal.classList.add('hidden');
   document.body.classList.remove('final-card-open');
@@ -9840,6 +9946,7 @@ function renderPackPanel(){
   const panel=$('card-pack-panel'); if(!panel) return;
   const profile=activeCardProfile(), bal=safeMoney(profile.playMoney);
   const canAffordColl=bal>=COLLECTOR_PACK_COST;
+  const canAffordTen=bal>=COLLECTOR_PACK_TEN_COST;
   const ownedCount=collectibleOwnedIdsFromCounts(createMyCardCounts(profile.myCardCounts, profile.myCards)).length;
   const total=COLLECTIBLE_CARDS.length;
   const oddsHtml=[
@@ -9848,13 +9955,26 @@ function renderPackPanel(){
     '<span class="pack-odd rarity-rare">High # rare</span>',
     '<span class="pack-odd rarity-legendary">Top # chase</span>'
   ].join('');
-  panel.innerHTML='<div class="card-pack">'
+  const progressLine='<div class="pack-refund">Collection progress: '+ownedCount+' / '+total+'. Duplicates are tracked for future rewards.</div>';
+  panel.innerHTML=
+    '<div class="card-pack">'
     +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">\u2605</span></div>'
-    +'<div class="card-pack-info"><strong>Collector Pack</strong><span>1 finished collectible card. Lower card numbers are easier to pull; higher numbers are rarer and more valuable.</span>'
+    +'<div class="card-pack-info"><strong>Collector Pack</strong><span>1 finished collectible card.</span>'
     +'<div class="pack-odds">'+oddsHtml+'</div>'
-    +'<div class="pack-refund">Collection progress: '+ownedCount+' / '+total+'. Duplicates are tracked for future rewards.</div>'
+    +progressLine
     +'<button class="btn gold" style="margin-top:9px" '+(canAffordColl?'':'disabled')+' onclick="openCollectorPack()">Open Pack \u2022 2,000 PM</button>'
     +(canAffordColl?'':'<div class="pack-need-more">Need '+(COLLECTOR_PACK_COST-bal).toLocaleString()+' more PM</div>')
+    +'</div></div>'
+    +'<div class="card-pack" style="margin-top:12px">'
+    +'<div class="card-pack-art" style="background:linear-gradient(135deg,#16140e,#201a10)">'
+      +'<div class="card-pack-orb-mini"></div>'
+      +'<span class="card-pack-q" style="font-size:1.6rem;letter-spacing:-2px">\u2605\u2605\u2605</span>'
+    +'</div>'
+    +'<div class="card-pack-info"><strong>10&#x2011;Pack Bundle</strong>'
+    +'<span>Open 10 Collector Packs one by one, each with the full animation. Best value for collectors.</span>'
+    +'<div class="pack-odds">'+oddsHtml+'</div>'
+    +'<button class="btn gold" style="margin-top:9px" '+(canAffordTen?'':'disabled')+' onclick="openCollectorPackTen()">Open 10 Packs \u2022 20,000 PM</button>'
+    +(canAffordTen?'':'<div class="pack-need-more">Need '+(COLLECTOR_PACK_TEN_COST-bal).toLocaleString()+' more PM</div>')
     +'</div></div>';
 }
 try{ if(typeof window!=='undefined'){ window.openArtPack=openArtPack; window.closePackModal=closePackModal; window.rollPackItem=rollPackItem; window.getPackPool=getPackPool; } }catch(e){}
