@@ -12964,6 +12964,9 @@ let MP = {
   pvpBotMode:false, _pvpBotCareerBackup:undefined,
   pvpDraftMode:false, _pvpCareerBackup:undefined,
   _fightData:null, _fightRoundIdx:0,
+  // PvP state-machine guard flags
+  _pvpDraftInitialized:false,  // true once mpBeginSPDraft / startMpDraft has been entered
+  _pvpDraftSubmitted:false,    // true once _pvpSubmitSPBuild has been called
 };
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -13273,7 +13276,11 @@ async function mpEnterMatch(matchId){
   if(MP.matchUnsub){ MP.matchUnsub(); MP.matchUnsub=null; }
   clearInterval(MP.searchInterval); MP.searchInterval=null;
   clearInterval(MP.draftTimerInterval); MP.draftTimerInterval=null;
-  MP.matchId=matchId; MP._handledPhase=null;
+  MP.matchId=matchId;
+  MP._handledPhase=null;
+  MP._pvpDraftInitialized=false;  // reset per-match guard
+  MP._pvpDraftSubmitted=false;
+  console.log('[PVP_FLOW] mpEnterMatch: matchId='+matchId+' uid='+(currentUser&&currentUser.uid));
   try{
     const snap=await db.collection('multiplayer_matches').doc(matchId).get();
     if(!snap.exists){ showToast&&showToast('Error','Match not found.','warning'); screen('mp-home'); return; }
@@ -13297,26 +13304,55 @@ function mpSetOpponent(data){
 }
 function mpOnPhaseChange(data){
   const phase=data&&data.phase;
-  if(phase===MP._handledPhase) return;
-  console.log('[MP] phase ->',phase);
+  const myUid=currentUser&&currentUser.uid;
+  const prev=MP._handledPhase;
+
+  // ── 'drafting' is a multi-step sub-state; handle it separately ──────────
+  if(phase==='drafting'){
+    const myStatus=myUid&&data.players&&data.players[myUid]&&data.players[myUid].draftStatus;
+
+    if(myStatus==='submitted'||MP._pvpDraftSubmitted){
+      // Our build is already submitted — show waiting screen once
+      if(prev!=='drafting_submitted'){
+        console.log('[PVP_FLOW] status: drafting → waiting (submitted). prev='+prev);
+        MP._handledPhase='drafting_submitted';
+        mpShowSPDraftWaiting();
+      }
+      return;
+    }
+
+    if(MP._pvpDraftInitialized){
+      // Draft already running — ignore snapshot updates (opponent draftStatus changes etc.)
+      console.log('[PVP_FLOW] skipped draft re-init (already initialized). phase=drafting');
+      return;
+    }
+
+    // First time entering draft for this match
+    console.log('[PVP_FLOW] starting SP draft. uid='+myUid+' matchId='+MP.matchId+' isBot='+MP.isBot);
+    MP._pvpDraftInitialized=true;
+    MP._handledPhase='drafting';
+    startMpDraft();
+    return;
+  }
+
+  // ── All other phases: process exactly once ───────────────────────────────
+  if(phase===prev) return;
+  console.log('[PVP_FLOW] phase: '+prev+' → '+phase+' uid='+myUid);
+
   if(phase==='matched'){
     MP._handledPhase=phase;
     mpShowMatchup(data);
-  } else if(phase==='drafting'){
-    const myUid=currentUser&&currentUser.uid;
-    const myStatus=myUid&&data.players&&data.players[myUid]&&data.players[myUid].draftStatus;
-    if(myStatus==='submitted'){ MP._handledPhase=phase; mpShowDraftWaiting(); }
-    else startMpDraft();
   } else if(phase==='build_reveal'){
-    // Only show reveal once both builds present
-    const myUid=currentUser&&currentUser.uid;
+    // Wait until both builds are present (snapshot will fire again when opp submits)
     const myBuild=myUid&&data.players&&data.players[myUid]&&data.players[myUid].finalBuild;
     const oppUid=data.playerOrder&&data.playerOrder.find(function(u){ return u!==myUid; });
     const oppBuild=oppUid&&data.players&&data.players[oppUid]&&data.players[oppUid].finalBuild;
-    if(!myBuild||!oppBuild) return;
+    if(!myBuild||!oppBuild){
+      console.log('[PVP_FLOW] build_reveal: waiting for both builds (mine='+!!myBuild+' opp='+!!oppBuild+')');
+      return;
+    }
     MP._handledPhase=phase;
     mpShowReveal(data);
-    // else onSnapshot will fire again when opp submits
   } else if(phase==='simulating'){
     MP._handledPhase=phase;
     mpShowFightWaiting();
@@ -13340,12 +13376,14 @@ function mpCleanup(){
     if(bak) localStorage.setItem(KEYS.career,bak);
     else localStorage.removeItem(KEYS.career);
   }
+  console.log('[PVP_FLOW] mpCleanup: resetting all MP state');
   Object.assign(MP,{mode:null,isBot:false,matchId:null,matchData:null,
     opponent:null,myBuild:null,draftState:null,
     searchInterval:null,draftTimerInterval:null,lobbyCode:null,searchBusy:false,_handledPhase:null,
     pvpBotMode:false,_pvpBotCareerBackup:undefined,
     pvpDraftMode:false,_pvpCareerBackup:undefined,
-    _fightData:null,_fightRoundIdx:0});
+    _fightData:null,_fightRoundIdx:0,
+    _pvpDraftInitialized:false,_pvpDraftSubmitted:false});
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -13488,6 +13526,13 @@ function mpShowDraftWaiting(){
 }
 async function startMpDraft(){
   if(!currentUser) return;
+  // ── State-machine guard: prevent re-entry on every Firestore snapshot ──
+  if(MP._pvpDraftInitialized){
+    console.log('[PVP_FLOW] startMpDraft: skipped (already initialized). matchId='+MP.matchId);
+    return;
+  }
+  MP._pvpDraftInitialized=true; // lock immediately before any await
+  console.log('[PVP_FLOW] startMpDraft: running. uid='+currentUser.uid+' matchId='+MP.matchId);
   // Show loading state immediately — no more blank 5-second wait
   mpShowDraftLoading();
   if(!MP.matchData&&MP.matchId){
@@ -14244,6 +14289,7 @@ async function createMpInviteCode(){
       if(lobby.status==='matched'&&lobby.matchId){
         if(hs){ hs.innerText='Friend joined! Loading match…'; hs.className='lobby-status-msg ok'; }
         if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+        console.log('[PVP_FLOW] host lobby: friend joined. matchId='+lobby.matchId+' uid='+(currentUser&&currentUser.uid));
         await mpEnterMatch(lobby.matchId);
       }
     },function(e){
@@ -14296,10 +14342,11 @@ async function joinMpByCode(){
     if(result==='expired'){ _jErr('This lobby has expired. Ask your friend to create a new one.'); return; }
     if(result==='self'){ _jErr('You cannot join your own lobby.'); return; }
     _jOk('Joined! Loading match…');
+    console.log('[PVP_FLOW] joinMpByCode: match created. matchId='+result+' uid='+currentUser.uid);
     await mpEnterMatch(result);
   }catch(e){
     _jErr('Error joining lobby. Try again.');
-    console.error('[MP] joinByCode:',e);
+    console.error('[PVP_FLOW] joinByCode error:',e);
   }
 }
 
@@ -14402,6 +14449,7 @@ function mpHasTraitId(build,id){
 }
 
 function mpBeginSPDraft(data){
+  console.log('[PVP_FLOW] mpBeginSPDraft: starting SP draft. matchId='+MP.matchId+' uid='+(currentUser&&currentUser.uid));
   MP.pvpDraftMode=true;
   MP.matchData=data;
   MP._pvpCareerBackup=localStorage.getItem(KEYS.career)||null;
@@ -14429,6 +14477,8 @@ async function _pvpSubmitSPBuild(){
     }catch(e){}
   }
   MP.pvpDraftMode=false;
+  MP._pvpDraftSubmitted=true; // guard: prevent mpOnPhaseChange from re-showing waiting screen
+  console.log('[PVP_FLOW] _pvpSubmitSPBuild: build captured, submitting. matchId='+MP.matchId);
   if(!MP.matchId||!currentUser){
     showToast&&showToast('PvP Error','Match ID lost. Return to lobby and try again.','warning');
     screen('mp-home'); renderMpHome(); return;
