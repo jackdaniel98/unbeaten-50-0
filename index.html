@@ -1722,6 +1722,23 @@ body.final-card-open{overflow:hidden}
 .colbook-cc-foot-name{font-size:.52rem;font-weight:900;color:#fff;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .colbook-cc-foot-boost{font-size:.43rem;color:var(--gold);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
 .colbook-cc-foot-dupe{font-size:.43rem;color:rgba(255,255,255,.28);line-height:1.2}
+/* ===== Daily Mission ===== */
+#daily-mission-screen{overflow-y:auto}
+.dm-wrap{max-width:520px;margin:0 auto;padding:20px 16px 48px}
+.dm-header{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.dm-back-btn{padding:8px 14px;font-size:.72rem;min-height:36px}
+.dm-title{font-size:1.05rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--gold);margin:0}
+.dm-card{background:linear-gradient(135deg,#131519 0%,#1a1c20 100%);border:1px solid rgba(227,178,60,.22);border-radius:14px;padding:22px 20px 24px}
+.dm-mission-label{font-size:.55rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.dm-mission-name{font-size:.97rem;font-weight:900;color:#fff;margin-bottom:12px;line-height:1.3}
+.dm-sep{border:none;border-top:1px solid rgba(255,255,255,.06);margin:14px 0}
+.dm-objective{font-size:.76rem;color:rgba(255,255,255,.6);line-height:1.65;margin-bottom:8px}
+.dm-reward{font-size:.74rem;color:var(--gold);line-height:1.5;margin-bottom:16px}
+.dm-status-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:999px;font-size:.62rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px}
+.dm-status-pill.incomplete{background:rgba(255,255,255,.06);color:rgba(255,255,255,.38)}
+.dm-status-pill.complete{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.18)}
+.dm-share-btn{width:100%;padding:14px 0;font-size:.82rem;letter-spacing:.06em}
+.dm-note{font-size:.6rem;color:rgba(255,255,255,.25);text-align:center;margin-top:10px;line-height:1.7}
 /* ===== Weekly Objectives ===== */
 .weekly-badge{display:inline-block;background:#fb923c;color:#1a0800;font-size:.52rem;font-weight:900;padding:1px 6px;border-radius:999px;margin-left:6px;vertical-align:middle;line-height:1.6}
 .weekly-badge.hidden{display:none}
@@ -2867,11 +2884,24 @@ body.final-card-open{overflow:hidden}
     <button id="collection-book-menu-btn" type="button" class="btn ghost" onclick="openCollectionBook()">Collection Book</button>
     <button id="my-cards-menu-btn" type="button" class="btn ghost" onclick="openMyCards()">My Cards</button>
     <button id="weekly-obj-menu-btn" type="button" class="btn ghost" onclick="openWeeklyObjectives()">Weekly Objectives<span id="weekly-badge" class="weekly-badge hidden">0</span></button>
+    <button id="daily-mission-btn" type="button" class="btn ghost" onclick="openDailyMission()">Daily Mission<span id="daily-mission-badge" class="weekly-badge hidden">1</span></button>
     <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
     <button id="mp-menu-btn" type="button" class="btn gold" onclick="openMultiplayer()">⚔️ Multiplayer / PvP</button>
     <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Leaderboards</button>
     <button id="report-bug-menu-btn" type="button" class="btn ghost" onclick="openBugReport()">Report Game Bug</button>
     <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save">Delete Current Save</button>
+  </div>
+</section>
+
+<section id="daily-mission-screen" class="screen">
+  <div class="dm-wrap">
+    <div class="dm-header">
+      <button class="btn ghost dm-back-btn" onclick="closeDailyMission()">← Back</button>
+      <h2 class="dm-title">Daily Mission</h2>
+    </div>
+    <div id="daily-mission-content">
+      <!-- rendered by renderDailyMissionScreen() -->
+    </div>
   </div>
 </section>
 
@@ -10084,6 +10114,7 @@ function refreshMenu(){
   $('rec-tier').innerText=r.bestTier;
   updateDailyWheelButton();
   updateWeeklyBadge();
+  refreshDailyMissionBadge();
   const save=loadCareer();
   if(save&&save.player&&save.career){
     $('continue-btn').classList.remove('hidden');
@@ -11610,6 +11641,7 @@ function finishAuthMigration(source){
   setAuthMessage('Signed in and synced.', true);
   showScreen('menu-screen');
   setTimeout(maybeShowOnboarding, 650);
+  if(currentUser) setTimeout(()=>processPendingReferral(currentUser).catch(e=>console.warn('[Referral]',e)), 1200);
 }
 async function handleSignedIn(user){
   if(authMigrationRunning) return;
@@ -12025,6 +12057,11 @@ function saveChangeDisplayName(){
 }
 function backToMenu(fromHof=false){ if(!fromHof&&S.career&&S.player&&S.player.Name&&S.career.currentFight<=50) saveCareer(); refreshMenu(); screen('menu-screen'); }
 window.onload = () => {
+  // Capture referral param before anything else — URL may be cleaned up later
+  try{
+    const _refParam=new URLSearchParams(window.location.search).get('ref');
+    if(_refParam&&_refParam.length>4) localStorage.setItem('pendingRef',_refParam);
+  }catch(_){}
   selectMode(S.mode);
   refreshMenu();
   updateAuthUI();
@@ -13882,6 +13919,176 @@ async function _pvpBotAfterDraft(){
     showToast&&showToast('PvP Error','Could not set up bot match. Try again.','warning');
     screen('mp-home'); renderMpHome();
   }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// DAILY MISSION — Share & Referral
+// ══════════════════════════════════════════════════════════════════════════
+
+function openDailyMission(){
+  renderDailyMissionScreen();
+  screen('daily-mission-screen');
+}
+
+function closeDailyMission(){
+  refreshMenu();
+  screen('menu-screen');
+}
+
+function _dmIsCompleted(){
+  const p=loadProfileFoundation();
+  return !!(p&&p.dailyMissionShareCompleted)||(typeof MP!=='undefined'&&MP.profile&&MP.profile.dailyMissionShareCompleted);
+}
+
+function refreshDailyMissionBadge(){
+  const badge=$('daily-mission-badge');
+  if(!badge) return;
+  if(_dmIsCompleted()){ badge.classList.add('hidden'); }
+  else{ badge.classList.remove('hidden'); badge.textContent='1'; }
+}
+
+function renderDailyMissionScreen(){
+  const el=$('daily-mission-content');
+  if(!el) return;
+  const completed=_dmIsCompleted();
+  el.innerHTML=
+    '<div class="dm-card">'
+    +'<div class="dm-mission-label">Mission</div>'
+    +'<div class="dm-mission-name">Share UNBEATEN: 50-0 with someone</div>'
+    +'<hr class="dm-sep">'
+    +'<div class="dm-objective">Get someone to create an account using your personal share link.</div>'
+    +'<div class="dm-reward">🎁 You both receive a free pack with 3 collectible cards.</div>'
+    +'<div class="dm-status-pill '+(completed?'complete':'incomplete')+'">'
+    +(completed?'✓ Completed':'○ Incomplete')
+    +'</div>'
+    +'<button class="btn gold dm-share-btn" onclick="shareDailyMission()"'+(completed?' disabled':'')+'>Share Game →</button>'
+    +'<div class="dm-note">Your link includes your referral code.<br>Once they sign up, your mission is marked complete.</div>'
+    +'</div>';
+  // Live Firestore check for completion (async, re-renders if now complete)
+  if(currentUser&&!completed){
+    checkDailyMissionStatus().then(function(done){ if(done) renderDailyMissionScreen(); }).catch(function(){});
+  }
+}
+
+async function checkDailyMissionStatus(){
+  if(!currentUser) return false;
+  try{
+    const snap=await db.collection('multiplayer_profiles').doc(currentUser.uid).get();
+    if(!snap.exists) return false;
+    const data=snap.data()||{};
+    if(!data.dailyMissionShareCompleted) return false;
+    // Cache completion locally
+    mutateCardProfile(function(t){ t.dailyMissionShareCompleted=true; });
+    if(typeof MP!=='undefined'&&MP.profile) MP.profile.dailyMissionShareCompleted=true;
+    refreshDailyMissionBadge();
+    // Claim the sharer's reward pack (once)
+    if(data.dailyMissionRewardPending){
+      const cards=[];
+      for(let i=0;i<3;i++){
+        const c=rollCollectibleCard(COLLECTIBLE_CARDS);
+        if(c) cards.push(c);
+      }
+      mutateCardProfile(function(t){ cards.forEach(function(c){ grantCollectibleCard(t,c.id); }); });
+      // Clear the pending flag so it only fires once
+      db.collection('multiplayer_profiles').doc(currentUser.uid).set({dailyMissionRewardPending:false},{merge:true}).catch(function(){});
+      // Notify
+      const names=cards.map(function(c){ return c.name; }).join(', ');
+      showToast&&showToast('Mission Complete!','🎁 Your referral pack arrived: '+names);
+    }
+    return true;
+  }catch(e){}
+  return false;
+}
+
+async function shareDailyMission(){
+  if(!currentUser){
+    showToast&&showToast('Sign In Required','Sign in to share your referral link.','warning');
+    return;
+  }
+  const base=window.location.origin+window.location.pathname;
+  const shareUrl=base+'?ref='+currentUser.uid;
+  const shareText='Play UNBEATEN: 50–0 — build your fighter and go 50–0! Sign up with my link and get a free card pack: '+shareUrl;
+  if(navigator.share){
+    try{
+      await navigator.share({title:'UNBEATEN: 50-0',text:shareText,url:shareUrl});
+      return;
+    }catch(e){
+      if(e&&e.name==='AbortError') return; // user cancelled — don't fall through to clipboard
+    }
+  }
+  // Clipboard fallback
+  try{
+    await navigator.clipboard.writeText(shareUrl);
+    showToast&&showToast('Link Copied!','Share link copied to clipboard.');
+  }catch(e){
+    // Last resort — prompt so user can copy manually
+    try{ window.prompt('Copy your referral link:',shareUrl); }catch(_){}
+  }
+}
+
+async function processPendingReferral(user){
+  if(!user) return;
+  const pendingRef=localStorage.getItem('pendingRef');
+  if(!pendingRef) return;
+  // Never self-refer
+  if(pendingRef===user.uid){ localStorage.removeItem('pendingRef'); return; }
+  // Already claimed?
+  const localP=loadProfileFoundation();
+  if(localP&&localP.welcomeReferralPackClaimed){ localStorage.removeItem('pendingRef'); return; }
+  // Atomic claim via Firestore — prevents race conditions and replay
+  const refDoc=db.collection('referrals').doc(user.uid);
+  let granted=false;
+  try{
+    await db.runTransaction(async function(txn){
+      const snap=await txn.get(refDoc);
+      if(snap.exists){ return; } // already processed in a prior session
+      txn.set(refDoc,{
+        referrerUid:pendingRef,
+        newUserUid:user.uid,
+        claimedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      granted=true;
+    });
+  }catch(e){
+    console.warn('[Referral] Firestore transaction failed:',e);
+    return; // fail safe — don't grant locally if Firestore is unreachable
+  }
+  if(!granted){ localStorage.removeItem('pendingRef'); return; }
+  // Grant 3 collectible cards to the new user
+  const cards=[];
+  for(let i=0;i<3;i++){
+    const c=rollCollectibleCard(COLLECTIBLE_CARDS);
+    if(c) cards.push(c);
+  }
+  mutateCardProfile(function(t){
+    cards.forEach(function(c){ grantCollectibleCard(t,c.id); });
+    t.welcomeReferralPackClaimed=true;
+    t.referredBy=pendingRef;
+  });
+  localStorage.removeItem('pendingRef');
+  // Notify referrer — fire-and-forget
+  _markReferralComplete(pendingRef).catch(function(e){ console.warn('[Referral] Could not mark referrer complete:',e); });
+  // Welcome message
+  _showReferralWelcome(cards);
+}
+
+async function _markReferralComplete(referrerUid){
+  if(!referrerUid) return;
+  await db.collection('multiplayer_profiles').doc(referrerUid).set({
+    dailyMissionShareCompleted:true,
+    dailyMissionShareCompletedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    dailyMissionRewardPending:true,
+  },{merge:true});
+}
+
+function _showReferralWelcome(cards){
+  // Small delay so the menu has rendered first
+  setTimeout(function(){
+    const names=cards.map(function(c){ return c.name; }).join(', ');
+    showToast&&showToast('Welcome Bonus!','🎁 Free 3-card pack added to your collection: '+names);
+    // Also update badge in case it just became visible
+    refreshDailyMissionBadge();
+  }, 800);
 }
 </script>
 </body>
