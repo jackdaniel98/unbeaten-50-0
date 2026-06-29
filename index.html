@@ -4037,7 +4037,7 @@ header::after{
 
   <!-- Time tabs -->
   <div class="lb-tab-row">
-    <button id="tab-daily"     class="lb-tab-btn active" onclick="showHofTab('daily')">Today</button>
+    <button id="tab-daily"     class="lb-tab-btn active" onclick="showHofTab('daily')">Daily</button>
     <button id="tab-seasonal"  class="lb-tab-btn"        onclick="showHofTab('seasonal')">Season</button>
     <button id="tab-permanent" class="lb-tab-btn"        onclick="showHofTab('permanent')">All-Time</button>
   </div>
@@ -4076,12 +4076,6 @@ header::after{
   <!-- All-Time tab -->
   <div id="permanent-hof-tab" class="hidden">
     <div id="permanent-hof-list" class="leaderboard-list"><div class="empty-state">Loading Hall Of Fame...</div></div>
-    <button class="btn ghost" style="font-size:.78rem;min-height:42px;margin-top:8px" onclick="backToMenu(true)">← Back to Menu</button>
-  </div>
-
-  <!-- History tab (kept for backward compat, reached only via History button in old tab) -->
-  <div id="history-hof-tab" class="hidden">
-    <div id="season-history-list" class="leaderboard-list"><div class="empty-state">Loading history...</div></div>
     <button class="btn ghost" style="font-size:.78rem;min-height:42px;margin-top:8px" onclick="backToMenu(true)">← Back to Menu</button>
   </div>
 </section>
@@ -12439,6 +12433,8 @@ async function submitCareerToHallOfFame(){
   rememberSubmittedId(id);
   requestCloudSync();
 }
+let _dailyHofRows=[];
+let _dailyHofCat='legacy';
 function hofCard(entry, rank, showSeason=false, showTime=false){
   const record=entry.record||((entry.wins||0)+'-'+(entry.losses||0)+(entry.draws>0?'-'+entry.draws:''));
   const key=cacheLeaderboardBuild(entry);
@@ -12466,7 +12462,27 @@ function hofCard(entry, rank, showSeason=false, showTime=false){
     +'</div>'
   +'</button>';
 }
+function renderDailyHofList(cat){
+  _dailyHofCat=cat;
+  document.querySelectorAll('.lb-cat-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick').includes("'"+cat+"'")));
+  const box=$('daily-hof-list');
+  if(!box) return;
+  if(!_dailyHofRows.length){
+    console.log('[LEADERBOARD] no daily entries found');
+    box.innerHTML='<div class="empty-state">No daily leaderboard entries yet. Complete a career today to appear here.</div>';
+    return;
+  }
+  const sortKey={
+    legacy:e=>e.careerLegacyScore||0,
+    wins:e=>e.wins||0,
+    ko:e=>e.koWins||0,
+    collection:e=>Object.keys(e.ownedCardItems||{}).length,
+  }[cat]||(e=>e.careerLegacyScore||0);
+  const rows=_dailyHofRows.slice().sort((a,b)=>sortKey(b)-sortKey(a));
+  box.innerHTML=rows.map((entry,i)=>hofCard(entry,i+1,false,true)).join('');
+}
 async function loadDailyLeaderboard(){
+  _dailyHofCat='legacy';
   const box=$('daily-hof-list');
   box.innerHTML='<div class="empty-state">Loading today\'s leaderboard...</div>';
   try{
@@ -12479,11 +12495,13 @@ async function loadDailyLeaderboard(){
       .where('careerEndDate','<',tomorrow)
       .limit(100)
       .get();
-    const rows=snap.docs.map(d=>d.data()).sort((a,b)=>(b.careerLegacyScore||0)-(a.careerLegacyScore||0));
-    if($('daily-hof-count')) $('daily-hof-count').innerText=rows.length+(rows.length===100?' (showing top 100)':'');
-    box.innerHTML=rows.length?rows.map((entry,i)=>hofCard(entry,i+1,false,true)).join(''):'<div class="empty-state">No careers completed today yet — be the first!</div>';
+    _dailyHofRows=snap.docs.map(d=>d.data());
+    console.log('[LEADERBOARD] daily entries loaded: '+_dailyHofRows.length);
+    if($('daily-hof-count')) $('daily-hof-count').innerText=_dailyHofRows.length+(_dailyHofRows.length===100?' (showing top 100)':'');
+    renderDailyHofList(_dailyHofCat);
   }catch(e){
     console.error(e);
+    _dailyHofRows=[];
     const hint=(e.message||'').toLowerCase().includes('index')?' A Firestore index may be needed.':'';
     box.innerHTML='<div class="empty-state">Unable to load daily leaderboard.'+hint+'</div>';
   }
@@ -12493,6 +12511,7 @@ async function loadPermanentHallOfFame(){
   box.innerHTML='<div class="empty-state">Loading Hall Of Fame...</div>';
   try{
     const snap=await db.collection('completed_careers').orderBy('careerLegacyScore','desc').limit(30).get();
+    console.log('[LEADERBOARD] all-time entries loaded: '+snap.size);
     box.innerHTML=snap.empty?'<div class="empty-state">No completed careers yet.</div>':snap.docs.map((d,i)=>hofCard(d.data(),i+1)).join('');
   }catch(e){ box.innerHTML='<div class="empty-state">Unable to load Hall Of Fame.</div>'; console.error(e); }
 }
@@ -12504,51 +12523,38 @@ async function loadSeasonalHallOfFame(){
     startSeasonCountdown(season);
     const snap=await db.collection('seasonal_hall_of_fame').where('seasonId','==',season.id).get();
     const rows=snap.docs.map(d=>d.data()).sort((a,b)=>(b.careerLegacyScore||0)-(a.careerLegacyScore||0)).slice(0,30);
+    console.log('[LEADERBOARD] season entries loaded: '+rows.length);
     box.innerHTML=!rows.length?'<div class="empty-state">No seasonal careers yet.</div>':rows.map((entry,i)=>hofCard(entry,i+1)).join('');
   }catch(e){ box.innerHTML='<div class="empty-state">Unable to load seasonal leaderboard.</div>'; console.error(e); }
-}
-async function loadSeasonHistory(){
-  const box=$('season-history-list');
-  box.innerHTML='<div class="empty-state">Loading history...</div>';
-  try{
-    const snap=await db.collection('season_history').orderBy('seasonNumber','desc').limit(20).get();
-    box.innerHTML=snap.empty?'<div class="empty-state">No completed seasons yet.</div>':snap.docs.map(d=>{
-      const s=d.data(), w=s.winner||{};
-      const key=cacheLeaderboardBuild(w);
-      const showcaseHtml=_showcaseCardHtml(w.myCardsShowcase||'cc001',54);
-      return '<button type="button" class="leaderboard-card leaderboard-card-button" onclick="openLeaderboardBuild(\''+key+'\')"><div class="lc-inner"><div class="lc-text"><div class="rank">Season '+(s.seasonNumber||'')+' Winner</div><div class="name">'+htmlEscape(w.fighterName||'No winner')+'</div><div class="sub"><span class="score">Legacy Score '+(w.careerLegacyScore||0)+'</span></div><span class="leaderboard-view-build">View Fighter Build</span></div><div class="lc-showcase">'+showcaseHtml+'</div></div></button>';
-    }).join('');
-  }catch(e){ box.innerHTML='<div class="empty-state">Unable to load season history.</div>'; console.error(e); }
 }
 function startSeasonCountdown(season){
   clearInterval(seasonTimer);
   const tick=()=>{
     const left=Math.max(0,season.endAtMillis-Date.now()), d=Math.floor(left/86400000), h=Math.floor((left%86400000)/3600000), m=Math.floor((left%3600000)/60000);
     if($('season-countdown')) $('season-countdown').innerText=d+' Days '+h+' Hours '+m+' Minutes';
-    if(left<=0){ clearInterval(seasonTimer); loadSeasonalHallOfFame(); loadSeasonHistory(); }
+    if(left<=0){ clearInterval(seasonTimer); loadSeasonalHallOfFame(); }
   };
   tick();
   seasonTimer=setInterval(tick,60000);
 }
 function showHofTab(tab){
-  ['permanent','seasonal','daily','history'].forEach(t=>{
+  console.log('[LEADERBOARD] selected tab: '+tab);
+  ['permanent','seasonal','daily'].forEach(t=>{
     const btn=$('tab-'+t); if(btn) btn.classList.toggle('active',t===tab);
     const panel=$(t+'-hof-tab'); if(panel) panel.classList.toggle('hidden',t!==tab);
   });
   if(tab==='permanent') loadPermanentHallOfFame();
   if(tab==='seasonal') loadSeasonalHallOfFame();
   if(tab==='daily') loadDailyLeaderboard();
-  if(tab==='history') loadSeasonHistory();
 }
 function openHallOfFame(){
+  console.log('[LEADERBOARD] rendering screen');
   screen('global-hof-screen');
   updateBottomNav('global-hof-screen');
   showHofTab('daily');
-  loadDailyLeaderboard();
 }
-// Stub for leaderboard category buttons (can be wired to real data later)
 function setLbCat(cat){
-  document.querySelectorAll('.lb-cat-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick').includes("'"+cat+"'")));
+  renderDailyHofList(cat);
 }
 // Bottom nav routing
 const NAV_SCREEN_MAP={
