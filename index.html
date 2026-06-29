@@ -2806,6 +2806,415 @@ body.final-card-open{overflow:hidden}
 /* ── Holo-shine: grid tap glint (static diagonal, no continuous animation) ── */
 .mcc-cell.owned::after{content:'';position:absolute;inset:0;background:linear-gradient(125deg,transparent 20%,rgba(255,255,255,.07) 36%,rgba(255,255,255,.22) 50%,rgba(255,255,255,.07) 64%,transparent 80%);pointer-events:none;z-index:2;opacity:0;transition:opacity .18s}
 .mcc-cell.owned:active::after{opacity:1;transition:opacity 0s}
+
+/* ══════════════════════════════════════════════════════════════════
+   PREMIUM DESIGN SYSTEM — Visual Upgrade Pass
+   Black × Gold × Mobile-first
+══════════════════════════════════════════════════════════════════ */
+
+/* ── Bottom Navigation Bar ── */
+.app-bottom-nav{
+  flex-shrink:0;
+  display:flex;
+  background:linear-gradient(180deg,#0d0f13 0%,#080a0d 100%);
+  border-top:1px solid rgba(255,255,255,.07);
+  padding-bottom:max(6px,env(safe-area-inset-bottom));
+  position:relative;z-index:10;
+}
+.app-bottom-nav::before{
+  content:'';position:absolute;top:0;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(227,178,60,.25) 40%,rgba(227,178,60,.25) 60%,transparent 100%);
+}
+.app-nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:9px 2px 7px;
+  color:#4a5068;
+  background:none;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;
+  font-size:.51rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  transition:color .15s;
+  -webkit-tap-highlight-color:transparent;
+  min-height:54px;position:relative;
+}
+.app-nav-item.active{color:var(--gold)}
+.app-nav-item .nav-icon{font-size:1.25rem;margin-bottom:3px;line-height:1;display:block}
+.app-nav-item.active::after{
+  content:'';position:absolute;top:0;left:30%;right:30%;height:2px;
+  background:var(--gold);border-radius:0 0 2px 2px;
+  box-shadow:0 1px 6px rgba(227,178,60,.4);
+}
+
+/* ── Menu screen — premium feature grid ── */
+.menu-hero-section{
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;padding:4px 0 10px;gap:2px;
+}
+.menu-feature-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:9px;
+  margin:4px 0 10px;
+}
+.menu-feature-grid .btn{
+  margin-bottom:0;font-size:.82rem;padding:12px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  min-height:56px;
+}
+.menu-feature-grid .btn .mfg-icon{font-size:1.1rem;line-height:1}
+.menu-feature-grid .btn .mfg-label{font-size:.7rem;font-weight:700;letter-spacing:.2px}
+#draft-fighter-btn{
+  background:linear-gradient(180deg,#eecb63 0%,#c8922a 100%) !important;
+  border:1px solid #e0b94a !important;
+  color:#16120a !important;
+  font-size:1rem !important;
+  font-weight:800 !important;
+  min-height:52px !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 8px 28px -10px rgba(227,178,60,.55) !important;
+  letter-spacing:.02em;
+}
+#card-store-menu-btn{
+  background:linear-gradient(180deg,#1e2029 0%,#14161c 100%) !important;
+  border:1px solid rgba(227,178,60,.3) !important;
+  color:var(--gold) !important;
+  font-size:.9rem !important;
+  min-height:48px !important;
+}
+#daily-wheel-btn{font-size:.82rem;min-height:48px}
+#hof-menu-btn{font-size:.82rem;min-height:48px}
+#mp-menu-btn{font-size:.82rem;min-height:48px}
+
+/* ── World Ranking Card — premium glow ── */
+.rank-hero{
+  background:linear-gradient(160deg,#100d19 0%,#0c0a0e 55%,#0f0c08 100%) !important;
+  border:1.5px solid rgba(227,178,60,.4) !important;
+  box-shadow:0 0 40px -16px rgba(227,178,60,.22),0 2px 20px -10px rgba(0,0,0,.7) !important;
+}
+.rank-hero-number{
+  font-size:clamp(3rem,18cqw,5.5rem) !important;
+}
+
+/* ── Premium Synergy Cards ── */
+.synergy-pick-screen-title{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:2rem;color:var(--text);letter-spacing:.5px;font-weight:400;
+  text-align:center;margin:0;
+}
+.syn-counter-bar{
+  padding:14px 16px 10px !important;
+  background:linear-gradient(180deg,#0c0e12 0%,#080a0d 100%) !important;
+}
+.syn-counter-title{
+  font-family:'Bebas Neue',Impact,sans-serif !important;
+  font-size:1.6rem !important;
+  color:var(--text) !important;
+  text-transform:uppercase !important;
+  letter-spacing:.5px !important;
+  font-weight:400 !important;
+}
+.syn-counter-title strong{color:var(--gold) !important}
+.syn-counter-badge{
+  font-size:1.5rem !important;
+  padding:4px 16px !important;
+  min-width:64px !important;
+  background:var(--panel-2) !important;
+  border:1.5px solid var(--line-2) !important;
+}
+.syn-counter-badge.ready{
+  background:var(--gold-soft) !important;
+  border-color:rgba(227,178,60,.5) !important;
+}
+.syn-pick-card{
+  border-radius:var(--radius) !important;
+  padding:14px 14px 12px 16px !important;
+  margin-bottom:9px !important;
+  border-width:1.5px !important;
+  border-left-width:4px !important;
+}
+.syn-card-name{
+  font-size:1.02rem !important;
+  font-weight:800 !important;
+  margin-bottom:5px !important;
+  letter-spacing:-.01em;
+}
+.syn-card-bonuses{
+  font-size:.82rem !important;
+  color:#5fe3d2 !important;
+  font-weight:700 !important;
+  margin-bottom:5px !important;
+}
+.syn-card-advice{font-size:.72rem !important;line-height:1.4 !important}
+.syn-tier-badge{
+  font-size:.62rem !important;
+  padding:3px 9px !important;
+  font-weight:800 !important;
+}
+.syn-recommended-star{
+  font-size:.66rem !important;
+  font-weight:800 !important;
+  color:var(--gold) !important;
+}
+.synergy-tier-good{border-left-color:#36c47e !important}
+.synergy-tier-good .syn-tier-badge{background:rgba(54,196,126,.12) !important;color:#36c47e !important;border-color:rgba(54,196,126,.4) !important}
+.synergy-tier-okay{border-left-color:#6b7280 !important}
+.syn-pick-check{
+  width:26px !important;height:26px !important;min-width:26px !important;
+  border-radius:50% !important;
+  border:2px solid var(--line-2) !important;
+  font-size:.85rem !important;
+  margin-top:2px !important;
+}
+.syn-pick-card.selected .syn-pick-check{
+  background:var(--gold) !important;
+  border-color:var(--gold) !important;
+  box-shadow:0 0 0 3px rgba(227,178,60,.2) !important;
+}
+.synergy-recommended{
+  box-shadow:0 0 0 1px rgba(227,178,60,.3),0 4px 20px -8px rgba(227,178,60,.12) !important;
+}
+.syn-sticky-footer .btn{
+  font-size:.9rem !important;
+  font-weight:800 !important;
+  min-height:52px !important;
+  letter-spacing:.04em;
+}
+
+/* ── Draft Stat Cards — colored tier borders ── */
+.draft-btn[data-tier="elite"]{border-color:var(--gold);border-left:3px solid var(--gold);background:linear-gradient(160deg,rgba(227,178,60,.07) 0%,transparent 70%)}
+.draft-btn[data-tier="great"]{border-color:rgba(54,196,126,.5);border-left:3px solid var(--green);background:linear-gradient(160deg,rgba(54,196,126,.06) 0%,transparent 70%)}
+.draft-btn[data-tier="good"]{border-color:rgba(91,141,239,.35);border-left:3px solid var(--blue)}
+.draft-btn[data-tier="average"]{border-left:2px solid var(--line-2)}
+.draft-btn[data-tier="weak"]{border-left:2px solid rgba(229,72,77,.3)}
+.draft-btn .stat-icon{font-size:.95rem;opacity:.7;margin-bottom:2px;display:block}
+.draft-btn .top strong.elite{color:var(--gold)}
+.draft-btn .top strong.great{color:var(--green)}
+
+/* ── Premium Leaderboard Cards (global-hof-screen only) ── */
+#global-hof-screen .lc-inner{
+  display:grid !important;
+  grid-template-columns:52px 1fr 58px !important;
+  gap:0 !important;
+  align-items:stretch !important;
+  min-height:88px !important;
+}
+.lc-rank-block{
+  display:flex;align-items:center;justify-content:center;
+  padding:14px 4px;
+  border-right:1px solid rgba(255,255,255,.07);
+  background:rgba(0,0,0,.25);
+}
+.lc-rank-block .rank{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:1.8rem !important;
+  line-height:1 !important;
+  color:var(--muted) !important;
+  letter-spacing:.5px;
+}
+.lc-rank-1 .rank{color:#f6d768 !important;text-shadow:0 0 12px rgba(246,215,104,.35)}
+.lc-rank-2 .rank{color:#c0c8d4 !important}
+.lc-rank-3 .rank{color:#e0956b !important}
+.lc-rank-1{background:linear-gradient(180deg,rgba(42,28,2,.6) 0%,rgba(20,14,0,.6) 100%)}
+.lc-rank-2{background:rgba(192,200,212,.06)}
+.lc-rank-3{background:rgba(200,134,107,.06)}
+.lc-text{flex:1;min-width:0}
+#global-hof-screen .lc-text{padding:12px 14px 10px !important}
+.lc-name{font-weight:800;font-size:1rem;color:var(--text);margin-bottom:2px;overflow-wrap:anywhere}
+.lc-score{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:1.45rem;color:var(--gold);letter-spacing:.5px;margin-bottom:4px;line-height:1;
+}
+.lc-meta{font-size:.66rem;color:var(--text-dim);line-height:1.5}
+.leaderboard-view-build{
+  display:block;margin-top:8px;
+  color:var(--gold);font-size:.64rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.7px;
+}
+.lc-showcase{
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:6px;
+  padding:10px 8px 10px 4px;
+  border-left:1px solid rgba(255,255,255,.05);
+}
+.lc-showcase img{
+  width:54px;aspect-ratio:2/3;object-fit:cover;
+  border-radius:6px;display:block;
+  border:1px solid rgba(227,178,60,.3);
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+}
+.lc-view-btn{
+  font-size:.52rem;font-weight:700;color:var(--gold);
+  text-transform:uppercase;letter-spacing:.5px;
+  white-space:nowrap;
+}
+#global-hof-screen .leaderboard-card{
+  border-radius:var(--radius) !important;
+  padding:0 !important;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.09) !important;
+  border-left:1px solid rgba(255,255,255,.09) !important;
+}
+#global-hof-screen .leaderboard-card:hover{border-color:rgba(227,178,60,.4) !important}
+
+/* ── Leaderboard screen header ── */
+.lb-screen-head{
+  text-align:center;padding:6px 0 14px;
+}
+.lb-screen-title{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:2.8rem;color:var(--text);letter-spacing:1px;font-weight:400;
+  line-height:1;margin-bottom:4px;
+}
+.lb-screen-sub{
+  font-size:.68rem;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;
+}
+.lb-screen-sub span{color:var(--gold);}
+.lb-tab-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:0;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+  margin-bottom:12px;
+}
+.lb-tab-btn{
+  background:none;border:none;padding:11px 6px;
+  font-family:'Inter',sans-serif;
+  font-size:.76rem;font-weight:700;
+  color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;
+  cursor:pointer;transition:color .15s,background .15s;
+  border-right:1px solid var(--line);
+  -webkit-tap-highlight-color:transparent;
+}
+.lb-tab-btn:last-child{border-right:none}
+.lb-tab-btn.active{background:var(--panel-2);color:var(--gold)}
+.lb-stat-strip{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:7px;margin-bottom:12px;
+}
+.lb-stat-strip .lss-cell{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:9px 12px;
+  display:flex;flex-direction:column;gap:2px;
+}
+.lss-label{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.lss-value{font-size:.9rem;color:var(--text);font-weight:700;font-variant-numeric:tabular-nums}
+.lss-value.gold{color:var(--gold)}
+.lb-cat-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
+  margin-bottom:12px;
+}
+.lb-cat-btn{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  padding:8px 6px;
+  font-family:'Inter',sans-serif;font-size:.64rem;font-weight:700;
+  color:var(--text-dim);letter-spacing:.3px;text-transform:uppercase;
+  cursor:pointer;transition:border-color .15s,color .15s,background .15s;
+  -webkit-tap-highlight-color:transparent;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+}
+.lb-cat-btn .lbc-icon{font-size:1rem}
+.lb-cat-btn.active{
+  border-color:rgba(227,178,60,.5);color:var(--gold);
+  background:linear-gradient(180deg,rgba(227,178,60,.08) 0%,transparent 100%);
+}
+
+/* ── Draft screen ─ spin card premium ── */
+#draft-screen .spin-card{
+  background:linear-gradient(180deg,#0d0f15 0%,#07080b 100%) !important;
+  border:1.5px solid rgba(227,178,60,.4) !important;
+  border-top:2px solid rgba(227,178,60,.55) !important;
+  box-shadow:0 0 30px -12px rgba(227,178,60,.15),inset 0 1px 0 rgba(227,178,60,.12) !important;
+  padding:24px 18px 18px !important;
+}
+#draft-screen .slot-item.win{
+  font-size:2.2rem !important;
+  letter-spacing:1.5px !important;
+  background:linear-gradient(180deg,#ffe98a 0%,#e3b23c 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+#draft-screen .compact-panel{
+  background:var(--panel) !important;
+  border:1px solid var(--line) !important;
+  border-radius:var(--radius-sm) !important;
+  padding:8px 14px !important;
+  margin-bottom:12px !important;
+  box-shadow:none !important;
+}
+
+/* ── Overall banner premium ── */
+.overall-banner{
+  background:linear-gradient(180deg,#12100a 0%,#0b0905 100%) !important;
+  border:1px solid rgba(227,178,60,.3) !important;
+  box-shadow:0 0 0 1px rgba(227,178,60,.08),var(--shadow-card) !important;
+}
+.overall-banner .value{
+  font-size:2.4rem !important;
+  text-shadow:0 0 16px rgba(227,178,60,.35);
+}
+
+/* ── Header premium ── */
+header{
+  background:linear-gradient(180deg,#0c0e12 0%,#080a0d 100%) !important;
+  border-bottom:1px solid rgba(255,255,255,.06) !important;
+  padding:18px 18px 14px !important;
+}
+header h1{
+  background:linear-gradient(180deg,#ffffff 0%,#f0d888 60%,#e3b23c 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-size:clamp(2rem,7vw,2.6rem) !important;
+  letter-spacing:2px !important;
+}
+header p{display:none}
+header .version{display:none}
+header::after{
+  width:80px !important;
+  background:linear-gradient(90deg,transparent 0%,var(--gold) 50%,transparent 100%) !important;
+  height:1px !important;
+}
+
+/* ── Global stats premium ── */
+.global-stats{
+  border:1px solid rgba(255,255,255,.09) !important;
+}
+.stat-pill .value{
+  font-size:1.35rem !important;
+  color:var(--gold) !important;
+}
+.stat-pill .label{font-size:.82rem}
+#menu-screen h2.worldwide-stats-title{
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:.72rem;color:var(--gold);
+  text-transform:uppercase;letter-spacing:.2em;
+  font-weight:400;
+  margin:0 0 8px;
+}
+#menu-screen h2.worldwide-stats-title::before{background:var(--gold)}
+
+/* ── Account settings toggle ── */
+.account-settings-toggle{
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.1) !important;
+  border-radius:10px !important;
+  width:38px !important;height:38px !important;
+  display:flex !important;align-items:center;justify-content:center;
+  font-size:1.1rem !important;
+  color:var(--text-dim) !important;
+  transition:background .15s,color .15s !important;
+}
+.account-settings-toggle:hover{background:rgba(255,255,255,.1) !important;color:var(--text) !important}
+
+/* ── Save-status bar in menu ── */
+.menu-save-bar{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  padding:10px 14px;margin-bottom:8px;
+  display:flex;align-items:center;gap:10px;
+  font-size:.8rem;
+}
+.menu-save-bar .msb-icon{font-size:1.1rem;flex-shrink:0}
+.menu-save-bar .msb-text{flex:1;min-width:0}
+.menu-save-bar .msb-name{font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.menu-save-bar .msb-sub{font-size:.68rem;color:var(--text-dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -2870,7 +3279,9 @@ body.final-card-open{overflow:hidden}
 </section>
 
 <section id="menu-screen" class="screen">
-  <h2 class="worldwide-stats-title">Worldwide Stats</h2>
+
+  <!-- Worldwide Stats -->
+  <h2 class="worldwide-stats-title">— Worldwide Stats —</h2>
   <div class="global-stats">
     <div class="stat-pill">
       <div class="label"><span class="ico">🥊</span><span>Fighters Created Worldwide</span></div>
@@ -2885,27 +3296,63 @@ body.final-card-open{overflow:hidden}
       <div class="value loading" id="global-total-50">Loading...</div>
     </div>
   </div>
+
+  <!-- World Ranking -->
   <div class="rank-hero current-rank-panel" id="current-rank-panel">
-    <div class="rank-hero-label">⚡ World Ranking</div>
+    <div class="rank-hero-label">🌐 World Ranking</div>
     <div class="rank-hero-number" id="rank-alltime">--</div>
     <div class="rank-hero-sub">This Season: <strong id="rank-seasonal">--</strong></div>
-    <div class="rank-hero-cta">Every fight counts — climb to #1 🏆</div>
+    <div class="rank-hero-cta">EVERY FIGHT COUNTS — CLIMB TO #1 🏆</div>
   </div>
-  <div class="menu-actions">
-    <button id="card-store-menu-btn" type="button" class="btn" data-screen-target="card-store-screen">Pack Store</button>
-    <button id="continue-btn" type="button" class="btn blue hidden" data-screen-target="hub-screen">Continue Career</button>
-    <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">Draft New Boxer</button>
-    <button id="settings-menu-btn" type="button" class="btn ghost" onclick="openAccountSettings()">Settings</button>
-    <button id="collection-book-menu-btn" type="button" class="btn ghost" onclick="openCollectionBook()">Collection Book</button>
-    <button id="my-cards-menu-btn" type="button" class="btn ghost" onclick="openMyCards()">My Cards</button>
-    <button id="weekly-obj-menu-btn" type="button" class="btn ghost" onclick="openWeeklyObjectives()">Weekly Objectives<span id="weekly-badge" class="weekly-badge hidden">0</span></button>
-    <button id="daily-mission-btn" type="button" class="btn ghost" onclick="openDailyMission()">Daily Mission<span id="daily-mission-badge" class="weekly-badge hidden">1</span></button>
-    <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()">🎡 Daily Spin</button>
-    <button id="mp-menu-btn" type="button" class="btn gold" onclick="openMultiplayer()">⚔️ Multiplayer / PvP</button>
-    <button id="hof-menu-btn" type="button" class="btn blue" data-screen-target="global-hof-screen">Leaderboards</button>
-    <button id="report-bug-menu-btn" type="button" class="btn ghost" onclick="openBugReport()">Report Game Bug</button>
-    <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save">Delete Current Save</button>
+
+  <!-- Active career bar -->
+  <div class="menu-save-bar" id="menu-save-bar">
+    <span class="msb-icon">👊</span>
+    <div class="msb-text">
+      <div class="msb-name" id="save-fighter">No active career</div>
+      <div class="msb-sub" id="save-progress">Start a new career below</div>
+    </div>
+    <button id="continue-btn" type="button" class="btn blue hidden" data-screen-target="hub-screen" style="margin:0;min-height:36px;font-size:.75rem;padding:8px 12px;width:auto;flex-shrink:0">Continue</button>
   </div>
+
+  <!-- Primary CTAs -->
+  <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:10px">
+    <button id="draft-fighter-btn" type="button" class="btn gold" data-screen-target="draft-screen">👑 DRAFT NEW BOXER</button>
+    <button id="card-store-menu-btn" type="button" class="btn" data-screen-target="card-store-screen">🃏 Pack Store</button>
+  </div>
+
+  <!-- Feature grid -->
+  <div class="menu-feature-grid">
+    <button id="settings-menu-btn" type="button" class="btn ghost" onclick="openAccountSettings()">
+      <span class="mfg-icon">⚙️</span><span class="mfg-label">Settings</span>
+    </button>
+    <button id="collection-book-menu-btn" type="button" class="btn ghost" onclick="openCollectionBook()">
+      <span class="mfg-icon">📖</span><span class="mfg-label">Collection Book</span>
+    </button>
+    <button id="my-cards-menu-btn" type="button" class="btn ghost" onclick="openMyCards()">
+      <span class="mfg-icon">🃏</span><span class="mfg-label">My Cards</span>
+    </button>
+    <button id="weekly-obj-menu-btn" type="button" class="btn ghost" onclick="openWeeklyObjectives()">
+      <span class="mfg-icon">🎯</span><span class="mfg-label">Objectives<span id="weekly-badge" class="weekly-badge hidden">0</span></span>
+    </button>
+    <button id="daily-mission-btn" type="button" class="btn ghost" onclick="openDailyMission()">
+      <span class="mfg-icon">📋</span><span class="mfg-label">Daily Mission<span id="daily-mission-badge" class="weekly-badge hidden">1</span></span>
+    </button>
+    <button id="mp-menu-btn" type="button" class="btn ghost" onclick="openMultiplayer()">
+      <span class="mfg-icon">⚔️</span><span class="mfg-label">PvP</span>
+    </button>
+  </div>
+
+  <!-- Secondary actions -->
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button id="daily-wheel-btn" type="button" class="btn gold" onclick="openDailyWheel()" style="margin:0;font-size:.82rem">🎡 Daily Spin</button>
+      <button id="hof-menu-btn" type="button" class="btn blue" onclick="openHallOfFame()" style="margin:0;font-size:.82rem">🏆 Leaderboards</button>
+    </div>
+    <button id="report-bug-menu-btn" type="button" class="btn ghost" onclick="openBugReport()" style="font-size:.78rem;opacity:.7">⚠️ Report Game Bug</button>
+  </div>
+
+  <button id="delete-save-btn" type="button" class="btn red hidden" data-screen-target="menu-screen" data-menu-intent="delete-save" style="font-size:.78rem">Delete Current Save</button>
 </section>
 
 <section id="daily-mission-screen" class="screen">
@@ -3581,36 +4028,62 @@ body.final-card-open{overflow:hidden}
 </div>
 
 <section id="global-hof-screen" class="screen">
-  <h2>Top 30 Greatest Careers Of All Time</h2>
-  <div class="tabs">
-    <button id="tab-permanent" class="btn ghost tab-btn active" onclick="showHofTab('permanent')">Permanent</button>
-    <button id="tab-seasonal" class="btn ghost tab-btn" onclick="showHofTab('seasonal')">Seasonal</button>
-    <button id="tab-daily" class="btn ghost tab-btn" onclick="showHofTab('daily')">Daily</button>
-    <button id="tab-history" class="btn ghost tab-btn" onclick="showHofTab('history')">History</button>
+
+  <!-- Header -->
+  <div class="lb-screen-head">
+    <div class="lb-screen-title">LEADERBOARDS</div>
+    <div class="lb-screen-sub">Compete globally. <span>Climb the ranks.</span></div>
   </div>
-  <div id="permanent-hof-tab">
-    <div id="permanent-hof-list" class="leaderboard-list"><div class="empty-state">Loading Hall Of Fame...</div></div>
+
+  <!-- Time tabs -->
+  <div class="lb-tab-row">
+    <button id="tab-daily"     class="lb-tab-btn active" onclick="showHofTab('daily')">Today</button>
+    <button id="tab-seasonal"  class="lb-tab-btn"        onclick="showHofTab('seasonal')">Season</button>
+    <button id="tab-permanent" class="lb-tab-btn"        onclick="showHofTab('permanent')">All-Time</button>
   </div>
-  <div id="seasonal-hof-tab" class="hidden">
-    <div class="panel">
-      <div class="row"><span>Current Season Ends In:</span><span id="season-countdown">Loading...</span></div>
+
+  <!-- Today tab (default) -->
+  <div id="daily-hof-tab">
+    <!-- Stat strip -->
+    <div class="lb-stat-strip">
+      <div class="lss-cell"><span class="lss-label">📅 Date (UTC)</span><span class="lss-value" id="daily-hof-date">—</span></div>
+      <div class="lss-cell"><span class="lss-label">🏆 Careers Completed</span><span class="lss-value" id="daily-hof-count">—</span></div>
+      <div class="lss-cell"><span class="lss-label">👥 Players Active</span><span class="lss-value" id="lb-players-active">—</span></div>
+      <div class="lss-cell"><span class="lss-label">💰 Play Money</span><span class="lss-value gold" data-play-money>0</span></div>
     </div>
-    <h2>Seasonal Hall Of Fame</h2>
-    <div id="seasonal-hof-list" class="leaderboard-list"><div class="empty-state">Loading season...</div></div>
-  </div>
-  <div id="daily-hof-tab" class="hidden">
-    <div class="panel">
-      <div class="row"><span>Date (UTC):</span><span id="daily-hof-date">—</span></div>
-      <div class="row"><span>Careers Completed Today:</span><span id="daily-hof-count">—</span></div>
+    <!-- Category buttons -->
+    <div class="lb-cat-row">
+      <button class="lb-cat-btn active" onclick="setLbCat('legacy')"><span class="lbc-icon">👑</span>Legacy</button>
+      <button class="lb-cat-btn" onclick="setLbCat('wins')"><span class="lbc-icon">🏆</span>Wins</button>
+      <button class="lb-cat-btn" onclick="setLbCat('ko')"><span class="lbc-icon">💀</span>KO</button>
+      <button class="lb-cat-btn" onclick="setLbCat('collection')"><span class="lbc-icon">🃏</span>Collection</button>
     </div>
-    <h2>Today's Leaderboard</h2>
     <div id="daily-hof-list" class="leaderboard-list"><div class="empty-state">Loading today's leaderboard...</div></div>
+    <div id="lb-view-full-row" style="text-align:center;margin-top:8px;margin-bottom:4px">
+      <button class="btn ghost" style="font-size:.78rem;min-height:42px" onclick="backToMenu(true)">← Back to Menu</button>
+    </div>
   </div>
+
+  <!-- Season tab -->
+  <div id="seasonal-hof-tab" class="hidden">
+    <div class="lb-stat-strip">
+      <div class="lss-cell" style="grid-column:1/-1"><span class="lss-label">⏱ Season Ends In</span><span class="lss-value" id="season-countdown">Loading...</span></div>
+    </div>
+    <div id="seasonal-hof-list" class="leaderboard-list"><div class="empty-state">Loading season...</div></div>
+    <button class="btn ghost" style="font-size:.78rem;min-height:42px;margin-top:8px" onclick="backToMenu(true)">← Back to Menu</button>
+  </div>
+
+  <!-- All-Time tab -->
+  <div id="permanent-hof-tab" class="hidden">
+    <div id="permanent-hof-list" class="leaderboard-list"><div class="empty-state">Loading Hall Of Fame...</div></div>
+    <button class="btn ghost" style="font-size:.78rem;min-height:42px;margin-top:8px" onclick="backToMenu(true)">← Back to Menu</button>
+  </div>
+
+  <!-- History tab (kept for backward compat, reached only via History button in old tab) -->
   <div id="history-hof-tab" class="hidden">
-    <h2>Season History</h2>
     <div id="season-history-list" class="leaderboard-list"><div class="empty-state">Loading history...</div></div>
+    <button class="btn ghost" style="font-size:.78rem;min-height:42px;margin-top:8px" onclick="backToMenu(true)">← Back to Menu</button>
   </div>
-  <button class="btn gold" onclick="backToMenu(true)">Back To Main Menu</button>
 </section>
 
 <section id="history-screen" class="screen">
@@ -3957,6 +4430,25 @@ body.final-card-open{overflow:hidden}
     <button class="btn blue" style="min-height:42px" onclick="joinMpByCode()">Join Lobby</button>
   </div>
 </section>
+
+<!-- ══════ BOTTOM NAVIGATION BAR ══════ -->
+<nav class="app-bottom-nav" id="app-bottom-nav" aria-label="Main navigation">
+  <button class="app-nav-item active" id="nav-home"       onclick="navTo('menu-screen')"       aria-label="Home">
+    <span class="nav-icon">🏠</span>HOME
+  </button>
+  <button class="app-nav-item"        id="nav-career"     onclick="navTo('hub-screen')"         aria-label="Career">
+    <span class="nav-icon">👊</span>CAREER
+  </button>
+  <button class="app-nav-item"        id="nav-packs"      onclick="navTo('card-store-screen')"  aria-label="Packs">
+    <span class="nav-icon">🃏</span>PACKS
+  </button>
+  <button class="app-nav-item"        id="nav-collection" onclick="navTo('my-cards-screen')"    aria-label="Collection">
+    <span class="nav-icon">📋</span>COLLECTION
+  </button>
+  <button class="app-nav-item"        id="nav-lb"         onclick="navTo('global-hof-screen')"  aria-label="Leaderboards">
+    <span class="nav-icon">🏆</span>LEADERBOARDS
+  </button>
+</nav>
 
 </div>
 
@@ -10170,13 +10662,13 @@ function refreshMenu(){
     $('delete-save-btn').classList.remove('hidden');
     const ss=$('save-status'); if(ss) ss.innerText='Career in progress';
     const sf=$('save-fighter'); if(sf) sf.innerText=save.player.Name||'Unnamed Fighter';
-    const sp=$('save-progress'); if(sp) sp.innerText='Bout '+save.career.currentFight+'/50 • '+modeDisplayName(save.career.mode)+' • Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:'');
+    const sp=$('save-progress'); if(sp) sp.innerText='Bout '+save.career.currentFight+'/50 · '+modeDisplayName(save.career.mode)+' · Record '+save.career.wins+'-'+save.career.losses+(save.career.draws>0?'-'+save.career.draws:'');
   } else {
     $('continue-btn').classList.add('hidden');
     $('delete-save-btn').classList.add('hidden');
     const ss=$('save-status'); if(ss) ss.innerText='No active career';
-    const sf=$('save-fighter'); if(sf) sf.innerText='-';
-    const sp=$('save-progress'); if(sp) sp.innerText='-';
+    const sf=$('save-fighter'); if(sf) sf.innerText='No active career';
+    const sp=$('save-progress'); if(sp) sp.innerText='Start a new career below';
   }
   refreshCurrentRank();
 }
@@ -10280,7 +10772,9 @@ function renderAttributeValue(value){ return '<strong class="'+getAttributeClass
 function valCls(v){ return (v==null)?'attr-low':getAttributeClass(v); }
 function modeCfg(){ return standardModeCfg(); }
 function fresh(){ const profile=loadProfileFoundation(); S.mode='standard'; S.player=applyProfileFoundation({Name:'Custom Contender',Stats:{},StatSources:{},PerfectSpinStats:{},Traits:[],HiddenBonuses:[],Nickname:choice(['The Freight Train','No Mercy','The Anvil','Lights Out','North Star','The Monster'])}, profile); STATS.forEach(st=>{S.player.Stats[st]=null; S.player.StatSources[st]=null;}); S.career={id:makeId('career'),mode:'standard',currentFight:1,wins:0,losses:0,draws:0,kos:0,earnings:0,bestPurse:0,belts:[],history:[],fullHistory:[],rating:50,winStreak:0,bestWinStreak:0,draftRerolls:STANDARD_MODE.rerolls,worldRank:60,bestWorldRank:60,recentLossPenalty:0,titleDef:0,achievementStartIds:Object.keys(S.player.achievements?.unlocked||{}), firebaseCreatedCounted: false, firebaseCounted: false, hofSubmitted: false, profile50Counted: false, playMoneyRewarded: false, riskChoiceMade:false, riskFightTaken:false}; S.opponent=null; S.legend=null; S.fight=null; S.traitsRolled=0; S.awaiting=false; S.perfect=false; S.batch=false; S.pendingHof=false; S.fast=false; S.spinTraitBusy=false; }
-function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; btn.innerHTML='<div class="top"><span>'+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?formatFighterSource(S.player.StatSources[st]||'')+(S.player.PerfectSpinStats[st]?' ✦':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
+const STAT_ICONS={Power:'👊',Speed:'⚡',Chin:'🛡',Footwork:'🦶','Ring IQ':'🧠',Heart:'❤️',Defence:'🔰',Stamina:'🔋',Accuracy:'🎯',Recovery:'➕'};
+function draftBtnTier(v){ if(v==null) return ''; if(v>=92) return 'elite'; if(v>=83) return 'great'; if(v>=73) return 'good'; if(v>=62) return 'average'; return 'weak'; }
+function buildDraft(){ const g=$('draft-grid'); g.innerHTML=''; STATS.forEach(st=>{ const btn=document.createElement('button'); btn.className='draft-btn'; btn.id='d-'+st.replace(/ /g,'_'); btn.disabled=true; const v=S.player.Stats[st]; const tier=draftBtnTier(v); if(tier) btn.dataset.tier=tier; const ico=STAT_ICONS[st]||''; btn.innerHTML='<div class="top"><span>'+(ico?'<span class="stat-icon">'+ico+'</span> ':'')+st+'</span><strong class="'+(v!=null?valCls(v):'')+'">'+(v!=null?v:'-')+'</strong></div><div class="draft-src">'+(v!=null?formatFighterSource(S.player.StatSources[st]||'')+(S.player.PerfectSpinStats[st]?' ✦':''):'')+'</div>'; if(v!=null){ btn.classList.add('locked'); if(S.player.PerfectSpinStats[st]) btn.querySelector('.draft-src').classList.add('perfect'); } btn.onclick=()=>lockStat(st); g.appendChild(btn); }); updateOverallDisplays(); }
 function updateDraftTop(){ const cfg=modeCfg(); $('draft-mode-label').innerText=cfg.name; $('draft-rerolls-left').innerText=S.career.draftRerolls; $('reroll-btn').innerText='Use Re-Roll ('+S.career.draftRerolls+')'; $('reroll-btn').disabled=!S.awaiting || S.career.draftRerolls<=0; }
 function avgLegend(l){ return STATS.reduce((s,st)=>s+l[st],0)/STATS.length; }
 function weightedPick(list,fn){ const arr=list.map(item=>({item,weight:Math.max(0,fn(item))})); const total=arr.reduce((s,e)=>s+e.weight,0); let roll=Math.random()*total; for(const e of arr){ roll-=e.weight; if(roll<=0) return e.item; } return arr[arr.length-1].item; }
@@ -10314,7 +10808,7 @@ function restartDraft(){
     startNewCareer();
   }
 }
-function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=getFighterDisplayLabel(a.Name); $('slot-mid').innerText=getFighterDisplayLabel(b.Name); $('slot-bottom').innerText=getFighterDisplayLabel(c.Name); ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=getFighterDisplayLabel(LEGENDS[(idx+1)%LEGENDS.length].Name); $('slot-mid').innerText=getFighterDisplayLabel(S.legend.Name); $('slot-bottom').innerText=getFighterDisplayLabel(LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name); $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+getFighterDisplayLabel(S.legend.Name)+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); const _fid=getFighterIdentity(S.legend.Name); let txt=_fid?_fid.displayName+' '+_fid.flag+' '+getFighterPrimeTag(S.legend.Name):'('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' · '+S.legend.Pool; if(S.perfect) txt+=' ✦'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
+function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=getFighterDisplayLabel(a.Name); $('slot-mid').innerText=getFighterDisplayLabel(b.Name); $('slot-bottom').innerText=getFighterDisplayLabel(c.Name); ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=getFighterDisplayLabel(LEGENDS[(idx+1)%LEGENDS.length].Name); $('slot-mid').innerText=getFighterDisplayLabel(S.legend.Name); $('slot-bottom').innerText=getFighterDisplayLabel(LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name); $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+getFighterDisplayLabel(S.legend.Name)+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.dataset.tier=draftBtnTier(val); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); const _fid=getFighterIdentity(S.legend.Name); let txt=_fid?_fid.displayName+' '+_fid.flag+' '+getFighterPrimeTag(S.legend.Name):'('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' · '+S.legend.Pool; if(S.perfect) txt+=' ✦'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
 function useReroll(){ if(!S.awaiting||S.career.draftRerolls<=0) return; S.career.draftRerolls--; saveCareer(); spinWheel(true,true); }
 function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} • ${t.rarity.toUpperCase()}\n\n${t.desc}`; }
 function checkSynergy(){
@@ -11905,11 +12399,31 @@ async function submitCareerToHallOfFame(){
   requestCloudSync();
 }
 function hofCard(entry, rank, showSeason=false, showTime=false){
-  const record=entry.record || ((entry.wins||0)+'-'+(entry.losses||0)+(entry.draws>0?'-'+entry.draws:''));
+  const record=entry.record||((entry.wins||0)+'-'+(entry.losses||0)+(entry.draws>0?'-'+entry.draws:''));
   const key=cacheLeaderboardBuild(entry);
-  const timeStr=showTime&&entry.careerEndDate?'<br>'+new Date(entry.careerEndDate).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',timeZoneName:'short'}):'';
+  const timeStr=showTime&&entry.careerEndDate?new Date(entry.careerEndDate).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',timeZoneName:'short'}):'';
   const showcaseHtml=_showcaseCardHtml(entry.myCardsShowcase||'cc001',54);
-  return '<button type="button" class="leaderboard-card leaderboard-card-button" onclick="openLeaderboardBuild(\''+key+'\')"><div class="lc-inner"><div class="lc-text"><div class="rank">#'+rank+'</div><div class="name">'+htmlEscape(entry.fighterName||'Unknown Fighter')+'</div><div class="sub"><span class="score">Legacy Score: '+(entry.careerLegacyScore||0)+'</span><br>Record: '+htmlEscape(record)+'<br>KO Wins: '+(entry.koWins||0)+(showSeason?'<br>Season '+(entry.seasonNumber||''):'')+(showTime?timeStr:'')+'</div><span class="leaderboard-view-build">View Fighter Build</span></div><div class="lc-showcase">'+showcaseHtml+'</div></div></button>';
+  const rankCls=rank<=3?' lc-rank-'+rank:'';
+  const bonusBadge=(entry.collectionBonus>0)?'<br>★ Collection Bonus +'+entry.collectionBonus+'%':'';
+  const rareBadge=(entry.rarityBonus>0)?'<br>💎 Rare Tier Bonus +'+entry.rarityBonus+'%':'';
+  return '<button type="button" class="leaderboard-card leaderboard-card-button" onclick="openLeaderboardBuild(\''+key+'\')">'
+    +'<div class="lc-inner">'
+      +'<div class="lc-rank-block'+rankCls+'"><span class="rank">#'+rank+'</span></div>'
+      +'<div class="lc-text">'
+        +'<div class="lc-name">'+htmlEscape(entry.fighterName||'Unknown Fighter')+'</div>'
+        +'<div class="lc-score">'+(entry.careerLegacyScore||0)+'</div>'
+        +'<div class="lc-meta">'
+          +'📋 Record: '+htmlEscape(record)+' &nbsp;'
+          +'🥊 KO: '+(entry.koWins||0)
+          +(showSeason?'<br>📅 Season '+(entry.seasonNumber||''):'')
+          +(showTime&&timeStr?'<br>⏱ '+timeStr:'')
+          +bonusBadge+rareBadge
+        +'</div>'
+        +'<span class="leaderboard-view-build">View Build →</span>'
+      +'</div>'
+      +'<div class="lc-showcase">'+showcaseHtml+'</div>'
+    +'</div>'
+  +'</button>';
 }
 async function loadDailyLeaderboard(){
   const box=$('daily-hof-list');
@@ -11977,8 +12491,8 @@ function startSeasonCountdown(season){
 }
 function showHofTab(tab){
   ['permanent','seasonal','daily','history'].forEach(t=>{
-    $('tab-'+t).classList.toggle('active',t===tab);
-    $(t+'-hof-tab').classList.toggle('hidden',t!==tab);
+    const btn=$('tab-'+t); if(btn) btn.classList.toggle('active',t===tab);
+    const panel=$(t+'-hof-tab'); if(panel) panel.classList.toggle('hidden',t!==tab);
   });
   if(tab==='permanent') loadPermanentHallOfFame();
   if(tab==='seasonal') loadSeasonalHallOfFame();
@@ -11987,10 +12501,45 @@ function showHofTab(tab){
 }
 function openHallOfFame(){
   screen('global-hof-screen');
-  showHofTab('permanent');
-  loadSeasonalHallOfFame();
+  updateBottomNav('global-hof-screen');
+  showHofTab('daily');
   loadDailyLeaderboard();
-  loadSeasonHistory();
+}
+// Stub for leaderboard category buttons (can be wired to real data later)
+function setLbCat(cat){
+  document.querySelectorAll('.lb-cat-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick').includes("'"+cat+"'")));
+}
+// Bottom nav routing
+const NAV_SCREEN_MAP={
+  'menu-screen':'nav-home',
+  'hub-screen':'nav-career',
+  'card-store-screen':'nav-packs',
+  'my-cards-screen':'nav-collection',
+  'global-hof-screen':'nav-lb',
+};
+function updateBottomNav(screenId){
+  document.querySelectorAll('.app-nav-item').forEach(b=>b.classList.remove('active'));
+  const navId=NAV_SCREEN_MAP[screenId];
+  if(navId&&$(navId)) $(navId).classList.add('active');
+}
+function navTo(screenId){
+  if(screenId==='hub-screen'){
+    if(typeof S==='undefined'||!S.career||!S.player||!S.player.Name){
+      showToast&&showToast('No Career','Start a new career first.','warning'); return;
+    }
+    screen('hub-screen'); updateHub&&updateHub();
+  } else if(screenId==='card-store-screen'){
+    openCardStore&&openCardStore();
+  } else if(screenId==='my-cards-screen'){
+    openMyCards&&openMyCards();
+  } else if(screenId==='global-hof-screen'){
+    openHallOfFame();
+  } else if(screenId==='menu-screen'){
+    backToMenu&&backToMenu(true);
+  } else {
+    screen(screenId);
+  }
+  updateBottomNav(screenId);
 }
 function better(cand,rec){ const parse=r=>{ const p=(r||'0-0').split('-').map(n=>parseInt(n,10)||0); return {w:p[0]||0,l:p[1]||0,d:p[2]||0}; }; const b=parse(rec), c={w:cand.wins,l:cand.losses,d:cand.draws}; if(rec==='0-0'&&c.w>0) return true; if(c.l<b.l) return true; if(c.l>b.l) return false; if(c.w>b.w) return true; if(c.w<b.w) return false; return c.d<b.d; }
 function triggerHof(){
@@ -12232,6 +12781,8 @@ function showScreen(targetId){
     loadGlobalStats();
     updateWalletDisplays();
   }
+  // Sync bottom nav highlight
+  if(typeof updateBottomNav==='function') updateBottomNav(targetId);
   return true;
 }
 function screen(id){ return showScreen(id); }
