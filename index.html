@@ -4619,18 +4619,59 @@ function incrementFightersCreated(){
   }, {merge:true}).then(loadGlobalStats).catch(e => console.error("Firebase error updating fightersCreated:", e));
 }
 
+function _setGlobalStatPill(id, text){
+  const el = document.getElementById(id);
+  if (el) { el.innerText = text; el.classList.remove('loading'); }
+}
+function _applyGlobalStatFallback(){
+  console.log('[HOME_STATS] using fallback stats');
+  _setGlobalStatPill('global-fighters', '—');
+  _setGlobalStatPill('global-weekly-50', '—');
+  _setGlobalStatPill('global-total-50', '—');
+}
 function loadGlobalStats() {
-  db.collection("global_stats").doc("main").get().then(doc => {
+  return db.collection("global_stats").doc("main").get().then(doc => {
     if(doc.exists) {
       const data = doc.data();
-      const gf = document.getElementById("global-fighters");
-      if (gf) { gf.innerText = (data.fightersCreated || 0).toLocaleString(); gf.classList.remove('loading'); }
-      const gw = document.getElementById("global-weekly-50");
-      if (gw) { gw.innerText = (data.weekly50And0s || 0).toLocaleString(); gw.classList.remove('loading'); }
-      const gt = document.getElementById("global-total-50");
-      if (gt) { gt.innerText = (data.total50And0s || 0).toLocaleString(); gt.classList.remove('loading'); }
+      _setGlobalStatPill('global-fighters', (data.fightersCreated || 0).toLocaleString());
+      _setGlobalStatPill('global-weekly-50', (data.weekly50And0s || 0).toLocaleString());
+      _setGlobalStatPill('global-total-50', (data.total50And0s || 0).toLocaleString());
+      console.log('[HOME_STATS] global stats loaded');
+    } else {
+      // Doc doesn't exist yet (e.g. fresh deployment) — show safe defaults, not an endless spinner
+      _setGlobalStatPill('global-fighters', '0');
+      _setGlobalStatPill('global-weekly-50', '0');
+      _setGlobalStatPill('global-total-50', '0');
+      console.log('[HOME_STATS] global stats doc missing, defaulted to 0');
     }
-  }).catch(e => console.error("Firebase fetch error:", e));
+  }).catch(e => {
+    console.error('[HOME_STATS] failed to load stats', e);
+    _applyGlobalStatFallback();
+  });
+}
+let _homeStatsRendering=false;
+async function renderHomeStatsSection(){
+  if(_homeStatsRendering) return; // already in flight — avoid duplicate fetch when called from two render paths at once
+  _homeStatsRendering=true;
+  console.log('[HOME_STATS] rendering worldwide stats');
+  try{
+    try{
+      await loadGlobalStats();
+    }catch(e){
+      console.error('[HOME_STATS] failed to load stats', e);
+      _applyGlobalStatFallback();
+    }
+    try{
+      await refreshCurrentRank();
+      console.log('[HOME_STATS] world rank loaded');
+    }catch(e){
+      console.error('[HOME_STATS] failed to load stats', e);
+      if($('rank-alltime')) $('rank-alltime').innerText='Rank Pending';
+      if($('rank-seasonal')) $('rank-seasonal').innerText='Rank Pending';
+    }
+  }finally{
+    _homeStatsRendering=false;
+  }
 }
 loadGlobalStats();
 setInterval(loadGlobalStats, 120000);
@@ -10670,7 +10711,7 @@ function refreshMenu(){
     const sf=$('save-fighter'); if(sf) sf.innerText='No active career';
     const sp=$('save-progress'); if(sp) sp.innerText='Start a new career below';
   }
-  refreshCurrentRank();
+  renderHomeStatsSection();
 }
 let _rankCacheTime=0, _rankCacheAlltime=null, _rankCacheSeasonal=null;
 async function refreshCurrentRank(force=false){
@@ -12778,7 +12819,7 @@ function showScreen(targetId){
   target.classList.add('active');
   if(targetId==='menu-screen'){
     target.scrollTop=0;
-    loadGlobalStats();
+    renderHomeStatsSection();
     updateWalletDisplays();
   }
   // Sync bottom nav highlight
