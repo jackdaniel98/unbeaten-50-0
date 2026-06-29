@@ -13747,8 +13747,9 @@ async function _pvpSubmitSPBuild(){
     ovr:calcMpBuildOvr(statVals,traits,synergies),
   };
   MP.myBuild=finalBuild;
-  // 4. Show waiting screen right away
-  mpShowSPDraftWaiting();
+  // 4. Only show "waiting" for real PvP — bot already has its build pre-submitted
+  const _isBotSubmit=MP.isBot||!!(MP.matchData&&MP.matchData.isBot);
+  if(!_isBotSubmit) mpShowSPDraftWaiting();
   // 5. Submit to Firestore
   const now=firebase.firestore.FieldValue.serverTimestamp();
   const uk='players.'+currentUser.uid;
@@ -13769,6 +13770,15 @@ async function _pvpSubmitSPBuild(){
       const canReveal=d.phase!=='build_reveal'&&d.phase!=='simulating'&&d.phase!=='complete';
       if(allDone&&canReveal) txn.update(ref,{phase:'build_reveal',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
     });
+    // For bot matches: patch local matchData and route immediately without waiting for snapshot
+    if(_isBotSubmit&&MP.matchData){
+      if(MP.matchData.players&&MP.matchData.players[currentUser.uid]){
+        MP.matchData.players[currentUser.uid].finalBuild=finalBuild;
+        MP.matchData.players[currentUser.uid].draftStatus='submitted';
+      }
+      MP.matchData.phase='build_reveal';
+      mpOnPhaseChange(MP.matchData);
+    }
   }catch(e){
     console.warn('[MP] pvpSubmitSPBuild:',e);
     showToast&&showToast('PvP Error','Could not save your build. Check connection.','warning');
@@ -13913,7 +13923,20 @@ async function _pvpBotAfterDraft(){
   MP.mode='ranked';
   try{
     await db.collection('multiplayer_matches').doc(matchId).set(doc);
-    await mpEnterMatch(matchId);
+    // Set up state and listener directly — skip the extra Firestore read in mpEnterMatch
+    if(MP.matchUnsub){ MP.matchUnsub(); MP.matchUnsub=null; }
+    MP.matchId=matchId;
+    MP.matchData=doc;
+    MP.isBot=true;
+    mpSetOpponent(doc);
+    MP.matchUnsub=db.collection('multiplayer_matches').doc(matchId).onSnapshot(function(s2){
+      if(!s2.exists) return;
+      MP.matchData=s2.data();
+      mpSetOpponent(MP.matchData);
+      mpOnPhaseChange(MP.matchData);
+    });
+    MP._handledPhase=null;
+    mpOnPhaseChange(doc); // doc has phase='build_reveal' — goes straight to reveal
   }catch(e){
     console.error('[MP] pvpBotAfterDraft:',e);
     showToast&&showToast('PvP Error','Could not set up bot match. Try again.','warning');
