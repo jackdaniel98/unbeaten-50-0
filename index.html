@@ -9202,6 +9202,7 @@ function grantCollectibleCard(target, cardId){
 // ── Collector Pack ────────────────────────────────────────────────────────
 const COLLECTOR_PACK_COST = 2000;
 const COLLECTOR_PACK_TEN_COST = 20000;
+const COLLECTOR_PACK_STARTER_COST = 1;
 const COLL_RARITY_COLORS = {common:'#cbd5e1',uncommon:'#86efac',rare:'#60a5fa',legendary:'#fb923c'};
 let _collPackQueue = []; // queued entries for 10-pack sequential reveal
 
@@ -9223,6 +9224,30 @@ function openCollectorPack(){
     t.playMoney = Math.max(0, safeMoney(t.playMoney) - COLLECTOR_PACK_COST);
     const result=grantCollectibleCard(t, card.id);
     ownedCount=result.count;
+  });
+  updateWalletDisplays();
+  _collPackQueue = [];
+  _playCollectorPackAnim(card, isNew, ownedCount);
+}
+
+function openCollectorPackStarter(){
+  const profile = activeCardProfile();
+  const bal = safeMoney(profile.playMoney);
+  if(bal < COLLECTOR_PACK_STARTER_COST){
+    showToast('Not Enough Play Money','You need '+COLLECTOR_PACK_STARTER_COST+' PM to open a Starter Pack.');
+    return;
+  }
+  const pool = COLLECTIBLE_CARDS;
+  if(!pool.length){ showToast('No cards available yet.',''); return; }
+  const card = rollCollectibleCard(pool);
+  if(!card){ showToast('No cards available yet.',''); return; }
+  const counts = createMyCardCounts(profile.myCardCounts, profile.myCards);
+  const isNew = safeMoney(counts[card.id]) === 0;
+  let ownedCount = isNew ? 1 : safeMoney(counts[card.id]) + 1;
+  mutateCardProfile(t => {
+    t.playMoney = Math.max(0, safeMoney(t.playMoney) - COLLECTOR_PACK_STARTER_COST);
+    const result = grantCollectibleCard(t, card.id);
+    ownedCount = result.count;
   });
   updateWalletDisplays();
   _collPackQueue = [];
@@ -9945,6 +9970,7 @@ function closePackModal(){ const m=$('pack-modal'); if(m) m.classList.add('hidde
 function renderPackPanel(){
   const panel=$('card-pack-panel'); if(!panel) return;
   const profile=activeCardProfile(), bal=safeMoney(profile.playMoney);
+  const canAffordStarter=bal>=COLLECTOR_PACK_STARTER_COST;
   const canAffordColl=bal>=COLLECTOR_PACK_COST;
   const canAffordTen=bal>=COLLECTOR_PACK_TEN_COST;
   const ownedCount=collectibleOwnedIdsFromCounts(createMyCardCounts(profile.myCardCounts, profile.myCards)).length;
@@ -9958,7 +9984,15 @@ function renderPackPanel(){
   const progressLine='<div class="pack-refund">Collection progress: '+ownedCount+' / '+total+'. Duplicates are tracked for future rewards.</div>';
   panel.innerHTML=
     '<div class="card-pack">'
-    +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">\u2605</span></div>'
+    +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">&#x1F4B0;</span></div>'
+    +'<div class="card-pack-info"><strong>Starter Pack</strong><span>1 collectible card for just 1 PM. Great for getting started.</span>'
+    +'<div class="pack-odds">'+oddsHtml+'</div>'
+    +progressLine
+    +'<button class="btn gold" style="margin-top:9px" '+(canAffordStarter?'':'disabled')+' onclick="openCollectorPackStarter()">Open Pack \u2022 1 PM</button>'
+    +(canAffordStarter?'':'<div class="pack-need-more">Need 1 PM</div>')
+    +'</div></div>'
+    +'<div class="card-pack" style="margin-top:12px">'
+    +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">&#x2605;</span></div>'
     +'<div class="card-pack-info"><strong>Collector Pack</strong><span>1 finished collectible card.</span>'
     +'<div class="pack-odds">'+oddsHtml+'</div>'
     +progressLine
@@ -9968,7 +10002,7 @@ function renderPackPanel(){
     +'<div class="card-pack" style="margin-top:12px">'
     +'<div class="card-pack-art" style="background:linear-gradient(135deg,#16140e,#201a10)">'
       +'<div class="card-pack-orb-mini"></div>'
-      +'<span class="card-pack-q" style="font-size:1.6rem;letter-spacing:-2px">\u2605\u2605\u2605</span>'
+      +'<span class="card-pack-q" style="font-size:1.6rem;letter-spacing:-2px">&#x2605;&#x2605;&#x2605;</span>'
     +'</div>'
     +'<div class="card-pack-info"><strong>10&#x2011;Pack Bundle</strong>'
     +'<span>Open 10 Collector Packs one by one, each with the full animation. Best value for collectors.</span>'
