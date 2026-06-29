@@ -10323,6 +10323,7 @@ function goToHub(){
 }
 function completeDraft(){
   if(typeof MP!=='undefined'&&MP.pvpBotMode){ _pvpBotAfterDraft(); return; }
+  if(typeof MP!=='undefined'&&MP.pvpDraftMode){ _pvpSubmitSPBuild(); return; }
   recalcRank();
   generateOpponent();
   updateHub();
@@ -10387,7 +10388,7 @@ function renderSynergyPick(){
     const sel=list.querySelectorAll('.syn-pick-card.selected');
     const n=sel.length;
     if(counter){counter.innerText=n+' / 2';counter.classList.toggle('ready',n===2);}
-    if(btn){btn.disabled=n!==2;btn.textContent=n===2?(typeof MP!=='undefined'&&MP.pvpBotMode?'Fight Bot →':'Start Career →'):'Choose '+(2-n)+' More';}
+    if(btn){ let doneLabel='Start Career →'; if(typeof MP!=='undefined'&&MP.pvpBotMode) doneLabel='Fight Bot →'; if(typeof MP!=='undefined'&&MP.pvpDraftMode) doneLabel='Submit PvP Build →'; btn.disabled=n!==2; btn.textContent=n===2?doneLabel:'Choose '+(2-n)+' More'; }
     if(namesBar){
       namesBar.innerHTML='';
       if(n===0){const h=document.createElement('span');h.className='syn-names-hint';h.textContent='Tap synergies to select 2';namesBar.appendChild(h);return;}
@@ -12324,6 +12325,8 @@ let MP = {
   queueUnsub:null, matchUnsub:null, lobbyUnsub:null, lobbyCode:null,
   searchBusy:false, _handledPhase:null,
   pvpBotMode:false, _pvpBotCareerBackup:undefined,
+  pvpDraftMode:false, _pvpCareerBackup:undefined,
+  _fightData:null, _fightRoundIdx:0,
 };
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -12691,15 +12694,21 @@ function mpCleanup(){
   if(MP.queueUnsub){ MP.queueUnsub(); MP.queueUnsub=null; }
   if(MP.matchUnsub){ MP.matchUnsub(); MP.matchUnsub=null; }
   if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
-  if(MP.pvpBotMode&&MP._pvpBotCareerBackup!==undefined){
+  // Restore career save if interrupted mid SP-draft (pvpBotMode or pvpDraftMode)
+  const bakBot=MP.pvpBotMode&&MP._pvpBotCareerBackup!==undefined;
+  const bakDraft=MP.pvpDraftMode&&MP._pvpCareerBackup!==undefined;
+  if(bakBot||bakDraft){
     clearTimeout(pendingCloudSync);
-    if(MP._pvpBotCareerBackup) localStorage.setItem(KEYS.career,MP._pvpBotCareerBackup);
+    const bak=bakBot?MP._pvpBotCareerBackup:MP._pvpCareerBackup;
+    if(bak) localStorage.setItem(KEYS.career,bak);
     else localStorage.removeItem(KEYS.career);
   }
   Object.assign(MP,{mode:null,isBot:false,matchId:null,matchData:null,
     opponent:null,myBuild:null,draftState:null,
     searchInterval:null,draftTimerInterval:null,lobbyCode:null,searchBusy:false,_handledPhase:null,
-    pvpBotMode:false,_pvpBotCareerBackup:undefined});
+    pvpBotMode:false,_pvpBotCareerBackup:undefined,
+    pvpDraftMode:false,_pvpCareerBackup:undefined,
+    _fightData:null,_fightRoundIdx:0});
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -12842,13 +12851,15 @@ function mpShowDraftWaiting(){
 }
 async function startMpDraft(){
   if(!currentUser) return;
+  // Show loading state immediately — no more blank 5-second wait
+  mpShowDraftLoading();
   if(!MP.matchData&&MP.matchId){
     try{
       const snap=await db.collection('multiplayer_matches').doc(MP.matchId).get();
       if(snap.exists) MP.matchData=snap.data();
     }catch(e){ console.warn('[MP] draft preload:',e); }
   }
-  if(!MP.matchId||!MP.matchData) return;
+  if(!MP.matchId||!MP.matchData){ screen('mp-matchup'); return; }
   let latestData=null;
   try{
     const ref=db.collection('multiplayer_matches').doc(MP.matchId);
@@ -12875,21 +12886,29 @@ async function startMpDraft(){
       const localData=JSON.parse(JSON.stringify(MP.matchData));
       localData.phase='drafting';
       if(localData.players&&localData.players[currentUser.uid]) localData.players[currentUser.uid].draftStatus='drafting';
-      showToast&&showToast('PvP Draft','Starting local bot draft. Your build will sync when submitted.');
-      mpBeginLocalDraft(localData);
+      mpBeginSPDraft(localData);
       return;
     }
     showToast&&showToast('PvP Error','Could not start the draft. Try again.');
     screen('mp-matchup');
     return;
   }
-  if(!latestData) return;
+  if(!latestData){ screen('mp-matchup'); return; }
   MP.matchData=latestData;
   if(latestData.phase!=='drafting'){
     mpOnPhaseChange(latestData);
     return;
   }
-  mpBeginLocalDraft(latestData);
+  mpBeginSPDraft(latestData);
+}
+function mpShowDraftLoading(){
+  screen('mp-draft');
+  const sl=$('mp-draft-stat-label'); if(sl) sl.innerText='Loading draft...';
+  const tm=$('mp-draft-timer'); if(tm){ tm.innerText='--'; tm.className='mp-draft-timer'; }
+  const ov=$('mp-draft-ovr-banner'); if(ov) ov.innerHTML='Starting your Fighter Generation...';
+  const opts=$('mp-draft-options'); if(opts) opts.innerHTML='<div style="text-align:center;padding:28px 0;color:var(--text-dim);font-size:.8rem">Loading...</div>';
+  const dots=$('mp-draft-dots'); if(dots) dots.innerHTML='';
+  const lk=$('mp-draft-locked'); if(lk) lk.innerHTML='';
 }
 function mpRenderDraft(){
   const ds=MP.draftState; if(!ds) return;
@@ -13203,49 +13222,128 @@ function mpSimFight(mb,ob,myUid,oppUid,myName,oppName){
   const me=getMpEffStats(mb), opp=getMpEffStats(ob);
   const highlights=[]; let myPts=0,oppPts=0,myHP=100,oppHP=100;
   let winnerUid=null,method='Decision',roundEnded=12;
+  const myHasIronChin=(mb.traits||[]).some(function(t){ return (t.id||t.name)==='iron_chin'||t.name==='Iron Chin'; });
+  const oppHasIronChin=(ob.traits||[]).some(function(t){ return (t.id||t.name)==='iron_chin'||t.name==='Iron Chin'; });
+  const myHasSuperTank=(mb.traits||[]).some(function(t){ return (t.id||t.name)==='supertank'||t.name==='Supertank'; });
+  const oppHasSuperTank=(ob.traits||[]).some(function(t){ return (t.id||t.name)==='supertank'||t.name==='Supertank'; });
+  const myStamPenalty=(me.Stamina||70)<68?0.85:1; const oppStamPenalty=(opp.Stamina||70)<68?0.85:1;
   for(let r=1;r<=12;r++){
     const evts=[]; let myRnd=10,oppRnd=10;
-    for(let e=0;e<(Math.floor(Math.random()*3)+2);e++){
-      const myAtk=((me.Power||70)*0.45+(me.Speed||70)*0.3+(me.IQ||70)*0.25)/100;
-      const oppDef=((opp.Defence||70)*0.5+(opp.IQ||70)*0.3+(opp.Heart||70)*0.2)/100;
-      const oppAtk=((opp.Power||70)*0.45+(opp.Speed||70)*0.3+(opp.IQ||70)*0.25)/100;
-      const myDef=((me.Defence||70)*0.5+(me.IQ||70)*0.3+(me.Heart||70)*0.2)/100;
+    const lateRoundFatigue=r>=9?0.93:1;
+    const numExchanges=Math.floor(Math.random()*3)+2;
+    for(let e=0;e<numExchanges;e++){
+      const myAtk=((me.Power||70)*0.45+(me.Speed||70)*0.3+((me['Ring IQ']||me.IQ||70))*0.25)/100*myStamPenalty*lateRoundFatigue;
+      const oppDef=((opp.Defence||70)*0.5+((opp['Ring IQ']||opp.IQ||70))*0.3+(opp.Heart||70)*0.2)/100;
+      const oppAtk=((opp.Power||70)*0.45+(opp.Speed||70)*0.3+((opp['Ring IQ']||opp.IQ||70))*0.25)/100*oppStamPenalty*lateRoundFatigue;
+      const myDef=((me.Defence||70)*0.5+((me['Ring IQ']||me.IQ||70))*0.3+(me.Heart||70)*0.2)/100;
       const myHit=myAtk*(1-oppDef*0.5)*(0.7+Math.random()*0.6);
       const oppHit=oppAtk*(1-myDef*0.5)*(0.7+Math.random()*0.6);
       if(myHit>oppHit+0.08){
         oppHP=Math.max(0,oppHP-Math.floor(myHit*8+Math.random()*4));
-        evts.push(mpFightLine(myName,oppName,me));
+        evts.push(mpFightLine(myName,oppName,me,opp,r,mb));
         oppRnd=Math.max(9,oppRnd-1);
-        if(oppHP<30&&Math.random()<0.15&&(me.Power||70)>78){
-          evts.push(myName+' drops '+oppName+'! The referee steps in.');
-          if(oppHP<15||Math.random()<0.28){ winnerUid=myUid;method='KO';roundEnded=r; break; }
+        if(oppHP<35&&Math.random()<0.18&&(me.Power||70)>76){
+          const chinSave=oppHasIronChin&&Math.random()<0.55;
+          const tankSave=oppHasSuperTank&&Math.random()<0.45;
+          if(chinSave){ evts.push('⚡ Iron Chin activates — '+oppName+' absorbs the big shot and walks through it!'); }
+          else if(tankSave){ evts.push('⚡ Supertank activates — '+oppName+' shakes it off and fires back!'); }
+          else{
+            evts.push(myName+' rocks '+oppName+' with a big shot — the referee watches closely!');
+            if(oppHP<18||Math.random()<0.25){ winnerUid=myUid;method='KO';roundEnded=r; break; }
+            if(oppHP<28&&Math.random()<0.3){ winnerUid=myUid;method='TKO';roundEnded=r; break; }
+          }
         }
       } else if(oppHit>myHit+0.08){
         myHP=Math.max(0,myHP-Math.floor(oppHit*8+Math.random()*4));
-        evts.push(mpFightLine(oppName,myName,opp));
+        evts.push(mpFightLine(oppName,myName,opp,me,r,ob));
         myRnd=Math.max(9,myRnd-1);
-        if(myHP<30&&Math.random()<0.15&&(opp.Power||70)>78){
-          evts.push(oppName+' drops '+myName+'! The crowd erupts.');
-          if(myHP<15||Math.random()<0.28){ winnerUid=oppUid;method='KO';roundEnded=r; break; }
+        if(myHP<35&&Math.random()<0.18&&(opp.Power||70)>76){
+          const chinSave=myHasIronChin&&Math.random()<0.55;
+          const tankSave=myHasSuperTank&&Math.random()<0.45;
+          if(chinSave){ evts.push('⚡ Iron Chin activates — '+myName+' absorbs the big shot and walks through it!'); }
+          else if(tankSave){ evts.push('⚡ Supertank activates — '+myName+' shakes it off and fires back!'); }
+          else{
+            evts.push(oppName+' rocks '+myName+' with a big shot — the crowd is on its feet!');
+            if(myHP<18||Math.random()<0.25){ winnerUid=oppUid;method='KO';roundEnded=r; break; }
+            if(myHP<28&&Math.random()<0.3){ winnerUid=oppUid;method='TKO';roundEnded=r; break; }
+          }
         }
       } else {
-        evts.push(myName+' and '+oppName+' exchange in the centre of the ring.');
+        evts.push(mpDefenceLine(myRnd>=oppRnd?myName:oppName,myRnd>=oppRnd?oppName:myName,myRnd>=oppRnd?me:opp,myRnd>=oppRnd?mb:ob));
       }
     }
+    // Late stamina swings
+    if(r>=9&&(me.Stamina||70)<68&&!winnerUid) evts.push(myName+' is visibly tiring in the late rounds.');
+    if(r>=9&&(opp.Stamina||70)<68&&!winnerUid) evts.push(oppName+' is running on fumes — the legs look heavy.');
+    // Heart saves at end of rounds
+    if(!winnerUid&&oppHP<15&&(me.Heart||70)>85&&Math.random()<0.45){ evts.push(myName+' digs deep on heart and survives the round.'); myHP=Math.min(myHP+6,100); }
     myPts+=myRnd; oppPts+=oppRnd;
     const rwinner=myRnd>oppRnd?myUid:myRnd<oppRnd?oppUid:'draw';
-    highlights.push({round:r,events:evts,roundWinnerUid:rwinner,score:myRnd+'-'+oppRnd});
+    highlights.push({round:r,events:evts,roundWinnerUid:rwinner,score:myRnd+'-'+oppRnd,myPts:myPts,oppPts:oppPts});
     if(winnerUid) break;
-    if(oppHP<10&&Math.random()<0.4){ winnerUid=myUid;method='TKO';roundEnded=r;break; }
-    if(myHP<10&&Math.random()<0.4){ winnerUid=oppUid;method='TKO';roundEnded=r;break; }
   }
-  if(!winnerUid) winnerUid=myPts>oppPts?myUid:myPts<oppPts?oppUid:'draw';
+  // Decision method detail
+  if(!winnerUid){
+    winnerUid=myPts>oppPts?myUid:myPts<oppPts?oppUid:'draw';
+    const diff=Math.abs(myPts-oppPts);
+    method=winnerUid==='draw'?'Draw':diff>=10?'Unanimous Decision':diff>=5?'Majority Decision':'Split Decision';
+  }
   return {winnerUid:winnerUid,method:method,roundEnded:roundEnded,myPts:myPts,oppPts:oppPts,highlights:highlights};
 }
-function mpFightLine(attacker,defender,atkStats){
-  if((atkStats.Power||70)>85) return attacker+' unloads a thunderous combination on '+defender+'.';
-  if((atkStats.Speed||70)>85) return attacker+' beats '+defender+' to the punch with lightning hands.';
-  return attacker+' connects cleanly on '+defender+'.';
+function mpFightLine(attacker,defender,atkStats,defStats,round,build){
+  const pwr=atkStats.Power||70, spd=atkStats.Speed||70, iq=atkStats['Ring IQ']||70;
+  const acc=atkStats.Accuracy||70, foot=atkStats.Footwork||70;
+  const defChin=defStats&&(defStats.Chin||70), defDef=defStats&&(defStats.Defence||70);
+  const phase=round<=4?'early':round<=8?'mid':'late';
+  const pool=[];
+  // Power-based lines
+  if(pwr>90){ pool.push(attacker+' detonates a right hand that makes '+defender+'\'s legs buckle.'); pool.push(attacker+' digs a brutal left hook to the body — '+defender+' grimaces.'); }
+  if(pwr>82){ pool.push(attacker+' loads up and lands a thunderous overhand right.'); pool.push(attacker+' unloads a heavy combination on '+defender+'.'); }
+  // Speed-based lines
+  if(spd>90){ pool.push(attacker+' fires off combinations faster than '+defender+' can read.'); pool.push(attacker+' snaps a triple jab and makes '+defender+' look slow.'); }
+  if(spd>82){ pool.push(attacker+' beats '+defender+' to the punch with sharp, fast hands.'); pool.push(attacker+' slips the jab and counters with a crisp right hand.'); }
+  // Ring IQ lines
+  if(iq>88){ pool.push(attacker+' reads '+defender+'\'s shoulder and times a perfect counter.'); pool.push(attacker+' pivots off the ropes and traps '+defender+' in the corner.'); }
+  if(iq>80){ pool.push(attacker+' sets the trap with the jab and follows with the right.'); }
+  // Accuracy lines
+  if(acc>87){ pool.push(attacker+' finds the right hand to the temple — clean and precise.'); pool.push(attacker+' targets the body, then brings the left hook upstairs.'); }
+  // Footwork lines
+  if(foot>85){ pool.push(attacker+' cuts the ring beautifully and backs '+defender+' into the corner.'); pool.push(attacker+' uses the angles to stay elusive and land clean.'); }
+  // Phase-specific lines
+  if(phase==='late'&&pwr>78){ pool.push(attacker+' is still throwing with power — '+defender+' is struggling to keep up late.'); }
+  if(phase==='early'){ pool.push(attacker+' comes out sharp in the opening exchanges.'); }
+  // Defence breaks
+  if(defDef&&defDef<72){ pool.push(attacker+' finds the gaps in '+defender+'\'s guard and punishes them.'); }
+  // Generic fallbacks
+  pool.push(attacker+' connects with a clean shot on '+defender+'.');
+  pool.push(attacker+' lands a combination and takes the centre of the ring.');
+  pool.push(attacker+' works behind the jab and outworks '+defender+' this exchange.');
+  // Trait activation
+  if(build){
+    const traits=build.traits||[];
+    const hasGlassCannon=traits.some(function(t){ return (t.id||t.name)==='glass_cannon'||t.name==='Glass Cannon'; });
+    const hasVolume=traits.some(function(t){ return (t.id||t.name)==='volume_puncher'||t.name==='Volume Puncher'; });
+    const hasPressure=traits.some(function(t){ return (t.id||t.name)==='pressure_fighter'||t.name==='Pressure Fighter'; });
+    if(hasGlassCannon&&pwr>85&&Math.random()<0.35) pool.push('⚡ Glass Cannon activates — '+attacker+' lands a monster shot!');
+    if(hasVolume&&Math.random()<0.3) pool.push('⚡ Volume Puncher activates — '+attacker+' throws an avalanche of punches.');
+    if(hasPressure&&Math.random()<0.3) pool.push('⚡ Pressure Fighter activates — '+attacker+' traps '+defender+' on the ropes.');
+  }
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function mpDefenceLine(defender,attacker,defStats,build){
+  const def=defStats&&(defStats.Defence||70), iq=defStats&&(defStats['Ring IQ']||70);
+  const pool=[];
+  if(def>88){ pool.push(defender+' slips the right hand cleanly and makes '+attacker+' miss.'); pool.push(defender+' rolls with the combination and takes no real damage.'); }
+  if(iq>85){ pool.push(defender+' steps back and makes '+attacker+' punch air.'); pool.push(defender+' reads the shot and ducks under beautifully.'); }
+  pool.push(defender+' and '+attacker+' exchange in the centre — a scrappy round.'); pool.push(attacker+' lands but '+defender+' stays composed.');
+  if(build){
+    const traits=build.traits||[];
+    const hasCounter=traits.some(function(t){ return (t.id||t.name)==='counter_puncher'||t.name==='Counter Puncher'; });
+    const hasIronChin=traits.some(function(t){ return (t.id||t.name)==='iron_chin'||t.name==='Iron Chin'; });
+    if(hasCounter&&Math.random()<0.35) pool.push('⚡ Counter Puncher activates — '+defender+' turns '+attacker+'\'s attack back on them!');
+    if(hasIronChin&&Math.random()<0.3) pool.push('⚡ Iron Chin activates — '+defender+' eats the shot and keeps moving forward!');
+  }
+  return pool[Math.floor(Math.random()*pool.length)];
 }
 function mpBuildBotFallback(pd){
   const s=mpBotStats((pd&&pd.eloBefore)||MP_STARTING_ELO);
@@ -13265,36 +13363,23 @@ function mpShowFightResult(data){
   const oppPD=data.players&&data.players[oppUid];
   const result=data.result;
   if(!result) return;
-  if($('mp-fight-my-name'))  $('mp-fight-my-name').innerText=(myPD&&myPD.displayName)||'You';
-  if($('mp-fight-opp-name')) $('mp-fight-opp-name').innerText=(oppPD&&oppPD.displayName)||'Opp';
-  if($('mp-fight-title'))    $('mp-fight-title').innerText=((myPD&&myPD.displayName)||'You')+' vs '+((oppPD&&oppPD.displayName)||'Opponent');
-  const log=$('mp-fight-log');
-  if(log){
-    let html='';
-    (data.fightHighlights||[]).forEach(function(rnd){
-      html+='<div class="mp-round-header">Round '+rnd.round+'&nbsp;<span style="font-size:.5rem;color:var(--text-dim)">'+(rnd.score||'')+'</span></div>';
-      (rnd.events||[]).forEach(function(ev){
-        const isKD=ev.includes('drops ')||ev.includes('steps in');
-        html+='<div class="'+(isKD?'mp-hl-kd':'mp-hl-action')+'">'+mpEscape(ev)+'</div>';
-      });
-    });
-    const iWon=result.winnerUid===myUid, isDraw=result.winnerUid==='draw';
-    const winText=iWon?'🏆 VICTORY — '+result.method:isDraw?'DRAW — '+result.method:'DEFEAT — '+result.method;
-    html+='<div class="mp-hl-win">'+winText+'</div>';
-    log.innerHTML=html;
-    setTimeout(function(){ log.scrollTop=log.scrollHeight; },50);
-  }
-  const iWon2=result.winnerUid===myUid, isDraw2=result.winnerUid==='draw';
-  const scores=mpScoresForViewer(result,myUid);
+  const myName=(myPD&&myPD.displayName)||'You';
+  const oppName=(oppPD&&oppPD.displayName)||'Opponent';
+  if($('mp-fight-my-name'))  $('mp-fight-my-name').innerText=myName;
+  if($('mp-fight-opp-name')) $('mp-fight-opp-name').innerText=oppName;
+  if($('mp-fight-title'))    $('mp-fight-title').innerText=myName+' vs '+oppName;
+  // Reset HP bars and scores
   const myHp=$('mp-fight-my-hp'), oppHp=$('mp-fight-opp-hp');
-  if(myHp)  myHp.style.width=(isDraw2?'40':iWon2?'60':'15')+'%';
-  if(oppHp) oppHp.style.width=(isDraw2?'40':iWon2?'15':'60')+'%';
-  if($('mp-fight-my-score'))    $('mp-fight-my-score').innerText=scores.my;
-  if($('mp-fight-opp-score'))   $('mp-fight-opp-score').innerText=scores.opp;
-  const roundsPlayed=(data.fightHighlights||[]).length;
-  if($('mp-fight-round-label')) $('mp-fight-round-label').innerText='RND '+roundsPlayed;
+  if(myHp)  myHp.style.width='100%';
+  if(oppHp) oppHp.style.width='100%';
+  if($('mp-fight-my-score'))    $('mp-fight-my-score').innerText='0';
+  if($('mp-fight-opp-score'))   $('mp-fight-opp-score').innerText='0';
+  if($('mp-fight-round-label')) $('mp-fight-round-label').innerText='RND 1';
+  const log=$('mp-fight-log'); if(log) log.innerHTML='';
+  // Store state for stepped reveal
+  MP._fightData=data; MP._fightRoundIdx=0;
   const btn=$('mp-fight-next-btn');
-  if(btn){ btn.disabled=false; btn.innerText='View Result →'; btn.onclick=function(){ mpRenderResult(data); }; }
+  if(btn){ btn.disabled=false; btn.innerText='Round 1 →'; btn.onclick=mpShowNextFightRound; }
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -13569,6 +13654,165 @@ function mpBotTraits(){
 function mpBotSynergies(){
   if(typeof SYNERGY==='undefined'||!Array.isArray(SYNERGY)||!SYNERGY.length) return [];
   return SYNERGY.slice().sort(function(){ return Math.random()-.5; }).slice(0,1).map(function(s){ return {name:s.name||s,bonus:s.bonus||''}; });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PvP SINGLE-PLAYER DRAFT BRIDGE
+// Routes real PvP matches through the working SP Fighter Generation flow.
+// Replaces the old mp-draft screen entirely for the player-facing build step.
+// ══════════════════════════════════════════════════════════════════════════
+function mpHasTraitId(build,id){
+  return (build&&build.traits||[]).some(function(t){ return (t.id||t.name)===id||(t.name||'').toLowerCase().replace(/ /g,'_')===id; });
+}
+
+function mpBeginSPDraft(data){
+  MP.pvpDraftMode=true;
+  MP.matchData=data;
+  MP._pvpCareerBackup=localStorage.getItem(KEYS.career)||null;
+  beginNewCareerDraft();
+  // Override labels immediately after (beginNewCareerDraft is sync)
+  const ml=$('draft-mode-label'); if(ml) ml.innerText='PvP Draft';
+  const advBtn=$('advance-btn'); if(advBtn) advBtn.textContent='Submit PvP Build →';
+}
+
+async function _pvpSubmitSPBuild(){
+  // 1. Capture the completed SP draft build before restoring career
+  const rawStats=Object.assign({},(S.player&&S.player.Stats)||{});
+  const rawSources=Object.assign({},(S.player&&S.player.StatSources)||{});
+  const traits=((S.player&&S.player.Traits)||[]).map(mpPublicTrait);
+  const synergies=((S.player&&S.player.HiddenBonuses)||[]).map(mpPublicSynergy);
+  // 2. Restore original career — cancel any pending cloud sync first
+  clearTimeout(pendingCloudSync);
+  if(MP._pvpCareerBackup!==undefined){
+    if(MP._pvpCareerBackup) localStorage.setItem(KEYS.career,MP._pvpCareerBackup);
+    else localStorage.removeItem(KEYS.career);
+    MP._pvpCareerBackup=undefined;
+    try{
+      const d=loadCareer();
+      if(d){ S.mode=d.mode||'standard'; S.player=d.player; S.career=d.career; S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; }
+    }catch(e){}
+  }
+  MP.pvpDraftMode=false;
+  if(!MP.matchId||!currentUser){
+    showToast&&showToast('PvP Error','Match ID lost. Return to lobby and try again.','warning');
+    screen('mp-home'); renderMpHome(); return;
+  }
+  // 3. Build finalBuild in MP format
+  const me=MP.matchData&&MP.matchData.players&&MP.matchData.players[currentUser.uid];
+  const myCardId=(MP.profile&&MP.profile.equippedCardId)||(me&&me.equippedCardId)||'cc001';
+  const booster=(me&&me.cardBooster)||getMpBooster(myCardId);
+  const statVals={};
+  mpGetStats().forEach(function(s){ statVals[s]=typeof rawStats[s]==='number'?rawStats[s]:70; });
+  const finalBuild={
+    stats:statVals,statSources:rawSources,
+    traits:traits,synergies:synergies,
+    cardId:myCardId,booster:booster,
+    ovr:calcMpBuildOvr(statVals,traits,synergies),
+  };
+  MP.myBuild=finalBuild;
+  // 4. Show waiting screen right away
+  mpShowSPDraftWaiting();
+  // 5. Submit to Firestore
+  const now=firebase.firestore.FieldValue.serverTimestamp();
+  const uk='players.'+currentUser.uid;
+  try{
+    await db.collection('multiplayer_matches').doc(MP.matchId).update({
+      [uk+'.finalBuild']:finalBuild,
+      [uk+'.draftStatus']:'submitted',
+      [uk+'.submittedAt']:now,
+      updatedAt:now,
+    });
+    // Advance to build_reveal if both players have submitted
+    await db.runTransaction(async function(txn){
+      const ref=db.collection('multiplayer_matches').doc(MP.matchId);
+      const latest=await txn.get(ref);
+      if(!latest.exists) return;
+      const d=latest.data();
+      const allDone=d.playerOrder.every(function(u){ return d.players[u]&&d.players[u].draftStatus==='submitted'; });
+      const canReveal=d.phase!=='build_reveal'&&d.phase!=='simulating'&&d.phase!=='complete';
+      if(allDone&&canReveal) txn.update(ref,{phase:'build_reveal',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    });
+  }catch(e){
+    console.warn('[MP] pvpSubmitSPBuild:',e);
+    showToast&&showToast('PvP Error','Could not save your build. Check connection.','warning');
+  }
+}
+
+function mpShowSPDraftWaiting(){
+  screen('mp-draft');
+  clearInterval(MP.draftTimerInterval);
+  const sl=$('mp-draft-stat-label'); if(sl) sl.innerText='Build locked in — waiting for opponent...';
+  const tm=$('mp-draft-timer'); if(tm){ tm.innerText='--'; tm.className='mp-draft-timer'; }
+  const ov=$('mp-draft-ovr-banner'); if(ov) ov.innerHTML='Your fighter is ready. The fight starts when both builds are complete.';
+  const opts=$('mp-draft-options');
+  if(opts) opts.innerHTML='<div style="text-align:center;padding:28px 16px">'
+    +'<div style="font-size:.9rem;font-weight:900;color:var(--gold);letter-spacing:.06em;margin-bottom:10px">BUILD SUBMITTED</div>'
+    +'<div style="font-size:.72rem;color:var(--text-dim);line-height:1.7">Waiting for your opponent to complete their draft...<br><span style="font-size:.62rem;color:var(--muted)">You\'ll be taken to the matchup automatically.</span></div>'
+    +'</div>';
+  const dots=$('mp-draft-dots'); if(dots) dots.innerHTML='';
+  const lk=$('mp-draft-locked'); if(lk) lk.innerHTML='';
+}
+
+function mpShowNextFightRound(){
+  const data=MP._fightData; if(!data) return;
+  const myUid=currentUser&&currentUser.uid;
+  const oppUid=data.playerOrder&&data.playerOrder.find(function(u){ return u!==myUid; });
+  const highlights=data.fightHighlights||[];
+  const idx=MP._fightRoundIdx||0;
+  if(idx>=highlights.length){ mpRenderResult(data); return; }
+  const rnd=highlights[idx];
+  MP._fightRoundIdx=idx+1;
+  // Update round label
+  if($('mp-fight-round-label')) $('mp-fight-round-label').innerText='RND '+rnd.round;
+  // Cumulative scorecard — swap if I am not the simulation owner
+  const iAmOwner=!data.result||!data.result.myUid||data.result.myUid===myUid;
+  const myPts=iAmOwner?(rnd.myPts||0):(rnd.oppPts||0);
+  const oppPts=iAmOwner?(rnd.oppPts||0):(rnd.myPts||0);
+  if($('mp-fight-my-score'))  $('mp-fight-my-score').innerText=myPts;
+  if($('mp-fight-opp-score')) $('mp-fight-opp-score').innerText=oppPts;
+  // HP bars — interpolate toward final values as rounds progress
+  const total=highlights.length, progress=(idx+1)/total;
+  const iWon=data.result.winnerUid===myUid, isDraw=data.result.winnerUid==='draw';
+  const myFinal=isDraw?40:iWon?60:15, oppFinal=isDraw?40:iWon?15:60;
+  const myW=Math.round(100-(100-myFinal)*progress), oppW=Math.round(100-(100-oppFinal)*progress);
+  const myHp=$('mp-fight-my-hp'), oppHp=$('mp-fight-opp-hp');
+  if(myHp)  myHp.style.width=myW+'%';
+  if(oppHp) oppHp.style.width=oppW+'%';
+  // Render round events
+  const log=$('mp-fight-log');
+  if(log){
+    let html='<div class="mp-round-header">Round '+rnd.round
+      +'&nbsp;<span style="font-size:.5rem;color:var(--text-dim)">'+(rnd.score||'')+'</span></div>';
+    (rnd.events||[]).forEach(function(ev){
+      const isKD=ev.includes('rocks ')||ev.includes('drops ')||ev.includes('steps in')||ev.includes('referee');
+      html+='<div class="'+(isKD?'mp-hl-kd':'mp-hl-action')+'">'+mpEscape(ev)+'</div>';
+    });
+    // Round verdict line
+    const rwon=rnd.roundWinnerUid===myUid, rdraw=rnd.roundWinnerUid==='draw';
+    const verdictColor=rwon?'#4ade80':rdraw?'var(--text-dim)':'#e05252';
+    html+='<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:'+verdictColor
+      +';text-align:right;padding:4px 0 2px">'+(rwon?'✓ Round to You':rdraw?'— Round Even':'✗ Round to Opponent')+'</div>';
+    // Cumulative scorecard
+    html+='<div style="font-size:.6rem;color:var(--muted);text-align:right;padding-bottom:6px">Scorecard: You '+myPts+' — Opp '+oppPts+'</div>';
+    // If this is a stoppage round, show final result
+    const isLast=idx+1>=highlights.length;
+    const method=data.result.method;
+    const isStoppage=method==='KO'||method==='TKO';
+    if(isLast&&isStoppage){
+      const winText=iWon?'🏆 VICTORY by '+method:isDraw?'DRAW':'DEFEAT by '+method;
+      html+='<div class="mp-hl-win">'+winText+'</div>';
+    }
+    log.innerHTML=html;
+    log.scrollTop=0;
+  }
+  // Update button
+  const btn=$('mp-fight-next-btn'); if(!btn) return;
+  const isLast=idx+1>=highlights.length;
+  if(isLast){
+    btn.disabled=false; btn.innerText='View Result →'; btn.onclick=function(){ mpRenderResult(data); };
+  } else {
+    btn.disabled=false; btn.innerText='Round '+(idx+2)+' →'; btn.onclick=mpShowNextFightRound;
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════
