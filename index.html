@@ -1507,6 +1507,21 @@ h2:first-child{margin-top:6px}
 .mp-invite-status{font-size:.66rem;text-align:center;margin:5px 0;min-height:16px}
 .mp-invite-status.error{color:#e05252}
 .mp-invite-status.ok{color:#4ade80}
+/* ── Play a Friend / Lobby — improved UX ── */
+.lobby-intro{font-size:.74rem;color:rgba(255,255,255,.52);line-height:1.7;text-align:center;padding:0 4px 14px;margin-bottom:2px}
+.lobby-section-title{font-size:.6rem;font-weight:900;text-transform:uppercase;letter-spacing:.11em;color:var(--gold);margin-bottom:9px}
+.lobby-steps{padding-left:18px;margin:0 0 14px}
+.lobby-steps li{font-size:.72rem;color:rgba(255,255,255,.52);line-height:1.75;padding-left:2px}
+.lobby-join-hint{font-size:.72rem;color:rgba(255,255,255,.52);margin-bottom:11px;line-height:1.65}
+.lobby-waiting-label{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.65);text-align:center;margin-bottom:10px}
+.lobby-code-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px}
+.lobby-code-hint{font-size:.61rem;color:rgba(255,255,255,.3);text-align:center;line-height:1.65;margin-bottom:10px}
+.lobby-status-msg{font-size:.66rem;text-align:center;margin:5px 0;min-height:16px}
+.lobby-status-msg.ok{color:#4ade80}
+.lobby-status-msg.error{color:#e05252}
+.lobby-status-msg.muted{color:rgba(255,255,255,.35)}
+.lobby-divider{text-align:center;padding:7px 0;font-size:.64rem;color:rgba(255,255,255,.2)}
+.lobby-panel{margin-bottom:10px}
 
 /* ── Mobile overrides (≤430px) ── */
 @media(max-width:430px){
@@ -3854,7 +3869,8 @@ body.final-card-open{overflow:hidden}
       <span id="mp-result-ranked-tag" class="mp-vs-mode-tag">RANKED</span>
       <span id="mp-result-friendly-tag" class="mp-vs-mode-tag" style="background:rgba(74,222,128,.1);color:#4ade80;border-color:rgba(74,222,128,.28)" hidden>FRIENDLY</span>
     </div>
-    <div class="mp-result-elo-row" style="margin-top:6px">
+    <div id="mp-result-casual-note" style="font-size:.62rem;color:#4ade80;font-weight:700;letter-spacing:.04em;margin-top:5px;display:none">Casual Match — No ELO Change</div>
+    <div class="mp-result-elo-row" style="margin-top:6px" id="mp-result-elo-row">
       <span style="font-size:.7rem;color:var(--text-dim)">ELO <span id="mp-result-elo-old">700</span></span>
       <span class="mp-elo-change neutral" id="mp-result-elo-change">+0</span>
       <span style="font-size:.8rem;font-weight:900;color:#fff">→ <span id="mp-result-elo-new">700</span></span>
@@ -3866,8 +3882,9 @@ body.final-card-open{overflow:hidden}
     <span class="mp-result-pm-val" id="mp-result-pm-val">+300 PM</span>
   </div>
   <div class="mp-result-record-row" id="mp-result-record"><strong>0W – 0L – 0D</strong> (KO: 0)</div>
-  <button class="btn gold" onclick="openMpLeaderboard()">🏆 View Leaderboard</button>
-  <button class="btn blue" style="margin-top:7px" onclick="startMpSearch(MP.mode||'ranked')">Find Another Match</button>
+  <button class="btn gold" id="mp-result-leaderboard-btn" onclick="openMpLeaderboard()">🏆 View Leaderboard</button>
+  <button class="btn blue" id="mp-result-rematch-btn" style="margin-top:7px;display:none" onclick="openMpInvite()">Play Again (Invite)</button>
+  <button class="btn blue" id="mp-result-findmatch-btn" style="margin-top:7px" onclick="startMpSearch(MP.mode||'ranked')">Find Another Match</button>
   <button class="btn ghost" style="margin-top:7px" onclick="screen('mp-home');renderMpHome()">Back to PvP Lobby</button>
   <button class="btn ghost" style="margin-top:7px" onclick="closeMpHome()">Return to Menu</button>
 </section>
@@ -3889,23 +3906,55 @@ body.final-card-open{overflow:hidden}
 <!-- 9. MP Invite / Play a Friend -->
 <section id="mp-invite" class="screen">
   <div class="mp-header">
-    <button class="mp-header-back" onclick="screen('mp-home')">‹ Back</button>
+    <button class="mp-header-back" onclick="_closeMpInvite()">‹ Back</button>
     <span class="mp-brand">PLAY A FRIEND</span>
     <span class="mp-beta-badge">CASUAL</span>
   </div>
-  <div class="panel" style="margin-bottom:10px">
-    <div style="font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px">Create Lobby</div>
-    <div style="font-size:.7rem;color:var(--text-dim);margin-bottom:10px">Generate a 6-character code, then share it with your friend.</div>
-    <button class="btn gold" style="min-height:40px" onclick="createMpInviteCode()">Generate Code</button>
-    <div class="mp-invite-code-big" id="mp-invite-code-display">– – – – – –</div>
-    <div class="mp-invite-status ok" id="mp-invite-status"></div>
+
+  <div class="lobby-intro">
+    Create a private lobby, share the code with a friend, then both of you draft a fighter and fight.
   </div>
-  <div style="text-align:center;padding:6px 0;font-size:.66rem;color:var(--muted)">— OR —</div>
-  <div class="panel">
-    <div style="font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px">Join a Lobby</div>
-    <input id="mp-join-code-input" class="mp-invite-input" type="text" maxlength="6" placeholder="ABC123" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
-    <div class="mp-invite-status" id="mp-join-status"></div>
-    <button class="btn blue" style="min-height:40px" onclick="joinMpByCode()">Join Lobby</button>
+
+  <!-- ── Create Lobby ── -->
+  <div class="panel lobby-panel">
+    <div class="lobby-section-title">Create Lobby</div>
+
+    <!-- Step 1: instructions + generate button -->
+    <div id="lobby-initial-state">
+      <ol class="lobby-steps">
+        <li>Tap Generate Code.</li>
+        <li>Send the 6-character code to your friend.</li>
+        <li>Wait for them to join.</li>
+        <li>When both players are ready, you'll both draft your fighters.</li>
+      </ol>
+      <button class="btn gold" style="min-height:42px" onclick="createMpInviteCode()">Generate Code</button>
+    </div>
+
+    <!-- Step 2: code shown, waiting for friend -->
+    <div id="lobby-waiting-state" class="hidden">
+      <div class="lobby-waiting-label">Waiting for friend to join…</div>
+      <div class="mp-invite-code-big" id="mp-invite-code-display">– – – – – –</div>
+      <div class="lobby-code-actions">
+        <button class="btn ghost" onclick="_copyLobbyCode()">Copy Code</button>
+        <button class="btn blue" onclick="_shareLobbyInvite()">Share Invite</button>
+      </div>
+      <div class="lobby-code-hint">Your friend should open PvP → Play a Friend → enter this code.</div>
+      <div class="lobby-status-msg muted" id="lobby-host-status"></div>
+      <button class="btn ghost" style="margin-top:2px;font-size:.72rem" onclick="_cancelLobby()">✕ Cancel Lobby</button>
+    </div>
+  </div>
+
+  <div class="lobby-divider">— OR —</div>
+
+  <!-- ── Join a Lobby ── -->
+  <div class="panel lobby-panel">
+    <div class="lobby-section-title">Join a Lobby</div>
+    <div class="lobby-join-hint">Got a code from a friend? Enter it here, then tap Join Lobby.</div>
+    <input id="mp-join-code-input" class="mp-invite-input" type="text" maxlength="6"
+           placeholder="ABC123" autocomplete="off" autocapitalize="characters"
+           oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+    <div class="lobby-status-msg" id="mp-join-status"></div>
+    <button class="btn blue" style="min-height:42px" onclick="joinMpByCode()">Join Lobby</button>
   </div>
 </section>
 
@@ -13440,11 +13489,19 @@ function mpRenderResult(data){
   if($('mp-result-p2-score')) $('mp-result-p2-score').innerText=scores.opp;
   if($('mp-result-p2-who'))   $('mp-result-p2-who').innerText=(oppPD&&oppPD.displayName)||'Opponent';
   const isRanked=data.mode==='ranked';
+  const isFriendly=!isRanked;
   if($('mp-result-ranked-tag'))  $('mp-result-ranked-tag').hidden=!isRanked;
   if($('mp-result-friendly-tag'))$('mp-result-friendly-tag').hidden=isRanked;
+  // Casual note + ELO row visibility
+  const casualNote=$('mp-result-casual-note');
+  if(casualNote) casualNote.style.display=isFriendly?'block':'none';
+  const eloRow=$('mp-result-elo-row');
+  if(eloRow) eloRow.style.display=isRanked?'':'none';
+  // Tier label only makes sense for ranked
+  const tierEl=$('mp-result-tier'); if(tierEl) tierEl.style.display=isRanked?'':'none';
   // ELO
   const ec=data.eloChanges&&data.eloChanges[myUid];
-  if(ec){
+  if(ec&&isRanked){
     if($('mp-result-elo-old'))    $('mp-result-elo-old').innerText=ec.before;
     if($('mp-result-elo-change')){
       const chEl=$('mp-result-elo-change');
@@ -13452,19 +13509,30 @@ function mpRenderResult(data){
       chEl.className='mp-elo-change '+(ec.delta>0?'positive':ec.delta<0?'negative':'neutral');
     }
     if($('mp-result-elo-new'))    $('mp-result-elo-new').innerText=ec.after;
-    if($('mp-result-tier'))       $('mp-result-tier').innerText=getEloTierName(ec.after);
-  } else {
+    if(tierEl)                    tierEl.innerText=getEloTierName(ec.after);
+  } else if(isRanked){
     if($('mp-result-elo-old'))    $('mp-result-elo-old').innerText=(myPD&&myPD.eloBefore)||MP_STARTING_ELO;
     if($('mp-result-elo-change')){ $('mp-result-elo-change').innerText='\xb10'; $('mp-result-elo-change').className='mp-elo-change neutral'; }
     if($('mp-result-elo-new'))    $('mp-result-elo-new').innerText=(myPD&&myPD.eloBefore)||MP_STARTING_ELO;
-    if($('mp-result-tier'))       $('mp-result-tier').innerText=getEloTierName((myPD&&myPD.eloBefore)||MP_STARTING_ELO);
+    if(tierEl)                    tierEl.innerText=getEloTierName((myPD&&myPD.eloBefore)||MP_STARTING_ELO);
   }
-  // PM reward
+  // PM reward — friendly still earns a small PM bonus
   const pm=Math.min(MP_PM_WIN,safeMoney((data.rewards&&data.rewards[myUid])||0));
   if($('mp-result-pm-val')) $('mp-result-pm-val').innerText='+'+pm.toLocaleString()+' PM';
   // Record
   const p=MP.profile||{};
   if($('mp-result-record')) $('mp-result-record').innerHTML='<strong>'+(p.pvpWins||0)+'W – '+(p.pvpLosses||0)+'L – '+(p.pvpDraws||0)+'D</strong> (KO: '+(p.pvpKos||0)+')';
+  // Buttons — friendly: show "Play Again (Invite)", hide "Find Another Match" & leaderboard
+  const findBtn=$('mp-result-findmatch-btn'), remBtn=$('mp-result-rematch-btn'), lbBtn=$('mp-result-leaderboard-btn');
+  if(isFriendly){
+    if(findBtn) findBtn.style.display='none';
+    if(remBtn)  remBtn.style.display='';
+    if(lbBtn)   lbBtn.style.display='none';
+  } else {
+    if(findBtn) findBtn.style.display='';
+    if(remBtn)  remBtn.style.display='none';
+    if(lbBtn)   lbBtn.style.display='';
+  }
   // Apply ELO + rewards once
   mpApplyEloAndRewards(data);
 }
@@ -13591,53 +13659,63 @@ async function openMpLeaderboard(){
 // INVITE / PLAY A FRIEND
 // ══════════════════════════════════════════════════════════════════════════
 async function openMpInvite(){
+  if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+  MP.lobbyCode=null;
   screen('mp-invite');
-  if($('mp-invite-code-display')) $('mp-invite-code-display').innerText='– – – – – –';
-  const st=$('mp-invite-status');
-  if(st){ st.innerText=''; st.className='mp-invite-status'; }
-  const js=$('mp-join-status');
-  if(js){ js.innerText=''; js.className='mp-invite-status'; }
+  _lobbyShowInitial();
 }
 async function createMpInviteCode(){
   if(!currentUser){ showToast&&showToast('Sign In Required','Sign in to create a lobby.','warning'); return; }
-  await ensureMpProfile();
-  const code=Math.random().toString(36).substr(2,6).toUpperCase();
-  MP.lobbyCode=code;
-  MP.mode='friendly'; MP.isBot=false;
-  if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
-  if($('mp-invite-code-display')) $('mp-invite-code-display').innerText=code;
-  const st=$('mp-invite-status');
-  if(st){ st.innerText='Creating lobby...'; st.className='mp-invite-status'; }
+  const hs=$('lobby-host-status');
+  if(hs){ hs.innerText='Creating lobby…'; hs.className='lobby-status-msg muted'; }
   try{
+    await ensureMpProfile();
+    const code=_generateLobbyCode();
+    MP.lobbyCode=code;
+    MP.mode='friendly'; MP.isBot=false;
+    if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+    // Show waiting panel with code immediately
+    const ini=$('lobby-initial-state'), wai=$('lobby-waiting-state');
+    if(ini) ini.classList.add('hidden');
+    if(wai) wai.classList.remove('hidden');
+    if($('mp-invite-code-display')) $('mp-invite-code-display').innerText=code;
     await db.collection('pvp_lobbies').doc(code).set({
-      code:code,hostUid:currentUser.uid,hostName:MP.profile.displayName||'Boxer',
-      hostCardId:MP.profile.equippedCardId||'cc001',hostElo:MP.profile.elo||MP_STARTING_ELO,
-      hostWins:MP.profile.pvpWins||0,hostLosses:MP.profile.pvpLosses||0,hostDraws:MP.profile.pvpDraws||0,hostKos:MP.profile.pvpKos||0,
-      status:'waiting',createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      code:code, hostUid:currentUser.uid, hostName:MP.profile.displayName||'Boxer',
+      hostCardId:MP.profile.equippedCardId||'cc001', hostElo:MP.profile.elo||MP_STARTING_ELO,
+      hostWins:MP.profile.pvpWins||0, hostLosses:MP.profile.pvpLosses||0,
+      hostDraws:MP.profile.pvpDraws||0, hostKos:MP.profile.pvpKos||0,
+      status:'waiting', createdAt:firebase.firestore.FieldValue.serverTimestamp(),
     });
-    if(st){ st.innerText='Ready! Share this code with your friend.'; st.className='mp-invite-status ok'; }
+    if(hs){ hs.innerText=''; hs.className='lobby-status-msg muted'; }
     MP.lobbyUnsub=db.collection('pvp_lobbies').doc(code).onSnapshot(async function(snap){
       if(!snap.exists||MP.matchId) return;
       const lobby=snap.data();
       if(lobby.status==='matched'&&lobby.matchId){
-        if(st){ st.innerText='Friend joined! Loading match...'; st.className='mp-invite-status ok'; }
+        if(hs){ hs.innerText='Friend joined! Loading match…'; hs.className='lobby-status-msg ok'; }
         if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
         await mpEnterMatch(lobby.matchId);
       }
     },function(e){
       console.warn('[MP] lobby listener:',e);
-      if(st){ st.innerText='Lobby listener failed. Try a new code.'; st.className='mp-invite-status error'; }
+      if(hs){ hs.innerText='Connection issue. Try generating a new code.'; hs.className='lobby-status-msg error'; }
     });
   }catch(e){
-    if(st){ st.innerText='Failed to create lobby. Try again.'; st.className='mp-invite-status error'; }
+    console.error('[MP] createLobby:',e);
+    const hs=$('lobby-host-status');
+    if(hs){ hs.innerText='Failed to create lobby. Check your connection.'; hs.className='lobby-status-msg error'; }
+    _lobbyShowInitial();
   }
 }
 async function joinMpByCode(){
   const inp=$('mp-join-code-input');
   const code=((inp&&inp.value)||'').trim().toUpperCase();
   const st=$('mp-join-status');
-  if(!currentUser){ if(st){ st.innerText='Sign in to join a lobby.'; st.className='mp-invite-status error'; } return; }
-  if(code.length<4){ if(st){ st.innerText='Please enter a valid code.'; st.className='mp-invite-status error'; } return; }
+  function _jErr(msg){ if(st){ st.innerText=msg; st.className='lobby-status-msg error'; } }
+  function _jOk(msg){  if(st){ st.innerText=msg; st.className='lobby-status-msg ok'; } }
+  function _jInfo(msg){ if(st){ st.innerText=msg; st.className='lobby-status-msg muted'; } }
+  if(!currentUser){ _jErr('Sign in to join a lobby.'); return; }
+  if(code.length<6){ _jErr('Please enter the full 6-character code.'); return; }
+  _jInfo('Joining…');
   try{
     await ensureMpProfile();
     MP.mode='friendly'; MP.isBot=false;
@@ -13645,25 +13723,95 @@ async function joinMpByCode(){
     const now=firebase.firestore.FieldValue.serverTimestamp();
     const lobbyRef=db.collection('pvp_lobbies').doc(code);
     const matchRef=db.collection('multiplayer_matches').doc(matchId);
-    const joined=await db.runTransaction(async function(txn){
+    const result=await db.runTransaction(async function(txn){
       const snap=await txn.get(lobbyRef);
-      if(!snap.exists) return {error:'Lobby not found or already started.'};
+      if(!snap.exists) return 'not_found';
       const lobby=snap.data();
-      if(lobby.status!=='waiting') return {error:'Lobby not found or already started.'};
-      if(lobby.hostUid===currentUser.uid) return {error:'You cannot join your own lobby code.'};
+      if(lobby.createdAt){
+        try{ if(Date.now()-lobby.createdAt.toMillis()>20*60*1000) return 'expired'; }catch(_){}
+      }
+      if(lobby.status==='matched'||lobby.status==='full') return 'full';
+      if(lobby.status==='cancelled'||lobby.status==='expired') return 'expired';
+      if(lobby.status!=='waiting') return 'not_found';
+      if(lobby.hostUid===currentUser.uid) return 'self';
       const guestEntry={uid:currentUser.uid,displayName:MP.profile.displayName||'Boxer',elo:MP.profile.elo||MP_STARTING_ELO,equippedCardId:MP.profile.equippedCardId||'cc001',pvpWins:MP.profile.pvpWins||0,pvpLosses:MP.profile.pvpLosses||0,pvpDraws:MP.profile.pvpDraws||0,pvpKos:MP.profile.pvpKos||0};
       const hostEntry={uid:lobby.hostUid,displayName:lobby.hostName||'Boxer',elo:lobby.hostElo||MP_STARTING_ELO,equippedCardId:lobby.hostCardId||'cc001',pvpWins:lobby.hostWins||0,pvpLosses:lobby.hostLosses||0,pvpDraws:lobby.hostDraws||0,pvpKos:lobby.hostKos||0};
       txn.set(matchRef,mpBuildMatchDoc('friendly',guestEntry,hostEntry,matchId,now,false));
       txn.update(lobbyRef,{status:'matched',matchId:matchId,guestUid:currentUser.uid,guestName:MP.profile.displayName||'Boxer',updatedAt:now});
-      return {matchId:matchId};
+      return matchId;
     });
-    if(joined.error){ if(st){ st.innerText=joined.error; st.className='mp-invite-status error'; } return; }
-    if(st){ st.innerText='Joined! Loading match...'; st.className='mp-invite-status ok'; }
-    await mpEnterMatch(joined.matchId);
+    if(result==='not_found'){ _jErr('Lobby not found. Check the code and try again.'); return; }
+    if(result==='full'){ _jErr('This lobby already has two players.'); return; }
+    if(result==='expired'){ _jErr('This lobby has expired. Ask your friend to create a new one.'); return; }
+    if(result==='self'){ _jErr('You cannot join your own lobby.'); return; }
+    _jOk('Joined! Loading match…');
+    await mpEnterMatch(result);
   }catch(e){
-    if(st){ st.innerText='Error joining lobby. Try again.'; st.className='mp-invite-status error'; }
+    _jErr('Error joining lobby. Try again.');
     console.error('[MP] joinByCode:',e);
   }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// LOBBY / INVITE HELPERS
+// ══════════════════════════════════════════════════════════════════════════
+function _lobbyShowInitial(){
+  const ini=$('lobby-initial-state'), wai=$('lobby-waiting-state');
+  if(ini) ini.classList.remove('hidden');
+  if(wai) wai.classList.add('hidden');
+  if($('mp-invite-code-display')) $('mp-invite-code-display').innerText='– – – – – –';
+  const hs=$('lobby-host-status'); if(hs){ hs.innerText=''; hs.className='lobby-status-msg muted'; }
+  const js=$('mp-join-status'); if(js){ js.innerText=''; js.className='lobby-status-msg'; }
+  const ji=$('mp-join-code-input'); if(ji) ji.value='';
+}
+function _generateLobbyCode(){
+  const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // omit 0/O/1/I to avoid confusion
+  let c='';
+  for(let i=0;i<6;i++) c+=ch[Math.floor(Math.random()*ch.length)];
+  return c;
+}
+function _copyLobbyCode(){
+  const code=MP.lobbyCode;
+  if(!code) return;
+  navigator.clipboard.writeText(code)
+    .then(function(){ showToast&&showToast('Copied!','Lobby code copied to clipboard.'); })
+    .catch(function(){ try{ window.prompt('Copy your lobby code:',code); }catch(_){} });
+}
+async function _shareLobbyInvite(){
+  const code=MP.lobbyCode;
+  if(!code) return;
+  const text='Join my UNBEATEN: 50–0 fight lobby! Open the game, go to PvP → Play a Friend, and enter code: '+code;
+  if(navigator.share){
+    try{ await navigator.share({title:'UNBEATEN: 50-0',text:text}); return; }
+    catch(e){ if(e&&e.name==='AbortError') return; }
+  }
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast&&showToast('Invite Copied!','Invite text copied to clipboard.');
+  }catch(e){ try{ window.prompt('Copy invite:',text); }catch(_){} }
+}
+async function _cancelLobby(){
+  const code=MP.lobbyCode;
+  if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+  MP.lobbyCode=null;
+  if(code&&currentUser){
+    db.collection('pvp_lobbies').doc(code)
+      .update({status:'cancelled',updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
+      .catch(function(){});
+  }
+  _lobbyShowInitial();
+}
+function _closeMpInvite(){
+  // Cancel any open lobby in the background then return to mp-home
+  const code=MP.lobbyCode;
+  if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+  MP.lobbyCode=null;
+  if(code&&currentUser){
+    db.collection('pvp_lobbies').doc(code)
+      .update({status:'cancelled',updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
+      .catch(function(){});
+  }
+  screen('mp-home');
 }
 
 // ══════════════════════════════════════════════════════════════════════════
