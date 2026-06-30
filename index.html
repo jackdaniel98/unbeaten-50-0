@@ -3165,6 +3165,23 @@ body.final-card-open{overflow:hidden}
   background:linear-gradient(180deg,rgba(227,178,60,.08) 0%,transparent 100%);
 }
 
+/* ── Season History cards ── */
+.lb-history-season{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);padding:14px 14px 10px;
+  margin-bottom:10px;
+}
+.lhs-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.lhs-badge{
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;
+  color:var(--gold);letter-spacing:.04em;
+}
+.lhs-date{font-size:.65rem;color:var(--muted);font-weight:600}
+.lhs-winner-label{font-size:.6rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:rgba(227,178,60,.6);margin-bottom:6px}
+.lhs-runners{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.lhs-runners-label{font-size:.6rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.lhs-runner{font-size:.7rem;color:var(--text-dim);font-weight:600;background:var(--panel-2);padding:3px 8px;border-radius:20px}
+
 /* ── Draft screen ─ spin card premium ── */
 #draft-screen .spin-card{
   background:linear-gradient(180deg,#0d0f15 0%,#07080b 100%) !important;
@@ -4082,47 +4099,38 @@ header::after{
     <div class="lb-screen-sub">Compete globally. <span>Climb the ranks.</span></div>
   </div>
 
-  <!-- Time tabs -->
+  <!-- Tabs: Season | Daily | Season History -->
   <div class="lb-tab-row">
-    <button id="tab-daily"     class="lb-tab-btn active" onclick="showHofTab('daily')">Daily</button>
-    <button id="tab-seasonal"  class="lb-tab-btn"        onclick="showHofTab('seasonal')">Season</button>
-    <button id="tab-permanent" class="lb-tab-btn"        onclick="showHofTab('permanent')">All-Time</button>
+    <button id="tab-season"  class="lb-tab-btn active" onclick="showHofTab('season')">Season</button>
+    <button id="tab-daily"   class="lb-tab-btn"        onclick="showHofTab('daily')">Daily</button>
+    <button id="tab-history" class="lb-tab-btn"        onclick="showHofTab('history')">History</button>
   </div>
 
-  <!-- Today tab (default) -->
-  <div id="daily-hof-tab">
-    <!-- Stat strip -->
-    <div class="lb-stat-strip">
-      <div class="lss-cell"><span class="lss-label">📅 Date (UTC)</span><span class="lss-value" id="daily-hof-date">—</span></div>
-      <div class="lss-cell"><span class="lss-label">🏆 Careers Completed</span><span class="lss-value" id="daily-hof-count">—</span></div>
-      <div class="lss-cell"><span class="lss-label">👥 Players Active</span><span class="lss-value" id="lb-players-active">—</span></div>
-      <div class="lss-cell"><span class="lss-label">💰 Play Money</span><span class="lss-value gold" data-play-money>0</span></div>
+  <!-- Season tab (default) -->
+  <div id="season-hof-tab">
+    <div class="lb-stat-strip" style="grid-template-columns:repeat(3,1fr)">
+      <div class="lss-cell"><span class="lss-label">🏅 Season</span><span class="lss-value" id="season-number-label">—</span></div>
+      <div class="lss-cell"><span class="lss-label">⏱ Ends In</span><span class="lss-value" id="season-countdown">—</span></div>
+      <div class="lss-cell"><span class="lss-label">🏆 Careers</span><span class="lss-value" id="season-hof-count">—</span></div>
     </div>
-    <!-- Category buttons -->
-    <div class="lb-cat-row">
-      <button class="lb-cat-btn active" onclick="setLbCat('legacy')"><span class="lbc-icon">👑</span>Legacy</button>
-      <button class="lb-cat-btn" onclick="setLbCat('wins')"><span class="lbc-icon">🏆</span>Wins</button>
-      <button class="lb-cat-btn" onclick="setLbCat('ko')"><span class="lbc-icon">💀</span>KO</button>
-      <button class="lb-cat-btn" onclick="setLbCat('collection')"><span class="lbc-icon">🃏</span>Collection</button>
-    </div>
-    <div id="daily-hof-list" class="leaderboard-list"><div class="empty-state">Loading today's leaderboard...</div></div>
-    <div id="lb-view-full-row" style="text-align:center;margin-top:8px;margin-bottom:4px">
-      <button class="btn ghost" style="font-size:.78rem;min-height:42px" onclick="backToMenu(true)">← Back to Menu</button>
-    </div>
-  </div>
-
-  <!-- Season tab -->
-  <div id="seasonal-hof-tab" class="hidden">
-    <div class="lb-stat-strip">
-      <div class="lss-cell" style="grid-column:1/-1"><span class="lss-label">⏱ Season Ends In</span><span class="lss-value" id="season-countdown">Loading...</span></div>
-    </div>
-    <div id="seasonal-hof-list" class="leaderboard-list"><div class="empty-state">Loading season...</div></div>
+    <div id="season-hof-list" class="leaderboard-list"><div class="empty-state">Loading season...</div></div>
     <button class="btn ghost" style="font-size:.78rem;min-height:42px;margin-top:8px" onclick="backToMenu(true)">← Back to Menu</button>
   </div>
 
-  <!-- All-Time tab -->
-  <div id="permanent-hof-tab" class="hidden">
-    <div id="permanent-hof-list" class="leaderboard-list"><div class="empty-state">Loading Hall Of Fame...</div></div>
+  <!-- Daily tab -->
+  <div id="daily-hof-tab" class="hidden">
+    <div class="lb-stat-strip" style="grid-template-columns:repeat(3,1fr)">
+      <div class="lss-cell"><span class="lss-label">📅 Date (UTC)</span><span class="lss-value" id="daily-hof-date">—</span></div>
+      <div class="lss-cell"><span class="lss-label">🏆 Careers</span><span class="lss-value" id="daily-hof-count">—</span></div>
+      <div class="lss-cell"><span class="lss-label">💰 Play Money</span><span class="lss-value gold" data-play-money>0</span></div>
+    </div>
+    <div id="daily-hof-list" class="leaderboard-list"><div class="empty-state">Loading today's leaderboard...</div></div>
+    <button class="btn ghost" style="font-size:.78rem;min-height:42px;margin-top:8px" onclick="backToMenu(true)">← Back to Menu</button>
+  </div>
+
+  <!-- Season History tab -->
+  <div id="history-hof-tab" class="hidden">
+    <div id="history-hof-list" class="leaderboard-list"><div class="empty-state">Loading season history...</div></div>
     <button class="btn ghost" style="font-size:.78rem;min-height:42px;margin-top:8px" onclick="backToMenu(true)">← Back to Menu</button>
   </div>
 </section>
@@ -12633,9 +12641,7 @@ function hofCard(entry, rank, showSeason=false, showTime=false){
     +'</div>'
   +'</button>';
 }
-function renderDailyHofList(cat){
-  _dailyHofCat=cat;
-  document.querySelectorAll('.lb-cat-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick').includes("'"+cat+"'")));
+function renderDailyHofList(){
   const box=$('daily-hof-list');
   if(!box) return;
   if(!_dailyHofRows.length){
@@ -12643,17 +12649,10 @@ function renderDailyHofList(cat){
     box.innerHTML='<div class="empty-state">No daily leaderboard entries yet. Complete a career today to appear here.</div>';
     return;
   }
-  const sortKey={
-    legacy:e=>e.careerLegacyScore||0,
-    wins:e=>e.wins||0,
-    ko:e=>e.koWins||0,
-    collection:e=>Object.keys(e.ownedCardItems||{}).length,
-  }[cat]||(e=>e.careerLegacyScore||0);
-  const rows=_dailyHofRows.slice().sort((a,b)=>sortKey(b)-sortKey(a));
+  const rows=_dailyHofRows.slice().sort((a,b)=>(b.careerLegacyScore||0)-(a.careerLegacyScore||0));
   box.innerHTML=rows.map((entry,i)=>hofCard(entry,i+1,false,true)).join('');
 }
 async function loadDailyLeaderboard(){
-  _dailyHofCat='legacy';
   const box=$('daily-hof-list');
   box.innerHTML='<div class="empty-state">Loading today\'s leaderboard...</div>';
   try{
@@ -12668,8 +12667,8 @@ async function loadDailyLeaderboard(){
       .get();
     _dailyHofRows=snap.docs.map(d=>d.data());
     console.log('[LEADERBOARD] daily entries loaded: '+_dailyHofRows.length);
-    if($('daily-hof-count')) $('daily-hof-count').innerText=_dailyHofRows.length+(_dailyHofRows.length===100?' (showing top 100)':'');
-    renderDailyHofList(_dailyHofCat);
+    if($('daily-hof-count')) $('daily-hof-count').innerText=_dailyHofRows.length+(_dailyHofRows.length===100?' (top 100)':'');
+    renderDailyHofList();
   }catch(e){
     console.error(e);
     _dailyHofRows=[];
@@ -12687,16 +12686,19 @@ async function loadPermanentHallOfFame(){
   }catch(e){ box.innerHTML='<div class="empty-state">Unable to load Hall Of Fame.</div>'; console.error(e); }
 }
 async function loadSeasonalHallOfFame(){
-  const box=$('seasonal-hof-list');
+  const box=$('season-hof-list');
+  if(!box) return;
   box.innerHTML='<div class="empty-state">Loading season...</div>';
   try{
     const season=await ensureCurrentSeason();
+    if($('season-number-label')) $('season-number-label').innerText='#'+season.seasonNumber;
     startSeasonCountdown(season);
     const snap=await db.collection('seasonal_hall_of_fame').where('seasonId','==',season.id).get();
     const rows=snap.docs.map(d=>d.data()).sort((a,b)=>(b.careerLegacyScore||0)-(a.careerLegacyScore||0)).slice(0,30);
     console.log('[LEADERBOARD] season entries loaded: '+rows.length);
-    box.innerHTML=!rows.length?'<div class="empty-state">No seasonal careers yet.</div>':rows.map((entry,i)=>hofCard(entry,i+1)).join('');
-  }catch(e){ box.innerHTML='<div class="empty-state">Unable to load seasonal leaderboard.</div>'; console.error(e); }
+    if($('season-hof-count')) $('season-hof-count').innerText=rows.length+(snap.size===30?' (top 30)':'');
+    box.innerHTML=!rows.length?'<div class="empty-state">No careers submitted this season yet. Complete a 50-0 career to appear here.</div>':rows.map((entry,i)=>hofCard(entry,i+1)).join('');
+  }catch(e){ box.innerHTML='<div class="empty-state">Unable to load season leaderboard.</div>'; console.error(e); }
 }
 function startSeasonCountdown(season){
   clearInterval(seasonTimer);
@@ -12710,22 +12712,56 @@ function startSeasonCountdown(season){
 }
 function showHofTab(tab){
   console.log('[LEADERBOARD] selected tab: '+tab);
-  ['permanent','seasonal','daily'].forEach(t=>{
+  ['season','daily','history'].forEach(t=>{
     const btn=$('tab-'+t); if(btn) btn.classList.toggle('active',t===tab);
     const panel=$(t+'-hof-tab'); if(panel) panel.classList.toggle('hidden',t!==tab);
   });
-  if(tab==='permanent') loadPermanentHallOfFame();
-  if(tab==='seasonal') loadSeasonalHallOfFame();
+  if(tab==='season') loadSeasonalHallOfFame();
   if(tab==='daily') loadDailyLeaderboard();
+  if(tab==='history') loadSeasonHistory();
 }
 function openHallOfFame(){
   console.log('[LEADERBOARD] rendering screen');
   screen('global-hof-screen');
   updateBottomNav('global-hof-screen');
-  showHofTab('daily');
+  showHofTab('season');
 }
-function setLbCat(cat){
-  renderDailyHofList(cat);
+function setLbCat(cat){ renderDailyHofList(); }
+function seasonHistoryCard(doc){
+  const num=doc.seasonNumber||'?';
+  const endedAt=doc.endedAt?new Date(doc.endedAt).toLocaleDateString([],{year:'numeric',month:'short',day:'numeric'}):'—';
+  const winner=doc.winner;
+  const winnerHtml=winner
+    ?hofCard(winner,1,false,false)
+    :'<div class="empty-state" style="margin:0">No winner recorded.</div>';
+  const extra=doc.top10&&doc.top10.length>1
+    ?'<div class="lhs-runners"><span class="lhs-runners-label">Runners Up:</span>'
+      +doc.top10.slice(1,4).map((e,i)=>'<span class="lhs-runner">#'+(i+2)+' '+htmlEscape(e.fighterName||'Unknown')+'</span>').join('')
+      +'</div>'
+    :'';
+  return '<div class="lb-history-season">'
+    +'<div class="lhs-header"><span class="lhs-badge">Season '+num+'</span><span class="lhs-date">'+endedAt+'</span></div>'
+    +'<div class="lhs-winner-label">👑 Season Winner</div>'
+    +winnerHtml
+    +extra
+    +'</div>';
+}
+async function loadSeasonHistory(){
+  const box=$('history-hof-list');
+  if(!box) return;
+  box.innerHTML='<div class="empty-state">Loading season history...</div>';
+  try{
+    const snap=await db.collection('season_history').orderBy('seasonNumber','desc').limit(20).get();
+    console.log('[LEADERBOARD] season history loaded: '+snap.size);
+    if(snap.empty){
+      box.innerHTML='<div class="empty-state">No completed seasons yet. Check back after this season ends.</div>';
+      return;
+    }
+    box.innerHTML=snap.docs.map(d=>seasonHistoryCard(d.data())).join('');
+  }catch(e){
+    console.error(e);
+    box.innerHTML='<div class="empty-state">Unable to load season history.</div>';
+  }
 }
 // Bottom nav routing
 const NAV_SCREEN_MAP={
