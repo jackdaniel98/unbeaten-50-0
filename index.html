@@ -1491,6 +1491,25 @@ h2:first-child{margin-top:6px}
 .mp-result-pm-val{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.12rem;color:var(--gold)}
 .mp-result-record-row{font-size:.63rem;color:var(--text-dim);text-align:center;margin-bottom:8px}
 .mp-result-record-row strong{color:#fff}
+.mp-breakdown{
+  background:#07090d;border:1px solid rgba(227,178,60,.2);border-radius:var(--radius);
+  padding:11px 12px;margin:8px 0 10px;width:100%;box-sizing:border-box;
+  box-shadow:0 0 0 1px rgba(255,255,255,.02) inset;
+}
+.mp-breakdown-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.05rem;letter-spacing:.5px;color:var(--gold);margin-bottom:4px}
+.mp-breakdown-title.win{color:#4ade80}.mp-breakdown-title.loss{color:#e05252}.mp-breakdown-title.draw{color:var(--gold)}
+.mp-breakdown-main{font-size:.74rem;line-height:1.45;color:#fff;font-weight:800;margin-bottom:9px}
+.mp-breakdown-section{margin-top:9px}
+.mp-breakdown-section h4{margin:0 0 5px;font-size:.55rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.mp-breakdown-list{display:flex;flex-direction:column;gap:5px;margin:0;padding:0;list-style:none}
+.mp-breakdown-list li{font-size:.66rem;line-height:1.42;color:var(--text);padding-left:13px;position:relative}
+.mp-breakdown-list li:before{content:'';position:absolute;left:0;top:.48em;width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.mp-breakdown-list li.good:before{background:#4ade80}.mp-breakdown-list li.warn:before{background:#fb923c}.mp-breakdown-list li.bad:before{background:#e05252}
+.mp-build-read{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:5px}
+.mp-build-read-item{background:#0a0b0e;border:1px solid var(--line);border-radius:6px;padding:6px 7px;min-width:0}
+.mp-build-read-item span{display:block;font-size:.48rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);margin-bottom:2px}
+.mp-build-read-item strong{display:block;font-size:.68rem;color:#fff;line-height:1.25;overflow-wrap:anywhere}
+.mp-build-read-item.good strong{color:#4ade80}.mp-build-read-item.warn strong{color:#fb923c}.mp-build-read-item.bad strong{color:#e05252}
 
 /* ── Leaderboard ── */
 .mp-lb-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px}
@@ -4449,6 +4468,7 @@ header::after{
     <span class="mp-result-pm-val" id="mp-result-pm-val">+300 PM</span>
   </div>
   <div class="mp-result-record-row" id="mp-result-record"><strong>0W – 0L – 0D</strong> (KO: 0)</div>
+  <div id="mp-result-breakdown" class="mp-breakdown"></div>
   <button class="btn gold" id="mp-result-leaderboard-btn" onclick="openMpLeaderboard()">🏆 View Leaderboard</button>
   <button class="btn blue" id="mp-result-rematch-btn" style="margin-top:7px;display:none" onclick="openMpInvite()">Play Again (Invite)</button>
   <button class="btn blue" id="mp-result-findmatch-btn" style="margin-top:7px" onclick="startMpSearch(MP.mode||'ranked')">Find Another Match</button>
@@ -14772,6 +14792,192 @@ function mpShowFightResult(data){
 // ══════════════════════════════════════════════════════════════════════════
 // RESULT SCREEN — identical display for both clients
 // ══════════════════════════════════════════════════════════════════════════
+function mpBreakdownNum(v,fb=0){
+  const n=Number(v);
+  return Number.isFinite(n)?n:fb;
+}
+function mpBreakdownStat(v){
+  const n=Math.round(mpBreakdownNum(v,0)*10)/10;
+  return Math.abs(n-Math.round(n))<.05?String(Math.round(n)):n.toFixed(1);
+}
+function mpBreakdownSigned(v){
+  const n=Math.round(mpBreakdownNum(v,0)*10)/10;
+  return (n>=0?'+':'')+(Math.abs(n-Math.round(n))<.05?String(Math.round(n)):n.toFixed(1));
+}
+function mpGetOpponentUid(match,uid){
+  return match&&match.playerOrder&&match.playerOrder.find(function(u){ return u!==uid; });
+}
+function mpGetPlayerBuild(match,uid){
+  return match&&match.players&&match.players[uid]&&match.players[uid].finalBuild||null;
+}
+function mpBreakdownPlayerName(match,uid,fallback){
+  return (match&&match.players&&match.players[uid]&&match.players[uid].displayName)||fallback||'Opponent';
+}
+function mpBreakdownStats(build){
+  const s=getMpEffStats(build)||{};
+  const out={};
+  mpGetStats().forEach(function(st){
+    const raw=s[st]!=null?s[st]:(st==='Ring IQ'&&s.IQ!=null?s.IQ:70);
+    out[st]=mpBreakdownNum(raw,70);
+  });
+  return out;
+}
+function mpStrongestStat(stats){
+  const list=Object.entries(stats||{}).sort(function(a,b){ return mpBreakdownNum(b[1])-mpBreakdownNum(a[1]); });
+  return list[0]?{stat:list[0][0],value:list[0][1]}:{stat:'Overall',value:70};
+}
+function mpCompareStats(myBuild,oppBuild){
+  const myStats=mpBreakdownStats(myBuild), oppStats=mpBreakdownStats(oppBuild);
+  const diffs=mpGetStats().map(function(st){
+    return {stat:st,my:myStats[st]||70,opp:oppStats[st]||70,diff:(myStats[st]||70)-(oppStats[st]||70)};
+  }).sort(function(a,b){ return Math.abs(b.diff)-Math.abs(a.diff); });
+  const myAdv=diffs.filter(function(d){ return d.diff>0; }).sort(function(a,b){ return b.diff-a.diff; });
+  const oppAdv=diffs.filter(function(d){ return d.diff<0; }).sort(function(a,b){ return a.diff-b.diff; });
+  return {myStats:myStats,oppStats:oppStats,diffs:diffs,myAdv:myAdv,oppAdv:oppAdv,myStrong:mpStrongestStat(myStats),oppStrong:mpStrongestStat(oppStats)};
+}
+function mpCardBoostSummary(build){
+  const boosts=build&&build.cardBoosts&&typeof build.cardBoosts==='object'?build.cardBoosts:{};
+  const entries=Object.entries(boosts).map(function(entry){ return {stat:entry[0],val:mpBreakdownNum(entry[1],0)}; })
+    .filter(function(e){ return e.val>0; })
+    .sort(function(a,b){ return b.val-a.val; });
+  const total=entries.reduce(function(sum,e){ return sum+e.val; },0);
+  if(total<=0) return 'No card boost recorded';
+  const top=entries.slice(0,2).map(function(e){ return mpBreakdownSigned(e.val)+' '+e.stat; }).join(', ');
+  return mpBreakdownSigned(total)+' total'+(top?' ('+top+')':'');
+}
+function mpSummariseRounds(match,uid){
+  const result=(match&&match.result)||{};
+  const oppUid=mpGetOpponentUid(match,uid);
+  const highlights=Array.isArray(match&&match.fightHighlights)?match.fightHighlights:[];
+  const scores=mpScoresForViewer(result,uid);
+  const summary={rounds:highlights.length||result.roundEnded||0,myRounds:0,oppRounds:0,evenRounds:0,earlyMy:0,earlyOpp:0,lateMy:0,lateOpp:0,myScore:mpBreakdownNum(scores.my,0),oppScore:mpBreakdownNum(scores.opp,0)};
+  highlights.forEach(function(r,idx){
+    const rn=mpBreakdownNum(r.round,idx+1);
+    if(r.roundWinnerUid===uid){
+      summary.myRounds++;
+      if(rn<=4) summary.earlyMy++;
+      if(rn>=9) summary.lateMy++;
+    } else if(r.roundWinnerUid===oppUid){
+      summary.oppRounds++;
+      if(rn<=4) summary.earlyOpp++;
+      if(rn>=9) summary.lateOpp++;
+    } else {
+      summary.evenRounds++;
+    }
+  });
+  summary.scoreMargin=summary.myScore-summary.oppScore;
+  summary.roundMargin=summary.myRounds-summary.oppRounds;
+  return summary;
+}
+function mpBreakdownEvents(match){
+  const highlights=Array.isArray(match&&match.fightHighlights)?match.fightHighlights:[];
+  return highlights.flatMap(function(r){ return Array.isArray(r.events)?r.events:[]; }).map(function(e){ return String(e||''); });
+}
+function mpDirectedEventCount(match,attackerUid,defenderUid,kind){
+  const attacker=mpBreakdownPlayerName(match,attackerUid,'').toLowerCase();
+  const defender=mpBreakdownPlayerName(match,defenderUid,'').toLowerCase();
+  if(!attacker||!defender) return 0;
+  return mpBreakdownEvents(match).filter(function(ev){
+    const text=ev.toLowerCase();
+    if(!text.includes(attacker)||!text.includes(defender)||text.indexOf(attacker)>text.indexOf(defender)) return false;
+    if(kind==='knockdown') return /knockdown|canvas|flattened|dropped|drops|no count/.test(text);
+    return /rocks|big shot|referee watches|legs buckle|monster shot|heavy combination|brutal/.test(text);
+  }).length;
+}
+function mpGetKnockdownCount(match,uid){
+  const oppUid=mpGetOpponentUid(match,uid);
+  return {
+    for:mpDirectedEventCount(match,uid,oppUid,'knockdown'),
+    against:mpDirectedEventCount(match,oppUid,uid,'knockdown'),
+    pressureFor:mpDirectedEventCount(match,uid,oppUid,'pressure'),
+    pressureAgainst:mpDirectedEventCount(match,oppUid,uid,'pressure'),
+  };
+}
+function mpGetDecisionType(result){
+  const m=String(result&&result.method||'Decision');
+  if(/ko|tko|retirement/i.test(m)) return 'finish';
+  if(/draw|no contest|tie/i.test(m)||(result&&result.winnerUid==='draw')) return 'draw';
+  return 'decision';
+}
+function mpAddBreakdownLine(list,text,tone){
+  if(text&&!list.some(function(item){ return item.text===text; })) list.push({text:text,tone:tone||''});
+}
+function mpBuildFightBreakdown(match,currentUid){
+  const result=(match&&match.result)||{};
+  const oppUid=mpGetOpponentUid(match,currentUid);
+  const myBuild=mpGetPlayerBuild(match,currentUid);
+  const oppBuild=mpGetPlayerBuild(match,oppUid);
+  const comp=mpCompareStats(myBuild,oppBuild);
+  const rounds=mpSummariseRounds(match,currentUid);
+  const kd=mpGetKnockdownCount(match,currentUid);
+  const decisionType=mpGetDecisionType(result);
+  const isDraw=result.winnerUid==='draw'||decisionType==='draw';
+  const won=!isDraw&&result.winnerUid===currentUid;
+  const lost=!isDraw&&!won;
+  const myBest=comp.myAdv[0], oppBest=comp.oppAdv[0];
+  const title=isDraw?'Why It Was Close':won?'Why You Won':'Why You Lost';
+  const tone=isDraw?'draw':won?'win':'loss';
+  let mainReason='The stored fight data was limited, so this read is based on the final result and available builds.';
+  if(isDraw){
+    mainReason='Both fighters split the important rounds, so the stored cards stayed tight.';
+  } else if(decisionType==='finish'&&won){
+    mainReason='You won because your pressure forced the finish before the cards could decide it.';
+  } else if(decisionType==='finish'&&lost){
+    mainReason="You lost because your opponent's pressure broke through before you could take control.";
+  } else if(won){
+    mainReason='You controlled enough rounds with the cleaner build advantages on the cards.';
+  } else {
+    mainReason='Your opponent edged more rounds with the cleaner scoring and stronger build advantages.';
+  }
+  if(rounds.earlyMy>rounds.earlyOpp&&rounds.lateMy<rounds.lateOpp&&lost) mainReason='You were ahead early, but the late rounds swung away from you.';
+  if(rounds.earlyMy<rounds.earlyOpp&&rounds.lateMy>rounds.lateOpp&&won) mainReason='You recovered after a slow start and took the fight late.';
+
+  const factors=[];
+  if(rounds.rounds) mpAddBreakdownLine(factors,'You won '+rounds.myRounds+' of '+rounds.rounds+' scored rounds.',won?'good':lost?'bad':'warn');
+  if(rounds.myScore||rounds.oppScore) mpAddBreakdownLine(factors,'Final stored cards: You '+rounds.myScore+', Opponent '+rounds.oppScore+'.',rounds.scoreMargin>0?'good':rounds.scoreMargin<0?'bad':'warn');
+  if(kd.for>0) mpAddBreakdownLine(factors,'You scored '+kd.for+' knockdown'+(kd.for===1?'':'s')+' or canvas moment'+(kd.for===1?'':'s')+'.','good');
+  if(kd.against>0) mpAddBreakdownLine(factors,'Your opponent scored '+kd.against+' knockdown'+(kd.against===1?'':'s')+' or canvas moment'+(kd.against===1?'':'s')+'.','bad');
+  if(kd.for===0&&kd.pressureFor>0) mpAddBreakdownLine(factors,'You created '+kd.pressureFor+' major power moment'+(kd.pressureFor===1?'':'s')+'.','good');
+  if(kd.against===0&&kd.pressureAgainst>0) mpAddBreakdownLine(factors,'Your opponent created '+kd.pressureAgainst+' major power moment'+(kd.pressureAgainst===1?'':'s')+'.','bad');
+  if(myBest&&myBest.diff>=1) mpAddBreakdownLine(factors,'Your '+myBest.stat+' was '+mpBreakdownSigned(myBest.diff)+' higher than your opponent.',won?'good':'warn');
+  if(oppBest&&Math.abs(oppBest.diff)>=1) mpAddBreakdownLine(factors,"Opponent's "+oppBest.stat+' was '+mpBreakdownSigned(Math.abs(oppBest.diff))+' higher than yours.',lost?'bad':'warn');
+  if(rounds.lateMy>rounds.lateOpp) mpAddBreakdownLine(factors,'You took the late-round swing '+rounds.lateMy+'-'+rounds.lateOpp+'.',won?'good':'warn');
+  if(rounds.lateMy<rounds.lateOpp) mpAddBreakdownLine(factors,'Your opponent took the late-round swing '+rounds.lateOpp+'-'+rounds.lateMy+'.',lost?'bad':'warn');
+  if(!factors.length) mpAddBreakdownLine(factors,'The result came from the stored winner, scorecards, and final builds.','warn');
+
+  const buildRead=[
+    {label:'Your strongest stat',value:comp.myStrong.stat+' '+mpBreakdownStat(comp.myStrong.value),tone:'good'},
+    {label:"Opponent's strongest",value:comp.oppStrong.stat+' '+mpBreakdownStat(comp.oppStrong.value),tone:'warn'},
+    {label:'Biggest advantage',value:myBest&&myBest.diff>=1?myBest.stat+' '+mpBreakdownSigned(myBest.diff):'No clear stat edge',tone:myBest&&myBest.diff>=1?'good':'warn'},
+    {label:'Opponent danger stat',value:oppBest&&Math.abs(oppBest.diff)>=1?oppBest.stat+' '+mpBreakdownSigned(Math.abs(oppBest.diff)):comp.oppStrong.stat+' '+mpBreakdownStat(comp.oppStrong.value),tone:'bad'},
+    {label:'Equipped card boost',value:mpCardBoostSummary(myBuild),tone:'good'},
+  ];
+
+  const tips=[];
+  if(lost&&decisionType==='finish') mpAddBreakdownLine(tips,'Improve Chin, Defence, or Recovery to survive big shots.','bad');
+  if(lost&&decisionType==='decision') mpAddBreakdownLine(tips,'Improve Accuracy, Ring IQ, and Stamina to win more rounds.','bad');
+  if(lost&&kd.against+kd.pressureAgainst>0) mpAddBreakdownLine(tips,'Powerful opponents can steal close rounds - boost Defence and Chin.','bad');
+  if(won&&decisionType==='finish') mpAddBreakdownLine(tips,'Your Power worked, but keep Defence high so you do not get caught first.','good');
+  if(won&&Math.abs(rounds.scoreMargin)<=4) mpAddBreakdownLine(tips,'You won, but the scorecards were close. More Stamina or Accuracy would make this safer.','warn');
+  if(isDraw) mpAddBreakdownLine(tips,'Add Accuracy, Ring IQ, or Stamina to separate close rounds next time.','warn');
+  if(!tips.length&&won) mpAddBreakdownLine(tips,'Keep building around your best stat while covering the opponent danger stat.','good');
+  if(!tips.length) mpAddBreakdownLine(tips,'Review the build read and target the biggest opponent advantage.','warn');
+
+  return {title:title,tone:tone,mainReason:mainReason,keyFactors:factors.slice(0,5),buildRead:buildRead,tips:tips.slice(0,3)};
+}
+function mpFightBreakdownHtml(breakdown){
+  if(!breakdown) return '';
+  const factors=(breakdown.keyFactors||[]).map(function(item){ return '<li class="'+mpEscape(item.tone||'')+'">'+mpEscape(item.text)+'</li>'; }).join('');
+  const build=(breakdown.buildRead||[]).map(function(item){
+    return '<div class="mp-build-read-item '+mpEscape(item.tone||'')+'"><span>'+mpEscape(item.label)+'</span><strong>'+mpEscape(item.value)+'</strong></div>';
+  }).join('');
+  const tips=(breakdown.tips||[]).map(function(item){ return '<li class="'+mpEscape(item.tone||'')+'">'+mpEscape(item.text)+'</li>'; }).join('');
+  return '<div class="mp-breakdown-title '+mpEscape(breakdown.tone||'')+'">'+mpEscape(breakdown.title)+'</div>'
+    +'<div class="mp-breakdown-main">'+mpEscape(breakdown.mainReason||'Fight data was limited, but the stored result was used for this read.')+'</div>'
+    +'<div class="mp-breakdown-section"><h4>Key Factors</h4><ul class="mp-breakdown-list">'+factors+'</ul></div>'
+    +'<div class="mp-breakdown-section"><h4>Build Read</h4><div class="mp-build-read">'+build+'</div></div>'
+    +'<div class="mp-breakdown-section"><h4>Improve Next Time</h4><ul class="mp-breakdown-list">'+tips+'</ul></div>';
+}
 function mpRenderResult(data){
   if(!data||!data.result||!currentUser) return;
   screen('mp-result');
@@ -14823,6 +15029,8 @@ function mpRenderResult(data){
   // Record
   const p=MP.profile||{};
   if($('mp-result-record')) $('mp-result-record').innerHTML='<strong>'+(p.pvpWins||0)+'W – '+(p.pvpLosses||0)+'L – '+(p.pvpDraws||0)+'D</strong> (KO: '+(p.pvpKos||0)+')';
+  const breakdownEl=$('mp-result-breakdown');
+  if(breakdownEl) breakdownEl.innerHTML=mpFightBreakdownHtml(mpBuildFightBreakdown(data,myUid));
   // Buttons — friendly: show "Play Again (Invite)", hide "Find Another Match" & leaderboard
   const findBtn=$('mp-result-findmatch-btn'), remBtn=$('mp-result-rematch-btn'), lbBtn=$('mp-result-leaderboard-btn');
   if(isFriendly){
