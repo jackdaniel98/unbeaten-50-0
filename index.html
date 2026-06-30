@@ -4300,7 +4300,7 @@ header::after{
 <!-- 3. MP Matchup / VS Screen -->
 <section id="mp-matchup" class="screen">
   <div class="mp-header">
-    <button class="mp-header-back" onclick="cancelMpSearch();screen('mp-home')">‹ Back</button>
+    <button class="mp-header-back" onclick="mpReturnToLobbyFromMatch()">‹ Back</button>
     <span class="mp-brand">MATCH FOUND</span>
     <span class="mp-vs-mode-tag" id="mp-matchup-mode-tag">RANKED</span>
   </div>
@@ -4331,7 +4331,7 @@ header::after{
   <div id="mp-matchup-actions" style="margin-top:12px;display:flex;flex-direction:column;gap:7px">
     <button id="mp-matchup-start-btn" class="btn gold" onclick="startMpDraft()">Start Draft →</button>
     <div id="mp-matchup-guest-wait" style="display:none;text-align:center;padding:10px 0;color:var(--gold);font-size:.78rem;font-weight:700">Waiting for your friend to start the draft…</div>
-    <button class="btn ghost" onclick="cancelMpSearch();screen('mp-home')">Back to Lobby</button>
+    <button class="btn ghost" onclick="mpReturnToLobbyFromMatch()">Back to Lobby</button>
   </div>
 </section>
 
@@ -4452,7 +4452,7 @@ header::after{
   <button class="btn gold" id="mp-result-leaderboard-btn" onclick="openMpLeaderboard()">🏆 View Leaderboard</button>
   <button class="btn blue" id="mp-result-rematch-btn" style="margin-top:7px;display:none" onclick="openMpInvite()">Play Again (Invite)</button>
   <button class="btn blue" id="mp-result-findmatch-btn" style="margin-top:7px" onclick="startMpSearch(MP.mode||'ranked')">Find Another Match</button>
-  <button class="btn ghost" style="margin-top:7px" onclick="screen('mp-home');renderMpHome()">Back to PvP Lobby</button>
+  <button class="btn ghost" style="margin-top:7px" onclick="mpReturnHomeAfterComplete()">Back to PvP Lobby</button>
   <button class="btn ghost" style="margin-top:7px" onclick="closeMpHome()">Return to Menu</button>
 </section>
 
@@ -13451,6 +13451,7 @@ let MP = {
   pvpBotMode:false, _pvpBotCareerBackup:undefined,
   pvpDraftMode:false, _pvpCareerBackup:undefined,
   _fightData:null, _fightRoundIdx:0,
+  _simRecoveryTimer:null,
   // PvP state-machine guard flags
   _pvpDraftInitialized:false,  // true once mpBeginSPDraft / startMpDraft has been entered
   _pvpDraftSubmitted:false,    // true once _pvpSubmitSPBuild has been called
@@ -13527,6 +13528,54 @@ function mpScoresForViewer(result,myUid){
   if(!result) return {my:0,opp:0};
   if(result.myUid&&result.myUid!==myUid) return {my:result.oppScore||0,opp:result.myScore||0};
   return {my:result.myScore||0,opp:result.oppScore||0};
+}
+function mpTimestampMs(ts){
+  try{ if(ts&&typeof ts.toMillis==='function') return ts.toMillis(); }catch(_){}
+  if(typeof ts==='number') return ts;
+  return 0;
+}
+function mpModeLabel(data){
+  const mode=(data&&data.mode)||MP.mode;
+  if(mode==='ranked') return 'RANKED';
+  if(mode==='bot') return 'BOT';
+  return 'FRIENDLY';
+}
+async function mpClearCurrentQueueEntry(){
+  if(!currentUser) return;
+  try{
+    await db.collection('matchmaking_queue').doc(currentUser.uid).delete();
+    console.log('[MP] Cleared own matchmaking queue entry.');
+  }catch(e){
+    console.warn('[MP] queue cleanup failed:',e);
+  }
+}
+async function mpReturnToLobbyFromMatch(){
+  const matchId=MP.matchId;
+  const data=MP.matchData;
+  const phase=data&&data.phase;
+  if(matchId&&currentUser&&data&&phase&&phase!=='complete'&&phase!=='cancelled'){
+    try{
+      await db.collection('multiplayer_matches').doc(matchId).update({
+        status:'cancelled',
+        phase:'cancelled',
+        leftUid:currentUser.uid,
+        leftAt:firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      console.log('[MP] Active match cancelled by current player. matchId='+matchId);
+    }catch(e){
+      console.warn('[MP] failed to mark match cancelled:',e);
+      showToast&&showToast('PvP Warning','Could not notify opponent that you left.','warning');
+    }
+  }
+  mpCleanup();
+  screen('mp-home');
+  renderMpHome();
+}
+function mpReturnHomeAfterComplete(){
+  mpCleanup();
+  screen('mp-home');
+  renderMpHome();
 }
 function mpAwardPlayMoney(pm){
   const amount=Math.min(MP_PM_WIN,safeMoney(pm||0));
@@ -13834,6 +13883,7 @@ async function mpEnterMatch(matchId){
   MP._pvpDraftInitialized=false;  // reset per-match guard
   MP._pvpDraftSubmitted=false;
   console.log('[PVP_FLOW] mpEnterMatch: matchId='+matchId+' uid='+(currentUser&&currentUser.uid));
+  mpClearCurrentQueueEntry();
   try{
     const snap=await db.collection('multiplayer_matches').doc(matchId).get();
     if(!snap.exists){ showToast&&showToast('Error','Match not found.','warning'); screen('mp-home'); return; }
@@ -13859,6 +13909,19 @@ function mpOnPhaseChange(data){
   const phase=data&&data.phase;
   const myUid=currentUser&&currentUser.uid;
   const prev=MP._handledPhase;
+
+  if((data&&data.status==='cancelled')||phase==='cancelled'){
+    if(prev==='cancelled') return;
+    MP._handledPhase='cancelled';
+    if(data&&data.leftUid&&data.leftUid!==myUid){
+      showToast&&showToast('Opponent Left','The match was cancelled. Returning to the PvP lobby.','warning');
+      console.log('[MP] Opponent left match. matchId='+MP.matchId+' leftUid='+data.leftUid);
+    }
+    mpCleanup();
+    screen('mp-home');
+    renderMpHome();
+    return;
+  }
 
   // ── 'drafting' is a multi-step sub-state; handle it separately ──────────
   if(phase==='drafting'){
@@ -13918,6 +13981,7 @@ function mpOnPhaseChange(data){
 }
 function mpCleanup(){
   clearInterval(MP.searchInterval); clearInterval(MP.draftTimerInterval);
+  if(MP._simRecoveryTimer){ clearTimeout(MP._simRecoveryTimer); MP._simRecoveryTimer=null; }
   if(MP.queueUnsub){ MP.queueUnsub(); MP.queueUnsub=null; }
   if(MP.matchUnsub){ MP.matchUnsub(); MP.matchUnsub=null; }
   if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
@@ -13936,7 +14000,7 @@ function mpCleanup(){
     searchInterval:null,draftTimerInterval:null,lobbyCode:null,searchBusy:false,_handledPhase:null,
     pvpBotMode:false,_pvpBotCareerBackup:undefined,
     pvpDraftMode:false,_pvpCareerBackup:undefined,
-    _fightData:null,_fightRoundIdx:0,
+    _fightData:null,_fightRoundIdx:0,_simRecoveryTimer:null,
     _pvpDraftInitialized:false,_pvpDraftSubmitted:false});
 }
 
@@ -14049,7 +14113,7 @@ function mpShowMatchup(data){
   const opp=data.players[oppUid];
   if(!me||!opp) return;
   const modeTag=$('mp-matchup-mode-tag');
-  if(modeTag) modeTag.innerText=data.mode==='ranked'?'RANKED':'FRIENDLY';
+  if(modeTag) modeTag.innerText=mpModeLabel(data);
   const botTag=$('mp-matchup-bot-tag');
   if(botTag) botTag.style.display=data.isBot?'inline-block':'none';
   const _myMUCard=COLLECTIBLE_CARDS.find(function(c){return c.id===(me.equippedCardId||'cc001');})||COLLECTIBLE_CARDS[0];
@@ -14113,7 +14177,14 @@ async function startMpDraft(){
       if(snap.exists) MP.matchData=snap.data();
     }catch(e){ console.warn('[MP] draft preload:',e); }
   }
-  if(!MP.matchId||!MP.matchData){ screen('mp-matchup'); return; }
+  if(!MP.matchId||!MP.matchData){ MP._pvpDraftInitialized=false; screen('mp-matchup'); return; }
+  const _friendGuestWaiting=MP.matchData.mode==='friendly'&&!MP.matchData.isBot&&MP.matchData.hostUid&&MP.matchData.hostUid!==currentUser.uid&&MP.matchData.phase==='matched';
+  if(_friendGuestWaiting){
+    console.log('[PVP] Guest tried to start friend draft before host. Waiting for host. matchId='+MP.matchId);
+    MP._pvpDraftInitialized=false;
+    mpShowMatchup(MP.matchData);
+    return;
+  }
   let latestData=null;
   try{
     const ref=db.collection('multiplayer_matches').doc(MP.matchId);
@@ -14146,13 +14217,15 @@ async function startMpDraft(){
       mpBeginSPDraft(localData);
       return;
     }
+    MP._pvpDraftInitialized=false;
     showToast&&showToast('PvP Error','Could not start the draft. Try again.');
     screen('mp-matchup');
     return;
   }
-  if(!latestData){ screen('mp-matchup'); return; }
+  if(!latestData){ MP._pvpDraftInitialized=false; screen('mp-matchup'); return; }
   MP.matchData=latestData;
   if(latestData.phase!=='drafting'){
+    MP._pvpDraftInitialized=false;
     mpOnPhaseChange(latestData);
     return;
   }
@@ -14380,6 +14453,7 @@ async function mpSubmitBuild(){
 // ══════════════════════════════════════════════════════════════════════════
 function mpShowReveal(data){
   if(!data||!currentUser) return;
+  if(MP._simRecoveryTimer){ clearTimeout(MP._simRecoveryTimer); MP._simRecoveryTimer=null; }
   screen('mp-reveal');
   const myUid=currentUser.uid;
   const me=data.players[myUid];
@@ -14475,19 +14549,58 @@ async function startMpFight(){
   const rewards={};
   rewards[myUid]=iWon?MP_PM_WIN:isDraw?MP_PM_DRAW:MP_PM_LOSS;
   rewards[oppUid]=fightData.winnerUid===oppUid?MP_PM_WIN:isDraw?MP_PM_DRAW:MP_PM_LOSS;
-  await matchRef.update({
-    phase:'complete',
-    result:{winnerUid:fightData.winnerUid,method:fightData.method,roundEnded:fightData.roundEnded,myScore:fightData.myPts,oppScore:fightData.oppPts,myUid:myUid,oppUid:oppUid},
-    fightHighlights:fightData.highlights,
-    eloChanges:eloChanges,rewards:rewards,simulationComplete:true,
-    updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
-  });
+  try{
+    await matchRef.update({
+      phase:'complete',
+      result:{winnerUid:fightData.winnerUid,method:fightData.method,roundEnded:fightData.roundEnded,myScore:fightData.myPts,oppScore:fightData.oppPts,myUid:myUid,oppUid:oppUid},
+      fightHighlights:fightData.highlights,
+      eloChanges:eloChanges,rewards:rewards,simulationComplete:true,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    });
+  }catch(e){
+    console.warn('[MP] sim write failed:',e);
+    showToast&&showToast('PvP Error','Could not save the fight result. Try Sim Fight again.','warning');
+    try{
+      await matchRef.update({
+        phase:'build_reveal',
+        simulationOwnerUid:null,
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    }catch(resetErr){ console.warn('[MP] sim rollback failed:',resetErr); }
+  }
+}
+async function mpTryRecoverStuckSimulation(data){
+  if(!data||data.phase!=='simulating'||data.simulationComplete||!MP.matchId||!currentUser) return;
+  const last=mpTimestampMs(data.updatedAt||data.createdAt);
+  if(!last||Date.now()-last<32000) return;
+  try{
+    const ref=db.collection('multiplayer_matches').doc(MP.matchId);
+    const recovered=await db.runTransaction(async function(txn){
+      const snap=await txn.get(ref);
+      if(!snap.exists) return false;
+      const d=snap.data();
+      const dLast=mpTimestampMs(d.updatedAt||d.createdAt);
+      if(d.phase!=='simulating'||d.simulationComplete||(dLast&&Date.now()-dLast<32000)) return false;
+      txn.update(ref,{
+        phase:'build_reveal',
+        simulationOwnerUid:null,
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      return true;
+    });
+    if(recovered){
+      console.warn('[MP] Recovered stuck simulating match. matchId='+MP.matchId);
+      showToast&&showToast('PvP Recovery','Fight simulation timed out. Try Sim Fight again.','warning');
+    }
+  }catch(e){ console.warn('[MP] sim recovery failed:',e); }
 }
 function mpShowFightWaiting(){
   screen('mp-fight');
   const log=$('mp-fight-log');
   if(log) log.innerHTML='<div class="mp-hl-action" style="text-align:center;padding:24px 0;color:var(--text-dim)">Generating fight result...<br><span style="font-size:.62rem">This will only take a moment.</span></div>';
   const btn=$('mp-fight-next-btn'); if(btn){ btn.disabled=true; btn.innerText='Simulating...'; }
+  if(MP._simRecoveryTimer) clearTimeout(MP._simRecoveryTimer);
+  MP._simRecoveryTimer=setTimeout(function(){ mpTryRecoverStuckSimulation(MP.matchData); },33000);
 }
 function mpSimFight(mb,ob,myUid,oppUid,myName,oppName){
   const me=getMpEffStats(mb), opp=getMpEffStats(ob);
@@ -14628,6 +14741,7 @@ function mpBuildBotFallback(pd){
 // ══════════════════════════════════════════════════════════════════════════
 function mpShowFightResult(data){
   if(!data) return;
+  if(MP._simRecoveryTimer){ clearTimeout(MP._simRecoveryTimer); MP._simRecoveryTimer=null; }
   screen('mp-fight');
   const myUid=currentUser&&currentUser.uid;
   const oppUid=data.playerOrder&&data.playerOrder.find(function(u){ return u!==myUid; });
@@ -14652,6 +14766,7 @@ function mpShowFightResult(data){
   MP._fightData=data; MP._fightRoundIdx=0;
   const btn=$('mp-fight-next-btn');
   if(btn){ btn.disabled=false; btn.innerText='Round 1 →'; btn.onclick=mpShowNextFightRound; }
+  mpApplyEloAndRewards(data);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -15089,7 +15204,7 @@ async function _pvpSubmitSPBuild(){
   }
   // 3. Build finalBuild in MP format
   const me=MP.matchData&&MP.matchData.players&&MP.matchData.players[currentUser.uid];
-  const myCardId=(MP.profile&&MP.profile.equippedCardId)||(me&&me.equippedCardId)||'cc001';
+  const myCardId=(me&&me.equippedCardId)||(MP.profile&&MP.profile.equippedCardId)||'cc001';
   const myCard=COLLECTIBLE_CARDS.find(function(c){return c.id===myCardId;})||COLLECTIBLE_CARDS[0];
   const myCardBoosts=getCardBoosts(myCard);
   const statVals={};
