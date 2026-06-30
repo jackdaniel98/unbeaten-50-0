@@ -1419,7 +1419,20 @@ h2:first-child{margin-top:6px}
 .mp-tape-sv.opp{color:#fff;text-align:right}
 .mp-tape-sv.higher{color:#4ade80}
 .mp-tape-sn{font-size:.5rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);text-align:center;overflow:hidden}
-.mp-tape-boost{font-size:.47rem;color:#4ade80;font-weight:700}
+.mp-tape-boost{font-size:.47rem;color:#39ff14;font-weight:700}
+/* ── Card Booster System — bright green neon ─────────────────────────────── */
+.booster-stat{color:#39ff14;font-weight:800;text-shadow:0 0 8px rgba(57,255,20,.45)}
+.booster-amount{color:#39ff14;font-weight:700;font-size:.66rem;letter-spacing:.03em;text-shadow:0 0 6px rgba(57,255,20,.35)}
+.card-booster-breakdown{margin-top:10px;padding:10px 12px;border:1px solid rgba(57,255,20,.25);background:rgba(57,255,20,.06);border-radius:12px}
+.card-booster-title{color:#39ff14;font-weight:900;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 8px rgba(57,255,20,.45);display:block;margin-bottom:4px}
+.card-booster-total{color:#39ff14;font-size:.68rem;font-weight:700;margin-bottom:8px;display:block;opacity:.85}
+.card-booster-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px}
+.card-booster-item{color:#39ff14;font-weight:800;font-size:.65rem;text-shadow:0 0 5px rgba(57,255,20,.3);display:flex;justify-content:space-between;align-items:center}
+.hub-card-boost-badge{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:rgba(57,255,20,.06);border:1px solid rgba(57,255,20,.2);border-radius:8px;padding:7px 10px;margin-top:6px;font-size:.65rem;font-weight:700;color:#39ff14;text-shadow:0 0 6px rgba(57,255,20,.3)}
+.hub-card-boost-name{font-weight:900;letter-spacing:.03em}
+.hub-stat-boosted{color:#39ff14!important;text-shadow:0 0 7px rgba(57,255,20,.4)!important;font-weight:900!important}
+.mp-stat-boosted{color:#39ff14;font-weight:900;text-shadow:0 0 6px rgba(57,255,20,.4)}
+.mp-boost-total-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(57,255,20,.1);border:1px solid rgba(57,255,20,.25);border-radius:20px;padding:2px 8px;font-size:.55rem;font-weight:900;color:#39ff14;letter-spacing:.06em;text-transform:uppercase}
 .mp-tape-traits{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px;min-width:0}
 .mp-tape-trait-chip{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:999px;font-size:.48rem;padding:1px 5px;color:var(--text-dim)}
 
@@ -2843,9 +2856,9 @@ body.final-card-open{overflow:hidden}
 .mcc-rarity-badge-uncommon{background:rgba(54,196,126,.15);color:#36c47e}
 .mcc-rarity-badge-rare{background:rgba(91,141,239,.15);color:#5b8def}
 .mcc-rarity-badge-legendary{background:rgba(227,178,60,.15);color:var(--gold)}
-.mcc-detail-boost{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 14px;text-align:center;margin-bottom:18px}
-.mcc-detail-boost-label{display:block;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:4px}
-.mcc-detail-boost-value{font-size:.88rem;color:var(--gold);font-weight:700}
+.mcc-detail-boost{background:rgba(57,255,20,.05);border:1px solid rgba(57,255,20,.22);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:18px}
+.mcc-detail-boost-label{display:block;font-size:.58rem;color:#39ff14;text-transform:uppercase;letter-spacing:.07em;font-weight:900;margin-bottom:4px;text-shadow:0 0 8px rgba(57,255,20,.4)}
+.mcc-detail-boost-value{font-size:.88rem;color:#39ff14;font-weight:700;text-shadow:0 0 6px rgba(57,255,20,.35)}
 .mcc-detail-unowned-notice{text-align:center;font-size:.72rem;color:var(--muted);padding:8px 0 16px;font-style:italic}
 .mcc-detail-actions{display:flex;flex-direction:column;gap:8px}
 .mcc-fav-btn-active{border-color:var(--red)!important;color:var(--red)!important}
@@ -4222,6 +4235,7 @@ header::after{
       <div class="mp-player-record" id="mp-home-kos" style="margin-top:1px">KO Wins: 0</div>
     </div>
   </div>
+  <div id="mp-home-boost-badge" style="display:none;justify-content:center;margin:4px 0 2px"></div>
   <div class="mp-identity-actions">
     <button type="button" class="mp-identity-btn" onclick="openChangeDisplayName()"><span>✏️</span>Change Online Name</button>
     <button type="button" class="mp-identity-btn" onclick="openMpCardPicker()"><span>🃏</span>Change Online Card</button>
@@ -8357,8 +8371,127 @@ const COLLECTIBLE_CARDS = [
   {id:'cc036',num:36,name:'Storm Wraith',    rarity:'legendary',boost:'+5% Speed',image:'assets/collectible/card_036.png'},
   {id:'cc037',num:37,name:'Viper Crown',     rarity:'legendary',boost:'+6% Chin',image:'assets/collectible/card_037.png'},
   {id:'cc038',num:38,name:'Arachnoid Champion',rarity:'legendary',boost:'+6% Accuracy',image:'assets/collectible/card_038.png'},
-  {id:'cc039',num:39,name:'Champion Of The Void',rarity:'legendary',boost:'+7% Legacy Score',image:'assets/collectible/card_039.png'},
+  {id:'cc039',num:39,name:'Champion Of The Void',rarity:'legendary',image:'assets/collectible/card_039.png'},
 ];
+
+// ══════════════════════════════════════════════════════════════════════════
+// CARD BOOSTER ENGINE — stable decimal multi-stat boosts for Collector Pack cards
+// Every card boosts all 10 fighter attributes based on rarity + card identity.
+// Boosts are deterministic (seeded from card.id+rarity) — never change on refresh.
+// ══════════════════════════════════════════════════════════════════════════
+const BOOST_ATTRIBUTES=['Power','Chin','Speed','Footwork','Ring IQ','Heart','Defence','Stamina','Accuracy','Recovery'];
+
+function getBoostRangeForRarity(rarity){
+  switch((rarity||'').toLowerCase()){
+    case 'common':    return [0.05,0.15];
+    case 'uncommon':  return [0.10,0.25];
+    case 'rare':      return [0.20,0.40];
+    case 'epic':      return [0.20,0.40];
+    case 'legendary': return [0.35,0.60];
+    case 'luxury':    return [0.42,0.65];
+    case 'mythic':
+    case 'premium':   return [0.50,0.80];
+    default:          return [0.05,0.15];
+  }
+}
+
+function _cbHash(str){
+  let h=5381;
+  for(let i=0;i<str.length;i++){h=((h<<5)+h)^str.charCodeAt(i);h>>>=0;}
+  return h;
+}
+
+function _cbThemeWeights(name){
+  const t=(name||'').toLowerCase();
+  const w={};
+  if(t.includes('fire')||t.includes('beast')||t.includes('warrior')||t.includes('fury')||t.includes('inferno')||t.includes('phoenix')||t.includes('ember')){w['Power']=0.06;w['Chin']=0.04;w['Heart']=0.05;}
+  if(t.includes('speed')||t.includes('lightning')||t.includes('flash')||t.includes('neon')||t.includes('spark')){w['Speed']=0.06;w['Footwork']=0.05;w['Accuracy']=0.04;}
+  if(t.includes('shadow')||t.includes('ghost')||t.includes('phantom')||t.includes('viper')||t.includes('jackal')){w['Footwork']=0.06;w['Defence']=0.05;w['Recovery']=0.04;}
+  if(t.includes('iron')||t.includes('obsidian')||t.includes('stone')||t.includes('titan')||t.includes('hammer')||t.includes('bronze')||t.includes('copper')){w['Chin']=0.06;w['Defence']=0.05;w['Stamina']=0.04;}
+  if(t.includes('king')||t.includes('royal')||t.includes('champion')||t.includes('gold')||t.includes('jade')||t.includes('ivory')){w['Ring IQ']=0.06;w['Accuracy']=0.05;w['Heart']=0.04;}
+  if(t.includes('arctic')||t.includes('frost')||t.includes('tidal')||t.includes('glass')){w['Recovery']=0.06;w['Stamina']=0.04;w['Chin']=0.03;}
+  if(t.includes('void')||t.includes('arcane')||t.includes('arachnoid')){w['Ring IQ']=0.05;w['Power']=0.04;w['Defence']=0.04;}
+  if(t.includes('crimson')||t.includes('storm')||t.includes('wraith')){w['Speed']=0.04;w['Heart']=0.05;w['Power']=0.04;}
+  return w;
+}
+
+function generateStableCardBoosts(card){
+  const rarity=(card.rarity||'common').toLowerCase();
+  const [min,max]=getBoostRangeForRarity(rarity);
+  const seed=_cbHash((card.id||card.name||'card')+'-'+rarity);
+  const themeW=_cbThemeWeights(card.name||'');
+  const boosts={};
+  BOOST_ATTRIBUTES.forEach(function(attr,idx){
+    let s=seed;
+    for(let i=0;i<=idx;i++){s=(1664525*s+1013904223)>>>0;}
+    const rf=s/4294967296;
+    const base=min+rf*(max-min);
+    const bonus=themeW[attr]||0;
+    boosts[attr]=Number(Math.min(max+0.08,Math.max(min,base+bonus)).toFixed(2));
+  });
+  return boosts;
+}
+
+function hasAllBoostAttributes(b){
+  return b&&BOOST_ATTRIBUTES.every(function(a){return typeof b[a]==='number';});
+}
+
+function getCardBoosts(card){
+  if(!card) return null;
+  if(!hasAllBoostAttributes(card.cardBoosts)) card.cardBoosts=generateStableCardBoosts(card);
+  return card.cardBoosts;
+}
+
+function applyCardBoostsToAttributes(base,cardBoosts){
+  if(!cardBoosts) return Object.assign({},base);
+  const out=Object.assign({},base);
+  BOOST_ATTRIBUTES.forEach(function(attr){
+    if(typeof out[attr]==='number'&&cardBoosts[attr]){
+      out[attr]=Number(Math.min(99.9,out[attr]+cardBoosts[attr]).toFixed(2));
+    }
+  });
+  return out;
+}
+
+function getTotalCardBoost(cardBoosts){
+  if(!cardBoosts) return 0;
+  return Number(BOOST_ATTRIBUTES.reduce(function(s,a){return s+(Number(cardBoosts[a])||0);},0).toFixed(2));
+}
+
+function getEquippedCollectibleCard(){
+  try{
+    const cardId=(typeof MP!=='undefined'&&MP&&MP.profile&&MP.profile.equippedCardId)
+      ||(typeof S!=='undefined'&&S&&S.player&&S.player.myCardsShowcase)
+      ||'cc001';
+    return COLLECTIBLE_CARDS.find(function(c){return c.id===cardId;})||COLLECTIBLE_CARDS[0];
+  }catch(e){return COLLECTIBLE_CARDS[0]||null;}
+}
+
+function getCareerCardBoosts(){
+  try{
+    const card=getEquippedCollectibleCard();
+    return card?getCardBoosts(card):{};
+  }catch(e){return {};}
+}
+
+function renderCardBoosterBreakdownHTML(card){
+  if(!card) return '';
+  const b=getCardBoosts(card);
+  const total=getTotalCardBoost(b);
+  const lbl=function(a){return a==='Ring IQ'?'RING IQ':a.toUpperCase();};
+  return '<div class="card-booster-breakdown">'
+    +'<span class="card-booster-title">⚡ BOOSTER STATS</span>'
+    +'<span class="card-booster-total">TOTAL BOOST: +'+total.toFixed(2)+'</span>'
+    +'<div class="card-booster-grid">'
+    +BOOST_ATTRIBUTES.map(function(a){
+      return '<div class="card-booster-item"><span>'+lbl(a)+'</span><span>+'+b[a].toFixed(2)+'</span></div>';
+    }).join('')
+    +'</div></div>';
+}
+
+// Bootstrap: generate and cache cardBoosts for every collectible card at startup
+COLLECTIBLE_CARDS.forEach(function(card){getCardBoosts(card);});
+
 // cc001 is always auto-granted (see createProfileFoundation). Others are test-owned only — remove when packs are live.
 const DEFAULT_OWNED_COLLECTIBLE_CARDS = ['cc001','cc003','cc006','cc010','cc015','cc019'];
 function validCollectibleId(id){ return COLLECTIBLE_CARDS.some(c=>c.id===id); }
@@ -9422,7 +9555,7 @@ function _finishCollectorReveal(card, isNew, finalColor, ownedCount){
     '<div class="coll-reveal-badge '+badgeCls+'" id="coll-badge">'+htmlEscape(badgeText)+'</div>'+
     '<div class="coll-reveal-name" id="coll-rname">'+htmlEscape(card.name)+'</div>'+
     '<div class="coll-reveal-rarity '+('mcc-rarity-badge-'+card.rarity)+'" id="coll-rrarity" style="background:'+color+'22;color:'+color+'">'+rarityName+'</div>'+
-    '<div class="coll-reveal-boost" id="coll-rboost">'+htmlEscape(card.boost)+'</div>'+
+    '<div class="coll-reveal-boost" id="coll-rboost" style="color:#39ff14;text-shadow:0 0 8px rgba(57,255,20,.4);font-weight:700">TOTAL BOOST: +'+(function(c){try{return getTotalCardBoost(getCardBoosts(c)).toFixed(2);}catch(e){return '?';}})(card)+'</div>'+
     '<div class="coll-reveal-boost visible" style="font-size:.7rem;color:var(--text-dim);margin-top:6px">Owned: x'+safeMoney(ownedCount||1)+'</div>'+
     '<button class="btn gold coll-reveal-continue" id="coll-continue-btn" onclick="closeCollectorReveal()">'+(_collPackQueue.length?'Next Pack ('+_collPackQueue.length+' remaining)':'Continue')+'</button>';
   reveal.classList.remove('hidden');
@@ -10756,7 +10889,7 @@ function openCollectionBook(){
         foot.innerHTML=
           '<div class="colbook-cc-foot-num">#'+String(card.num).padStart(2,'0')+'</div>'+
           '<div class="colbook-cc-foot-name">'+(isOwned?htmlEscape(card.name):'???')+'</div>'+
-          (isOwned?'<div class="colbook-cc-foot-boost">'+htmlEscape(card.boost)+'</div>':'')+
+          (isOwned?'<div class="colbook-cc-foot-boost" style="color:#39ff14;text-shadow:0 0 5px rgba(57,255,20,.3)">+'+getTotalCardBoost(getCardBoosts(card)).toFixed(2)+' BOOST</div>':'')+
           (isOwned&&count>1?'<div class="colbook-cc-foot-dupe">x'+count+'</div>':'');
         slot.appendChild(artDiv);
         slot.appendChild(foot);
@@ -11371,12 +11504,40 @@ function updateHub(){
   const g=$('stats-grid');
   g.innerHTML='';
   const s=getPerm();
+  const _hubCCB=getCareerCardBoosts();
   STATS.forEach(st=>{
+    const baseVal=s[st];
+    const boostAmt=_hubCCB[st]||0;
     const card=document.createElement('div');
     card.className='stat-card';
-    card.innerHTML='<div class="stat-head"><span>'+st+':</span><strong class="'+valCls(s[st])+'">'+s[st]+'</strong></div><div class="stat-source">'+formatFighterSource(S.player.StatSources[st]||'')+'</div>';
+    if(boostAmt){
+      const boostedVal=Math.min(99.9,baseVal+boostAmt);
+      card.innerHTML='<div class="stat-head"><span>'+st+':</span><strong class="hub-stat-boosted">'+boostedVal.toFixed(1)+'</strong></div>'
+        +'<div class="stat-source">'+formatFighterSource(S.player.StatSources[st]||'')+'</div>'
+        +'<div class="stat-source booster-amount">+'+boostAmt.toFixed(2)+' card</div>';
+    } else {
+      card.innerHTML='<div class="stat-head"><span>'+st+':</span><strong class="'+valCls(s[st])+'">'+s[st]+'</strong></div><div class="stat-source">'+formatFighterSource(S.player.StatSources[st]||'')+'</div>';
+    }
     g.appendChild(card);
   });
+  // CARD BOOST ACTIVE badge
+  const _hubBoostEl=$('hub-active-boost');
+  if(_hubBoostEl){
+    try{
+      const _eqCard=getEquippedCollectibleCard();
+      if(_eqCard){
+        const _cb=getCardBoosts(_eqCard);
+        const _tot=getTotalCardBoost(_cb);
+        _hubBoostEl.style.display='flex';
+        _hubBoostEl.innerHTML='<div class="hub-card-boost-badge" style="width:100%">'
+          +'<span class="hub-card-boost-name">⚡ CARD BOOST ACTIVE</span>'
+          +'<span style="opacity:.75">'+htmlEscape(_eqCard.name)+'</span>'
+          +'<span style="font-size:.6rem;opacity:.7;text-transform:uppercase;letter-spacing:.05em">'+_eqCard.rarity+'</span>'
+          +'<span style="margin-left:auto;font-weight:900">TOTAL: +'+_tot.toFixed(2)+'</span>'
+          +'</div>';
+      } else { _hubBoostEl.style.display='none'; }
+    }catch(e){ _hubBoostEl.style.display='none'; }
+  }
   const tr=$('hub-traits');
   tr.innerHTML='';
   if(!(S.player.Traits||[]).length&&!(S.player.HiddenBonuses||[]).length){
@@ -11404,7 +11565,7 @@ function makeFight(){ const p=getPerm(), o=deep(S.opponent.Stats); return {p1:{n
 function addLog(type,text){ S.fight.log.push({type,text}); }
 function renderFightLog(){ const box=$('fight-log'); for(let i=S.fight.rendered;i<S.fight.log.length;i++){ const e=S.fight.log[i], row=document.createElement('div'); row.className='line '+e.type; row.innerText=e.text; box.appendChild(row); } S.fight.rendered=S.fight.log.length; box.scrollTop=box.scrollHeight; }
 function updBars(){ $('c1-hp').style.width=Math.max(0,(S.fight.p1.hp/S.fight.p1.maxHp)*100)+'%'; $('c2-hp').style.width=Math.max(0,(S.fight.p2.hp/S.fight.p2.maxHp)*100)+'%'; $('c1-sta').style.width=Math.max(0,(S.fight.p1.stamina/S.fight.p1.maxStamina)*100)+'%'; $('c2-sta').style.width=Math.max(0,(S.fight.p2.stamina/S.fight.p2.maxStamina)*100)+'%'; }
-function roundStrength(side,round){ const me=side==='p1'; let st=me?getPerm():deep(S.opponent.Stats); if(me){ if(hasTrait('fast_starter')&&round<=3){st.Speed+=8;st.Accuracy+=8;} if(hasTrait('slow_starter')&&round<=3){st.Speed-=10;st.Accuracy-=10;} if(hasTrait('late_finisher')&&round>=9){st.Power+=8;st.Heart+=8;} if(hasTrait('brittle_hands')&&(round>=6||S.fight.flags.p1BrokenHands))st.Power-=12; if(hasTrait('quit_risk')&&S.fight.flags.p1QuitTriggered){st.Heart=40;st.Recovery=40;} const _rsb=getEquippedCharacterBoosts(); if(_rsb.title_aura&&S.opponent?.TitleOnLine) STATS.forEach(k=>st[k]+=4); } else if(hasTrait('southpaw_enigma')) st.Accuracy-=4; STATS.forEach(k=>st[k]=clamp(Math.round(st[k]),1,99)); return st; }
+function roundStrength(side,round){ const me=side==='p1'; let st=me?getPerm():deep(S.opponent.Stats); if(me){ if(hasTrait('fast_starter')&&round<=3){st.Speed+=8;st.Accuracy+=8;} if(hasTrait('slow_starter')&&round<=3){st.Speed-=10;st.Accuracy-=10;} if(hasTrait('late_finisher')&&round>=9){st.Power+=8;st.Heart+=8;} if(hasTrait('brittle_hands')&&(round>=6||S.fight.flags.p1BrokenHands))st.Power-=12; if(hasTrait('quit_risk')&&S.fight.flags.p1QuitTriggered){st.Heart=40;st.Recovery=40;} const _rsb=getEquippedCharacterBoosts(); if(_rsb.title_aura&&S.opponent?.TitleOnLine) STATS.forEach(k=>st[k]+=4); // Apply collectible card boosts (decimal, rounded by clamp below) const _ccb=getCareerCardBoosts(); BOOST_ATTRIBUTES.forEach(function(k){if(_ccb[k]&&st[k]!=null)st[k]+=_ccb[k];}); } else if(hasTrait('southpaw_enigma')) st.Accuracy-=4; STATS.forEach(k=>st[k]=clamp(Math.round(st[k]),1,99)); return st; }
 function punchText(st,body){ const pool=[]; if(Math.random()<(body||0)||hasTrait('body_snatcher')) pool.push('Left Body Shot','Body Shot Barrage'); if(st.Power>=95) pool.push('Left Hook','Overhand Right','Short Right Hand','Uppercut'); if(st.Speed>=90) pool.push('Counter Left Hook','Rapid Combination'); if(st.Accuracy>=90) pool.push('Right Hand Over The Jab','Precision Counter'); if(!pool.length) pool.push('Heavy Hook','Right Hand','Accumulation','Counter Shot'); return choice(pool); }
 function maybeDoctor(attacker,key){ const side=S.fight[key]; let chance=(attacker.Accuracy+attacker.Speed)/7.5; if(key==='p1'&&hasTrait('fragile_cutman')) chance+=10; chance=clamp(chance-8,5,24); if(Math.random()*100<chance){ side.cut+=rand(6,11); addLog('cut','🩸 '+(key==='p1'?S.player.Name:S.opponent.Name)+' is cut and swelling is building.'); if(side.cut>=24){ S.fight.done=true; S.fight.winner=(key==='p1'?'p2':'p1'); S.fight.method='TKO'; S.fight.detail='Doctor Stoppage'; } } }
 function kdCheck(target,attackerName,defenderName,dmg,a,d,round){ const hpPct=target.hp/target.maxHp; let chance=15+(dmg*1.05)+((a.Power-d.Recovery)*.38)+((1-hpPct)*32)-((d.Heart-70)*.10); if(hasTrait('ko_artist')&&attackerName===S.player.Name&&hpPct<.5) chance+=10; const _kdb=getEquippedCharacterBoosts(); if(_kdb.power_surge&&attackerName===S.player.Name&&hpPct<.5) chance+=(_kdb.power_surge.value||5); chance=clamp(chance,12,82); if(Math.random()*100<chance){ target.hp-=Math.floor(dmg*.65); let detail=punchText(a,.25); const flash=round<=4&&dmg>target.maxHp*.10&&Math.random()<.15; let survive=clamp(d.Recovery+d.Heart*.24-dmg*1.12-(flash?14:0),5,90); if(_kdb.iron_jaw&&defenderName===S.player.Name) survive=Math.min(95,survive+(_kdb.iron_jaw.value||8)); if(Math.random()*100>survive){ if(flash) detail='Flash KO • '+detail; addLog('kd','💥 '+defenderName+' is flattened by a brutal '+detail.toLowerCase()+' from '+attackerName+'! No count. It\'s over.'); return {ko:true,detail}; } else { target.hp=Math.max(target.hp,Math.floor(target.maxHp*.16)); addLog('kd','🚨 Knockdown! '+defenderName+' crashes to the canvas but beats the count!'); return {ko:false,detail}; } } return null; }
@@ -11803,10 +11964,11 @@ function renderMccShowcase(){
     box.innerHTML='<div class="mcc-showcase-empty">No showcase card selected.<br>Tap any owned card to set one.</div>';
     return;
   }
-  box.innerHTML='<div class="mcc-showcase-wrap">'+
-    '<div class="mcc-showcase-label">Showcase</div>'+
+  box.innerHTML='<div class="mcc-showcase-wrap" style="width:100%;max-width:280px">'+
+    '<div class="mcc-showcase-label">Showcase · Career & PvP Booster</div>'+
     _mccArtHTML(card,140)+
     '<div style="font-size:.7rem;color:var(--text-dim);font-weight:700;text-align:center;margin-top:4px">'+htmlEscape(card.name)+' · x'+safeMoney(counts[card.id]||1)+'</div>'+
+    renderCardBoosterBreakdownHTML(card)+
   '</div>';
 }
 function renderMyCardsGrid(){
@@ -11877,8 +12039,16 @@ function openMyCardDetail(id){
     '<span class="mcc-detail-num">Card #'+String(card.num).padStart(3,'0')+' of '+String(COLLECTIBLE_CARDS.length).padStart(3,'0')+'</span>'+
     '<span class="mcc-detail-rarity '+_mccRarityBadgeClass(card.rarity)+'">'+card.rarity+'</span>';
   const boostEl=document.getElementById('mcc-detail-boost');
-  if(boostEl) boostEl.innerHTML='<span class="mcc-detail-boost-label">Boost (display only)</span><span class="mcc-detail-boost-value">'+htmlEscape(card.boost)+'</span>';
-  if(boostEl && isOwned) boostEl.innerHTML+='<span class="mcc-detail-boost-label">Owned Copies</span><span class="mcc-detail-boost-value">x'+safeMoney(counts[id]||1)+'</span>';
+  if(boostEl){
+    const _cb=getCardBoosts(card);
+    const _tot=getTotalCardBoost(_cb);
+    const _lbl=function(a){return a==='Ring IQ'?'RING IQ':a.toUpperCase();};
+    boostEl.innerHTML='<span class="mcc-detail-boost-label">⚡ BOOSTER STATS — TOTAL +'+_tot.toFixed(2)+'</span>'
+      +'<div class="card-booster-grid" style="margin-top:6px">'
+      +BOOST_ATTRIBUTES.map(function(a){return '<div class="card-booster-item"><span>'+_lbl(a)+'</span><span>+'+_cb[a].toFixed(2)+'</span></div>';}).join('')
+      +'</div>'
+      +(isOwned?'<div style="margin-top:8px;font-size:.62rem;color:var(--muted)">Owned: x'+safeMoney(counts[id]||1)+'</div>':'');
+  }
   const showcaseBtn=document.getElementById('mcc-showcase-btn');
   if(showcaseBtn){
     showcaseBtn.disabled=!isOwned;
@@ -13298,8 +13468,15 @@ function calcMpOvr(stats){
 function getMpEffStats(build){
   if(!build||!build.stats) return {};
   const s={...build.stats};
-  if(build.booster&&build.booster.stat&&build.booster.val!=null&&s[build.booster.stat]!=null)
+  // New: decimal multi-stat card boosts
+  if(build.cardBoosts&&typeof build.cardBoosts==='object'){
+    BOOST_ATTRIBUTES.forEach(function(attr){
+      if(s[attr]!=null&&build.cardBoosts[attr]) s[attr]=(Number(s[attr])||70)+(Number(build.cardBoosts[attr])||0);
+    });
+  } else if(build.booster&&build.booster.stat&&build.booster.val!=null&&s[build.booster.stat]!=null){
+    // Legacy fallback for old match documents
     s[build.booster.stat]=(Number(s[build.booster.stat])||70)+build.booster.val;
+  }
   (build.synergies||[]).forEach(function(syn){
     Object.entries(syn.bonuses||{}).forEach(function(entry){
       const st=entry[0], val=Number(entry[1])||0;
@@ -13400,15 +13577,13 @@ function mpBeginLocalDraft(data){
   if(me) me.draftStatus='drafting';
   MP._handledPhase='drafting';
   screen('mp-draft');
-  const booster=(me&&me.cardBooster)||{stat:'Power',val:1};
+  const _draftCardId=(me&&me.equippedCardId)||(MP.profile&&MP.profile.equippedCardId)||'cc001';
+  const _draftCard=COLLECTIBLE_CARDS.find(function(c){return c.id===_draftCardId;})||COLLECTIBLE_CARDS[0];
+  const _draftCardBoosts=getCardBoosts(_draftCard);
   const statNames=mpGetStats();
   const stats={}, statSources={};
   statNames.forEach(function(s){ stats[s]={value:70,legend:'Unassigned',pool:''}; });
-  if(booster.stat&&stats[booster.stat]){
-    stats[booster.stat]={value:70+booster.val,legend:'Card Booster',pool:'Multiplayer Booster'};
-    statSources[booster.stat]='Card Booster';
-  }
-  MP.draftState={phase:'stats',step:0,stats:stats,statSources:statSources,traits:[],synergies:[],booster:booster,secsLeft:MP_DRAFT_SECS,_opts:null,synergyOptions:[],synergyTarget:0,synergyStep:0};
+  MP.draftState={phase:'stats',step:0,stats:stats,statSources:statSources,traits:[],synergies:[],cardBoosts:_draftCardBoosts,secsLeft:MP_DRAFT_SECS,_opts:null,synergyOptions:[],synergyTarget:0,synergyStep:0};
   mpRenderDraft();
   mpStartDraftTimer();
 }
@@ -13572,8 +13747,10 @@ async function mpTryClaimOpponent(mode,myElo){
 // MATCH DOCUMENT BUILDER
 // ══════════════════════════════════════════════════════════════════════════
 function mpBuildMatchDoc(mode,me,opp,matchId,now,isBot){
-  const myBooster=getMpBooster(me.equippedCardId||'cc001');
-  const oppBooster=getMpBooster(opp.equippedCardId||'cc001');
+  const myCard=COLLECTIBLE_CARDS.find(function(c){return c.id===(me.equippedCardId||'cc001');})||COLLECTIBLE_CARDS[0];
+  const oppCard=COLLECTIBLE_CARDS.find(function(c){return c.id===(opp.equippedCardId||'cc001');})||COLLECTIBLE_CARDS[0];
+  const myBoosts=getCardBoosts(myCard);
+  const oppBoosts=getCardBoosts(oppCard);
   return {
     matchId:matchId,status:'active',mode:mode,isBot:isBot,
     createdAt:now,updatedAt:now,
@@ -13583,7 +13760,7 @@ function mpBuildMatchDoc(mode,me,opp,matchId,now,isBot){
         uid:me.uid,displayName:me.displayName||'Boxer',
         eloBefore:me.elo||MP_STARTING_ELO,
         equippedCardId:me.equippedCardId||'cc001',
-        cardBooster:myBooster,
+        cardBoosts:myBoosts,
         pvpWins:me.pvpWins||0,pvpLosses:me.pvpLosses||0,pvpDraws:me.pvpDraws||0,pvpKos:me.pvpKos||0,
         draftStatus:'pending',finalBuild:null,submittedAt:null,
       },
@@ -13591,7 +13768,7 @@ function mpBuildMatchDoc(mode,me,opp,matchId,now,isBot){
         uid:opp.uid,displayName:opp.displayName||'Boxer',
         eloBefore:opp.elo||MP_STARTING_ELO,
         equippedCardId:opp.equippedCardId||'cc001',
-        cardBooster:oppBooster,
+        cardBoosts:oppBoosts,
         pvpWins:opp.pvpWins||0,pvpLosses:opp.pvpLosses||0,pvpDraws:opp.pvpDraws||0,pvpKos:opp.pvpKos||0,
         draftStatus:'pending',finalBuild:null,submittedAt:null,
         isBot:isBot&&opp.uid.startsWith('bot_'),
@@ -13609,7 +13786,8 @@ async function mpCreateBotMatch(mode,myElo){
   const botUid='bot_'+Date.now();
   const botElo=mpBotElo(myElo);
   const botCard=mpBotCard();
-  const botBooster=getMpBooster(botCard);
+  const botCardObj=COLLECTIBLE_CARDS.find(function(c){return c.id===botCard;})||COLLECTIBLE_CARDS[0];
+  const botCardBoosts=getCardBoosts(botCardObj);
   const botRec=mpBotRecord(botElo);
   const botStats=mpBotStats(botElo);
   const botName=mpBotName();
@@ -13617,7 +13795,7 @@ async function mpCreateBotMatch(mode,myElo){
   const botProfile={uid:botUid,displayName:botName,elo:botElo,equippedCardId:botCard,pvpWins:botRec.pvpWins,pvpLosses:botRec.pvpLosses,pvpDraws:botRec.pvpDraws,pvpKos:botRec.pvpKos};
   const doc=mpBuildMatchDoc(mode,MP.profile,botProfile,matchId,now,true);
   // Pre-submit bot build
-  const botBuild={stats:botStats,traits:mpBotTraits(),synergies:mpBotSynergies(),cardId:botCard,booster:botBooster,ovr:calcMpOvr(botStats)};
+  const botBuild={stats:botStats,traits:mpBotTraits(),synergies:mpBotSynergies(),cardId:botCard,cardBoosts:botCardBoosts,ovr:calcMpOvr(botStats)};
   doc.players[botUid].draftStatus='submitted';
   doc.players[botUid].finalBuild=botBuild;
   doc.players[botUid].submittedAt=now;
@@ -13854,19 +14032,22 @@ function mpShowMatchup(data){
   if(modeTag) modeTag.innerText=data.mode==='ranked'?'RANKED':'FRIENDLY';
   const botTag=$('mp-matchup-bot-tag');
   if(botTag) botTag.style.display=data.isBot?'inline-block':'none';
-  const mb=getMpBooster(me.equippedCardId), ob=getMpBooster(opp.equippedCardId);
+  const _myMUCard=COLLECTIBLE_CARDS.find(function(c){return c.id===(me.equippedCardId||'cc001');})||COLLECTIBLE_CARDS[0];
+  const _oppMUCard=COLLECTIBLE_CARDS.find(function(c){return c.id===(opp.equippedCardId||'cc001');})||COLLECTIBLE_CARDS[0];
+  const _myMUTot=getTotalCardBoost(getCardBoosts(_myMUCard)).toFixed(2);
+  const _oppMUTot=getTotalCardBoost(getCardBoosts(_oppMUCard)).toFixed(2);
   if($('mp-matchup-my-thumb'))     $('mp-matchup-my-thumb').innerHTML=mpCardThumb(me.equippedCardId,60);
   if($('mp-matchup-my-name'))      $('mp-matchup-my-name').innerText=me.displayName||'You';
   if($('mp-matchup-my-elo'))       $('mp-matchup-my-elo').innerText='ELO '+(me.eloBefore||700);
   if($('mp-matchup-my-record'))    $('mp-matchup-my-record').innerText=(me.pvpWins||0)+'W-'+(me.pvpLosses||0)+'L';
   if($('mp-matchup-my-card-name')) $('mp-matchup-my-card-name').innerText=me.equippedCardId||'cc001';
-  if($('mp-matchup-my-booster'))   $('mp-matchup-my-booster').innerText='BOOSTER: +'+mb.val+' '+mb.stat.toUpperCase();
+  if($('mp-matchup-my-booster'))   $('mp-matchup-my-booster').innerHTML='<span class="mp-boost-total-badge">⚡ BOOST +'+_myMUTot+'</span>';
   if($('mp-matchup-opp-thumb'))    $('mp-matchup-opp-thumb').innerHTML=mpCardThumb(opp.equippedCardId,60);
   if($('mp-matchup-opp-name'))     $('mp-matchup-opp-name').innerText=opp.displayName||'Opponent';
   if($('mp-matchup-opp-elo'))      $('mp-matchup-opp-elo').innerText='ELO '+(opp.eloBefore||700);
   if($('mp-matchup-opp-record'))   $('mp-matchup-opp-record').innerText=(opp.pvpWins||0)+'W-'+(opp.pvpLosses||0)+'L';
   if($('mp-matchup-opp-card-name'))$('mp-matchup-opp-card-name').innerText=opp.equippedCardId||'cc001';
-  if($('mp-matchup-opp-booster'))  $('mp-matchup-opp-booster').innerText='BOOSTER: +'+ob.val+' '+ob.stat.toUpperCase();
+  if($('mp-matchup-opp-booster'))  $('mp-matchup-opp-booster').innerHTML='<span class="mp-boost-total-badge">⚡ BOOST +'+_oppMUTot+'</span>';
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -14114,14 +14295,15 @@ async function mpSubmitBuild(){
   const statVals={};
   allStats.forEach(function(s){ statVals[s]=ds.stats[s]?ds.stats[s].value:70; });
   const me=MP.matchData&&MP.matchData.players[currentUser.uid];
-  const booster=(me&&me.cardBooster)||{stat:'Power',val:1};
-  const cardId=(me&&me.equippedCardId)||'cc001';
+  const cardId=(me&&me.equippedCardId)||(MP.profile&&MP.profile.equippedCardId)||'cc001';
+  const _fbCard=COLLECTIBLE_CARDS.find(function(c){return c.id===cardId;})||COLLECTIBLE_CARDS[0];
+  const _fbCardBoosts=ds.cardBoosts||getCardBoosts(_fbCard);
   const finalBuild={
     stats:statVals,
     statSources:{...(ds.statSources||{})},
     traits:(ds.traits||[]).map(mpPublicTrait),
     synergies:(ds.synergies||[]).map(mpPublicSynergy),
-    cardId:cardId,booster:booster,ovr:calcMpBuildOvr(statVals,ds.traits,ds.synergies),
+    cardId:cardId,cardBoosts:_fbCardBoosts,ovr:calcMpBuildOvr(statVals,ds.traits,ds.synergies),
   };
   MP.myBuild=finalBuild;
   // Show waiting UI
@@ -14178,18 +14360,31 @@ function mpShowReveal(data){
   if(oppOE){ oppOE.innerText=oppOvr; oppOE.className='mp-tape-ovr'+(oppOvr>myOvr?' winning':oppOvr<myOvr?' losing':''); }
   if($('mp-reveal-my-card'))     $('mp-reveal-my-card').innerHTML=mpCardThumb(mb.cardId,54);
   if($('mp-reveal-opp-card'))    $('mp-reveal-opp-card').innerHTML=mpCardThumb(ob.cardId,54);
-  if($('mp-reveal-my-booster'))  $('mp-reveal-my-booster').innerText='BOOSTER \xb7 +'+(mb.booster&&mb.booster.val||1)+' '+((mb.booster&&mb.booster.stat)||'Power').toUpperCase();
-  if($('mp-reveal-opp-booster')) $('mp-reveal-opp-booster').innerText='BOOSTER \xb7 +'+(ob.booster&&ob.booster.val||1)+' '+((ob.booster&&ob.booster.stat)||'Power').toUpperCase();
+  // Show CARD BOOST badge with total boost for each player
+  const _myTot=mb.cardBoosts?getTotalCardBoost(mb.cardBoosts).toFixed(2):null;
+  const _oppTot=ob.cardBoosts?getTotalCardBoost(ob.cardBoosts).toFixed(2):null;
+  if($('mp-reveal-my-booster'))  $('mp-reveal-my-booster').innerHTML=_myTot
+    ?'<span class="mp-boost-total-badge">⚡ CARD BOOST +'+_myTot+'</span>'
+    :'BOOSTER';
+  if($('mp-reveal-opp-booster')) $('mp-reveal-opp-booster').innerHTML=_oppTot
+    ?'<span class="mp-boost-total-badge">⚡ CARD BOOST +'+_oppTot+'</span>'
+    :'BOOSTER';
   const rows=$('mp-reveal-stat-rows');
   if(rows) rows.innerHTML=mpGetStats().map(function(st){
     const mv=myEff[st]||70, ov=oppEff[st]||70;
-    const myBst=mb.booster&&mb.booster.stat===st?'<span class="mp-tape-boost">+'+mb.booster.val+'</span>':'';
-    const oppBst=ob.booster&&ob.booster.stat===st?'<span class="mp-tape-boost">+'+ob.booster.val+'</span>':'';
-    const label=st.length>7?st.substr(0,7):st;
+    const myBaseVal=mb.stats?mb.stats[st]||70:70;
+    const oppBaseVal=ob.stats?ob.stats[st]||70:70;
+    const myBoostAmt=mb.cardBoosts&&mb.cardBoosts[st]?mb.cardBoosts[st]:0;
+    const oppBoostAmt=ob.cardBoosts&&ob.cardBoosts[st]?ob.cardBoosts[st]:0;
+    const myBst=myBoostAmt?'<span class="mp-tape-boost">+'+myBoostAmt.toFixed(2)+'</span>':'';
+    const oppBst=oppBoostAmt?'<span class="mp-tape-boost">+'+oppBoostAmt.toFixed(2)+'</span>':'';
+    const label=st==='Ring IQ'?'RingIQ':st.length>7?st.substr(0,7):st;
+    const myDisp=myBoostAmt?'<span class="mp-stat-boosted">'+Math.min(99.9,myBaseVal+myBoostAmt).toFixed(1)+'</span>'+myBst:Math.round(mv);
+    const oppDisp=oppBoostAmt?'<span class="mp-stat-boosted">'+Math.min(99.9,oppBaseVal+oppBoostAmt).toFixed(1)+'</span>'+oppBst:Math.round(ov);
     return '<div class="mp-tape-stat-row">'
-      +'<div class="mp-tape-sv me'+(mv>ov?' higher':'')+'">'+mv+myBst+'</div>'
+      +'<div class="mp-tape-sv me'+(mv>ov?' higher':'')+'">'+myDisp+'</div>'
       +'<div class="mp-tape-sn">'+label.toUpperCase()+'</div>'
-      +'<div class="mp-tape-sv opp'+(ov>mv?' higher':'')+'">'+ov+oppBst+'</div>'
+      +'<div class="mp-tape-sv opp'+(ov>mv?' higher':'')+'">'+oppDisp+'</div>'
       +'</div>';
   }).join('');
   const myTraits=mb.traits||[];
@@ -14385,8 +14580,9 @@ function mpDefenceLine(defender,attacker,defStats,build){
 }
 function mpBuildBotFallback(pd){
   const s=mpBotStats((pd&&pd.eloBefore)||MP_STARTING_ELO);
-  const card=(pd&&pd.equippedCardId)||'cc001';
-  return {stats:s,traits:[],synergies:[],cardId:card,booster:(pd&&pd.cardBooster)||{stat:'Power',val:1},ovr:calcMpOvr(s)};
+  const cardId=(pd&&pd.equippedCardId)||'cc001';
+  const _fbfc=COLLECTIBLE_CARDS.find(function(c){return c.id===cardId;})||COLLECTIBLE_CARDS[0];
+  return {stats:s,traits:[],synergies:[],cardId:cardId,cardBoosts:(pd&&pd.cardBoosts)||getCardBoosts(_fbfc),ovr:calcMpOvr(s)};
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -14581,6 +14777,17 @@ function renderMpHomeImmediate(){
     if($('mp-home-record')) $('mp-home-record').innerHTML='<strong>'+(p?(p.pvpWins||0)+'W – '+(p.pvpLosses||0)+'L – '+(p.pvpDraws||0)+'D':'0W – 0L – 0D')+'</strong>';
     if($('mp-home-kos'))    $('mp-home-kos').textContent='KO Wins: '+((p&&p.pvpKos)||0);
     if($('mp-home-pm'))     $('mp-home-pm').innerHTML='PM: <span class="pm-val">'+pm.toLocaleString()+'</span>';
+    // Show card boost total on PvP home
+    const _mpHBE=$('mp-home-boost-badge');
+    if(_mpHBE){
+      try{
+        const _mpCard=COLLECTIBLE_CARDS.find(function(c){return c.id===cardId;})||COLLECTIBLE_CARDS[0];
+        const _mpBoosts=getCardBoosts(_mpCard);
+        const _mpTot=getTotalCardBoost(_mpBoosts);
+        _mpHBE.style.display='flex';
+        _mpHBE.innerHTML='<span class="mp-boost-total-badge" style="font-size:.62rem">⚡ '+htmlEscape(_mpCard.name||'Card')+' · TOTAL BOOST: +'+_mpTot.toFixed(2)+'</span>';
+      }catch(e){ _mpHBE.style.display='none'; }
+    }
   }catch(e){ console.error('[MP] renderMpHomeImmediate:',e); }
 }
 async function renderMpHomeAsync(){
@@ -14842,13 +15049,14 @@ async function _pvpSubmitSPBuild(){
   // 3. Build finalBuild in MP format
   const me=MP.matchData&&MP.matchData.players&&MP.matchData.players[currentUser.uid];
   const myCardId=(MP.profile&&MP.profile.equippedCardId)||(me&&me.equippedCardId)||'cc001';
-  const booster=(me&&me.cardBooster)||getMpBooster(myCardId);
+  const myCard=COLLECTIBLE_CARDS.find(function(c){return c.id===myCardId;})||COLLECTIBLE_CARDS[0];
+  const myCardBoosts=getCardBoosts(myCard);
   const statVals={};
   mpGetStats().forEach(function(s){ statVals[s]=typeof rawStats[s]==='number'?rawStats[s]:70; });
   const finalBuild={
     stats:statVals,statSources:rawSources,
     traits:traits,synergies:synergies,
-    cardId:myCardId,booster:booster,
+    cardId:myCardId,cardBoosts:myCardBoosts,
     ovr:calcMpBuildOvr(statVals,traits,synergies),
   };
   MP.myBuild=finalBuild;
@@ -15004,22 +15212,24 @@ async function _pvpBotAfterDraft(){
   const myElo=(MP.profile&&MP.profile.elo)||MP_STARTING_ELO;
   const botElo=mpBotElo(myElo);
   const botCard=mpBotCard();
-  const botBooster=getMpBooster(botCard);
+  const botCardObj2=COLLECTIBLE_CARDS.find(function(c){return c.id===botCard;})||COLLECTIBLE_CARDS[0];
+  const botCardBoosts2=getCardBoosts(botCardObj2);
   const botRec=mpBotRecord(botElo);
   const botStats=mpBotStats(botElo);
   const botName=mpBotName();
   const now=firebase.firestore.FieldValue.serverTimestamp();
   const botProfile=Object.assign({uid:botUid,displayName:botName,elo:botElo,equippedCardId:botCard},botRec);
   const doc=mpBuildMatchDoc('ranked',MP.profile,botProfile,matchId,now,true);
-  const botBuild={stats:botStats,traits:mpBotTraits(),synergies:mpBotSynergies(),cardId:botCard,booster:botBooster,ovr:calcMpOvr(botStats)};
+  const botBuild={stats:botStats,traits:mpBotTraits(),synergies:mpBotSynergies(),cardId:botCard,cardBoosts:botCardBoosts2,ovr:calcMpOvr(botStats)};
   doc.players[botUid].draftStatus='submitted';
   doc.players[botUid].finalBuild=botBuild;
   doc.players[botUid].submittedAt=now;
   const myCardId=(MP.profile&&MP.profile.equippedCardId)||'cc001';
-  const myBooster=getMpBooster(myCardId);
+  const myCard2=COLLECTIBLE_CARDS.find(function(c){return c.id===myCardId;})||COLLECTIBLE_CARDS[0];
+  const myCardBoosts2=getCardBoosts(myCard2);
   const statVals={};
   mpGetStats().forEach(function(s){ statVals[s]=typeof stats[s]==='number'?stats[s]:70; });
-  const myBuild={stats:statVals,traits:traits,synergies:synergies,cardId:myCardId,booster:myBooster,ovr:calcMpBuildOvr(statVals,traits,synergies)};
+  const myBuild={stats:statVals,traits:traits,synergies:synergies,cardId:myCardId,cardBoosts:myCardBoosts2,ovr:calcMpBuildOvr(statVals,traits,synergies)};
   doc.players[currentUser.uid].draftStatus='submitted';
   doc.players[currentUser.uid].finalBuild=myBuild;
   doc.players[currentUser.uid].submittedAt=now;
