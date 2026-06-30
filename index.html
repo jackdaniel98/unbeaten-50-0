@@ -4328,8 +4328,9 @@ header::after{
       <div class="mp-vs-booster" id="mp-matchup-opp-booster">MULTIPLAYER BOOSTER&#10;+1 Power</div>
     </div>
   </div>
-  <div style="margin-top:12px;display:flex;flex-direction:column;gap:7px">
-    <button class="btn gold" onclick="startMpDraft()">Start Draft →</button>
+  <div id="mp-matchup-actions" style="margin-top:12px;display:flex;flex-direction:column;gap:7px">
+    <button id="mp-matchup-start-btn" class="btn gold" onclick="startMpDraft()">Start Draft →</button>
+    <div id="mp-matchup-guest-wait" style="display:none;text-align:center;padding:10px 0;color:var(--gold);font-size:.78rem;font-weight:700">Waiting for your friend to start the draft…</div>
     <button class="btn ghost" onclick="cancelMpSearch();screen('mp-home')">Back to Lobby</button>
   </div>
 </section>
@@ -13861,9 +13862,10 @@ function mpOnPhaseChange(data){
       return;
     }
 
-    // First time entering draft for this match
-    console.log('[PVP_FLOW] starting SP draft. uid='+myUid+' matchId='+MP.matchId+' isBot='+MP.isBot);
-    MP._pvpDraftInitialized=true;
+    // First time entering draft for this match — do NOT pre-set _pvpDraftInitialized here;
+    // startMpDraft() sets it itself before its first await. Pre-setting it here was causing
+    // the guest to be permanently stuck: startMpDraft() saw the flag already true and returned.
+    console.log('[PVP] Lobby status changed to drafting — entering PvP draft screen. uid='+myUid+' matchId='+MP.matchId);
     MP._handledPhase='drafting';
     startMpDraft();
     return;
@@ -14048,6 +14050,18 @@ function mpShowMatchup(data){
   if($('mp-matchup-opp-record'))   $('mp-matchup-opp-record').innerText=(opp.pvpWins||0)+'W-'+(opp.pvpLosses||0)+'L';
   if($('mp-matchup-opp-card-name'))$('mp-matchup-opp-card-name').innerText=opp.equippedCardId||'cc001';
   if($('mp-matchup-opp-booster'))  $('mp-matchup-opp-booster').innerHTML='<span class="mp-boost-total-badge">⚡ BOOST +'+_oppMUTot+'</span>';
+  // For friendly matches, only the host should press Start Draft; guest auto-enters via listener
+  const _startBtn=$('mp-matchup-start-btn');
+  const _guestWait=$('mp-matchup-guest-wait');
+  const _isFriendlyLive=data.mode==='friendly'&&!data.isBot&&data.hostUid;
+  const _isGuest=_isFriendlyLive&&data.hostUid!==currentUser.uid;
+  if(_startBtn) _startBtn.style.display=_isGuest?'none':'block';
+  if(_guestWait) _guestWait.style.display=_isGuest?'block':'none';
+  if(_isGuest){
+    console.log('[PVP] Guest detected draft start — waiting for host. hostUid='+data.hostUid);
+  } else if(_isFriendlyLive){
+    console.log('[PVP] Host view — Start Draft button active. hostUid='+data.hostUid);
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -14065,11 +14079,14 @@ async function startMpDraft(){
   if(!currentUser) return;
   // ── State-machine guard: prevent re-entry on every Firestore snapshot ──
   if(MP._pvpDraftInitialized){
-    console.log('[PVP_FLOW] startMpDraft: skipped (already initialized). matchId='+MP.matchId);
+    console.log('[PVP] Draft already started locally, ignoring duplicate start. matchId='+MP.matchId);
     return;
   }
-  MP._pvpDraftInitialized=true; // lock immediately before any await
-  console.log('[PVP_FLOW] startMpDraft: running. uid='+currentUser.uid+' matchId='+MP.matchId);
+  MP._pvpDraftInitialized=true; // lock immediately before any await — prevents race with rapid snapshots
+  const _isHost=MP.matchData&&MP.matchData.hostUid&&MP.matchData.hostUid===currentUser.uid;
+  console.log('[PVP] Entering PvP draft screen. uid='+currentUser.uid+' role='+(_isHost?'host':'guest')+' matchId='+MP.matchId);
+  if(_isHost) console.log('[PVP] Host started draft');
+  else        console.log('[PVP] Guest detected draft start');
   // Show loading state immediately — no more blank 5-second wait
   mpShowDraftLoading();
   if(!MP.matchData&&MP.matchId){
@@ -14090,7 +14107,10 @@ async function startMpDraft(){
       if(phase!=='matched'&&phase!=='drafting') return d;
       const now=firebase.firestore.FieldValue.serverTimestamp();
       const update={updatedAt:now};
-      if(phase==='matched') update.phase='drafting';
+      if(phase==='matched'){
+        update.phase='drafting';
+        console.log('[PVP] Host started draft — writing phase=drafting to Firestore');
+      }
       if(d.players&&d.players[currentUser.uid]&&d.players[currentUser.uid].draftStatus!=='submitted')
         update['players.'+currentUser.uid+'.draftStatus']='drafting';
       txn.update(ref,update);
@@ -14896,7 +14916,9 @@ async function joinMpByCode(){
       if(lobby.hostUid===currentUser.uid) return 'self';
       const guestEntry={uid:currentUser.uid,displayName:MP.profile.displayName||'Boxer',elo:MP.profile.elo||MP_STARTING_ELO,equippedCardId:MP.profile.equippedCardId||'cc001',pvpWins:MP.profile.pvpWins||0,pvpLosses:MP.profile.pvpLosses||0,pvpDraws:MP.profile.pvpDraws||0,pvpKos:MP.profile.pvpKos||0};
       const hostEntry={uid:lobby.hostUid,displayName:lobby.hostName||'Boxer',elo:lobby.hostElo||MP_STARTING_ELO,equippedCardId:lobby.hostCardId||'cc001',pvpWins:lobby.hostWins||0,pvpLosses:lobby.hostLosses||0,pvpDraws:lobby.hostDraws||0,pvpKos:lobby.hostKos||0};
-      txn.set(matchRef,mpBuildMatchDoc('friendly',guestEntry,hostEntry,matchId,now,false));
+      const _friendlyDoc=mpBuildMatchDoc('friendly',guestEntry,hostEntry,matchId,now,false);
+      _friendlyDoc.hostUid=lobby.hostUid; // lets mpShowMatchup distinguish host from guest
+      txn.set(matchRef,_friendlyDoc);
       txn.update(lobbyRef,{status:'matched',matchId:matchId,guestUid:currentUser.uid,guestName:MP.profile.displayName||'Boxer',updatedAt:now});
       return matchId;
     });
@@ -15041,6 +15063,7 @@ async function _pvpSubmitSPBuild(){
   }
   MP.pvpDraftMode=false;
   MP._pvpDraftSubmitted=true; // guard: prevent mpOnPhaseChange from re-showing waiting screen
+  console.log('[PVP] Player draft complete — submitting build. uid='+currentUser.uid+' matchId='+MP.matchId);
   console.log('[PVP_FLOW] _pvpSubmitSPBuild: build captured, submitting. matchId='+MP.matchId);
   if(!MP.matchId||!currentUser){
     showToast&&showToast('PvP Error','Match ID lost. Return to lobby and try again.','warning');
