@@ -2715,7 +2715,8 @@ body.final-card-open{overflow:hidden}
 .rank-hero{position:relative;padding:18px 16px 14px;margin-bottom:10px;border-radius:14px;background:linear-gradient(160deg,#0c0b12 0%,#100d08 100%);border:1.5px solid rgba(227,178,60,.3);text-align:center;overflow:hidden}
 .rank-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(227,178,60,.12) 0%,transparent 100%);pointer-events:none}
 .rank-hero-label{font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(227,178,60,.65);margin-bottom:6px}
-.rank-hero-number{font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(2.4rem,14cqw,5rem);line-height:1;color:#f6d768;text-shadow:0 0 32px rgba(246,215,104,.55),0 0 8px rgba(246,215,104,.3),0 3px 10px rgba(0,0,0,.9);letter-spacing:-.01em;word-break:break-word}
+.rank-hero-number{font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(2.4rem,11vw,5rem);line-height:1;color:#f6d768;text-shadow:0 0 32px rgba(246,215,104,.55),0 0 8px rgba(246,215,104,.3),0 3px 10px rgba(0,0,0,.9);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-hero-number.loading{font-size:1rem !important;font-family:'Inter',sans-serif !important;font-weight:500 !important;color:var(--muted) !important;text-shadow:none !important;letter-spacing:0 !important;white-space:normal !important}
 .rank-hero-sub{font-size:.75rem;color:var(--text-dim);margin-top:6px}
 .rank-hero-sub strong{color:var(--platinum);font-weight:700}
 .rank-hero-cta{margin-top:10px;font-size:.67rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(227,178,60,.5)}
@@ -2934,7 +2935,7 @@ body.final-card-open{overflow:hidden}
   box-shadow:0 0 40px -16px rgba(227,178,60,.22),0 2px 20px -10px rgba(0,0,0,.7) !important;
 }
 .rank-hero-number{
-  font-size:clamp(3rem,18cqw,5.5rem) !important;
+  font-size:clamp(3rem,14vw,5.5rem) !important;
 }
 
 /* ── Premium Synergy Cards ── */
@@ -3345,10 +3346,10 @@ header::after{
 
   <!-- World Ranking -->
   <div class="rank-hero current-rank-panel" id="current-rank-panel">
-    <div class="rank-hero-label">🌐 World Ranking</div>
-    <div class="rank-hero-number" id="rank-alltime">--</div>
-    <div class="rank-hero-sub">This Season: <strong id="rank-seasonal">--</strong></div>
-    <div class="rank-hero-cta">EVERY FIGHT COUNTS — CLIMB TO #1 🏆</div>
+    <div class="rank-hero-label">🌐 WORLD RANKING</div>
+    <div class="rank-hero-number loading" id="rank-alltime">Loading...</div>
+    <div class="rank-hero-sub">This Season: <strong id="rank-seasonal">Loading...</strong></div>
+    <div class="rank-hero-cta">Every fight counts — climb to #1</div>
   </div>
 
   <!-- Active career bar -->
@@ -4670,15 +4671,16 @@ function _applyGlobalStatFallback(){
   _setGlobalStatPill('global-total-50', '—');
 }
 function loadGlobalStats() {
+  console.log('[HOME_STATS] loading global stats');
   return db.collection("global_stats").doc("main").get().then(doc => {
     if(doc.exists) {
       const data = doc.data();
+      console.log('[HOME_STATS] updating DOM values — fighters:'+data.fightersCreated+' weekly:'+data.weekly50And0s+' total:'+data.total50And0s);
       _setGlobalStatPill('global-fighters', (data.fightersCreated || 0).toLocaleString());
       _setGlobalStatPill('global-weekly-50', (data.weekly50And0s || 0).toLocaleString());
       _setGlobalStatPill('global-total-50', (data.total50And0s || 0).toLocaleString());
       console.log('[HOME_STATS] global stats loaded');
     } else {
-      // Doc doesn't exist yet (e.g. fresh deployment) — show safe defaults, not an endless spinner
       _setGlobalStatPill('global-fighters', '0');
       _setGlobalStatPill('global-weekly-50', '0');
       _setGlobalStatPill('global-total-50', '0');
@@ -4690,10 +4692,14 @@ function loadGlobalStats() {
   });
 }
 let _homeStatsRendering=false;
+let _homeStatsLastRun=0;
 async function renderHomeStatsSection(){
-  if(_homeStatsRendering) return; // already in flight — avoid duplicate fetch when called from two render paths at once
+  const now=Date.now();
+  if(_homeStatsRendering) return; // already in flight
+  if(now-_homeStatsLastRun<3000) return; // debounce: skip if called again within 3s
   _homeStatsRendering=true;
-  console.log('[HOME_STATS] rendering worldwide stats');
+  _homeStatsLastRun=now;
+  console.log('[HOME_STATS] rendering section');
   try{
     try{
       await loadGlobalStats();
@@ -4703,11 +4709,11 @@ async function renderHomeStatsSection(){
     }
     try{
       await refreshCurrentRank();
-      console.log('[HOME_STATS] world rank loaded');
     }catch(e){
       console.error('[HOME_STATS] failed to load stats', e);
-      if($('rank-alltime')) $('rank-alltime').innerText='Rank Pending';
-      if($('rank-seasonal')) $('rank-seasonal').innerText='Rank Pending';
+      const atEl=$('rank-alltime');
+      if(atEl){ atEl.classList.remove('loading'); atEl.innerText='—'; }
+      if($('rank-seasonal')) $('rank-seasonal').innerText='—';
     }
   }finally{
     _homeStatsRendering=false;
@@ -10867,9 +10873,17 @@ async function refreshCurrentRank(force=false){
   if(!atEl||!seEl) return;
   const now=Date.now();
   if(!force&&_rankCacheAlltime!==null&&_rankCacheSeasonal!==null&&(now-_rankCacheTime)<60000){
-    atEl.innerText=_rankCacheAlltime; seEl.innerText=_rankCacheSeasonal; return;
+    console.log('[HOME_STATS] user rank loaded (cache)');
+    atEl.classList.remove('loading');
+    atEl.innerText=_rankCacheAlltime;
+    seEl.innerText=_rankCacheSeasonal;
+    return;
   }
-  atEl.innerText='Loading...'; seEl.innerText='Loading...';
+  // Show loading state — use small text via .loading class so the huge font doesn't show "Loading..."
+  atEl.classList.add('loading');
+  atEl.innerText='Loading...';
+  seEl.innerText='Loading...';
+  console.log('[HOME_STATS] loading user rank');
   const profile=loadProfileFoundation();
   const playerId=profile?.playerId||null;
   const uid=currentUser?.uid||null;
@@ -10881,7 +10895,7 @@ async function refreshCurrentRank(force=false){
     }
     return null;
   }
-  // All-Time Rank
+  // All-Time Rank — only store short display values (#N or —)
   try{
     const snap=await db.collection('completed_careers').orderBy('careerLegacyScore','desc').limit(200).get();
     const docs=snap.docs.map(d=>d.data());
@@ -10890,22 +10904,25 @@ async function refreshCurrentRank(force=false){
       _rankCacheAlltime='#'+rank;
     } else if(playerId){
       const pSnap=await db.collection('completed_careers').where('playerId','==',playerId).limit(1).get();
-      _rankCacheAlltime=pSnap.empty?'Complete a Career':'Rank Pending';
+      _rankCacheAlltime=pSnap.empty?'—':'—';
     } else {
-      _rankCacheAlltime='Complete a Career';
+      _rankCacheAlltime='—';
     }
-  }catch(e){ console.error('Rank fetch error (all-time):',e); _rankCacheAlltime='Rank Pending'; }
-  // Seasonal Rank
+  }catch(e){ console.error('[HOME_STATS] failed to load stats (all-time rank):',e); _rankCacheAlltime='—'; }
+  // Seasonal Rank — short value only
   try{
     const season=await ensureCurrentSeason();
     const snap=await db.collection('seasonal_hall_of_fame').where('seasonId','==',season.id).get();
     const docs=snap.docs.map(d=>d.data()).sort((a,b)=>(b.careerLegacyScore||0)-(a.careerLegacyScore||0));
     const rank=findRank(docs);
     _rankCacheSeasonal=rank!==null?'#'+rank:'Complete a Career';
-  }catch(e){ console.error('Rank fetch error (seasonal):',e); _rankCacheSeasonal='Rank Pending'; }
+  }catch(e){ console.error('[HOME_STATS] failed to load stats (seasonal rank):',e); _rankCacheSeasonal='—'; }
   _rankCacheTime=Date.now();
-  if($('rank-alltime')) $('rank-alltime').innerText=_rankCacheAlltime;
-  if($('rank-seasonal')) $('rank-seasonal').innerText=_rankCacheSeasonal;
+  console.log('[HOME_STATS] updating DOM values — rank-alltime:'+_rankCacheAlltime+' rank-seasonal:'+_rankCacheSeasonal);
+  const atEl2=$('rank-alltime'), seEl2=$('rank-seasonal');
+  if(atEl2){ atEl2.classList.remove('loading'); atEl2.innerText=_rankCacheAlltime; }
+  if(seEl2){ seEl2.innerText=_rankCacheSeasonal; }
+  console.log('[HOME_STATS] user rank loaded');
 }
 let storeReturnScreen = 'menu-screen';
 function storeProfile(){
