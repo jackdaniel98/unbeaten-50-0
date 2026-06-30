@@ -11566,7 +11566,25 @@ function makeFight(){ const p=getPerm(), o=deep(S.opponent.Stats); return {p1:{n
 function addLog(type,text){ S.fight.log.push({type,text}); }
 function renderFightLog(){ const box=$('fight-log'); for(let i=S.fight.rendered;i<S.fight.log.length;i++){ const e=S.fight.log[i], row=document.createElement('div'); row.className='line '+e.type; row.innerText=e.text; box.appendChild(row); } S.fight.rendered=S.fight.log.length; box.scrollTop=box.scrollHeight; }
 function updBars(){ $('c1-hp').style.width=Math.max(0,(S.fight.p1.hp/S.fight.p1.maxHp)*100)+'%'; $('c2-hp').style.width=Math.max(0,(S.fight.p2.hp/S.fight.p2.maxHp)*100)+'%'; $('c1-sta').style.width=Math.max(0,(S.fight.p1.stamina/S.fight.p1.maxStamina)*100)+'%'; $('c2-sta').style.width=Math.max(0,(S.fight.p2.stamina/S.fight.p2.maxStamina)*100)+'%'; }
-function roundStrength(side,round){ const me=side==='p1'; let st=me?getPerm():deep(S.opponent.Stats); if(me){ if(hasTrait('fast_starter')&&round<=3){st.Speed+=8;st.Accuracy+=8;} if(hasTrait('slow_starter')&&round<=3){st.Speed-=10;st.Accuracy-=10;} if(hasTrait('late_finisher')&&round>=9){st.Power+=8;st.Heart+=8;} if(hasTrait('brittle_hands')&&(round>=6||S.fight.flags.p1BrokenHands))st.Power-=12; if(hasTrait('quit_risk')&&S.fight.flags.p1QuitTriggered){st.Heart=40;st.Recovery=40;} const _rsb=getEquippedCharacterBoosts(); if(_rsb.title_aura&&S.opponent?.TitleOnLine) STATS.forEach(k=>st[k]+=4); // Apply collectible card boosts (decimal, rounded by clamp below) const _ccb=getCareerCardBoosts(); BOOST_ATTRIBUTES.forEach(function(k){if(_ccb[k]&&st[k]!=null)st[k]+=_ccb[k];}); } else if(hasTrait('southpaw_enigma')) st.Accuracy-=4; STATS.forEach(k=>st[k]=clamp(Math.round(st[k]),1,99)); return st; }
+function roundStrength(side,round){
+  const me=side==='p1';
+  let st=me?getPerm():deep(S.opponent.Stats);
+  if(me){
+    if(hasTrait('fast_starter')&&round<=3){st.Speed+=8;st.Accuracy+=8;}
+    if(hasTrait('slow_starter')&&round<=3){st.Speed-=10;st.Accuracy-=10;}
+    if(hasTrait('late_finisher')&&round>=9){st.Power+=8;st.Heart+=8;}
+    if(hasTrait('brittle_hands')&&(round>=6||S.fight.flags.p1BrokenHands))st.Power-=12;
+    if(hasTrait('quit_risk')&&S.fight.flags.p1QuitTriggered){st.Heart=40;st.Recovery=40;}
+    const _rsb=getEquippedCharacterBoosts();
+    if(_rsb.title_aura&&S.opponent?.TitleOnLine) STATS.forEach(k=>st[k]+=4);
+    const _ccb=getCareerCardBoosts();
+    BOOST_ATTRIBUTES.forEach(function(k){ if(_ccb[k]&&st[k]!=null) st[k]+=_ccb[k]; });
+  } else if(hasTrait('southpaw_enigma')){
+    st.Accuracy-=4;
+  }
+  STATS.forEach(k=>st[k]=clamp(Math.round(st[k]),1,99));
+  return st;
+}
 function punchText(st,body){ const pool=[]; if(Math.random()<(body||0)||hasTrait('body_snatcher')) pool.push('Left Body Shot','Body Shot Barrage'); if(st.Power>=95) pool.push('Left Hook','Overhand Right','Short Right Hand','Uppercut'); if(st.Speed>=90) pool.push('Counter Left Hook','Rapid Combination'); if(st.Accuracy>=90) pool.push('Right Hand Over The Jab','Precision Counter'); if(!pool.length) pool.push('Heavy Hook','Right Hand','Accumulation','Counter Shot'); return choice(pool); }
 function maybeDoctor(attacker,key){ const side=S.fight[key]; let chance=(attacker.Accuracy+attacker.Speed)/7.5; if(key==='p1'&&hasTrait('fragile_cutman')) chance+=10; chance=clamp(chance-8,5,24); if(Math.random()*100<chance){ side.cut+=rand(6,11); addLog('cut','🩸 '+(key==='p1'?S.player.Name:S.opponent.Name)+' is cut and swelling is building.'); if(side.cut>=24){ S.fight.done=true; S.fight.winner=(key==='p1'?'p2':'p1'); S.fight.method='TKO'; S.fight.detail='Doctor Stoppage'; } } }
 function kdCheck(target,attackerName,defenderName,dmg,a,d,round){ const hpPct=target.hp/target.maxHp; let chance=15+(dmg*1.05)+((a.Power-d.Recovery)*.38)+((1-hpPct)*32)-((d.Heart-70)*.10); if(hasTrait('ko_artist')&&attackerName===S.player.Name&&hpPct<.5) chance+=10; const _kdb=getEquippedCharacterBoosts(); if(_kdb.power_surge&&attackerName===S.player.Name&&hpPct<.5) chance+=(_kdb.power_surge.value||5); chance=clamp(chance,12,82); if(Math.random()*100<chance){ target.hp-=Math.floor(dmg*.65); let detail=punchText(a,.25); const flash=round<=4&&dmg>target.maxHp*.10&&Math.random()<.15; let survive=clamp(d.Recovery+d.Heart*.24-dmg*1.12-(flash?14:0),5,90); if(_kdb.iron_jaw&&defenderName===S.player.Name) survive=Math.min(95,survive+(_kdb.iron_jaw.value||8)); if(Math.random()*100>survive){ if(flash) detail='Flash KO • '+detail; addLog('kd','💥 '+defenderName+' is flattened by a brutal '+detail.toLowerCase()+' from '+attackerName+'! No count. It\'s over.'); return {ko:true,detail}; } else { target.hp=Math.max(target.hp,Math.floor(target.maxHp*.16)); addLog('kd','🚨 Knockdown! '+defenderName+' crashes to the canvas but beats the count!'); return {ko:false,detail}; } } return null; }
