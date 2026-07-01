@@ -11286,8 +11286,8 @@ function goToHub(){
   S.player.Name=nm;
   saveFighterName(nm);
   // username is the account display name — never overwrite with the boxer's fighter name
-  if(S.traitsRolled<2){ alert('Spin both traits first.'); return; }
-  if(STATS.some(st=>S.player.Stats[st]==null)){ alert('Complete the draft first.'); return; }
+  if(S.traitsRolled<2){ showToast('Draft Incomplete','Spin both traits first.'); return; }
+  if(STATS.some(st=>S.player.Stats[st]==null)){ showToast('Draft Incomplete','Complete the draft first.'); return; }
   if(!S.career.id) S.career.id=makeId('career');
   if(!S.career.firebaseCreatedCounted){ S.career.firebaseCreatedCounted=true; incrementFightersCreated(); }
   if((S.player.HiddenBonuses||[]).length>=3){ renderSynergyPick(); screen('synergy-pick-screen'); return; }
@@ -14996,12 +14996,24 @@ function mpRenderResult(data){
   if($('mp-result-p2-score')) $('mp-result-p2-score').innerText=scores.opp;
   if($('mp-result-p2-who'))   $('mp-result-p2-who').innerText=(oppPD&&oppPD.displayName)||'Opponent';
   const isRanked=data.mode==='ranked';
-  const isFriendly=!isRanked;
+  const isBotMode=data.mode==='bot';
+  const isFriendly=data.mode==='friendly';
+  const isCasual=!isRanked;
   if($('mp-result-ranked-tag'))  $('mp-result-ranked-tag').hidden=!isRanked;
-  if($('mp-result-friendly-tag'))$('mp-result-friendly-tag').hidden=isRanked;
+  if($('mp-result-friendly-tag')){
+    const tag=$('mp-result-friendly-tag');
+    tag.hidden=isRanked;
+    tag.innerText=isBotMode?'BOT':'FRIENDLY';
+    tag.style.background=isBotMode?'rgba(56,189,248,.1)':'rgba(74,222,128,.1)';
+    tag.style.color=isBotMode?'#38bdf8':'#4ade80';
+    tag.style.borderColor=isBotMode?'rgba(56,189,248,.3)':'rgba(74,222,128,.28)';
+  }
   // Casual note + ELO row visibility
   const casualNote=$('mp-result-casual-note');
-  if(casualNote) casualNote.style.display=isFriendly?'block':'none';
+  if(casualNote){
+    casualNote.innerText=isBotMode?'Bot Match - No ELO Change':'Casual Match - No ELO Change';
+    casualNote.style.display=isCasual?'block':'none';
+  }
   const eloRow=$('mp-result-elo-row');
   if(eloRow) eloRow.style.display=isRanked?'':'none';
   // Tier label only makes sense for ranked
@@ -15031,14 +15043,18 @@ function mpRenderResult(data){
   if($('mp-result-record')) $('mp-result-record').innerHTML='<strong>'+(p.pvpWins||0)+'W – '+(p.pvpLosses||0)+'L – '+(p.pvpDraws||0)+'D</strong> (KO: '+(p.pvpKos||0)+')';
   const breakdownEl=$('mp-result-breakdown');
   if(breakdownEl) breakdownEl.innerHTML=mpFightBreakdownHtml(mpBuildFightBreakdown(data,myUid));
-  // Buttons — friendly: show "Play Again (Invite)", hide "Find Another Match" & leaderboard
+  // Buttons: ranked can queue again, friendly can invite again, bot can restart bot draft.
   const findBtn=$('mp-result-findmatch-btn'), remBtn=$('mp-result-rematch-btn'), lbBtn=$('mp-result-leaderboard-btn');
   if(isFriendly){
     if(findBtn) findBtn.style.display='none';
     if(remBtn)  remBtn.style.display='';
     if(lbBtn)   lbBtn.style.display='none';
+  } else if(isBotMode){
+    if(findBtn){ findBtn.style.display=''; findBtn.innerText='Fight Another Bot'; findBtn.onclick=function(){ startPvpBotDraft(); }; }
+    if(remBtn)  remBtn.style.display='none';
+    if(lbBtn)   lbBtn.style.display='none';
   } else {
-    if(findBtn) findBtn.style.display='';
+    if(findBtn){ findBtn.style.display=''; findBtn.innerText='Find Another Match'; findBtn.onclick=function(){ startMpSearch('ranked'); }; }
     if(remBtn)  remBtn.style.display='none';
     if(lbBtn)   lbBtn.style.display='';
   }
@@ -15583,7 +15599,7 @@ async function _pvpBotAfterDraft(){
   const botName=mpBotName();
   const now=firebase.firestore.FieldValue.serverTimestamp();
   const botProfile=Object.assign({uid:botUid,displayName:botName,elo:botElo,equippedCardId:botCard},botRec);
-  const doc=mpBuildMatchDoc('ranked',MP.profile,botProfile,matchId,now,true);
+  const doc=mpBuildMatchDoc('bot',MP.profile,botProfile,matchId,now,true);
   const botBuild={stats:botStats,traits:mpBotTraits(),synergies:mpBotSynergies(),cardId:botCard,cardBoosts:botCardBoosts2,ovr:calcMpOvr(botStats)};
   doc.players[botUid].draftStatus='submitted';
   doc.players[botUid].finalBuild=botBuild;
@@ -15599,7 +15615,7 @@ async function _pvpBotAfterDraft(){
   doc.players[currentUser.uid].submittedAt=now;
   doc.phase='build_reveal';
   MP.myBuild=myBuild;
-  MP.mode='ranked';
+  MP.mode='bot';
   try{
     await db.collection('multiplayer_matches').doc(matchId).set(doc);
     // Set up state and listener directly — skip the extra Firestore read in mpEnterMatch
