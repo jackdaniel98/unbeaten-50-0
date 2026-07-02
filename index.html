@@ -8518,6 +8518,102 @@ const META_SYNERGIES = [
 ];
 SYNERGY.push(...META_SYNERGIES);
 
+// ============================================================
+// ⚔️ FOUGHT-PAIR SYNERGY REVAMP — full replacement
+// Every synergy = two fighters who really shared a ring.
+// Unlock: land BOTH fighters anywhere in your 10 drafted stat
+// sources. Rarity: rare (+4 total) / epic (+6) / legendary (+9).
+// The legacy pools pushed above are retired below (SYNERGY is
+// emptied and refilled), kept only as reference data.
+// ============================================================
+const FIGHT_SYNERGIES=[
+  // ── LEGENDARY — the fights that defined the sport (+9) ──
+  {id:"fn_may_pac",name:"Fight Of The Century",rarity:"legendary",fighters:["Floyd Mayweather Jr.","Manny Pacquiao"],desc:"Las Vegas, 2015. Five years of talk settled in one ring. +3 Defence, +3 Speed, +3 Ring IQ.",bonuses:{Defence:3,Speed:3,"Ring IQ":3}},
+  {id:"fn_tyson_holyfield",name:"Hungry For Ears",rarity:"legendary",fighters:["Mike Tyson","Evander Holyfield"],desc:"1996 and 1997. The bite heard around the world. +4 Power, +3 Chin, +2 Heart.",bonuses:{Power:4,Chin:3,Heart:2}},
+  {id:"fn_froch_groves",name:"We Can All Have A Push And A Pull",rarity:"legendary",fighters:["Carl Froch","George Groves"],desc:"80,000 at Wembley, 2014. One right hand ended the beef. +3 Power, +3 Accuracy, +3 Heart.",bonuses:{Power:3,Accuracy:3,Heart:3}},
+  {id:"fn_ali_frazier",name:"The Thrilla In Manila",rarity:"legendary",fighters:["Muhammad Ali","Joe Frazier"],desc:"1971-1975. The trilogy that defined heavyweight boxing. +3 Heart, +3 Speed, +3 Stamina.",bonuses:{Heart:3,Speed:3,Stamina:3}},
+  {id:"fn_ali_foreman",name:"Rope-A-Dope",rarity:"legendary",fighters:["Muhammad Ali","George Foreman"],desc:"Zaire, 1974. The Rumble in the Jungle. +3 Ring IQ, +3 Power, +3 Chin.",bonuses:{"Ring IQ":3,Power:3,Chin:3}},
+  {id:"fn_canelo_ggg",name:"The Big Drama Show",rarity:"legendary",fighters:["Canelo Alvarez","Gennady Golovkin"],desc:"2017-2022. A trilogy of Mexican-style warfare. +3 Power, +3 Chin, +3 Accuracy.",bonuses:{Power:3,Chin:3,Accuracy:3}},
+  {id:"fn_usyk_fury",name:"Undisputed At Last",rarity:"legendary",fighters:["Oleksandr Usyk","Tyson Fury"],desc:"Riyadh, 2024. The first undisputed heavyweight king in 24 years. +3 Ring IQ, +3 Footwork, +3 Recovery.",bonuses:{"Ring IQ":3,Footwork:3,Recovery:3}},
+  {id:"fn_spence_crawford",name:"The Takeover",rarity:"legendary",fighters:["Errol Spence Jr","Terence Crawford"],desc:"2023. Bud settled the welterweight argument for good. +3 Accuracy, +3 Speed, +3 Ring IQ.",bonuses:{Accuracy:3,Speed:3,"Ring IQ":3}},
+  {id:"fn_leonard_duran",name:"No Más",rarity:"legendary",fighters:["Sugar Ray Leonard","Roberto Duran"],desc:"1980. Two words that echoed through boxing history. +3 Speed, +3 Accuracy, +3 Heart.",bonuses:{Speed:3,Accuracy:3,Heart:3}},
+  {id:"fn_joshua_ruiz",name:"Upset At The Garden",rarity:"legendary",fighters:["Anthony Joshua","Andy Ruiz Jr."],desc:"New York, 2019. The shock of the decade, avenged in the desert. +3 Power, +3 Speed, +3 Heart.",bonuses:{Power:3,Speed:3,Heart:3}},
+  {id:"fn_tyson_douglas",name:"42 To 1",rarity:"legendary",fighters:["Mike Tyson","Buster Douglas"],desc:"Tokyo, 1990. The biggest upset in boxing history. +3 Chin, +3 Heart, +3 Stamina.",bonuses:{Chin:3,Heart:3,Stamina:3}},
+  {id:"fn_may_mcgregor",name:"The Money Fight",rarity:"legendary",fighters:["Floyd Mayweather Jr.","Conor McGregor"],desc:"2017. Boxing vs MMA, and 50-0 was sealed. +3 Defence, +3 Accuracy, +3 Ring IQ.",bonuses:{Defence:3,Accuracy:3,"Ring IQ":3}},
+  // ── EPIC — classic wars and famous nights (+6) ──
+  {id:"fn_ali_norton",name:"The Jaw Breaker",rarity:"epic",fighters:["Muhammad Ali","Ken Norton"],desc:"1973. Norton broke Ali's jaw and took his zero. +3 Chin, +3 Footwork.",bonuses:{Chin:3,Footwork:3}},
+  {id:"fn_foreman_frazier",name:"Down Goes Frazier",rarity:"epic",fighters:["George Foreman","Joe Frazier"],desc:"Jamaica, 1973. Six knockdowns and one immortal call. +4 Power, +2 Heart.",bonuses:{Power:4,Heart:2}},
+  {id:"fn_tyson_lewis",name:"Memphis Mauling",rarity:"epic",fighters:["Mike Tyson","Lennox Lewis"],desc:"2002. After all the fury, Lewis gave the lesson. +3 Power, +3 Ring IQ.",bonuses:{Power:3,"Ring IQ":3}},
+  {id:"fn_lewis_holyfield",name:"Unified Kingdom",rarity:"epic",fighters:["Lennox Lewis","Evander Holyfield"],desc:"1999. Two fights to crown one true king. +3 Ring IQ, +3 Heart.",bonuses:{"Ring IQ":3,Heart:3}},
+  {id:"fn_lewis_vitali",name:"Blood On The Cards",rarity:"epic",fighters:["Lennox Lewis","Vitali Klitschko"],desc:"2003. A cut ended a war Lewis was losing on the cards. +3 Chin, +3 Power.",bonuses:{Chin:3,Power:3}},
+  {id:"fn_bowe_holyfield",name:"The Fan Man Wars",rarity:"epic",fighters:["Riddick Bowe","Evander Holyfield"],desc:"1992-95. A trilogy so wild a paraglider crashed it. +3 Power, +3 Heart.",bonuses:{Power:3,Heart:3}},
+  {id:"fn_joshua_wlad",name:"Wembley For The Ages",rarity:"epic",fighters:["Anthony Joshua","Wladimir Klitschko"],desc:"2017. Both men down, one modern classic. +3 Power, +3 Heart.",bonuses:{Power:3,Heart:3}},
+  {id:"fn_usyk_joshua",name:"The Chess Lesson",rarity:"epic",fighters:["Oleksandr Usyk","Anthony Joshua"],desc:"2021-22. Twice taught, never solved. +3 Ring IQ, +3 Footwork.",bonuses:{"Ring IQ":3,Footwork:3}},
+  {id:"fn_fury_ngannou",name:"Baddest Man Business",rarity:"epic",fighters:["Tyson Fury","Francis Ngannou"],desc:"2023. The crossover that nearly went horribly wrong. +3 Chin, +3 Power.",bonuses:{Chin:3,Power:3}},
+  {id:"fn_pac_marquez",name:"The Perfect Counter",rarity:"epic",fighters:["Manny Pacquiao","Juan Manuel Marquez"],desc:"Four fights, one immortal right hand in 2012. +3 Accuracy, +3 Speed.",bonuses:{Accuracy:3,Speed:3}},
+  {id:"fn_may_delahoya",name:"Passing The Golden Torch",rarity:"epic",fighters:["Floyd Mayweather Jr.","Oscar De La Hoya"],desc:"2007. The night that made Money. +3 Defence, +3 Accuracy.",bonuses:{Defence:3,Accuracy:3}},
+  {id:"fn_pac_delahoya",name:"The Dream Match",rarity:"epic",fighters:["Manny Pacquiao","Oscar De La Hoya"],desc:"2008. Speed retired a legend. +3 Speed, +3 Footwork.",bonuses:{Speed:3,Footwork:3}},
+  {id:"fn_pac_hatton",name:"Two Rounds Of Thunder",rarity:"epic",fighters:["Manny Pacquiao","Ricky Hatton"],desc:"2009. One left hook, lights out. +4 Speed, +2 Power.",bonuses:{Speed:4,Power:2}},
+  {id:"fn_may_hatton",name:"Hitman Hunted",rarity:"epic",fighters:["Floyd Mayweather Jr.","Ricky Hatton"],desc:"2007. Undefeated meets untouchable. +3 Defence, +3 Ring IQ.",bonuses:{Defence:3,"Ring IQ":3}},
+  {id:"fn_eubank_benn",name:"Judgement Night",rarity:"epic",fighters:["Chris Eubank","Nigel Benn"],desc:"1990-93. Britain's bitterest feud. +3 Heart, +3 Power.",bonuses:{Heart:3,Power:3}},
+  {id:"fn_barrera_morales",name:"The Blood Trilogy",rarity:"epic",fighters:["Marco Antonio Barrera","Erik Morales"],desc:"2000-2004. Mexico's civil war. +3 Heart, +3 Accuracy.",bonuses:{Heart:3,Accuracy:3}},
+  {id:"fn_hopkins_delahoya",name:"Liver Shot Checkmate",rarity:"epic",fighters:["Bernard Hopkins","Oscar De La Hoya"],desc:"2004. One body shot ended everything. +3 Ring IQ, +3 Accuracy.",bonuses:{"Ring IQ":3,Accuracy:3}},
+  {id:"fn_jones_hopkins",name:"Pound For Pound Genesis",rarity:"epic",fighters:["Roy Jones Jr.","Bernard Hopkins"],desc:"1993 and 2010. Seventeen years of unfinished business. +3 Speed, +3 Ring IQ.",bonuses:{Speed:3,"Ring IQ":3}},
+  {id:"fn_calzaghe_jones",name:"The Dragon's Farewell",rarity:"epic",fighters:["Joe Calzaghe","Roy Jones Jr."],desc:"2008. Down early, dominant late, retired unbeaten. +3 Speed, +3 Stamina.",bonuses:{Speed:3,Stamina:3}},
+  {id:"fn_ward_froch",name:"The Super Six Final",rarity:"epic",fighters:["Andre Ward","Carl Froch"],desc:"2011. S.O.G. took the whole tournament. +3 Ring IQ, +3 Defence.",bonuses:{"Ring IQ":3,Defence:3}},
+  {id:"fn_whitaker_chavez",name:"The San Antonio Robbery",rarity:"epic",fighters:["Pernell Whitaker","Julio Cesar Chavez"],desc:"1993. A draw nobody believed. +4 Defence, +2 Footwork.",bonuses:{Defence:4,Footwork:2}},
+  {id:"fn_cotto_margarito",name:"Plaster And Payback",rarity:"epic",fighters:["Miguel Cotto","Antonio Margarito"],desc:"2008, then revenge in 2011. +3 Heart, +3 Power.",bonuses:{Heart:3,Power:3}},
+  {id:"fn_tyson_paul",name:"The Cash Grab Circus",rarity:"epic",fighters:["Mike Tyson","Jake Paul"],desc:"Texas, 2024. 58 years old and still selling millions. +3 Accuracy, +3 Recovery.",bonuses:{Accuracy:3,Recovery:3}},
+  // ── RARE — real fights, real bragging rights (+4) ──
+  {id:"fn_fury_wallin",name:"The Cut Above",rarity:"rare",fighters:["Tyson Fury","Otto Wallin"],desc:"2019. Forty-seven stitches worth of survival. +2 Recovery, +2 Heart.",bonuses:{Recovery:2,Heart:2}},
+  {id:"fn_fury_chisora",name:"The Gypsy King's Court",rarity:"rare",fighters:["Tyson Fury","Dereck Chisora"],desc:"Three one-sided London nights. +2 Stamina, +2 Defence.",bonuses:{Stamina:2,Defence:2}},
+  {id:"fn_joshua_parker",name:"The Unification Chess",rarity:"rare",fighters:["Anthony Joshua","Joseph Parker"],desc:"2018. Twelve careful rounds for two belts. +2 Ring IQ, +2 Defence.",bonuses:{"Ring IQ":2,Defence:2}},
+  {id:"fn_joshua_whyte",name:"Bad Blood Britain",rarity:"rare",fighters:["Anthony Joshua","Dillian Whyte"],desc:"2015. Amateur rivals, professional fireworks. +2 Power, +2 Heart.",bonuses:{Power:2,Heart:2}},
+  {id:"fn_joshua_povetkin",name:"Russian Roulette",rarity:"rare",fighters:["Anthony Joshua","Alexander Povetkin"],desc:"2018. Danger early, knockout late. +2 Power, +2 Chin.",bonuses:{Power:2,Chin:2}},
+  {id:"fn_joshua_ngannou",name:"The Statement KO",rarity:"rare",fighters:["Anthony Joshua","Francis Ngannou"],desc:"2024. Two rounds, face down. +3 Power, +1 Accuracy.",bonuses:{Power:3,Accuracy:1}},
+  {id:"fn_joshua_takam",name:"Late Notice Grit",rarity:"rare",fighters:["Anthony Joshua","Carlos Takam"],desc:"2017. Twelve days' notice, ten rounds survived. +2 Stamina, +2 Chin.",bonuses:{Stamina:2,Chin:2}},
+  {id:"fn_parker_ruiz",name:"Pacific Split",rarity:"rare",fighters:["Joseph Parker","Andy Ruiz Jr."],desc:"2016. A world title by majority decision. +2 Speed, +2 Accuracy.",bonuses:{Speed:2,Accuracy:2}},
+  {id:"fn_parker_zhang",name:"Big Bang Defused",rarity:"rare",fighters:["Joseph Parker","Zhilei Zhang"],desc:"2024. Boxing brains beat southpaw bombs. +2 Ring IQ, +2 Chin.",bonuses:{"Ring IQ":2,Chin:2}},
+  {id:"fn_parker_bakole",name:"Short Notice Statement",rarity:"rare",fighters:["Joseph Parker","Martin Bakole"],desc:"2025. Two days' notice, two rounds of work. +2 Power, +2 Heart.",bonuses:{Power:2,Heart:2}},
+  {id:"fn_parker_whyte",name:"Down But Not Out",rarity:"rare",fighters:["Joseph Parker","Dillian Whyte"],desc:"2018. Head clashes, knockdowns, war. +2 Chin, +2 Power.",bonuses:{Chin:2,Power:2}},
+  {id:"fn_zhang_hrgovic",name:"Balkan Breaker",rarity:"rare",fighters:["Zhilei Zhang","Filip Hrgovic"],desc:"2024. Big Bang broke the fortress. +2 Power, +2 Chin.",bonuses:{Power:2,Chin:2}},
+  {id:"fn_bakole_anderson",name:"The Prospect Eater",rarity:"rare",fighters:["Martin Bakole","Jared Anderson"],desc:"2024. Congo Thunder ate the hype. +2 Power, +2 Chin.",bonuses:{Power:2,Chin:2}},
+  {id:"fn_kabayel_makhmudov",name:"Body Snatcher Blueprint",rarity:"rare",fighters:["Agit Kabayel","Arslanbek Makhmudov"],desc:"2023. Body shots felled the giant. +2 Stamina, +2 Accuracy.",bonuses:{Stamina:2,Accuracy:2}},
+  {id:"fn_chisora_whyte",name:"Bad Blood Rematch",rarity:"rare",fighters:["Dereck Chisora","Dillian Whyte"],desc:"2016 and 2018. Tables and left hooks thrown. +2 Power, +2 Heart.",bonuses:{Power:2,Heart:2}},
+  {id:"fn_chisora_pulev",name:"Split Decision Feud",rarity:"rare",fighters:["Dereck Chisora","Kubrat Pulev"],desc:"2016 and 2022. Never truly settled. +2 Chin, +2 Stamina.",bonuses:{Chin:2,Stamina:2}},
+  {id:"fn_usyk_chisora",name:"Pressure Cooker Passed",rarity:"rare",fighters:["Oleksandr Usyk","Dereck Chisora"],desc:"2020. War pressure, chess answers. +2 Footwork, +2 Stamina.",bonuses:{Footwork:2,Stamina:2}},
+  {id:"fn_usyk_bellew",name:"Cruiser King's Farewell",rarity:"rare",fighters:["Oleksandr Usyk","Tony Bellew"],desc:"2018. Bellew's brave last stand. +2 Ring IQ, +2 Accuracy.",bonuses:{"Ring IQ":2,Accuracy:2}},
+  {id:"fn_usyk_gassiev",name:"The WBSS Masterclass",rarity:"rare",fighters:["Oleksandr Usyk","Murat Gassiev"],desc:"2018. Undisputed at cruiserweight. +2 Footwork, +2 Defence.",bonuses:{Footwork:2,Defence:2}},
+  {id:"fn_opetaia_briedis",name:"Broken Jaw Courage",rarity:"rare",fighters:["Jai Opetaia","Mairis Briedis"],desc:"2022. Won a world title with a jaw in pieces. +3 Heart, +1 Chin.",bonuses:{Heart:3,Chin:1}},
+  {id:"fn_okolie_cbs",name:"The Bournemouth Coup",rarity:"rare",fighters:["Lawrence Okolie","Chris Billam-Smith"],desc:"2023. A home-town title takeover. +2 Chin, +2 Heart.",bonuses:{Chin:2,Heart:2}},
+  {id:"fn_holmes_ali",name:"The Torch Takes Over",rarity:"rare",fighters:["Larry Holmes","Muhammad Ali"],desc:"1980. The saddest passing of a crown. +2 Accuracy, +2 Ring IQ.",bonuses:{Accuracy:2,"Ring IQ":2}},
+  {id:"fn_ali_shavers",name:"The Acorn's Earthquake",rarity:"rare",fighters:["Muhammad Ali","Earnie Shavers"],desc:"1977. The hardest puncher Ali ever felt. +2 Power, +2 Chin.",bonuses:{Power:2,Chin:2}},
+  {id:"fn_tyson_holmes",name:"The 88 Demolition",rarity:"rare",fighters:["Mike Tyson","Larry Holmes"],desc:"1988. Iron Mike at his most frightening. +2 Power, +2 Speed.",bonuses:{Power:2,Speed:2}},
+  {id:"fn_lewis_tua",name:"The Left Hook Lockdown",rarity:"rare",fighters:["Lennox Lewis","David Tua"],desc:"2000. Jab and grab defused the bomb. +2 Defence, +2 Power.",bonuses:{Defence:2,Power:2}},
+  {id:"fn_foreman_holyfield",name:"Age Is Just A Number",rarity:"rare",fighters:["George Foreman","Evander Holyfield"],desc:"1991. Big George went the distance at 42. +2 Heart, +2 Stamina.",bonuses:{Heart:2,Stamina:2}},
+  {id:"fn_valuev_holyfield",name:"David And Goliath",rarity:"rare",fighters:["Nikolai Valuev","Evander Holyfield"],desc:"2008. Seven feet versus 46 years of heart. +2 Heart, +2 Ring IQ.",bonuses:{Heart:2,"Ring IQ":2}},
+  {id:"fn_hall_thor",name:"The Heaviest Boxing Match",rarity:"rare",fighters:["Eddie Hall","Hafthor Bjornsson"],desc:"2022. A strongman grudge settled with gloves. +3 Power, +1 Chin.",bonuses:{Power:3,Chin:1}},
+  {id:"fn_paul_diaz",name:"The Crossover Circus",rarity:"rare",fighters:["Jake Paul","Nate Diaz"],desc:"2023. Stockton comes to boxing. +2 Chin, +2 Stamina.",bonuses:{Chin:2,Stamina:2}},
+  {id:"fn_paul_silva",name:"The Spider Trap",rarity:"rare",fighters:["Jake Paul","Anderson Silva"],desc:"2022. Respect earned the hard way. +2 Accuracy, +2 Footwork.",bonuses:{Accuracy:2,Footwork:2}},
+  {id:"fn_mcgregor_diaz",name:"The Stockton Slap",rarity:"rare",fighters:["Conor McGregor","Nate Diaz"],desc:"2016. Two wars, one slap heard everywhere. +2 Heart, +2 Chin.",bonuses:{Heart:2,Chin:2}},
+  {id:"fn_whyte_povetkin",name:"The Rotation Uppercut",rarity:"rare",fighters:["Dillian Whyte","Alexander Povetkin"],desc:"2020-21. Knocked out cold, then avenged. +3 Power, +1 Recovery.",bonuses:{Power:3,Recovery:1}},
+  {id:"fn_ortiz_may",name:"Protect Yourself At All Times",rarity:"rare",fighters:["Victor Ortiz","Floyd Mayweather Jr."],desc:"2011. The most legal sucker punch ever thrown. +2 Accuracy, +2 Ring IQ.",bonuses:{Accuracy:2,"Ring IQ":2}},
+  {id:"fn_tszyu_hatton",name:"Manchester Massacre",rarity:"rare",fighters:["Kostya Tszyu","Ricky Hatton"],desc:"2005. The Hitman's greatest night. +2 Heart, +2 Stamina.",bonuses:{Heart:2,Stamina:2}},
+  {id:"fn_tszyu_fundora",name:"Blood In The Eyes",rarity:"rare",fighters:["Tim Tszyu","Sebastian Fundora"],desc:"2024. Fought half-blind for twelve rounds. +2 Heart, +2 Chin.",bonuses:{Heart:2,Chin:2}},
+  {id:"fn_khan_canelo",name:"Flying Too Close",rarity:"rare",fighters:["Amir Khan","Canelo Alvarez"],desc:"2016. Blinding speed, one-punch sunset. +3 Speed, +1 Footwork.",bonuses:{Speed:3,Footwork:1}},
+  {id:"fn_khan_garcia",name:"The Left Hook From Hell",rarity:"rare",fighters:["Amir Khan","Danny Garcia"],desc:"2012. Swift caught lightning. +2 Speed, +2 Power.",bonuses:{Speed:2,Power:2}},
+  {id:"fn_crawford_porter",name:"Forced To Stop",rarity:"rare",fighters:["Terence Crawford","Shawn Porter"],desc:"2021. The first man to ever stop Showtime. +2 Ring IQ, +2 Power.",bonuses:{"Ring IQ":2,Power:2}},
+  {id:"fn_spence_porter",name:"The War Of Attrition",rarity:"rare",fighters:["Errol Spence Jr","Shawn Porter"],desc:"2019. Every single round was earned. +2 Heart, +2 Stamina.",bonuses:{Heart:2,Stamina:2}},
+  {id:"fn_thurman_pac",name:"The Senator's Statement",rarity:"rare",fighters:["Keith Thurman","Manny Pacquiao"],desc:"2019. Forty-year-old Manny turned back time. +2 Speed, +2 Heart.",bonuses:{Speed:2,Heart:2}},
+  {id:"fn_canelo_chavezjr",name:"Cinco De Mayo Shutout",rarity:"rare",fighters:["Canelo Alvarez","Julio Cesar Chavez Jr"],desc:"2017. Mexico's torch passed brutally. +2 Accuracy, +2 Footwork.",bonuses:{Accuracy:2,Footwork:2}},
+  {id:"fn_groves_degale",name:"The Grudge Decided",rarity:"rare",fighters:["George Groves","James DeGale"],desc:"2011. Gym-mates turned enemies. +2 Accuracy, +2 Speed.",bonuses:{Accuracy:2,Speed:2}},
+  {id:"fn_plant_benavidez",name:"Bad Blood Decision",rarity:"rare",fighters:["Caleb Plant","David Benavidez"],desc:"2023. Real hatred, real beating. +2 Stamina, +2 Accuracy.",bonuses:{Stamina:2,Accuracy:2}},
+  {id:"fn_warrington_frampton",name:"The Leeds War",rarity:"rare",fighters:["Josh Warrington","Carl Frampton"],desc:"2018. Fight of the year, no argument. +2 Heart, +2 Stamina.",bonuses:{Heart:2,Stamina:2}},
+  {id:"fn_loma_linares",name:"The Matrix Glitch",rarity:"rare",fighters:["Vasyl Lomachenko","Jorge Linares"],desc:"2018. Dropped, then dissected. +2 Footwork, +2 Ring IQ.",bonuses:{Footwork:2,"Ring IQ":2}}
+];
+SYNERGY.length=0;
+SYNERGY.push(...FIGHT_SYNERGIES);
+
 const STATS = ['Power','Chin','Speed','Footwork','Ring IQ','Heart','Defence','Stamina','Accuracy','Recovery'];
 const STANDARD_MODE = {id:'standard',name:'Standard Career',rerolls:2,oppMod:-2,purse:1.08,elite:1.18,ultra:1.08};
 const MODE = {
@@ -11486,55 +11582,13 @@ function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $(
 function useReroll(){ if(!S.awaiting||S.career.draftRerolls<=0) return; S.career.draftRerolls--; saveCareer(); spinWheel(true,true); }
 function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} • ${t.rarity.toUpperCase()}\n\n${t.desc}`; }
 function checkSynergy(){
-  const unlocked=[];
+  // Fought-pair system: a synergy unlocks when BOTH fighters from a real
+  // fight appear anywhere in your drafted stat sources.
   const sources=S.player.StatSources||{};
-  const srcVals=Object.values(sources).filter(Boolean);
-  const traits=(S.player.Traits||[]).map(t=>t.id);
-  const rawStats=S.player.Stats||{};
-  SYNERGY.forEach(sy=>{
-    let ok=false;
-    const rt=sy.reqType||'source';
-    try{
-      if(rt==='source'){
-        ok=Object.entries(sy.requirements).every(([st,name])=>sources[st]===name);
-      } else if(rt==='style_count'){
-        const {style,count}=sy.requirements;
-        ok=srcVals.filter(n=>(getFighterIdentity(n)||{}).sc===style).length>=count;
-      } else if(rt==='nation_count'){
-        const {flag,count}=sy.requirements;
-        ok=srcVals.filter(n=>(getFighterIdentity(n)||{}).flag===flag).length>=count;
-      } else if(rt==='nations_any'){
-        const {flags,count}=sy.requirements;
-        ok=srcVals.filter(n=>flags.includes((getFighterIdentity(n)||{}).flag)).length>=count;
-      } else if(rt==='multi_nation'){
-        const nations=new Set(srcVals.map(n=>(getFighterIdentity(n)||{}).flag).filter(Boolean));
-        ok=nations.size>=sy.requirements.count;
-      } else if(rt==='era_old'){
-        const {before,count}=sy.requirements;
-        ok=srcVals.filter(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py<before;}).length>=count;
-      } else if(rt==='era_modern'){
-        const {from,count}=sy.requirements;
-        ok=srcVals.filter(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py>=from;}).length>=count;
-      } else if(rt==='era_clash'){
-        const {before,from}=sy.requirements;
-        const hasOld=srcVals.some(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py<before;});
-        const hasNew=srcVals.some(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py>=from;});
-        ok=hasOld&&hasNew;
-      } else if(rt==='era_decade'){
-        const {decadeStart,count}=sy.requirements;
-        ok=srcVals.filter(n=>{const py=(getFighterIdentity(n)||{}).primeYear; return py&&py>=decadeStart&&py<decadeStart+10;}).length>=count;
-      } else if(rt==='build_shape'){
-        ok=Object.entries(sy.requirements).every(([st,check])=>{
-          const v=rawStats[st]; if(v==null) return false;
-          if(check.min!=null&&v<check.min) return false;
-          if(check.max!=null&&v>check.max) return false;
-          return true;
-        });
-      } else if(rt==='trait_combo'){
-        ok=(sy.requirements.traits||[]).every(tid=>traits.includes(tid));
-      }
-    }catch(e){ ok=false; }
-    if(ok) unlocked.push(sy);
+  const have=new Set(Object.values(sources).filter(Boolean));
+  const unlocked=SYNERGY.filter(sy=>{
+    const pair=sy.fighters||[];
+    return pair.length>0&&pair.every(n=>have.has(n));
   });
   S.player.HiddenBonuses=unlocked; updateOverallDisplays();
 }
@@ -13927,10 +13981,11 @@ function mpTraitOptions(ds){
 }
 function mpUnlockedSynergies(statSources){
   const src=statSources||{};
+  const have=new Set(Object.values(src).filter(Boolean));
   const list=(typeof SYNERGY!=='undefined'&&Array.isArray(SYNERGY)&&SYNERGY)||[];
   return list.filter(function(syn){
-    const req=syn.requirements||{};
-    return Object.keys(req).every(function(st){ return src[st]===req[st]; });
+    const pair=syn.fighters||[];
+    return pair.length>0&&pair.every(function(n){ return have.has(n); });
   }).map(mpPublicSynergy);
 }
 function mpBeginLocalDraft(data){
