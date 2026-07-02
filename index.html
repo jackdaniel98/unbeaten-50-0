@@ -3326,6 +3326,278 @@ header::after{
 .menu-save-bar .msb-text{flex:1;min-width:0}
 .menu-save-bar .msb-name{font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .menu-save-bar .msb-sub{font-size:.68rem;color:var(--text-dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ============================================================
+   ✨ PREMIUM POLISH LAYER — "FIGHT NIGHT" EDITION
+   Broadcast-grade black & champagne-gold facelift.
+   Additive overrides only — no layout or logic changes.
+============================================================ */
+
+/* ---------- Ambient arena backdrop ---------- */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(900px 480px at 15% -10%, rgba(227,178,60,.075), transparent 60%),
+    radial-gradient(720px 400px at 90% 6%, rgba(91,141,239,.05), transparent 60%),
+    radial-gradient(1100px 720px at 50% 118%, rgba(227,178,60,.055), transparent 65%);
+  animation:arenaGlow 16s ease-in-out infinite alternate;
+}
+@keyframes arenaGlow{
+  0%{opacity:.55}
+  100%{opacity:1}
+}
+.app{
+  border:1px solid rgba(227,178,60,.18);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.55),
+    0 28px 90px -28px rgba(0,0,0,.92),
+    0 0 110px -36px rgba(227,178,60,.22);
+}
+
+/* ---------- Header — championship wordmark ---------- */
+header{
+  background:
+    radial-gradient(72% 110px at 50% 0%, rgba(227,178,60,.1), transparent 78%),
+    linear-gradient(180deg,#0c0d10 0%,#0a0b0e 100%);
+}
+header h1{
+  background:linear-gradient(180deg,#fff8e1 0%,#f5d878 36%,#e3b23c 64%,#96701d 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 2px 10px rgba(227,178,60,.28));
+}
+header::after{
+  width:58px;
+  background:linear-gradient(90deg,transparent,var(--gold) 30%,#ffe9a8 50%,var(--gold) 70%,transparent);
+  box-shadow:0 0 14px rgba(227,178,60,.75);
+  animation:beltPulse 3.4s var(--ease) infinite;
+}
+@keyframes beltPulse{0%,100%{opacity:.75}50%{opacity:1}}
+
+/* ---------- Fix: screens are column-flex scroll containers.
+   Children with overflow:hidden (hof-box, rank-hero, global-stats…)
+   have min-height:auto → 0, so they get crushed instead of scrolling.
+   Never shrink screen children — let the screen scroll. ---------- */
+.screen>*{flex-shrink:0}
+
+/* ---------- Screen transitions — lower-third slide ---------- */
+.screen.active{animation:screenIn .44s cubic-bezier(.22,1,.36,1)}
+@keyframes screenIn{
+  from{opacity:0;transform:translateY(16px) scale(.988)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* ---------- Gold scrollbars ---------- */
+.screen::-webkit-scrollbar-thumb,.log::-webkit-scrollbar-thumb,.sim-body::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(227,178,60,.55),rgba(200,146,42,.3));
+  border-radius:3px;
+}
+
+/* ---------- Section headings — gold tick glow ---------- */
+h2::before{
+  background:linear-gradient(90deg,var(--gold),#ffe9a8);
+  box-shadow:0 0 8px rgba(227,178,60,.55);
+}
+
+/* ---------- Panels & cards — hairline gold top-light ---------- */
+.panel,.mode-card,.opponent-card,.history-panel,.compact-group,.stat-card,
+.global-stats,.overall-banner,.arena-top,.leaderboard-card,.trait-pill,.menu-save-bar{
+  background:linear-gradient(180deg,#15181e 0%,#101317 58%,#0e1014 100%);
+  border-color:rgba(255,255,255,.09);
+  border-top-color:rgba(227,178,60,.2);
+  box-shadow:0 1px 0 rgba(255,255,255,.05) inset, var(--shadow-card);
+}
+.spin-card,.trait-spin-card{
+  background:
+    radial-gradient(90% 70px at 50% 0%, rgba(227,178,60,.08), transparent 75%),
+    linear-gradient(180deg,#0d0f13 0%,#08090c 100%);
+}
+
+/* ---------- Buttons — tactile, broadcast-grade ---------- */
+.btn{
+  transition:transform var(--t-fast) var(--ease), background var(--t) var(--ease),
+    border-color var(--t) var(--ease), box-shadow var(--t) var(--ease), filter var(--t) var(--ease);
+}
+.btn:hover{border-color:rgba(227,178,60,.28)}
+.btn:active{transform:scale(.965)}
+.btn.gold{
+  background:linear-gradient(180deg,#f8e18c 0%,#eac250 44%,#d09a26 100%);
+  border:1px solid #f0cd66;
+  text-shadow:0 1px 0 rgba(255,255,255,.3);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.4) inset,
+    0 -2px 0 rgba(120,84,10,.35) inset,
+    0 10px 30px -12px rgba(227,178,60,.65);
+}
+.btn.gold:hover{
+  transform:translateY(-1px);
+  background:linear-gradient(180deg,#fce9a0 0%,#efc95a 44%,#d8a22c 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.45) inset,
+    0 -2px 0 rgba(120,84,10,.35) inset,
+    0 14px 36px -12px rgba(227,178,60,.8);
+}
+.btn.gold:active{transform:scale(.965) translateY(0)}
+.btn.gold::after,#draft-fighter-btn::after{
+  content:'';position:absolute;top:-4px;bottom:-4px;left:-70%;width:42%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.55) 50%,transparent);
+  transform:skewX(-18deg);
+  animation:btnShine 3.8s cubic-bezier(.4,0,.2,1) infinite;
+  pointer-events:none;
+}
+@keyframes btnShine{0%,62%{left:-70%}100%{left:150%}}
+.btn.blue{
+  background:linear-gradient(180deg,#699af5 0%,#3f6fd4 100%);
+  box-shadow:0 1px 0 rgba(255,255,255,.25) inset, 0 10px 26px -14px rgba(91,141,239,.85);
+}
+.btn.blue:hover{transform:translateY(-1px)}
+.btn.ghost:hover{border-color:rgba(227,178,60,.35);color:var(--text)}
+.btn.share{box-shadow:0 1px 0 rgba(255,255,255,.28) inset, 0 10px 26px -14px rgba(52,199,123,.8)}
+/* press ripple (spawned by JS) */
+.fx-ripple{
+  position:absolute;border-radius:50%;pointer-events:none;z-index:3;
+  width:14px;height:14px;margin:-7px 0 0 -7px;
+  background:radial-gradient(circle,rgba(255,255,255,.4) 0%,rgba(255,255,255,.12) 45%,transparent 70%);
+  animation:fxRipple .55s ease-out forwards;
+}
+@keyframes fxRipple{from{transform:scale(0);opacity:.9}to{transform:scale(18);opacity:0}}
+
+/* ---------- Tabs & filters ---------- */
+.tab-btn.active,.mcc-filter.active{
+  border-color:rgba(227,178,60,.55);
+  box-shadow:0 0 0 1px rgba(227,178,60,.2), 0 8px 20px -12px rgba(227,178,60,.6);
+  text-shadow:0 0 10px rgba(227,178,60,.4);
+}
+
+/* ---------- Inputs ---------- */
+.name-input:focus,.field input:focus,.field select:focus,.mp-invite-input:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px var(--gold-soft), 0 0 24px -8px rgba(227,178,60,.5);
+}
+
+/* ---------- Mode cards ---------- */
+.mode-card{transition:border-color var(--t) var(--ease), transform var(--t-fast) var(--ease), background var(--t) var(--ease), box-shadow var(--t) var(--ease)}
+.mode-card:hover{border-color:rgba(227,178,60,.4)}
+.mode-card.selected{box-shadow:0 0 24px -10px rgba(227,178,60,.5), var(--shadow-card)}
+
+/* ---------- Stat pills / overall banner ---------- */
+.stat-pill .value{text-shadow:0 0 14px rgba(227,178,60,.35)}
+.overall-banner{position:relative;overflow:hidden}
+.overall-banner .value{text-shadow:0 0 16px rgba(227,178,60,.4)}
+.overall-banner::after{
+  content:'';position:absolute;top:0;bottom:0;left:-70%;width:40%;
+  background:linear-gradient(105deg,transparent,rgba(227,178,60,.1) 50%,transparent);
+  transform:skewX(-18deg);
+  animation:btnShine 5.5s cubic-bezier(.4,0,.2,1) infinite;
+  pointer-events:none;
+}
+
+/* ---------- Record badge & belts ---------- */
+.record-badge.unbeaten{
+  background:linear-gradient(100deg,#e3b23c 0%,#e3b23c 38%,#fff3c4 50%,#e3b23c 62%,#e3b23c 100%);
+  background-size:240% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:goldSheen 4.6s ease-in-out infinite;
+  filter:drop-shadow(0 0 14px rgba(227,178,60,.3));
+}
+@keyframes goldSheen{0%,50%{background-position:130% 0}100%{background-position:-70% 0}}
+.belt.on{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#f2d06b 0%,#d4a32c 100%);
+  border-color:#f0cd66;
+  box-shadow:0 0 16px -5px rgba(227,178,60,.8), 0 1px 0 rgba(255,255,255,.3) inset;
+}
+.belt.on::after{
+  content:'';position:absolute;top:0;bottom:0;left:-80%;width:50%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.5) 50%,transparent);
+  transform:skewX(-18deg);
+  animation:btnShine 4.8s cubic-bezier(.4,0,.2,1) infinite;
+}
+
+/* ---------- Fight screen — main event feel ---------- */
+#fight-screen .vs{
+  text-shadow:0 0 14px rgba(227,178,60,.55);
+  animation:vsPulse 2.6s ease-in-out infinite;
+}
+@keyframes vsPulse{0%,100%{opacity:.82}50%{opacity:1;text-shadow:0 0 24px rgba(227,178,60,.9)}}
+.arena-top{position:relative;overflow:hidden}
+.arena-top::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60% 60px at 50% 0%, rgba(227,178,60,.08), transparent 75%);
+}
+.bar{box-shadow:0 1px 3px rgba(0,0,0,.5) inset}
+.fill{background:linear-gradient(90deg,#27a266 0%,#36c47e 100%);box-shadow:0 0 12px -3px rgba(54,196,126,.75)}
+.fill.blue{background:linear-gradient(90deg,#3f6fd4 0%,#5b8def 100%);box-shadow:0 0 12px -3px rgba(91,141,239,.75)}
+.log{border-top-color:rgba(227,178,60,.18)}
+.line{animation:logIn .3s var(--ease) both}
+@keyframes logIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.line.kd{animation:logIn .3s var(--ease) both, kdFlash 1.1s ease-out}
+@keyframes kdFlash{0%{background:rgba(229,72,77,.4);box-shadow:0 0 22px -4px rgba(229,72,77,.65)}100%{background:rgba(229,72,77,.08);box-shadow:none}}
+#round-display{text-shadow:0 0 16px rgba(227,178,60,.45)}
+
+/* ---------- Hall of Fame — champion's spotlight ---------- */
+.hof-box::after{
+  content:'';position:absolute;inset:-45%;pointer-events:none;
+  background:conic-gradient(from 0deg,
+    transparent 0 7%, rgba(227,178,60,.07) 10%, transparent 13% 24%,
+    rgba(227,178,60,.05) 27%, transparent 30% 47%, rgba(227,178,60,.07) 50%,
+    transparent 53% 72%, rgba(227,178,60,.05) 75%, transparent 78% 100%);
+  animation:hofRays 18s linear infinite;
+}
+@keyframes hofRays{to{transform:rotate(360deg)}}
+.hof-tier{text-shadow:0 0 26px rgba(227,178,60,.5)}
+
+/* ---------- Leaderboards ---------- */
+.leaderboard-card .rank{text-shadow:0 0 12px rgba(227,178,60,.4)}
+
+/* ---------- Bottom nav — active gold beam ---------- */
+.app-nav-item{transition:color .18s var(--ease), transform var(--t-fast) var(--ease)}
+.app-nav-item:active{transform:scale(.92)}
+.app-nav-item.active{text-shadow:0 0 12px rgba(227,178,60,.5)}
+.app-nav-item.active .nav-icon{filter:drop-shadow(0 0 8px rgba(227,178,60,.55))}
+.app-nav-item.active::after{
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  box-shadow:0 2px 12px rgba(227,178,60,.65);
+}
+
+/* ---------- Toast ---------- */
+.toast{box-shadow:0 12px 32px rgba(0,0,0,.5), 0 0 26px -10px rgba(227,178,60,.4)}
+
+/* ---------- JS-driven juice FX ---------- */
+.app.fx-shake{animation:fxShake .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes fxShake{
+  10%,90%{transform:translate3d(-2px,0,0)}
+  20%,80%{transform:translate3d(3px,1px,0)}
+  30%,50%,70%{transform:translate3d(-4px,-1px,0)}
+  40%,60%{transform:translate3d(4px,1px,0)}
+}
+.fx-flash{
+  position:fixed;inset:0;z-index:4000;pointer-events:none;
+  background:radial-gradient(60% 60% at 50% 42%, rgba(255,236,180,.3), rgba(227,178,60,.08) 55%, transparent 100%);
+  animation:fxFlash .5s ease-out forwards;
+}
+@keyframes fxFlash{0%{opacity:1}100%{opacity:0}}
+.fx-confetti{
+  position:fixed;top:-16px;z-index:4200;pointer-events:none;
+  width:8px;height:14px;border-radius:2px;
+  background:linear-gradient(180deg,#f8e18c,#c8922a);
+  box-shadow:0 0 6px rgba(227,178,60,.5);
+  animation-name:fxConfetti;animation-timing-function:linear;animation-fill-mode:forwards;
+}
+@keyframes fxConfetti{
+  0%{transform:translateY(-6vh) rotate(0deg);opacity:1}
+  85%{opacity:1}
+  100%{transform:translateY(112vh) rotate(680deg);opacity:0}
+}
+
+/* ---------- Reduced motion — calm everything ---------- */
+@media(prefers-reduced-motion:reduce){
+  body::before,header::after,#fight-screen .vs,.record-badge.unbeaten,
+  .btn.gold::after,#draft-fighter-btn::after,.belt.on::after,.overall-banner::after,
+  .hof-box::after,.app.fx-shake,.fx-confetti{animation:none !important}
+  .screen.active{animation:fadeIn .2s ease}
+}
 </style>
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -15808,6 +16080,288 @@ function _showReferralWelcome(cards){
     refreshDailyMissionBadge();
   }, 800);
 }
+</script>
+
+<script>
+/* ============================================================
+   ✨ PREMIUM JUICE LAYER — SFX, haptics & visual impact
+   Additive only: wraps existing globals, changes no game logic.
+============================================================ */
+(function(){
+  'use strict';
+
+  /* ── Remember mute preference across sessions ── */
+  try{
+    if(localStorage.getItem('ub_muted')==='1'){
+      isMuted=true;
+      var _sb=document.getElementById('sound-toggle');
+      if(_sb) _sb.innerText='🔇';
+    }
+  }catch(e){}
+  var _origToggleSound=window.toggleSound;
+  window.toggleSound=function(){
+    _origToggleSound();
+    try{ localStorage.setItem('ub_muted', isMuted?'1':'0'); }catch(e){}
+    if(!isMuted) sfxClick(1);
+  };
+
+  function ac(){ try{ initAudio(); }catch(e){} return (typeof audioCtx!=='undefined')?audioCtx:null; }
+  function canPlay(){ return !isMuted && !!ac(); }
+
+  /* ── Core synth helpers (scheduled, layerable) ── */
+  function tone(freq,type,dur,vol,when,slideTo){
+    var ctx=ac(); if(!ctx||isMuted) return;
+    try{
+      var t0=ctx.currentTime+(when||0);
+      var osc=ctx.createOscillator(), g=ctx.createGain();
+      osc.type=type; osc.frequency.setValueAtTime(freq,t0);
+      if(slideTo) osc.frequency.exponentialRampToValueAtTime(Math.max(20,slideTo),t0+dur);
+      g.gain.setValueAtTime(vol,t0);
+      g.gain.exponentialRampToValueAtTime(0.001,t0+dur);
+      osc.connect(g); g.connect(ctx.destination);
+      osc.start(t0); osc.stop(t0+dur+.02);
+    }catch(e){}
+  }
+  function noiseHit(dur,vol,when,cutoff,q){
+    var ctx=ac(); if(!ctx||isMuted) return;
+    try{
+      var t0=ctx.currentTime+(when||0);
+      var len=Math.max(1,Math.floor(ctx.sampleRate*dur));
+      var buf=ctx.createBuffer(1,len,ctx.sampleRate), d=buf.getChannelData(0);
+      for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*(1-i/len);
+      var src=ctx.createBufferSource(); src.buffer=buf;
+      var f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.setValueAtTime(cutoff||1200,t0); if(q) f.Q.value=q;
+      var g=ctx.createGain(); g.gain.setValueAtTime(vol,t0);
+      g.gain.exponentialRampToValueAtTime(0.001,t0+dur);
+      src.connect(f); f.connect(g); g.connect(ctx.destination);
+      src.start(t0); src.stop(t0+dur+.02);
+    }catch(e){}
+  }
+
+  /* ── UI + fight sounds ── */
+  function sfxClick(kind){
+    if(!canPlay()) return;
+    if(kind===1){ tone(620,'triangle',.07,.05); tone(940,'sine',.09,.035,.02); } // gold / primary
+    else if(kind===2){ tone(300,'triangle',.08,.045); }                          // back / dismiss
+    else { tone(480,'triangle',.05,.04); }                                       // regular tap
+  }
+  function sfxWhoosh(){ if(!canPlay()) return; noiseHit(.18,.045,0,900); tone(220,'sine',.16,.018,0,90); }
+  function sfxCoin(){ if(!canPlay()) return; tone(1318.5,'square',.09,.045); tone(1760,'square',.22,.045,.08); }
+  function sfxPunch(heavy){
+    if(!canPlay()) return;
+    noiseHit(heavy?.22:.12, heavy?.2:.09, 0, heavy?520:900, 1.2);
+    tone(heavy?150:180,'sine',heavy?.22:.12,heavy?.2:.09,0,heavy?45:70);
+  }
+  function sfxKD(){
+    if(!canPlay()) return;
+    sfxPunch(true);
+    tone(80,'sine',.5,.22,.03,32);
+    noiseHit(.4,.11,.05,300);
+  }
+  function sfxBell(count){
+    if(!canPlay()) return;
+    count=count||1;
+    for(var i=0;i<count;i++){
+      var off=i*0.45;
+      tone(1568,'triangle',1.1,.08,off);
+      tone(2093,'sine',.9,.045,off);
+      tone(1046.5,'sine',1.3,.055,off);
+      noiseHit(.03,.08,off,4000,2);
+    }
+  }
+  function sfxWin(){
+    if(!canPlay()) return;
+    [523.25,659.25,783.99,1046.5].forEach(function(f,i){ tone(f,'triangle',.32,.085,i*.12); tone(f*2,'sine',.3,.035,i*.12); });
+    tone(1318.5,'triangle',.85,.08,.5);
+  }
+  function sfxLose(){
+    if(!canPlay()) return;
+    tone(392,'triangle',.3,.075); tone(311.1,'triangle',.34,.075,.22); tone(233.1,'triangle',.7,.085,.46,180);
+  }
+  function sfxDraw(){ if(!canPlay()) return; tone(440,'triangle',.25,.065); tone(440,'triangle',.4,.055,.3); }
+  function sfxChampion(){
+    if(!canPlay()) return;
+    sfxBell(3);
+    var seq=[523.25,659.25,783.99,1046.5,1318.5,1567.98];
+    seq.forEach(function(f,i){ tone(f,'triangle',.5,.085,.5+i*.13); tone(f/2,'sine',.5,.045,.5+i*.13); });
+    seq.slice().reverse().forEach(function(f,i){ tone(f,'sine',.4,.035,1.6+i*.1); });
+  }
+
+  /* ── Crowd ambience during live fights ── */
+  var _crowd=null;
+  function crowdStart(){
+    var ctx=ac(); if(!ctx||isMuted||_crowd) return;
+    try{
+      var len=ctx.sampleRate*2, buf=ctx.createBuffer(1,len,ctx.sampleRate), d=buf.getChannelData(0), last=0;
+      for(var i=0;i<len;i++){ var w=Math.random()*2-1; last=(last+.02*w)/1.02; d[i]=last*3.2; }
+      var src=ctx.createBufferSource(); src.buffer=buf; src.loop=true;
+      var f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=420;
+      var g=ctx.createGain(); g.gain.setValueAtTime(0.0001,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.03,ctx.currentTime+1.2);
+      src.connect(f); f.connect(g); g.connect(ctx.destination); src.start();
+      _crowd={src:src,gain:g};
+    }catch(e){}
+  }
+  function crowdStop(){
+    if(!_crowd) return;
+    try{
+      var ctx=ac(), s=_crowd.src;
+      _crowd.gain.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+.8);
+      setTimeout(function(){ try{s.stop();}catch(e){} },900);
+    }catch(e){}
+    _crowd=null;
+  }
+  function crowdPop(){ if(!canPlay()) return; noiseHit(.7,.085,0,600); }
+
+  /* ── Visual impact helpers ── */
+  function shake(){
+    var app=document.querySelector('.app'); if(!app) return;
+    app.classList.remove('fx-shake'); void app.offsetWidth; app.classList.add('fx-shake');
+    setTimeout(function(){ app.classList.remove('fx-shake'); },540);
+  }
+  function flash(){
+    var el=document.createElement('div'); el.className='fx-flash';
+    document.body.appendChild(el);
+    setTimeout(function(){ el.remove(); },560);
+  }
+  function buzz(pattern){ try{ if(navigator.vibrate) navigator.vibrate(pattern); }catch(e){} }
+  function confetti(n){
+    try{
+      if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      n=n||44;
+      var colors=['linear-gradient(180deg,#f8e18c,#c8922a)','linear-gradient(180deg,#fff3c4,#e3b23c)','linear-gradient(180deg,#e7eeff,#9aa7c7)'];
+      for(var i=0;i<n;i++){
+        var el=document.createElement('div'); el.className='fx-confetti';
+        el.style.left=(Math.random()*100)+'vw';
+        el.style.background=colors[i%colors.length];
+        el.style.width=(5+Math.random()*6)+'px';
+        el.style.height=(9+Math.random()*9)+'px';
+        el.style.animationDuration=(2.2+Math.random()*1.8)+'s';
+        el.style.animationDelay=(Math.random()*.9)+'s';
+        document.body.appendChild(el);
+        setTimeout((function(node){ return function(){ node.remove(); }; })(el),5400);
+      }
+    }catch(e){}
+  }
+  window.ubConfetti=confetti;
+
+  /* ── Global button feel: tap sounds + press ripple ── */
+  document.addEventListener('pointerdown',function(e){
+    var b=e.target&&e.target.closest?e.target.closest('.btn,.tab-btn,.mode-card,.draft-btn,.app-nav-item,.mcc-filter,.card-rarity-key,.icon-btn,.mp-header-back,.mp-draft-option,.mp-identity-btn,.leaderboard-card-button,.account-settings-toggle,.hub-section>summary'):null;
+    if(!b||b.disabled) return;
+    try{
+      if(b.classList&&b.classList.contains('btn')&&typeof e.clientX==='number'){
+        var r=b.getBoundingClientRect();
+        var s=document.createElement('span'); s.className='fx-ripple';
+        s.style.left=(e.clientX-r.left)+'px'; s.style.top=(e.clientY-r.top)+'px';
+        b.appendChild(s); setTimeout(function(){ if(s.parentNode) s.remove(); },620);
+      }
+    }catch(err){}
+    if(b.id==='fight-btn'){ if((b.innerText||'').indexOf('Collect')===0) sfxCoin(); return; } // bell/punches cover the rest
+    if((b.classList&&b.classList.contains('gold'))||b.id==='draft-fighter-btn') sfxClick(1);
+    else if((b.classList&&(b.classList.contains('red')||b.classList.contains('mp-header-back')))||(b.innerText||'').trim().indexOf('Back')===0||(b.innerText||'').indexOf('← Back')>=0) sfxClick(2);
+    else sfxClick(0);
+  },{capture:true,passive:true});
+
+  /* ── Screen-change whoosh + crowd management ── */
+  if(typeof window.showScreen==='function'){
+    var _origShowScreen=window.showScreen;
+    var _lastScreen=null;
+    window.showScreen=function(targetId){
+      var ok=_origShowScreen.apply(this,arguments);
+      try{
+        var active=document.querySelector('.screen.active');
+        var id=active?active.id:null;
+        if(id&&id!==_lastScreen){
+          if(_lastScreen!==null) sfxWhoosh();
+          _lastScreen=id;
+        }
+        if(id==='fight-screen'||id==='mp-fight') crowdStart(); else crowdStop();
+      }catch(e){}
+      return ok;
+    };
+  }
+
+  /* ── Fight log → punches, knockdowns, cuts (live fights only) ── */
+  if(typeof window.addLog==='function'){
+    var _origAddLog=window.addLog;
+    window.addLog=function(type,text){
+      _origAddLog.apply(this,arguments);
+      try{
+        var fs=document.getElementById('fight-screen');
+        if(!fs||!fs.classList.contains('active')) return;
+        if(typeof S!=='undefined'&&S.batch) return;
+        if(type==='action') sfxPunch(false);
+        else if(type==='kd'){ sfxKD(); crowdPop(); shake(); flash(); buzz([60,40,90]); }
+        else if(type==='crit'){ tone(1200,'sine',.08,.045); sfxPunch(false); }
+        else if(type==='cut'){ noiseHit(.15,.075,0,500); }
+      }catch(e){}
+    };
+  }
+
+  /* ── Opening bell on live fights ── */
+  if(typeof window.startFight==='function'){
+    var _origStartFight=window.startFight;
+    window.startFight=function(instant){
+      _origStartFight.apply(this,arguments);
+      try{
+        var fs=document.getElementById('fight-screen');
+        if(!instant&&fs&&fs.classList.contains('active')) sfxBell(1);
+      }catch(e){}
+    };
+  }
+
+  /* ── Final bell + result sting (+ confetti on big wins) ── */
+  if(typeof window.endFight==='function'){
+    var _origEndFight=window.endFight;
+    window.endFight=function(){
+      _origEndFight.apply(this,arguments);
+      try{
+        sfxBell(2);
+        var w=(typeof S!=='undefined'&&S.fight)?S.fight.winner:null;
+        var m=(typeof S!=='undefined'&&S.fight)?S.fight.method:'';
+        var title=(typeof S!=='undefined'&&S.opponent)?!!S.opponent.TitleOnLine:false;
+        setTimeout(function(){
+          if(w==='p1'){ sfxWin(); crowdPop(); if(title||['KO','TKO','RTD'].indexOf(m)>=0) confetti(30); }
+          else if(w==='p2') sfxLose();
+          else sfxDraw();
+        },700);
+      }catch(e){}
+    };
+  }
+
+  /* ── Sim overlay ticker — subtle result blips ── */
+  if(typeof window.addSimCard==='function'){
+    var _origAddSimCard=window.addSimCard;
+    window.addSimCard=function(r){
+      _origAddSimCard.apply(this,arguments);
+      try{
+        if(!canPlay()||!r) return;
+        if(r.type==='win'){
+          var ko=r.outcome&&(r.outcome.indexOf('KO')>=0||r.outcome.indexOf('RTD')>=0);
+          tone(ko?880:660,'triangle',.07,.03);
+          if(ko) noiseHit(.08,.045,0,800);
+          if(r.titleFight){ tone(1046.5,'triangle',.14,.04,.09); tone(1318.5,'sine',.2,.03,.18); }
+        }
+        else if(r.type==='loss') tone(233,'triangle',.12,.04);
+        else tone(440,'sine',.06,.028);
+      }catch(e){}
+    };
+  }
+
+  /* ── Career complete → champion's fanfare + gold rain ── */
+  if(typeof window.triggerHof==='function'){
+    var _origTriggerHof=window.triggerHof;
+    window.triggerHof=function(){
+      _origTriggerHof.apply(this,arguments);
+      try{
+        sfxChampion();
+        confetti(70);
+        buzz([80,50,80,50,160]);
+      }catch(e){}
+    };
+  }
+}());
 </script>
 </body>
 </html>
