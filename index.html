@@ -8462,15 +8462,19 @@ const FIGHTER_IDENTITY = {
   "Tony Bellew":{displayName:"Scouse Bomber",flag:"🇬🇧",primeYear:2017,sc:"pressure",sd:"Liverpool pressure bomber who punches above every level."},
   "Paul Williams":{displayName:"Long Range Punisher",flag:"🇺🇸",primeYear:2009,sc:"pressure",sd:"Tall punishing pressure fighter with long-range power."}
 };
+// Show real boxer names in the UI. Set to false to use the fictional
+// alias names from FIGHTER_IDENTITY (e.g. "The Phantom") instead.
+const USE_REAL_BOXER_NAMES = true;
 function getFighterIdentity(name){ return FIGHTER_IDENTITY[name]||null; }
 function formatFighterSource(name){
   if(!name) return '';
   const id=FIGHTER_IDENTITY[name];
   if(!id) return '('+htmlEscape(name)+')';
   const y=id.primeYear%100;
-  return htmlEscape(id.displayName)+' '+id.flag+' Prime #'+(y<10?'0':'')+y;
+  return htmlEscape(USE_REAL_BOXER_NAMES?name:id.displayName)+' '+id.flag+' Prime #'+(y<10?'0':'')+y;
 }
 function getFighterDisplayLabel(name){
+  if(USE_REAL_BOXER_NAMES) return name;
   const id=FIGHTER_IDENTITY[name]; return id?id.displayName:name;
 }
 function getFighterPrimeTag(name){
@@ -9518,7 +9522,7 @@ function leaderboardBuildMarkup(entry, cacheKey, accountCardItems=null, accountO
     const value=Number.isFinite(Number(finalStats[st]))?Math.round(Number(finalStats[st])):'-';
     const drafted=Number.isFinite(Number(base[st]))?Math.round(Number(base[st])):null;
     const rawSource=sources[st]?String(sources[st]):'Source unavailable';
-    const source=FIGHTER_IDENTITY[rawSource]?.displayName||rawSource;
+    const source=getFighterDisplayLabel(rawSource);
     const detail=drafted!==null&&drafted!==value?source+' / Draft '+drafted:source;
     return '<div class="leaderboard-build-stat"><span>'+htmlEscape(st)+'</span><strong class="'+(Number.isFinite(Number(value))?getAttributeClass(value):'')+'">'+htmlEscape(value)+'</strong><small>'+htmlEscape(detail)+'</small></div>';
   }).join(''):'<div class="empty-state">Detailed build stats were not saved for this older leaderboard entry. New submissions will include them.</div>';
@@ -11478,7 +11482,7 @@ function restartDraft(){
     startNewCareer();
   }
 }
-function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=getFighterDisplayLabel(a.Name); $('slot-mid').innerText=getFighterDisplayLabel(b.Name); $('slot-bottom').innerText=getFighterDisplayLabel(c.Name); ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=getFighterDisplayLabel(LEGENDS[(idx+1)%LEGENDS.length].Name); $('slot-mid').innerText=getFighterDisplayLabel(S.legend.Name); $('slot-bottom').innerText=getFighterDisplayLabel(LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name); $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+getFighterDisplayLabel(S.legend.Name)+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.dataset.tier=draftBtnTier(val); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); const _fid=getFighterIdentity(S.legend.Name); let txt=_fid?_fid.displayName+' '+_fid.flag+' '+getFighterPrimeTag(S.legend.Name):'('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' · '+S.legend.Pool; if(S.perfect) txt+=' ✦'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
+function spinWheel(force=false, reroll=false){ if(S.awaiting&&!force) return; $('spin-btn').disabled=true; $('reroll-btn').disabled=true; S.perfect=false; $('perfect-banner').innerText=''; $('legend-pill-wrap').innerHTML=''; let ticks=0; const int=setInterval(()=>{ const a=randomLegend(reroll), b=randomLegend(reroll), c=randomLegend(reroll); $('slot-top').innerText=getFighterDisplayLabel(a.Name); $('slot-mid').innerText=getFighterDisplayLabel(b.Name); $('slot-bottom').innerText=getFighterDisplayLabel(c.Name); ticks++; if (ticks % 2 === 0) playTick(); if(ticks>12){ clearInterval(int); S.legend=randomLegend(reroll); const idx=LEGENDS.indexOf(S.legend); $('slot-top').innerText=getFighterDisplayLabel(LEGENDS[(idx+1)%LEGENDS.length].Name); $('slot-mid').innerText=getFighterDisplayLabel(S.legend.Name); $('slot-bottom').innerText=getFighterDisplayLabel(LEGENDS[(idx-1+LEGENDS.length)%LEGENDS.length].Name); $('legend-pill-wrap').innerHTML=pillHTML(S.legend.Pool); S.perfect=perfectChance(S.legend); if(S.perfect){ $('perfect-banner').innerText='Perfect Spin! Lock a stat from '+getFighterDisplayLabel(S.legend.Name)+' for +1 bonus.'; $('perfect-banner').classList.add('active'); playHeavenlyChord(); } else { $('perfect-banner').classList.remove('active'); if(S.legend.Pool==='crossover') $('perfect-banner').innerText='Rare crossover roll! Make it count.'; playLock(); } STATS.forEach(st=>{ const btn=$('d-'+st.replace(/ /g,'_')); btn.classList.remove('choice'); if(S.player.Stats[st]==null){ btn.disabled=false; btn.classList.add('choice'); const val=clamp(S.legend[st]+(S.perfect?1:0),1,99); btn.dataset.tier=draftBtnTier(val); btn.querySelector('strong').innerText=val; btn.querySelector('strong').className=valCls(val); const _fid=getFighterIdentity(S.legend.Name); let txt=_fid?getFighterDisplayLabel(S.legend.Name)+' '+_fid.flag+' '+getFighterPrimeTag(S.legend.Name):'('+S.legend.Name+')'; if(S.legend.Pool!=='standard') txt+=' · '+S.legend.Pool; if(S.perfect) txt+=' ✦'; btn.querySelector('.draft-src').innerText=txt; btn.querySelector('.draft-src').classList.toggle('perfect',S.perfect); } }); S.awaiting=true; updateDraftTop(); } }, 55); }
 function useReroll(){ if(!S.awaiting||S.career.draftRerolls<=0) return; S.career.draftRerolls--; saveCareer(); spinWheel(true,true); }
 function traitTooltip(t){ return `${t.name}\n${t.type.toUpperCase()} • ${t.rarity.toUpperCase()}\n\n${t.desc}`; }
 function checkSynergy(){
