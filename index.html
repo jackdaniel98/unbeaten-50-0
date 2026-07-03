@@ -1594,6 +1594,28 @@ h2:first-child{margin-top:6px}
 .final-card-content{width:min(340px,100%);margin:0 auto}
 .final-card-content .avatar-card-creator{width:100%;margin:0}
 .final-fighter-showcase{display:flex;flex-direction:column;gap:10px}
+.career-share-prize-dialog{
+  width:min(420px,100%);
+  margin:auto;
+  background:linear-gradient(180deg,#15171c 0%,#08090b 100%);
+  border:1px solid rgba(227,178,60,.28);
+  border-radius:16px;
+  box-shadow:0 22px 70px rgba(0,0,0,.7),0 0 34px rgba(227,178,60,.13);
+  padding:14px;
+}
+.career-share-prize-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.career-share-prize-head h2{margin:0;padding:0;border:0;color:#fff}
+.career-share-prize-head h2::before{display:none}
+.career-share-prize-copy{color:var(--text-dim);font-size:.78rem;line-height:1.5;margin-bottom:12px}
+.career-share-prize-copy strong{color:var(--gold)}
+.career-share-prize-preview{display:flex;justify-content:center;margin:0 auto 12px;max-height:50dvh;overflow:auto}
+.career-share-prize-preview .modular-card{width:min(100%,240px)!important}
+.career-share-prize-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.career-share-prize-stat{min-width:0;padding:7px 5px;text-align:center;background:#050608;border:1px solid var(--line);border-radius:7px}
+.career-share-prize-stat span{display:block;color:var(--muted);font-size:.5rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.career-share-prize-stat strong{display:block;color:#fff;font-size:.78rem;margin-top:2px;overflow-wrap:anywhere}
+.career-share-prize-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.career-share-prize-actions .btn{margin:0}
 .leaderboard-build-dialog{width:min(500px,100%)}
 .leaderboard-build-content{width:100%;padding:14px;background:linear-gradient(180deg,#15171c 0%,#08090b 100%);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-card)}
 .leaderboard-build-hero{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;align-items:center}
@@ -4440,6 +4462,22 @@ h2::before{
       <button id="final-card-close-btn" type="button" class="final-card-close" aria-label="Close final fighter card" onclick="closeFinalFighterCard()">x</button>
     </div>
     <div id="final-fighter-card-content" class="final-card-content"></div>
+  </div>
+</div>
+
+<div id="career-share-prize-modal" class="final-card-modal hidden" role="dialog" aria-modal="true" aria-labelledby="career-share-prize-title" onclick="if(event.target===this) dismissCareerSharePrizePrompt()">
+  <div class="career-share-prize-dialog">
+    <div class="career-share-prize-head">
+      <h2 id="career-share-prize-title">Share This Career On X</h2>
+      <button type="button" class="final-card-close" aria-label="Close career share prompt" onclick="dismissCareerSharePrizePrompt()">x</button>
+    </div>
+    <p class="career-share-prize-copy">Share your completed career on X for a chance to win a <strong>cash prize, merch, or exclusive in-game bonuses</strong> at the end of the season.</p>
+    <div id="career-share-prize-preview" class="career-share-prize-preview"></div>
+    <div id="career-share-prize-stats" class="career-share-prize-stats"></div>
+    <div class="career-share-prize-actions">
+      <button type="button" class="btn ghost" onclick="dismissCareerSharePrizePrompt()">No Thanks</button>
+      <button type="button" class="btn share" onclick="shareCareerPrizeOnX()">Share On X</button>
+    </div>
   </div>
 </div>
 
@@ -9850,7 +9888,109 @@ function closeFinalFighterCard(){
   $('final-fighter-card-modal')?.classList.add('hidden');
   document.body.classList.remove('final-card-open');
 }
-document.addEventListener('keydown',event=>{ if(event.key==='Escape') closeFinalFighterCard(); });
+const CAREER_SHARE_PRIZE_DISMISSED_UNTIL_KEY='unbeaten_career_share_prize_dismissed_until_v1';
+const CAREER_SHARE_PRIZE_COOLDOWN_MS=2*60*60*1000;
+function gameStartShareUrl(){
+  const href=window.location.href.split('#')[0];
+  try{
+    const url=new URL(href);
+    if(url.protocol==='http:'||url.protocol==='https:'){
+      url.search='';
+      url.hash='';
+      return url.toString();
+    }
+  }catch(e){}
+  return href;
+}
+function currentCareerShareData(){
+  const data=completedCareerCardData();
+  if(!data) return null;
+  const profile=activeCardProfile();
+  data.equippedCardItems=profile.equippedCardItems;
+  data.ownedCardItems=profile.ownedCardItems;
+  return data;
+}
+function careerSharePrizeCardMarkup(data){
+  if(!data) return '';
+  return modularCardMarkupFrom({
+    name:data.name,
+    nickname:data.nickname,
+    equippedCardItems:data.equippedCardItems||null,
+    ownedCardItems:data.ownedCardItems||null
+  });
+}
+function careerSharePrizeStatsMarkup(data){
+  if(!data) return '';
+  return [
+    ['Record',data.record||'0-0'],
+    ['Legacy',String(data.legacy||0)],
+    ['KOs',String(data.kos||0)]
+  ].map(([label,value])=>'<div class="career-share-prize-stat"><span>'+htmlEscape(label)+'</span><strong>'+htmlEscape(value)+'</strong></div>').join('');
+}
+function careerSharePrizeText(data){
+  const name=cleanName(data?.name||'My Fighter')||'My Fighter';
+  const nick=cleanName(data?.nickname||'The Contender')||'The Contender';
+  const record=data?.record||'0-0';
+  const legacy=safeMoney(data?.legacy||0).toLocaleString();
+  const belts=Array.isArray(data?.belts)?data.belts.length:0;
+  return 'I just finished a '+record+' career in UNBEATEN: 50-0 with '+name+' - "'+nick+'". Legacy '+legacy+', '+safeMoney(data?.kos||0)+' KOs, '+belts+'/4 belts. Sharing for the end-of-season prize draw: cash prize, merch, or exclusive in-game bonuses. Can you beat my run?';
+}
+function careerSharePrizeOnCooldown(){
+  try{ return Date.now()<(Number(localStorage.getItem(CAREER_SHARE_PRIZE_DISMISSED_UNTIL_KEY))||0); }catch(e){ return false; }
+}
+function setCareerSharePrizeCooldown(){
+  try{ localStorage.setItem(CAREER_SHARE_PRIZE_DISMISSED_UNTIL_KEY,String(Date.now()+CAREER_SHARE_PRIZE_COOLDOWN_MS)); }catch(e){}
+}
+function maybeShowCareerSharePrizePrompt(){
+  if(careerSharePrizeOnCooldown()) return;
+  const modal=$('career-share-prize-modal'), preview=$('career-share-prize-preview'), stats=$('career-share-prize-stats');
+  if(!modal||!preview||!stats) return;
+  const data=currentCareerShareData();
+  if(!data) return;
+  preview.innerHTML=careerSharePrizeCardMarkup(data);
+  stats.innerHTML=careerSharePrizeStatsMarkup(data);
+  modal.classList.remove('hidden');
+  document.body.classList.add('final-card-open');
+}
+function closeCareerSharePrizePrompt(){
+  const modal=$('career-share-prize-modal');
+  if(modal) modal.classList.add('hidden');
+  document.body.classList.remove('final-card-open');
+}
+function dismissCareerSharePrizePrompt(){
+  setCareerSharePrizeCooldown();
+  closeCareerSharePrizePrompt();
+}
+async function shareCareerPrizeOnX(){
+  const data=currentCareerShareData();
+  if(!data){ showToast('Share Unavailable','No completed career data is available.'); return; }
+  const url=gameStartShareUrl();
+  const text=careerSharePrizeText(data);
+  try{
+    const blob=await renderCardShareBlob(activeCardProfile());
+    const file=new File([blob],'unbeaten-career-card.png',{type:'image/png'});
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({title:'UNBEATEN: 50-0 - Career Complete',text,url,files:[file]});
+      closeCareerSharePrizePrompt();
+      return;
+    }
+    saveSharedCardImage(blob);
+    if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(text+'\n'+url);
+    showToast('Card Image Saved','Your fighter card image was saved. Attach it to your X post if needed.');
+  }catch(error){
+    if(error?.name==='AbortError') return;
+    console.error(error);
+  }
+  const xUrl='https://x.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url);
+  const opened=window.open(xUrl,'_blank','noopener,noreferrer');
+  if(!opened) window.location.href=xUrl;
+  closeCareerSharePrizePrompt();
+}
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Escape') return;
+  closeFinalFighterCard();
+  if(!$('career-share-prize-modal')?.classList.contains('hidden')) dismissCareerSharePrizePrompt();
+});
 const leaderboardBuildCache=new Map();
 let leaderboardBuildSerial=0;
 function cacheLeaderboardBuild(entry, profileUid=''){
@@ -13677,7 +13817,7 @@ function triggerHof(){
   const _wfTotal=(S.career.wins||0)+(S.career.losses||0)+(S.career.draws||0);
   if(_wfTotal>=45) incrementWeeklyProgress('longCareer');
   updateWeeklyBadge();
-  const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?Math.floor((S.career.kos/total)*100):0, a=archetype(getPerm()).name, l=leg(), ovr=calculateOverall(), wealth=getWealthInfo(S.career.earnings), identity=getBuildIdentity(getPerm()); $('hof-tier').innerText=l.t; $('hof-pct').innerText='Top '+l.p+'% Career'; renderCareerWorldRanks(l.score); $('hof-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hof-kos').innerText=S.career.kos+' KO'; $('hof-kopct').innerText=koPct+'%'; $('hof-belts').innerText=S.career.belts.length+' / 4 Belts'; $('hof-title-def').innerText=S.career.titleDef||0; $('hof-rating').innerText=''+S.career.rating; $('hof-ovr').innerText=''+ovr; $('hof-best-rank').innerText='#'+S.career.bestWorldRank; $('hof-score').innerText=''+l.score; $('hof-arch').innerText=a; $('hof-identity').innerText=identity; $('hof-mode').innerText=modeCfg().name; const r=getRecords(), finalRec=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); if(better(S.career,r.bestRecord)) r.bestRecord=finalRec; if(S.career.earnings>r.mostMoney) r.mostMoney=S.career.earnings; if(S.career.kos>r.mostKOs) r.mostKOs=S.career.kos; const prior={'None':0,'GOAT (50-0 UNDISPUTED)':1000}; HOF.slice().reverse().forEach((h,i)=>prior[h.t]=i+1); if((prior[l.t]||0)>(prior[r.bestTier]||0)) r.bestTier=l.t; saveRecords(r); refreshMenu(); 
+  const total=S.career.wins+S.career.losses+S.career.draws, koPct=total>0?Math.floor((S.career.kos/total)*100):0, a=archetype(getPerm()).name, l=leg(), ovr=calculateOverall(), wealth=getWealthInfo(S.career.earnings), identity=getBuildIdentity(getPerm()); $('hof-tier').innerText=l.t; $('hof-pct').innerText='Top '+l.p+'% Career'; renderCareerWorldRanks(l.score); $('hof-record').innerText=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); $('hof-kos').innerText=S.career.kos+' KO'; $('hof-kopct').innerText=koPct+'%'; $('hof-belts').innerText=S.career.belts.length+' / 4 Belts'; $('hof-title-def').innerText=S.career.titleDef||0; $('hof-rating').innerText=''+S.career.rating; $('hof-ovr').innerText=''+ovr; $('hof-best-rank').innerText='#'+S.career.bestWorldRank; $('hof-score').innerText=''+l.score; $('hof-arch').innerText=a; $('hof-identity').innerText=identity; $('hof-mode').innerText=modeCfg().name; const r=getRecords(), finalRec=S.career.wins+'-'+S.career.losses+(S.career.draws>0?'-'+S.career.draws:''); if(better(S.career,r.bestRecord)) r.bestRecord=finalRec; if(S.career.earnings>r.mostMoney) r.mostMoney=S.career.earnings; if(S.career.kos>r.mostKOs) r.mostKOs=S.career.kos; const prior={'None':0,'GOAT (50-0 UNDISPUTED)':1000}; HOF.slice().reverse().forEach((h,i)=>prior[h.t]=i+1); if((prior[l.t]||0)>(prior[r.bestTier]||0)) r.bestTier=l.t; saveRecords(r); refreshMenu(); setTimeout(maybeShowCareerSharePrizePrompt,700);
 }
 function showHistory(){ const p=$('full-history'); p.innerHTML=''; if(!S.career.fullHistory.length) p.innerHTML='<div style="color:var(--muted);text-align:center">No fight history recorded.</div>'; else S.career.fullHistory.forEach(line=>{ const d=document.createElement('div'); d.innerText=line; p.appendChild(d); }); screen('history-screen'); }
 function backToHof(){ screen('hof-screen'); }
