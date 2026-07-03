@@ -17452,8 +17452,25 @@ function _showReferralWelcome(cards){
         winner.classList.remove('dmg3');
         winner.classList.add('winner');
         if(iWon&&typeof window.ubConfetti==='function') window.ubConfetti(26);
+        if(!iWon) setTimeout(cookedPop,850);
       },680);
     }
+  }
+
+  /* the L, delivered with love */
+  function cookedPop(){
+    try{
+      var flash=document.createElement('div');
+      flash.className='cooked-flash';
+      document.body.appendChild(flash);
+      var el=document.createElement('div');
+      el.className='cooked-pop';
+      el.textContent='YOU GOT COOKED SON';
+      document.body.appendChild(el);
+      try{ if(typeof playOof==='function') playOof(); }catch(e){}
+      setTimeout(function(){ el.classList.add('out'); },750);
+      setTimeout(function(){ if(el.parentNode) el.remove(); if(flash.parentNode) flash.remove(); },1150);
+    }catch(e){}
   }
 
   if(typeof window.mpShowFightResult==='function'){
