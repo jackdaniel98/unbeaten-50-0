@@ -16579,9 +16579,17 @@ async function createMpInviteCode(){
       status:'waiting', createdAt:firebase.firestore.FieldValue.serverTimestamp(),
     });
     if(hs){ hs.innerText=''; hs.className='lobby-status-msg muted'; }
+    let creatingFriendMatch=false;
     MP.lobbyUnsub=db.collection('pvp_lobbies').doc(code).onSnapshot(async function(snap){
       if(!snap.exists||MP.matchId) return;
       const lobby=snap.data();
+      if(lobby.status==='join_requested'&&lobby.guestUid&&lobby.hostUid===currentUser.uid&&!creatingFriendMatch){
+        creatingFriendMatch=true;
+        if(hs){ hs.innerText='Friend joined! Creating match...'; hs.className='lobby-status-msg ok'; }
+        try{ await _hostCreateFriendlyMatchFromLobby(code,lobby,hs); }
+        finally{ creatingFriendMatch=false; }
+        return;
+      }
       if(lobby.status==='matched'&&lobby.matchId){
         if(hs){ hs.innerText='Friend joined! Loading match…'; hs.className='lobby-status-msg ok'; }
         if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
@@ -16612,10 +16620,8 @@ async function joinMpByCode(){
   try{
     await ensureMpProfile();
     MP.mode='friendly'; MP.isBot=false;
-    const matchId=db.collection('multiplayer_matches').doc().id;
     const now=firebase.firestore.FieldValue.serverTimestamp();
     const lobbyRef=db.collection('pvp_lobbies').doc(code);
-    const matchRef=db.collection('multiplayer_matches').doc(matchId);
     const result=await db.runTransaction(async function(txn){
       const snap=await txn.get(lobbyRef);
       if(!snap.exists) return 'not_found';
@@ -16623,25 +16629,44 @@ async function joinMpByCode(){
       if(lobby.createdAt){
         try{ if(Date.now()-lobby.createdAt.toMillis()>20*60*1000) return 'expired'; }catch(_){}
       }
-      if(lobby.status==='matched'||lobby.status==='full') return 'full';
+      if(lobby.status==='matched'&&lobby.matchId){
+        if(lobby.guestUid===currentUser.uid||lobby.hostUid===currentUser.uid) return lobby.matchId;
+        return 'full';
+      }
+      if(lobby.status==='join_requested') return lobby.guestUid===currentUser.uid?'requested':'full';
+      if(lobby.status==='full') return 'full';
       if(lobby.status==='cancelled'||lobby.status==='expired') return 'expired';
       if(lobby.status!=='waiting') return 'not_found';
       if(lobby.hostUid===currentUser.uid) return 'self';
       const guestEntry={uid:currentUser.uid,displayName:MP.profile.displayName||'Boxer',elo:MP.profile.elo||MP_STARTING_ELO,equippedCardId:MP.profile.equippedCardId||'cc001',pvpWins:MP.profile.pvpWins||0,pvpLosses:MP.profile.pvpLosses||0,pvpDraws:MP.profile.pvpDraws||0,pvpKos:MP.profile.pvpKos||0};
-      const hostEntry={uid:lobby.hostUid,displayName:lobby.hostName||'Boxer',elo:lobby.hostElo||MP_STARTING_ELO,equippedCardId:lobby.hostCardId||'cc001',pvpWins:lobby.hostWins||0,pvpLosses:lobby.hostLosses||0,pvpDraws:lobby.hostDraws||0,pvpKos:lobby.hostKos||0};
-      const _friendlyDoc=mpBuildMatchDoc('friendly',guestEntry,hostEntry,matchId,now,false);
-      _friendlyDoc.hostUid=lobby.hostUid; // lets mpShowMatchup distinguish host from guest
-      txn.set(matchRef,_friendlyDoc);
-      txn.update(lobbyRef,{status:'matched',matchId:matchId,guestUid:currentUser.uid,guestName:MP.profile.displayName||'Boxer',updatedAt:now});
-      return matchId;
+      txn.update(lobbyRef,{
+        status:'join_requested',
+        guestUid:guestEntry.uid,
+        guestName:guestEntry.displayName,
+        guestCardId:guestEntry.equippedCardId,
+        guestElo:guestEntry.elo,
+        guestWins:guestEntry.pvpWins,
+        guestLosses:guestEntry.pvpLosses,
+        guestDraws:guestEntry.pvpDraws,
+        guestKos:guestEntry.pvpKos,
+        guestJoinedAt:now,
+        updatedAt:now,
+      });
+      return 'requested';
     });
     if(result==='not_found'){ _jErr('Lobby not found. Check the code and try again.'); return; }
     if(result==='full'){ _jErr('This lobby already has two players.'); return; }
     if(result==='expired'){ _jErr('This lobby has expired. Ask your friend to create a new one.'); return; }
     if(result==='self'){ _jErr('You cannot join your own lobby.'); return; }
-    _jOk('Joined! Loading match…');
-    console.log('[PVP_FLOW] joinMpByCode: match created. matchId='+result+' uid='+currentUser.uid);
-    await mpEnterMatch(result);
+    if(result&&result!=='requested'){
+      _jOk('Joined! Loading match...');
+      console.log('[PVP_FLOW] joinMpByCode: existing match ready. matchId='+result+' uid='+currentUser.uid);
+      await mpEnterMatch(result);
+      return;
+    }
+    _jOk('Joined! Waiting for host...');
+    console.log('[PVP_FLOW] joinMpByCode: join requested. code='+code+' uid='+currentUser.uid);
+    _watchJoinedFriendlyLobby(code,_jOk,_jErr);
   }catch(e){
     _jErr('Error joining lobby. Try again.');
     console.error('[PVP_FLOW] joinByCode error:',e);
@@ -16651,6 +16676,94 @@ async function joinMpByCode(){
 // ══════════════════════════════════════════════════════════════════════════
 // LOBBY / INVITE HELPERS
 // ══════════════════════════════════════════════════════════════════════════
+function _friendlyLobbyPlayerFromGuest(lobby){
+  return {
+    uid:lobby.guestUid,
+    displayName:lobby.guestName||'Boxer',
+    elo:lobby.guestElo||MP_STARTING_ELO,
+    equippedCardId:lobby.guestCardId||'cc001',
+    pvpWins:lobby.guestWins||0,
+    pvpLosses:lobby.guestLosses||0,
+    pvpDraws:lobby.guestDraws||0,
+    pvpKos:lobby.guestKos||0,
+  };
+}
+function _friendlyLobbyPlayerFromHost(lobby){
+  return {
+    uid:lobby.hostUid,
+    displayName:lobby.hostName||'Boxer',
+    elo:lobby.hostElo||MP_STARTING_ELO,
+    equippedCardId:lobby.hostCardId||'cc001',
+    pvpWins:lobby.hostWins||0,
+    pvpLosses:lobby.hostLosses||0,
+    pvpDraws:lobby.hostDraws||0,
+    pvpKos:lobby.hostKos||0,
+  };
+}
+function _watchJoinedFriendlyLobby(code,onOk,onErr){
+  if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+  MP.lobbyCode=null;
+  MP.lobbyUnsub=db.collection('pvp_lobbies').doc(code).onSnapshot(async function(snap){
+    if(!snap.exists||MP.matchId) return;
+    const lobby=snap.data();
+    if(lobby.status==='matched'&&lobby.matchId){
+      if(onOk) onOk('Joined! Loading match...');
+      if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+      console.log('[PVP_FLOW] guest lobby: match ready. matchId='+lobby.matchId+' uid='+(currentUser&&currentUser.uid));
+      await mpEnterMatch(lobby.matchId);
+      return;
+    }
+    if(lobby.status==='cancelled'||lobby.status==='expired'){
+      if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+      if(onErr) onErr('Lobby closed. Ask your friend to create a new one.');
+    }
+  },function(e){
+    console.warn('[MP] guest lobby listener:',e);
+    if(onErr) onErr('Connection issue. Try joining again.');
+  });
+}
+async function _hostCreateFriendlyMatchFromLobby(code,lobby,hs){
+  if(!currentUser||!MP.profile||!lobby||lobby.hostUid!==currentUser.uid||!lobby.guestUid) return null;
+  const matchId=db.collection('multiplayer_matches').doc().id;
+  const now=firebase.firestore.FieldValue.serverTimestamp();
+  const lobbyRef=db.collection('pvp_lobbies').doc(code);
+  const matchRef=db.collection('multiplayer_matches').doc(matchId);
+  try{
+    const result=await db.runTransaction(async function(txn){
+      const snap=await txn.get(lobbyRef);
+      if(!snap.exists) return null;
+      const fresh=snap.data();
+      if(fresh.status==='matched'&&fresh.matchId) return fresh.matchId;
+      if(fresh.status!=='join_requested'||fresh.hostUid!==currentUser.uid||!fresh.guestUid) return null;
+      const hostEntry=_friendlyLobbyPlayerFromHost(fresh);
+      hostEntry.displayName=MP.profile.displayName||hostEntry.displayName||'Boxer';
+      hostEntry.equippedCardId=MP.profile.equippedCardId||hostEntry.equippedCardId||'cc001';
+      hostEntry.elo=MP.profile.elo||hostEntry.elo||MP_STARTING_ELO;
+      hostEntry.pvpWins=MP.profile.pvpWins||hostEntry.pvpWins||0;
+      hostEntry.pvpLosses=MP.profile.pvpLosses||hostEntry.pvpLosses||0;
+      hostEntry.pvpDraws=MP.profile.pvpDraws||hostEntry.pvpDraws||0;
+      hostEntry.pvpKos=MP.profile.pvpKos||hostEntry.pvpKos||0;
+      const guestEntry=_friendlyLobbyPlayerFromGuest(fresh);
+      const friendlyDoc=mpBuildMatchDoc('friendly',hostEntry,guestEntry,matchId,now,false);
+      friendlyDoc.hostUid=currentUser.uid;
+      friendlyDoc.lobbyCode=code;
+      txn.set(matchRef,friendlyDoc);
+      txn.update(lobbyRef,{status:'matched',matchId:matchId,updatedAt:now});
+      return matchId;
+    });
+    if(result){
+      if(hs){ hs.innerText='Friend joined! Loading match...'; hs.className='lobby-status-msg ok'; }
+      if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+      console.log('[PVP_FLOW] host created friend match. matchId='+result+' code='+code);
+      await mpEnterMatch(result);
+    }
+    return result;
+  }catch(e){
+    console.error('[PVP_FLOW] host create friend match error:',e);
+    if(hs){ hs.innerText='Could not create match. Ask your friend to rejoin.'; hs.className='lobby-status-msg error'; }
+    return null;
+  }
+}
 function _lobbyShowInitial(){
   const ini=$('lobby-initial-state'), wai=$('lobby-waiting-state');
   if(ini) ini.classList.remove('hidden');
