@@ -14632,9 +14632,44 @@ window.onload=function(event){
   // ── Service Worker registration ──────────────────────────────────────────
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-      navigator.serviceWorker.register('./sw.js')
-        .then(function(reg) { console.log('[SW] Registered, scope:', reg.scope); })
+      // updateViaCache:'none' — never let the HTTP cache serve a stale sw.js
+      // when the browser checks for updates.
+      navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+        .then(function(reg) {
+          console.log('[SW] Registered, scope:', reg.scope);
+          // Check for a new deploy on every open and whenever the PWA is
+          // resumed from the home screen (long-lived sessions otherwise
+          // never re-check).
+          try { reg.update(); } catch (e) {}
+          document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+              try { reg.update(); } catch (e) {}
+            }
+          });
+        })
         .catch(function(err) { console.warn('[SW] Registration failed (game unaffected):', err); });
+    });
+
+    // When an updated service worker takes control, get the player onto the
+    // new version. Auto-refresh only in the first seconds after load (never
+    // mid-fight); later updates just announce themselves and apply on the
+    // next launch. Guards prevent reload loops and first-install reloads.
+    var _swHadController = !!navigator.serviceWorker.controller;
+    var _swReloaded = false;
+    var _swLoadedAt = Date.now();
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (!_swHadController) { _swHadController = true; return; }
+      if (_swReloaded) return;
+      if (Date.now() - _swLoadedAt < 30000) {
+        _swReloaded = true;
+        window.location.reload();
+      } else {
+        try {
+          if (typeof showToast === 'function') {
+            showToast('Update Downloaded', 'A new version is ready — it will load next time you open the game.');
+          }
+        } catch (e) {}
+      }
     });
   }
 
