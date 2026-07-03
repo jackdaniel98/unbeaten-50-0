@@ -9912,6 +9912,7 @@ function closeFinalFighterCard(){
 }
 const CAREER_SHARE_PRIZE_DISMISSED_UNTIL_KEY='unbeaten_career_share_prize_dismissed_until_v1';
 const CAREER_SHARE_PRIZE_COOLDOWN_MS=2*60*60*1000;
+let _careerSharePrizeCardBlob=null;
 function gameStartShareUrl(){
   const href=window.location.href.split('#')[0];
   try{
@@ -9933,9 +9934,12 @@ function currentCareerShareData(){
   data.showcaseId=validCollectibleId(profile.myCardsShowcase)?profile.myCardsShowcase:'cc001';
   return data;
 }
+function careerSharePrizeShowcaseCard(data){
+  return COLLECTIBLE_CARDS.find(c=>c.id===(data?.showcaseId||'cc001'))||COLLECTIBLE_CARDS[0]||null;
+}
 function careerSharePrizeCardMarkup(data){
   if(!data) return '';
-  const card=COLLECTIBLE_CARDS.find(c=>c.id===(data.showcaseId||'cc001'))||COLLECTIBLE_CARDS[0];
+  const card=careerSharePrizeShowcaseCard(data);
   const cardArt=card?_mccArtHTML(card,190):'';
   return '<div class="career-share-showcase-card">'+
     cardArt+
@@ -9952,12 +9956,20 @@ function careerSharePrizeStatsMarkup(data){
   ].map(([label,value])=>'<div class="career-share-prize-stat"><span>'+htmlEscape(label)+'</span><strong>'+htmlEscape(value)+'</strong></div>').join('');
 }
 function careerSharePrizeText(data){
-  const name=cleanName(data?.name||'My Fighter')||'My Fighter';
-  const nick=cleanName(data?.nickname||'The Contender')||'The Contender';
+  const shorten=(value,max)=>String(value||'').length>max?String(value||'').slice(0,max-1)+'…':String(value||'');
+  const name=shorten(cleanName(data?.name||'My Fighter')||'My Fighter',34);
+  const nick=shorten(cleanName(data?.nickname||'The Contender')||'The Contender',26);
   const record=data?.record||'0-0';
   const legacy=safeMoney(data?.legacy||0).toLocaleString();
   const belts=Array.isArray(data?.belts)?data.belts.length:0;
-  return 'I just finished a '+record+' career in UNBEATEN: 50-0 with '+name+' - "'+nick+'". Legacy '+legacy+', '+safeMoney(data?.kos||0)+' KOs, '+belts+'/4 belts. Sharing for the end-of-season prize draw: cash prize, merch, or exclusive in-game bonuses. Can you beat my run?';
+  const card=careerSharePrizeShowcaseCard(data);
+  const cardName=shorten(card?.name||'Showcase Card',28);
+  return 'I just finished a '+record+' career in UNBEATEN: 50-0.\n'+
+    name+' - "'+nick+'"\n'+
+    'Legacy '+legacy+' / '+safeMoney(data?.kos||0)+' KOs / '+belts+'/4 belts\n'+
+    'Fighter card: '+cardName+'\n'+
+    'Season prize draw entry.\n\n'+
+    '#UNBEATEN50 #BoxingGame #Boxing #IndieGame';
 }
 function careerSharePrizeOnCooldown(){
   try{ return Date.now()<(Number(localStorage.getItem(CAREER_SHARE_PRIZE_DISMISSED_UNTIL_KEY))||0); }catch(e){ return false; }
@@ -9973,6 +9985,7 @@ function maybeShowCareerSharePrizePrompt(){
   if(!data) return;
   preview.innerHTML=careerSharePrizeCardMarkup(data);
   stats.innerHTML=careerSharePrizeStatsMarkup(data);
+  prepareCareerSharePrizeCardImage();
   modal.classList.remove('hidden');
   document.body.classList.add('final-card-open');
 }
@@ -9985,11 +9998,24 @@ function dismissCareerSharePrizePrompt(){
   setCareerSharePrizeCooldown();
   closeCareerSharePrizePrompt();
 }
+function prepareCareerSharePrizeCardImage(){
+  _careerSharePrizeCardBlob=null;
+  renderCardShareBlob(activeCardProfile()).then(blob=>{ _careerSharePrizeCardBlob=blob; }).catch(()=>{ _careerSharePrizeCardBlob=null; });
+}
+function copyPreparedCareerShareCardImage(){
+  try{
+    if(!_careerSharePrizeCardBlob||!navigator.clipboard||!window.ClipboardItem) return;
+    navigator.clipboard.write([new ClipboardItem({'image/png':_careerSharePrizeCardBlob})]).then(()=>{
+      showToast('Fighter Card Copied','Paste it into X if the image is not attached automatically.');
+    }).catch(()=>{});
+  }catch(e){}
+}
 function shareCareerPrizeOnX(){
   const data=currentCareerShareData();
   if(!data){ showToast('Share Unavailable','No completed career data is available.'); return; }
   const url=gameStartShareUrl();
   const text=careerSharePrizeText(data);
+  copyPreparedCareerShareCardImage();
   const xUrl='https://x.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url);
   const opened=window.open(xUrl,'_blank','noopener,noreferrer');
   if(!opened) window.location.href=xUrl;
