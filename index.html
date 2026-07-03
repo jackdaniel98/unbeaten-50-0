@@ -3671,6 +3671,33 @@ h2::before{
   100%{transform:translateY(112vh) rotate(680deg);opacity:0}
 }
 
+/* ---------- Synergy unlock flash pop (~1s, centre screen) ---------- */
+.syn-unlock-pop{
+  position:fixed;left:50%;top:38%;z-index:4600;
+  transform:translate(-50%,-50%) scale(1);
+  width:min(320px,86vw);text-align:center;pointer-events:none;
+  background:linear-gradient(165deg,#15171d 0%,#0c0d11 100%);
+  border:1px solid var(--line-2);border-radius:16px;
+  padding:14px 16px 13px;
+  box-shadow:0 24px 70px -20px rgba(0,0,0,.9);
+  animation:supIn .32s cubic-bezier(.22,1.4,.36,1);
+  transition:opacity .35s ease, transform .35s ease;
+}
+.syn-unlock-pop.out{opacity:0;transform:translate(-50%,-58%) scale(.94)}
+.syn-unlock-pop.rare{border-color:rgba(91,141,239,.6);box-shadow:0 24px 70px -20px rgba(0,0,0,.9),0 0 44px -8px rgba(91,141,239,.55)}
+.syn-unlock-pop.epic{border-color:rgba(168,85,247,.6);box-shadow:0 24px 70px -20px rgba(0,0,0,.9),0 0 44px -8px rgba(168,85,247,.55)}
+.syn-unlock-pop.legendary{border-color:rgba(227,178,60,.7);box-shadow:0 24px 70px -20px rgba(0,0,0,.9),0 0 54px -8px rgba(227,178,60,.65)}
+@keyframes supIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.sup-kicker{font-size:.56rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}
+.syn-unlock-pop.rare .sup-kicker{color:#9cc7ff}
+.syn-unlock-pop.epic .sup-kicker{color:#d5a6ff}
+.syn-unlock-pop.legendary .sup-kicker{color:#f6d768;text-shadow:0 0 12px rgba(227,178,60,.5)}
+.sup-name{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;line-height:1.05;color:#fff;letter-spacing:.06em;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.sup-vs{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-top:4px}
+.sup-why{font-size:.68rem;color:var(--text-dim);line-height:1.45;margin-top:5px}
+.sup-boost{font-size:.7rem;font-weight:800;color:#39ff14;text-shadow:0 0 8px rgba(57,255,20,.35);margin-top:6px}
+@media(prefers-reduced-motion:reduce){.syn-unlock-pop{animation:none}}
+
 /* ---------- Fought-pair synergy rarities ---------- */
 .syn-rarity-chip{
   display:inline-block;font-size:.52rem;font-weight:900;letter-spacing:.1em;
@@ -9167,7 +9194,100 @@ const FIGHT_SYNERGIES=[
   {id:"fn_groves_degale",name:"The Grudge Decided",rarity:"rare",fighters:["George Groves","James DeGale"],desc:"2011. Gym-mates turned enemies. +2 Accuracy, +2 Speed.",bonuses:{Accuracy:2,Speed:2}},
   {id:"fn_plant_benavidez",name:"Bad Blood Decision",rarity:"rare",fighters:["Caleb Plant","David Benavidez"],desc:"2023. Real hatred, real beating. +2 Stamina, +2 Accuracy.",bonuses:{Stamina:2,Accuracy:2}},
   {id:"fn_warrington_frampton",name:"The Leeds War",rarity:"rare",fighters:["Josh Warrington","Carl Frampton"],desc:"2018. Fight of the year, no argument. +2 Heart, +2 Stamina.",bonuses:{Heart:2,Stamina:2}},
-  {id:"fn_loma_linares",name:"The Matrix Glitch",rarity:"rare",fighters:["Vasyl Lomachenko","Jorge Linares"],desc:"2018. Dropped, then dissected. +2 Footwork, +2 Ring IQ.",bonuses:{Footwork:2,"Ring IQ":2}}
+  {id:"fn_loma_linares",name:"The Matrix Glitch",rarity:"rare",fighters:["Vasyl Lomachenko","Jorge Linares"],desc:"2018. Dropped, then dissected. +2 Footwork, +2 Ring IQ.",bonuses:{Footwork:2,"Ring IQ":2}},
+  // ── EXPANSION WAVE 2 — every remaining real matchup in the fighter base ──
+  {id:"fn_may_canelo",name:"The MGM Masterclass",rarity:"legendary",fighters:["Floyd Mayweather Jr.","Canelo Alvarez"],desc:"2013. A 23-year-old prodigy schooled by perfection. +3 Defence, +3 Ring IQ, +3 Accuracy.",bonuses:{Defence:3,"Ring IQ":3,Accuracy:3}},
+  {id:"fn_may_cotto",name:"Blood On The Money",rarity:"epic",fighters:["Floyd Mayweather Jr.","Miguel Cotto"],desc:"2012. Cotto bloodied the untouchable nose. +3 Chin, +3 Accuracy.",bonuses:{Chin:3,Accuracy:3}},
+  {id:"fn_may_marquez",name:"Too Big, Too Sharp",rarity:"epic",fighters:["Floyd Mayweather Jr.","Juan Manuel Marquez"],desc:"2009. The comeback clinic nobody could touch. +3 Defence, +3 Speed.",bonuses:{Defence:3,Speed:3}},
+  {id:"fn_gatti_may",name:"Blood And Guts Schooling",rarity:"epic",fighters:["Arturo Gatti","Floyd Mayweather Jr."],desc:"2005. The warrior met the matrix. +3 Speed, +3 Defence.",bonuses:{Speed:3,Defence:3}},
+  {id:"fn_holyfield_douglas",name:"The Crown Changes Hands",rarity:"epic",fighters:["Evander Holyfield","Buster Douglas"],desc:"1990. One counter and the upset king fell. +3 Power, +3 Ring IQ.",bonuses:{Power:3,"Ring IQ":3}},
+  {id:"fn_foreman_norton",name:"The Caracas Demolition",rarity:"epic",fighters:["George Foreman","Ken Norton"],desc:"1974. Two rounds of pure violence. +4 Power, +2 Chin.",bonuses:{Power:4,Chin:2}},
+  {id:"fn_usyk_glowacki",name:"The Krakow Coronation",rarity:"epic",fighters:["Oleksandr Usyk","Krzysztof Glowacki"],desc:"2016. A first world title taken in enemy territory. +3 Footwork, +3 Stamina.",bonuses:{Footwork:3,Stamina:3}},
+  {id:"fn_canelo_smith",name:"The Bicep Breaker",rarity:"epic",fighters:["Canelo Alvarez","Callum Smith"],desc:"2020. Precision that broke an arm and a reign. +3 Accuracy, +3 Ring IQ.",bonuses:{Accuracy:3,"Ring IQ":3}},
+  {id:"fn_canelo_saunders",name:"The Eye Of The Storm",rarity:"epic",fighters:["Canelo Alvarez","Billy Joe Saunders"],desc:"2021. The corner stool ended it at half time. +3 Power, +3 Accuracy.",bonuses:{Power:3,Accuracy:3}},
+  {id:"fn_canelo_plant",name:"Sweet Hands Silenced",rarity:"epic",fighters:["Canelo Alvarez","Caleb Plant"],desc:"2021. Undisputed sealed in the eleventh. +3 Defence, +3 Power.",bonuses:{Defence:3,Power:3}},
+  {id:"fn_canelo_cotto",name:"The Torch Of Kings",rarity:"epic",fighters:["Canelo Alvarez","Miguel Cotto"],desc:"2015. A generational handover at ring centre. +3 Accuracy, +3 Power.",bonuses:{Accuracy:3,Power:3}},
+  {id:"fn_groves_smith",name:"The Jeddah Finale",rarity:"epic",fighters:["George Groves","Callum Smith"],desc:"2018. The WBSS crown changed hands by KO. +3 Power, +3 Chin.",bonuses:{Power:3,Chin:3}},
+  {id:"fn_vitali_chisora",name:"The Weigh-In Slap",rarity:"epic",fighters:["Vitali Klitschko","Dereck Chisora"],desc:"2012. The slap heard before the bell. +3 Chin, +3 Stamina.",bonuses:{Chin:3,Stamina:3}},
+  {id:"fn_tua_ruiz",name:"Nineteen Seconds",rarity:"epic",fighters:["David Tua","John Ruiz"],desc:"1996. One of the fastest KOs in heavyweight history. +4 Power, +2 Speed.",bonuses:{Power:4,Speed:2}},
+  {id:"fn_parker_chisora",name:"Twelve More Rounds",rarity:"rare",fighters:["Joseph Parker","Dereck Chisora"],desc:"2021 and 2022. Two wars, zero backward steps. +2 Chin, +2 Stamina.",bonuses:{Chin:2,Stamina:2}},
+  {id:"fn_itauma_whyte",name:"Changing Of The Guard",rarity:"rare",fighters:["Moses Itauma","Dillian Whyte"],desc:"2025. The kid needed less than a round. +3 Speed, +1 Power.",bonuses:{Speed:3,Power:1}},
+  {id:"fn_kabayel_sanchez",name:"The Body Snatcher Returns",rarity:"rare",fighters:["Agit Kabayel","Frank Sanchez"],desc:"2025. Another giant folded by body shots. +2 Stamina, +2 Power.",bonuses:{Stamina:2,Power:2}},
+  {id:"fn_vitali_briggs",name:"The Granite Examination",rarity:"rare",fighters:["Vitali Klitschko","Shannon Briggs"],desc:"2010. Twelve rounds of punishment absorbed on heart alone. +2 Chin, +2 Stamina.",bonuses:{Chin:2,Stamina:2}},
+  {id:"fn_vitali_byrd",name:"Doctor's Orders",rarity:"rare",fighters:["Vitali Klitschko","Chris Byrd"],desc:"2000. A torn shoulder decided what boxing couldn't. +2 Defence, +2 Footwork.",bonuses:{Defence:2,Footwork:2}},
+  {id:"fn_wlad_byrd",name:"The Spoiler Solved",rarity:"rare",fighters:["Wladimir Klitschko","Chris Byrd"],desc:"2000 and 2006. Homework done twice. +2 Accuracy, +2 Ring IQ.",bonuses:{Accuracy:2,"Ring IQ":2}},
+  {id:"fn_wlad_thompson",name:"Southpaw Homework",rarity:"rare",fighters:["Wladimir Klitschko","Tony Thompson"],desc:"2008 and 2012. Same puzzle, same answer. +2 Accuracy, +2 Defence.",bonuses:{Accuracy:2,Defence:2}},
+  {id:"fn_wlad_pulev",name:"The Left Hook Lullaby",rarity:"rare",fighters:["Wladimir Klitschko","Kubrat Pulev"],desc:"2014. Four knockdowns, one hook. +3 Power, +1 Accuracy.",bonuses:{Power:3,Accuracy:1}},
+  {id:"fn_wlad_povetkin",name:"The Steelhammer Clinic",rarity:"rare",fighters:["Wladimir Klitschko","Alexander Povetkin"],desc:"2013. Jab, clinch, repeat for 12 rounds. +2 Ring IQ, +2 Defence.",bonuses:{"Ring IQ":2,Defence:2}},
+  {id:"fn_povetkin_takam",name:"The Moscow Hammer",rarity:"rare",fighters:["Alexander Povetkin","Carlos Takam"],desc:"2014. Iron Horse met a bigger hammer. +2 Power, +2 Chin.",bonuses:{Power:2,Chin:2}},
+  {id:"fn_povetkin_price",name:"The Cardiff Collapse",rarity:"rare",fighters:["Alexander Povetkin","David Price"],desc:"2018. Hurt him, then flattened him. +2 Power, +2 Recovery.",bonuses:{Power:2,Recovery:2}},
+  {id:"fn_holyfield_johnruiz",name:"Trilogy Of Grit",rarity:"rare",fighters:["Evander Holyfield","John Ruiz"],desc:"2000-2001. Three fights of pure stubbornness. +2 Heart, +2 Stamina.",bonuses:{Heart:2,Stamina:2}},
+  {id:"fn_holmes_norton",name:"Fifteen Rounds Of Hell",rarity:"rare",fighters:["Larry Holmes","Ken Norton"],desc:"1978. The greatest final round ever fought. +2 Heart, +2 Stamina.",bonuses:{Heart:2,Stamina:2}},
+  {id:"fn_holmes_shavers",name:"The Acorn's Thunder",rarity:"rare",fighters:["Larry Holmes","Earnie Shavers"],desc:"1978 and 1979. Floored by thunder, saved by will. +2 Power, +2 Recovery.",bonuses:{Power:2,Recovery:2}},
+  {id:"fn_norton_shavers",name:"One Round Ruin",rarity:"rare",fighters:["Ken Norton","Earnie Shavers"],desc:"1979. The hardest puncher alive needed one round. +3 Power, +1 Accuracy.",bonuses:{Power:3,Accuracy:1}},
+  {id:"fn_lewis_briggs",name:"The Lineal Claim",rarity:"rare",fighters:["Lennox Lewis","Shannon Briggs"],desc:"1998. Big talk met a bigger jab. +2 Power, +2 Chin.",bonuses:{Power:2,Chin:2}},
+  {id:"fn_byrd_tua",name:"The Original Matrix",rarity:"rare",fighters:["Chris Byrd","David Tua"],desc:"2001. The bomb never landed. +2 Defence, +2 Footwork.",bonuses:{Defence:2,Footwork:2}},
+  {id:"fn_takam_chisora",name:"The Delayed Detonation",rarity:"rare",fighters:["Carlos Takam","Dereck Chisora"],desc:"2018. Eight rounds of build-up, one brutal end. +2 Power, +2 Heart.",bonuses:{Power:2,Heart:2}},
+  {id:"fn_valuev_johnruiz",name:"The Giant Clinch Wars",rarity:"rare",fighters:["Nikolai Valuev","John Ruiz"],desc:"2005 and 2008. Seven feet of stalemate, twice. +2 Chin, +2 Stamina.",bonuses:{Chin:2,Stamina:2}},
+  {id:"fn_price_harrison",name:"One Punch Payday",rarity:"rare",fighters:["David Price","Audley Harrison"],desc:"2012. 82 seconds of violence. +3 Power, +1 Accuracy.",bonuses:{Power:3,Accuracy:1}},
+  {id:"fn_price_allen",name:"The Doncaster Dust-Up",rarity:"rare",fighters:["David Price","Dave Allen"],desc:"2019. Honest heavyweight warfare. +2 Heart, +2 Chin.",bonuses:{Heart:2,Chin:2}},
+  {id:"fn_whyte_browne",name:"Body Bag Delivery",rarity:"rare",fighters:["Dillian Whyte","Lucas Browne"],desc:"2018. One left hook, face first. +2 Power, +2 Accuracy.",bonuses:{Power:2,Accuracy:2}},
+  {id:"fn_hunter_povetkin",name:"The Saudi Stalemate",rarity:"rare",fighters:["Michael Hunter","Alexander Povetkin"],desc:"2019. A draw both men swear they won. +2 Defence, +2 Stamina.",bonuses:{Defence:2,Stamina:2}},
+  {id:"fn_huck_glowacki",name:"Eleventh Hour Heist",rarity:"rare",fighters:["Marco Huck","Krzysztof Glowacki"],desc:"2015. Champion for 11 rounds, KO'd in the 11th. +2 Power, +2 Heart.",bonuses:{Power:2,Heart:2}},
+  {id:"fn_usyk_huck",name:"The Tarzan Taming",rarity:"rare",fighters:["Oleksandr Usyk","Marco Huck"],desc:"2017. The WBSS opened with a masterclass. +2 Footwork, +2 Accuracy.",bonuses:{Footwork:2,Accuracy:2}},
+  {id:"fn_usyk_briedis",name:"The Riga Chess Match",rarity:"rare",fighters:["Oleksandr Usyk","Mairis Briedis"],desc:"2018. The closest anyone ever came. +2 Ring IQ, +2 Defence.",bonuses:{"Ring IQ":2,Defence:2}},
+  {id:"fn_briedis_glowacki",name:"WBSS Mayhem",rarity:"rare",fighters:["Mairis Briedis","Krzysztof Glowacki"],desc:"2019. Chaos, controversy and a third-round end. +2 Power, +2 Ring IQ.",bonuses:{Power:2,"Ring IQ":2}},
+  {id:"fn_kabayel_chisora",name:"The Monte Carlo Grind",rarity:"rare",fighters:["Agit Kabayel","Dereck Chisora"],desc:"2017. A majority nobody in Monte Carlo expected. +2 Stamina, +2 Heart.",bonuses:{Stamina:2,Heart:2}},
+  {id:"fn_fury_johnson",name:"Shell Cracked",rarity:"rare",fighters:["Tyson Fury","Kevin Johnson"],desc:"2012. Patience beat the deep shell. +2 Accuracy, +2 Defence.",bonuses:{Accuracy:2,Defence:2}},
+  {id:"fn_joshua_pulev",name:"The Uppercut Parade",rarity:"rare",fighters:["Anthony Joshua","Kubrat Pulev"],desc:"2020. Uppercuts on repeat until the lights went out. +2 Power, +2 Accuracy.",bonuses:{Power:2,Accuracy:2}},
+  {id:"fn_brook_spence",name:"Broken Orbit",rarity:"rare",fighters:["Kell Brook","Errol Spence Jr"],desc:"2017. Special went down swinging in Sheffield. +2 Accuracy, +2 Heart.",bonuses:{Accuracy:2,Heart:2}},
+  {id:"fn_brook_ggg",name:"Daring To Be Great",rarity:"rare",fighters:["Kell Brook","Gennady Golovkin"],desc:"2016. Two weight classes too brave. +2 Power, +2 Accuracy.",bonuses:{Power:2,Accuracy:2}},
+  {id:"fn_brook_khan",name:"A Decade Of Beef",rarity:"rare",fighters:["Amir Khan","Kell Brook"],desc:"2022. Ten years late and still emphatic. +2 Speed, +2 Accuracy.",bonuses:{Speed:2,Accuracy:2}},
+  {id:"fn_khan_crawford",name:"The Low Blow Exit",rarity:"rare",fighters:["Amir Khan","Terence Crawford"],desc:"2019. It ended how nobody wanted. +2 Speed, +2 Ring IQ.",bonuses:{Speed:2,"Ring IQ":2}},
+  {id:"fn_crawford_brook",name:"Bud's Business",rarity:"rare",fighters:["Terence Crawford","Kell Brook"],desc:"2020. Four rounds of patience, one finish. +2 Ring IQ, +2 Power.",bonuses:{"Ring IQ":2,Power:2}},
+  {id:"fn_spence_garcia",name:"The Comeback Statement",rarity:"rare",fighters:["Errol Spence Jr","Danny Garcia"],desc:"2020. Back from the crash without missing a beat. +2 Accuracy, +2 Defence.",bonuses:{Accuracy:2,Defence:2}},
+  {id:"fn_porter_garcia",name:"Showtime Shift",rarity:"rare",fighters:["Shawn Porter","Danny Garcia"],desc:"2018. Pressure edged power on the cards. +2 Stamina, +2 Accuracy.",bonuses:{Stamina:2,Accuracy:2}},
+  {id:"fn_thurman_porter",name:"One Time Survives",rarity:"rare",fighters:["Keith Thurman","Shawn Porter"],desc:"2016. Twelve rounds of pressure, survived. +2 Power, +2 Defence.",bonuses:{Power:2,Defence:2}},
+  {id:"fn_thurman_garcia",name:"The Unification Grinder",rarity:"rare",fighters:["Keith Thurman","Danny Garcia"],desc:"2017. Two zeros, one split verdict. +2 Accuracy, +2 Ring IQ.",bonuses:{Accuracy:2,"Ring IQ":2}},
+  {id:"fn_broner_pac",name:"About Billions Humbled",rarity:"rare",fighters:["Adrien Broner","Manny Pacquiao"],desc:"2019. All talk, comprehensively schooled. +2 Speed, +2 Accuracy.",bonuses:{Speed:2,Accuracy:2}},
+  {id:"fn_broner_porter",name:"Problem Solved",rarity:"rare",fighters:["Adrien Broner","Shawn Porter"],desc:"2015. Pressure broke the problem. +2 Heart, +2 Stamina.",bonuses:{Heart:2,Stamina:2}},
+  {id:"fn_vargas_pac",name:"The Vegas Lesson",rarity:"rare",fighters:["Jessie Vargas","Manny Pacquiao"],desc:"2016. A world title fight taught at speed. +2 Speed, +2 Ring IQ.",bonuses:{Speed:2,"Ring IQ":2}},
+  {id:"fn_rios_pac",name:"The Macau Masterclass",rarity:"rare",fighters:["Brandon Rios","Manny Pacquiao"],desc:"2013. The comeback statement fight. +2 Speed, +2 Stamina.",bonuses:{Speed:2,Stamina:2}},
+  {id:"fn_pac_barrera",name:"The Assassin Arrives",rarity:"rare",fighters:["Manny Pacquiao","Marco Antonio Barrera"],desc:"2003 and 2007. The night the world met PacMan. +2 Speed, +2 Power.",bonuses:{Speed:2,Power:2}},
+  {id:"fn_pac_morales",name:"El Terrible's Trilogy",rarity:"rare",fighters:["Manny Pacquiao","Erik Morales"],desc:"2005-2006. The wars that forged a legend. +2 Heart, +2 Speed.",bonuses:{Heart:2,Speed:2}},
+  {id:"fn_pac_cotto",name:"The Firefight",rarity:"rare",fighters:["Manny Pacquiao","Miguel Cotto"],desc:"2009. Speed against pride at 145. +2 Speed, +2 Power.",bonuses:{Speed:2,Power:2}},
+  {id:"fn_hamed_barrera",name:"The Prince Grounded",rarity:"rare",fighters:["Naseem Hamed","Marco Antonio Barrera"],desc:"2001. The showboat sunk by a masterclass. +2 Ring IQ, +2 Accuracy.",bonuses:{"Ring IQ":2,Accuracy:2}},
+  {id:"fn_delahoya_chavez",name:"Ultimate Glory",rarity:"rare",fighters:["Oscar De La Hoya","Julio Cesar Chavez"],desc:"1996 and 1998. The Golden Boy's coronation. +2 Speed, +2 Accuracy.",bonuses:{Speed:2,Accuracy:2}},
+  {id:"fn_delahoya_whitaker",name:"The Golden Verdict",rarity:"rare",fighters:["Oscar De La Hoya","Pernell Whitaker"],desc:"1997. Genius defence, golden scorecards. +2 Footwork, +2 Defence.",bonuses:{Footwork:2,Defence:2}},
+  {id:"fn_marquez_barrera",name:"Mexican Chess War",rarity:"rare",fighters:["Juan Manuel Marquez","Marco Antonio Barrera"],desc:"2007. Two masters trading counters for 12 rounds. +2 Ring IQ, +2 Accuracy.",bonuses:{"Ring IQ":2,Accuracy:2}},
+  {id:"fn_morales_garcia",name:"The Torch Snuffed",rarity:"rare",fighters:["Erik Morales","Danny Garcia"],desc:"2012. Twice, ending in one perfect hook. +2 Power, +2 Chin.",bonuses:{Power:2,Chin:2}},
+  {id:"fn_khan_barrera",name:"The Manchester Cut",rarity:"rare",fighters:["Amir Khan","Marco Antonio Barrera"],desc:"2009. Speed against a legend, ended on a gash. +2 Speed, +2 Footwork.",bonuses:{Speed:2,Footwork:2}},
+  {id:"fn_hopkins_pascal",name:"Old Man Strength",rarity:"rare",fighters:["Bernard Hopkins","Jean Pascal"],desc:"2010-2011. History's oldest world champion. +2 Ring IQ, +2 Chin.",bonuses:{"Ring IQ":2,Chin:2}},
+  {id:"fn_hopkins_wright",name:"The Puzzle Solved",rarity:"rare",fighters:["Bernard Hopkins","Winky Wright"],desc:"2007. Two locked doors, one key. +2 Defence, +2 Ring IQ.",bonuses:{Defence:2,"Ring IQ":2}},
+  {id:"fn_toney_jones",name:"Class Of '94",rarity:"rare",fighters:["James Toney","Roy Jones Jr."],desc:"1994. The night Lights Out kept missing. +2 Speed, +2 Defence.",bonuses:{Speed:2,Defence:2}},
+  {id:"fn_toney_holyfield",name:"Lights Out In Vegas",rarity:"rare",fighters:["James Toney","Evander Holyfield"],desc:"2003. Toney turned back the Real Deal. +2 Accuracy, +2 Chin.",bonuses:{Accuracy:2,Chin:2}},
+  {id:"fn_abraham_froch",name:"The Super Six Schooling",rarity:"rare",fighters:["Arthur Abraham","Carl Froch"],desc:"2010. The Cobra's cleanest ever win. +2 Accuracy, +2 Defence.",bonuses:{Accuracy:2,Defence:2}},
+  {id:"fn_ward_abraham",name:"The S.O.G. Shutout",rarity:"rare",fighters:["Andre Ward","Arthur Abraham"],desc:"2011. King Arthur dethroned without drama. +2 Defence, +2 Ring IQ.",bonuses:{Defence:2,"Ring IQ":2}},
+  {id:"fn_groves_eubankjr",name:"The Semifinal Scare",rarity:"rare",fighters:["George Groves","Chris Eubank Jr"],desc:"2018. Won the fight, dislocated the shoulder. +2 Accuracy, +2 Ring IQ.",bonuses:{Accuracy:2,"Ring IQ":2}},
+  {id:"fn_eubankjr_degale",name:"The Retirement Party",rarity:"rare",fighters:["Chris Eubank Jr","James DeGale"],desc:"2019. A career ended at the O2. +2 Stamina, +2 Power.",bonuses:{Stamina:2,Power:2}},
+  {id:"fn_eubankjr_liam",name:"The Manchester Shock",rarity:"rare",fighters:["Chris Eubank Jr","Liam Smith"],desc:"2023. KO'd cold, then avenged in the rematch. +2 Power, +2 Chin.",bonuses:{Power:2,Chin:2}},
+  {id:"fn_eubankjr_benn",name:"The Bloodline Feud",rarity:"rare",fighters:["Chris Eubank Jr","Conor Benn"],desc:"2025. Their fathers' war, inherited whole. +2 Stamina, +2 Accuracy.",bonuses:{Stamina:2,Accuracy:2}},
+  {id:"fn_eubankjr_saunders",name:"Traveller's Craft",rarity:"rare",fighters:["Chris Eubank Jr","Billy Joe Saunders"],desc:"2014. Southpaw craft edged the grudge. +2 Footwork, +2 Ring IQ.",bonuses:{Footwork:2,"Ring IQ":2}},
+  {id:"fn_saunders_lemieux",name:"The Southpaw Lesson",rarity:"rare",fighters:["Billy Joe Saunders","David Lemieux"],desc:"2017. A shutout in a snowstorm. +2 Footwork, +2 Defence.",bonuses:{Footwork:2,Defence:2}},
+  {id:"fn_benavidez_andrade",name:"The Monster's Masterclass",rarity:"rare",fighters:["David Benavidez","Demetrius Andrade"],desc:"2023. The ghost finally caught. +2 Power, +2 Stamina.",bonuses:{Power:2,Stamina:2}},
+  {id:"fn_liam_canelo",name:"The Body Shot Finish",rarity:"rare",fighters:["Liam Smith","Canelo Alvarez"],desc:"2016. Folded by a perfect liver shot. +2 Power, +2 Accuracy.",bonuses:{Power:2,Accuracy:2}},
+  {id:"fn_ggg_lemieux",name:"The Jab Clinic",rarity:"rare",fighters:["Gennady Golovkin","David Lemieux"],desc:"2015. A jab that won by knockout. +2 Accuracy, +2 Power.",bonuses:{Accuracy:2,Power:2}},
+  {id:"fn_frampton_quigg",name:"Battle Of The Belts",rarity:"rare",fighters:["Carl Frampton","Scott Quigg"],desc:"2016. Manchester unified, quietly brutal. +2 Accuracy, +2 Ring IQ.",bonuses:{Accuracy:2,"Ring IQ":2}},
+  {id:"fn_frampton_donaire",name:"The Belfast Classic",rarity:"rare",fighters:["Carl Frampton","Nonito Donaire"],desc:"2018. The Jackal outboxed the Flash. +2 Speed, +2 Accuracy.",bonuses:{Speed:2,Accuracy:2}},
+  {id:"fn_crolla_linares",name:"Manchester Nights",rarity:"rare",fighters:["Anthony Crolla","Jorge Linares"],desc:"2016-2017. Two classy world title fights. +2 Heart, +2 Accuracy.",bonuses:{Heart:2,Accuracy:2}},
+  {id:"fn_loma_crolla",name:"Matrix Mode",rarity:"rare",fighters:["Vasyl Lomachenko","Anthony Crolla"],desc:"2019. A KO from an angle that shouldn't exist. +2 Footwork, +2 Accuracy.",bonuses:{Footwork:2,Accuracy:2}},
+  {id:"fn_taylor_prograis",name:"The Tartan Takeover",rarity:"rare",fighters:["Josh Taylor","Regis Prograis"],desc:"2019 and 2023. A classic and its revenge. +2 Heart, +2 Ring IQ.",bonuses:{Heart:2,"Ring IQ":2}},
+  {id:"fn_taylor_ramirez",name:"The Undisputed Sweep",rarity:"rare",fighters:["Josh Taylor","Jose Ramirez"],desc:"2021. Two knockdowns, four belts. +2 Ring IQ, +2 Speed.",bonuses:{"Ring IQ":2,Speed:2}},
+  {id:"fn_silva_chavezjr",name:"The Legacy Detour",rarity:"rare",fighters:["Anderson Silva","Julio Cesar Chavez Jr"],desc:"2021. The Spider out-boxed the bloodline. +2 Footwork, +2 Chin.",bonuses:{Footwork:2,Chin:2}},
+  {id:"fn_degale_jack",name:"The Brooklyn Draw",rarity:"rare",fighters:["James DeGale","Badou Jack"],desc:"2017. Teeth lost, titles kept. +2 Heart, +2 Chin.",bonuses:{Heart:2,Chin:2}},
+  {id:"fn_groves_jack",name:"The Vegas Verdict",rarity:"rare",fighters:["George Groves","Badou Jack"],desc:"2015. A world title slipping on the cards. +2 Accuracy, +2 Defence.",bonuses:{Accuracy:2,Defence:2}},
+  {id:"fn_jack_pascal",name:"The Forehead Gash",rarity:"rare",fighters:["Badou Jack","Jean Pascal"],desc:"2019. Fought half the fight behind a curtain of blood. +2 Heart, +2 Defence.",bonuses:{Heart:2,Defence:2}},
+  {id:"fn_williams_margarito",name:"The Punch Machine",rarity:"rare",fighters:["Paul Williams","Antonio Margarito"],desc:"2007. Output that never stopped coming. +2 Stamina, +2 Accuracy.",bonuses:{Stamina:2,Accuracy:2}}
 ];
 SYNERGY.length=0;
 SYNERGY.push(...FIGHT_SYNERGIES);
@@ -12314,7 +12434,27 @@ function checkSynergy(){
 }
 function updateSynergyPanel(newIds){ newIds=newIds||new Set(); const p=$('synergy-panel'); const list=S.player.HiddenBonuses||[]; if(!list.length){ p.innerHTML='<div style="color:var(--muted);text-align:center">No fight synergies unlocked yet.</div>'; return; } p.innerHTML=''; list.forEach(b=>{ const rar=(b.rarity||'secret'); const rarLabel=b.rarity?(b.rarity.charAt(0).toUpperCase()+b.rarity.slice(1)+' Synergy'):'Synergy'; const div=document.createElement('div'); div.className='trait-pill '+rar+' synergy-pill'+(newIds.has(b.id)?' synergy-new':''); div.title=b.desc; const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(' \u00b7 '); const vs=Array.isArray(b.fighters)&&b.fighters.length===2?'<div class="synergy-vs">'+htmlEscape(b.fighters[0])+' vs '+htmlEscape(b.fighters[1])+'</div>':''; div.innerHTML='<div class="trait-title"><span class="synergy-spark">\u2726</span> '+b.name+'</div>'+vs+'<div>'+b.desc+'</div><div class="synergy-bonus">'+plus+'</div><span class="trait-chip '+rar+'">'+rarLabel+'</span>'; p.appendChild(div); }); }
 function flashScreen(cls){ try{ const f=document.createElement('div'); f.className='synergy-flash '+(cls||''); document.body.appendChild(f); setTimeout(()=>{ if(f.parentNode) f.parentNode.removeChild(f); },900); }catch(e){} }
-function celebrateSynergies(list){ if(!list||!list.length) return; setTimeout(()=>{ playSynergy(); flashScreen('teal'); list.slice(0,3).forEach((b,i)=>{ const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(', '); const rar=b.rarity?b.rarity.charAt(0).toUpperCase()+b.rarity.slice(1)+' ':''; const emo=b.rarity==='legendary'?'\ud83d\udc51':b.rarity==='epic'?'\ud83d\udc9c':'\u26a1'; setTimeout(()=>showToast(emo+' '+rar+'Synergy Unlocked', b.name+' \u2014 '+plus), i*260); }); }, 230); }
+function celebrateSynergies(list){ if(!list||!list.length) return; setTimeout(()=>{ playSynergy(); flashScreen('teal'); list.slice(0,3).forEach((b,i)=>{ setTimeout(()=>synergyUnlockPop(b), i*1350); }); }, 230); }
+function synergyUnlockPop(b){
+  try{
+    const rar=(b.rarity==='epic'||b.rarity==='legendary')?b.rarity:'rare';
+    const kicker=rar==='legendary'?'\ud83d\udc51 Legendary Synergy':rar==='epic'?'\ud83d\udc9c Epic Synergy':'\u26a1 Rare Synergy';
+    const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(' \u00b7 ');
+    const vs=Array.isArray(b.fighters)&&b.fighters.length===2?b.fighters[0]+' vs '+b.fighters[1]:'';
+    const why=String(b.desc||'').replace(/\s*\+\d[^.]*\.?\s*$/,''); // drop the trailing "+X Stat" sentence \u2014 shown separately
+    const el=document.createElement('div');
+    el.className='syn-unlock-pop '+rar;
+    el.innerHTML=
+      '<div class="sup-kicker">'+kicker+' Unlocked</div>'
+      +'<div class="sup-name">'+htmlEscape(b.name)+'</div>'
+      +(vs?'<div class="sup-vs">\ud83e\udd4a '+htmlEscape(vs)+'</div>':'')
+      +(why?'<div class="sup-why">'+htmlEscape(why)+'</div>':'')
+      +(plus?'<div class="sup-boost">'+htmlEscape(plus)+'</div>':'');
+    document.body.appendChild(el);
+    setTimeout(()=>{ el.classList.add('out'); },1050);
+    setTimeout(()=>{ if(el.parentNode) el.remove(); },1450);
+  }catch(e){}
+}
 function lockStat(stat){ if(!S.legend||S.player.Stats[stat]!=null||!S.awaiting) return; let v=S.legend[stat]; if(S.perfect){ v=clamp(v+1,1,99); S.player.PerfectSpinStats[stat]=true; } S.player.Stats[stat]=v; S.player.StatSources[stat]=S.legend.Name; S.awaiting=false; const __prevSyn=new Set((S.player.HiddenBonuses||[]).map(b=>b.id)); checkSynergy(); buildDraft(); const __newSyn=(S.player.HiddenBonuses||[]).filter(b=>!__prevSyn.has(b.id)); updateSynergyPanel(new Set(__newSyn.map(b=>b.id))); playStatSound(v); if(__newSyn.length) celebrateSynergies(__newSyn); $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('perfect-banner').classList.remove('active'); S.perfect=false; const filled=STATS.filter(st=>S.player.Stats[st]!=null).length; if(filled===10){ $('spin-btn').disabled=true; $('reroll-btn').disabled=true; $('draft-archetype').innerText=archetype(getPerm()).name; saveCareer(); setTimeout(()=>screen('trait-screen'),300); } else { $('spin-btn').disabled=false; updateDraftTop(); saveCareer(); } updateOverallDisplays(); }
 // ---- Central trait rarity colour system (matches rarity tabs) ----
 function getTraitRarityClass(trait){ if(!trait) return 'trait-common'; const type=(trait.type||'').toLowerCase(); const r=(trait.rarity||'common').toLowerCase(); if(type==='negative'||r==='cursed') return 'trait-cursed'; switch(r){ case 'common': return 'trait-common'; case 'uncommon': return 'trait-uncommon'; case 'rare': return 'trait-rare'; case 'luxury': return 'trait-luxury'; case 'epic': return 'trait-epic'; case 'legendary': return 'trait-legendary'; case 'mythic': case 'premium': return 'trait-premium'; case 'secret': return 'trait-secret'; default: return 'trait-common'; } }
