@@ -9135,18 +9135,21 @@ function createMyCardCounts(existingCounts={}, existingCards=[]){
 function collectibleOwnedIdsFromCounts(counts={}){
   return Object.keys(counts||{}).filter(id=>validCollectibleId(id)&&safeMoney(counts[id])>0);
 }
-function collectiblePullWeight(card){
+const COLLECTIBLE_DEFAULT_PULL_EXPONENT = 1.35;
+const COLLECTIBLE_COLLECTOR_PULL_EXPONENT = 1.25;
+function collectiblePullWeight(card, exponent=COLLECTIBLE_DEFAULT_PULL_EXPONENT){
   const n=Math.max(1, safeMoney(card?.num||1));
-  return 1 / Math.pow(n, 1.35);
+  return 1 / Math.pow(n, exponent);
 }
-function rollCollectibleCard(pool=COLLECTIBLE_CARDS){
+function rollCollectibleCard(pool=COLLECTIBLE_CARDS, weightExponent=COLLECTIBLE_DEFAULT_PULL_EXPONENT){
   const cards=(pool||[]).filter(c=>c&&validCollectibleId(c.id));
   if(!cards.length) return null;
-  const total=cards.reduce((sum,c)=>sum+collectiblePullWeight(c),0);
+  const weights=cards.map(c=>collectiblePullWeight(c, weightExponent));
+  const total=weights.reduce((sum,w)=>sum+w,0);
   let roll=Math.random()*total;
-  for(const card of cards){
-    roll-=collectiblePullWeight(card);
-    if(roll<=0) return card;
+  for(let i=0;i<cards.length;i++){
+    roll-=weights[i];
+    if(roll<=0) return cards[i];
   }
   return cards[cards.length-1];
 }
@@ -10001,7 +10004,7 @@ function grantCollectibleCard(target, cardId){
 // ── Collector Pack ────────────────────────────────────────────────────────
 const COLLECTOR_PACK_COST = 2000;
 const COLLECTOR_PACK_TEN_COST = 20000;
-const COLLECTOR_PACK_STARTER_COST = 1;
+const COLLECTOR_PACK_STARTER_COST = 200;
 const COLL_RARITY_COLORS = {common:'#cbd5e1',uncommon:'#86efac',rare:'#60a5fa',legendary:'#fb923c'};
 let _collPackQueue = []; // queued entries for 10-pack sequential reveal
 
@@ -10014,7 +10017,7 @@ function openCollectorPack(){
   }
   const pool = COLLECTIBLE_CARDS;
   if(!pool.length){ showToast('No cards available yet.',''); return; }
-  const card = rollCollectibleCard(pool);
+  const card = rollCollectibleCard(pool, COLLECTIBLE_COLLECTOR_PULL_EXPONENT);
   if(!card){ showToast('No cards available yet.',''); return; }
   const counts=createMyCardCounts(profile.myCardCounts, profile.myCards);
   const isNew = safeMoney(counts[card.id])===0;
@@ -10062,7 +10065,7 @@ function openCollectorPackTen(){
   }
   const pool = COLLECTIBLE_CARDS;
   if(!pool.length){ showToast('No cards available yet.',''); return; }
-  const cards = Array.from({length:10}, ()=>rollCollectibleCard(pool)).filter(Boolean);
+  const cards = Array.from({length:10}, ()=>rollCollectibleCard(pool, COLLECTIBLE_COLLECTOR_PULL_EXPONENT)).filter(Boolean);
   if(!cards.length){ showToast('No cards available yet.',''); return; }
   const entries = [];
   mutateCardProfile(t => {
@@ -10774,6 +10777,7 @@ function renderPackPanel(){
   const canAffordTen=bal>=COLLECTOR_PACK_TEN_COST;
   const ownedCount=collectibleOwnedIdsFromCounts(createMyCardCounts(profile.myCardCounts, profile.myCards)).length;
   const total=COLLECTIBLE_CARDS.length;
+  const starterCostText=COLLECTOR_PACK_STARTER_COST.toLocaleString();
   const oddsHtml=[
     '<span class="pack-odd rarity-common">Low # common</span>',
     '<span class="pack-odd rarity-uncommon">Mid # uncommon</span>',
@@ -10784,11 +10788,11 @@ function renderPackPanel(){
   panel.innerHTML=
     '<div class="card-pack">'
     +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">&#x1F4B0;</span></div>'
-    +'<div class="card-pack-info"><strong>Starter Pack</strong><span>1 collectible card for just 1 PM. Great for getting started.</span>'
+    +'<div class="card-pack-info"><strong>Starter Pack</strong><span>1 collectible card for just '+starterCostText+' PM. Great for getting started.</span>'
     +'<div class="pack-odds">'+oddsHtml+'</div>'
     +progressLine
-    +'<button class="btn gold" style="margin-top:9px" '+(canAffordStarter?'':'disabled')+' onclick="openCollectorPackStarter()">Open Pack \u2022 1 PM</button>'
-    +(canAffordStarter?'':'<div class="pack-need-more">Need 1 PM</div>')
+    +'<button class="btn gold" style="margin-top:9px" '+(canAffordStarter?'':'disabled')+' onclick="openCollectorPackStarter()">Open Pack \u2022 '+starterCostText+' PM</button>'
+    +(canAffordStarter?'':'<div class="pack-need-more">Need '+Math.max(0,COLLECTOR_PACK_STARTER_COST-bal).toLocaleString()+' more PM</div>')
     +'</div></div>'
     +'<div class="card-pack" style="margin-top:12px">'
     +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">&#x2605;</span></div>'
