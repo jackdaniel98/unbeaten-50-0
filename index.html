@@ -3613,6 +3613,135 @@ h2::before{
 .syn-card-vs::before,.synergy-vs::before{content:'🥊 ';font-size:.62rem}
 
 /* ============================================================
+   🥊 PVP CARD FIGHT STAGE
+   Your card vs their card, live during the round-by-round sim.
+   Cards crack and shed pieces as HP drops; synergy moments pop;
+   the loser shatters on a stoppage.
+============================================================ */
+.mp-fight-stage{
+  display:grid;grid-template-columns:1fr 44px 1fr;gap:6px;
+  align-items:center;justify-items:center;
+  background:
+    radial-gradient(70% 90px at 50% 0%, rgba(227,178,60,.08), transparent 75%),
+    linear-gradient(180deg,#14161b 0%,#0e1014 100%);
+  border:1px solid var(--line);border-top-color:rgba(227,178,60,.25);
+  border-radius:var(--radius);
+  padding:14px 10px 12px;margin-bottom:8px;
+  position:relative;overflow:hidden;width:100%;box-sizing:border-box;
+}
+.mp-fight-stage::after{
+  content:'';position:absolute;left:8%;right:8%;bottom:8px;height:14px;
+  background:radial-gradient(50% 100% at 50% 100%, rgba(227,178,60,.12), transparent 75%);
+  pointer-events:none;
+}
+.mpfs-side{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.mpfs-tag{font-size:.5rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.mpfs-tag.me{color:var(--gold)}
+.mpfs-tag.opp{color:#38bdf8}
+.mpfs-center{display:flex;align-items:center;justify-content:center;position:relative;align-self:center}
+.mpfs-vs{
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:1.25rem;color:var(--gold);
+  letter-spacing:1px;text-shadow:0 0 14px rgba(227,178,60,.55);
+  animation:vsPulse 2.6s ease-in-out infinite;
+}
+.mpfs-card{
+  position:relative;width:96px;max-width:100%;
+  transition:transform .3s var(--ease), filter .4s var(--ease);
+  will-change:transform;z-index:1;
+}
+@media(min-width:768px){.mpfs-card{width:124px}}
+.mpfs-card-inner{position:relative;border-radius:8px;overflow:hidden;transition:opacity .4s ease, filter .4s ease}
+.mpfs-card-inner img{display:block;width:100%;max-width:100%}
+.mpfs-dmg-tint{
+  position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .5s ease;
+  background:linear-gradient(180deg,rgba(110,8,8,.05) 0%,rgba(110,8,8,.4) 100%);
+}
+.mpfs-cracks{
+  position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .45s ease;
+  background-size:100% 100%;mix-blend-mode:screen;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.7));
+}
+.mpfs-cracks.c1{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150' preserveAspectRatio='none'%3E%3Cg stroke='rgba(255,255,255,.85)' stroke-width='.9' fill='none'%3E%3Cpath d='M50 62 L39 36 L42 22'/%3E%3Cpath d='M50 62 L66 44 L64 30'/%3E%3Cpath d='M50 62 L31 76 L18 74'/%3E%3Cpath d='M50 62 L59 90 L52 112'/%3E%3Cpath d='M50 62 L74 70'/%3E%3Cpath d='M44 50 L57 52'/%3E%3C/g%3E%3C/svg%3E")}
+.mpfs-cracks.c2{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150' preserveAspectRatio='none'%3E%3Cg stroke='rgba(255,255,255,.8)' stroke-width='.9' fill='none'%3E%3Cpath d='M0 24 L16 34 L11 52 L24 60'/%3E%3Cpath d='M100 40 L82 48 L88 68 L74 80'/%3E%3Cpath d='M28 150 L36 124 L27 108'/%3E%3Cpath d='M76 0 L69 22 L80 38 L72 54'/%3E%3Cpath d='M96 118 L80 112 L76 128'/%3E%3Cpath d='M8 96 L22 92 L26 104'/%3E%3C/g%3E%3C/svg%3E")}
+/* damage tiers */
+.mpfs-card.dmg1 .mpfs-cracks.c1{opacity:.55}
+.mpfs-card.dmg1{transform:rotate(-.5deg)}
+.mpfs-card.dmg2 .mpfs-cracks.c1{opacity:.95}
+.mpfs-card.dmg2 .mpfs-cracks.c2{opacity:.6}
+.mpfs-card.dmg2 .mpfs-dmg-tint{opacity:.5}
+.mpfs-card.dmg2{transform:rotate(-1.2deg);filter:brightness(.9) saturate(.85)}
+.mpfs-card.dmg3 .mpfs-cracks.c1,.mpfs-card.dmg3 .mpfs-cracks.c2{opacity:1}
+.mpfs-card.dmg3 .mpfs-dmg-tint{opacity:.85}
+.mpfs-card.dmg3{transform:rotate(-2.2deg) translateY(2px);filter:brightness(.72) saturate(.6)}
+/* round exchange animations */
+@keyframes mpfsLungeR{0%{transform:translateX(0)}35%{transform:translateX(16px) rotate(3deg) scale(1.04)}65%{transform:translateX(10px) rotate(2deg)}100%{transform:translateX(0)}}
+@keyframes mpfsLungeL{0%{transform:translateX(0)}35%{transform:translateX(-16px) rotate(-3deg) scale(1.04)}65%{transform:translateX(-10px) rotate(-2deg)}100%{transform:translateX(0)}}
+@keyframes mpfsHit{0%{transform:translateX(0)}30%{transform:translateX(-7px) rotate(-4deg)}50%{transform:translateX(5px) rotate(2deg)}70%{transform:translateX(-3px) rotate(-1deg)}100%{transform:translateX(0)}}
+.mpfs-card.atk-r{animation:mpfsLungeR .55s var(--ease)}
+.mpfs-card.atk-l{animation:mpfsLungeL .55s var(--ease)}
+.mpfs-card.hit{animation:mpfsHit .55s var(--ease)}
+.mpfs-impact{
+  position:absolute;width:44px;height:44px;border-radius:50%;
+  background:radial-gradient(circle,#fff8e1 0%,rgba(227,178,60,.9) 32%,transparent 70%);
+  opacity:0;transform:scale(.2);pointer-events:none;
+}
+.mpfs-impact.pop{animation:mpfsImpact .45s ease-out}
+@keyframes mpfsImpact{0%{opacity:0;transform:scale(.2)}25%{opacity:1;transform:scale(1.25)}100%{opacity:0;transform:scale(.5)}}
+/* shards chipping off */
+.mpfs-shard{
+  position:absolute;width:7px;height:11px;z-index:5;pointer-events:none;
+  background:linear-gradient(180deg,#3d4350,#15171c);
+  border:1px solid rgba(255,255,255,.18);border-radius:1px;
+  animation:mpfsShardFall .9s ease-in forwards;
+}
+@keyframes mpfsShardFall{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--sx,0px),85px) rotate(var(--sr,120deg))}}
+/* full shatter on stoppage */
+.mpfs-frag{position:absolute;inset:0;z-index:6;pointer-events:none;animation:mpfsFragFly .95s cubic-bezier(.3,.55,.45,1) forwards}
+@keyframes mpfsFragFly{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--fx,0px),var(--fy,70px)) rotate(var(--fr,40deg))}}
+.mpfs-card.ko .mpfs-card-inner{opacity:.12;filter:grayscale(1)}
+.mpfs-ko-label{
+  position:absolute;inset:0;z-index:7;display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:1.7rem;color:#ff5a5f;letter-spacing:2px;
+  text-shadow:0 2px 0 #000,0 0 22px rgba(229,72,77,.7);
+  opacity:0;transform:rotate(-14deg) scale(.6);transition:opacity .3s ease .45s, transform .3s var(--ease) .45s;
+  pointer-events:none;
+}
+.mpfs-card.ko .mpfs-ko-label{opacity:1;transform:rotate(-14deg) scale(1)}
+/* winner glow */
+.mpfs-card.winner{filter:none;z-index:2}
+.mpfs-card.winner .mpfs-card-inner{box-shadow:0 0 0 2px rgba(227,178,60,.8),0 0 30px -4px rgba(227,178,60,.7)}
+.mpfs-card.winner{animation:mpfsWinner 1.8s ease-in-out infinite}
+@keyframes mpfsWinner{0%,100%{transform:translateY(0) scale(1.03)}50%{transform:translateY(-3px) scale(1.05)}}
+/* synergy moments */
+.mpfs-syn-pop{
+  position:absolute;left:50%;top:-8px;transform:translateX(-50%);z-index:9;
+  padding:4px 9px;border-radius:999px;white-space:nowrap;
+  font-size:.52rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;
+  background:#0b0c10;border:1px solid var(--line-2);color:var(--text);
+  box-shadow:0 6px 18px -6px rgba(0,0,0,.8);
+  animation:mpfsSynPop 2.5s var(--ease) forwards;pointer-events:none;
+  max-width:170px;overflow:hidden;text-overflow:ellipsis;
+}
+.mpfs-syn-pop.rare{color:#9cc7ff;border-color:rgba(91,141,239,.6);box-shadow:0 0 18px -4px rgba(91,141,239,.6)}
+.mpfs-syn-pop.epic{color:#d5a6ff;border-color:rgba(168,85,247,.6);box-shadow:0 0 18px -4px rgba(168,85,247,.6)}
+.mpfs-syn-pop.legendary{color:#f6d768;border-color:rgba(227,178,60,.7);box-shadow:0 0 22px -4px rgba(227,178,60,.75)}
+@keyframes mpfsSynPop{0%{opacity:0;transform:translateX(-50%) translateY(10px) scale(.7)}14%,78%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(-8px) scale(.92)}}
+.mpfs-card.syn-flash-rare .mpfs-card-inner{animation:mpfsSynFlashR 1.2s ease}
+.mpfs-card.syn-flash-epic .mpfs-card-inner{animation:mpfsSynFlashE 1.2s ease}
+.mpfs-card.syn-flash-legendary .mpfs-card-inner{animation:mpfsSynFlashL 1.2s ease}
+@keyframes mpfsSynFlashR{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 2px rgba(91,141,239,.9),0 0 26px rgba(91,141,239,.7)}}
+@keyframes mpfsSynFlashE{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 2px rgba(168,85,247,.9),0 0 26px rgba(168,85,247,.7)}}
+@keyframes mpfsSynFlashL{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 2px rgba(227,178,60,.95),0 0 30px rgba(227,178,60,.8)}}
+.mp-hl-syn{font-weight:800;padding:2px 0}
+.mp-hl-syn.rare{color:#9cc7ff}
+.mp-hl-syn.epic{color:#d5a6ff}
+.mp-hl-syn.legendary{color:#f6d768;text-shadow:0 0 10px rgba(227,178,60,.4)}
+@media(prefers-reduced-motion:reduce){
+  .mpfs-card.atk-r,.mpfs-card.atk-l,.mpfs-card.hit,.mpfs-card.winner,
+  .mpfs-shard,.mpfs-frag,.mpfs-impact.pop,.mpfs-vs{animation:none !important}
+}
+
+/* ============================================================
    🖥️ RESPONSIVE PRESENTATION LAYER
    Mobile keeps the exact current look. Tablets/desktops get a
    wider stage, roomier grids, arena spotlights and hover feel.
@@ -4787,6 +4916,20 @@ h2::before{
         <div class="mp-score-val opp" id="mp-fight-opp-score">0</div>
         <div class="mp-score-label">Points</div>
       </div>
+    </div>
+  </div>
+  <div id="mp-fight-stage" class="mp-fight-stage hidden">
+    <div class="mpfs-side">
+      <div id="mp-stage-my-card" class="mpfs-card me"></div>
+      <div class="mpfs-tag me">YOU</div>
+    </div>
+    <div class="mpfs-center">
+      <div class="mpfs-vs">VS</div>
+      <div id="mpfs-impact" class="mpfs-impact"></div>
+    </div>
+    <div class="mpfs-side">
+      <div id="mp-stage-opp-card" class="mpfs-card opp"></div>
+      <div class="mpfs-tag opp">RIVAL</div>
     </div>
   </div>
   <div id="mp-fight-log" class="mp-fight-log"></div>
@@ -16392,6 +16535,7 @@ function _showReferralWelcome(cards){
     }catch(e){}
   }
   window.ubConfetti=confetti;
+  window.ubFx={punch:sfxPunch,kd:sfxKD,bell:sfxBell,win:sfxWin,lose:sfxLose,draw:sfxDraw,coin:sfxCoin,shake:shake,flash:flash};
 
   /* ── Global button feel: tap sounds + press ripple ── */
   document.addEventListener('pointerdown',function(e){
@@ -16507,6 +16651,206 @@ function _showReferralWelcome(cards){
         confetti(70);
         buzz([80,50,80,50,160]);
       }catch(e){}
+    };
+  }
+}());
+</script>
+
+<script>
+/* ============================================================
+   🥊 PVP CARD FIGHT STAGE — engine
+   Wraps the PvP playback: your equipped card fights theirs.
+   Damage states track the HP bars, synergies pop as moments,
+   and a stoppage shatters the losing card. Deterministic from
+   the shared match data, so both players see the same show.
+============================================================ */
+(function(){
+  'use strict';
+  var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function $id(x){ return document.getElementById(x); }
+  function fx(){ return window.ubFx||{}; }
+  function els(){ return {stage:$id('mp-fight-stage'),my:$id('mp-stage-my-card'),opp:$id('mp-stage-opp-card'),imp:$id('mpfs-impact'),log:$id('mp-fight-log')}; }
+
+  function buildCard(el,cardId){
+    if(!el) return;
+    var art='';
+    try{ art=(typeof mpCardThumb==='function')?mpCardThumb(cardId||'cc001',124):''; }catch(e){}
+    el.innerHTML='<div class="mpfs-card-inner">'+art
+      +'<div class="mpfs-dmg-tint"></div><div class="mpfs-cracks c1"></div><div class="mpfs-cracks c2"></div></div>'
+      +'<div class="mpfs-ko-label">KO</div>';
+    el.classList.remove('dmg1','dmg2','dmg3','ko','winner','atk-l','atk-r','hit','syn-flash-rare','syn-flash-epic','syn-flash-legendary');
+    el.dataset.dmglvl='0';
+  }
+
+  function setDamage(el,hpPct){
+    if(!el) return;
+    var dmg=1-hpPct/100;
+    var lvl=dmg>=.72?3:dmg>=.45?2:dmg>=.22?1:0;
+    var prev=parseInt(el.dataset.dmglvl||'0',10);
+    el.classList.remove('dmg1','dmg2','dmg3');
+    if(lvl>0) el.classList.add('dmg'+lvl);
+    if(lvl>prev&&!RM) spawnShards(el,2+lvl*2);
+    el.dataset.dmglvl=String(lvl);
+  }
+
+  function spawnShards(el,n){
+    for(var i=0;i<n;i++){
+      var s=document.createElement('div');
+      s.className='mpfs-shard';
+      s.style.left=(10+Math.random()*80)+'%';
+      s.style.top=(25+Math.random()*65)+'%';
+      s.style.setProperty('--sx',(Math.random()*44-22)+'px');
+      s.style.setProperty('--sr',(Math.random()*260-130)+'deg');
+      el.appendChild(s);
+      (function(node){ setTimeout(function(){ node.remove(); },1000); })(s);
+    }
+  }
+
+  function shatter(el){
+    if(!el) return;
+    var inner=el.querySelector('.mpfs-card-inner');
+    if(RM||!inner){ el.classList.add('ko'); return; }
+    var cols=2,rows=4;
+    for(var c=0;c<cols;c++){
+      for(var r=0;r<rows;r++){
+        var f=document.createElement('div');
+        f.className='mpfs-frag';
+        var x0=c*50,x1=x0+50,y0=r*25,y1=y0+25;
+        f.style.clipPath='polygon('+x0+'% '+y0+'%,'+x1+'% '+y0+'%,'+x1+'% '+y1+'%,'+x0+'% '+y1+'%)';
+        f.style.setProperty('--fx',((c===0?-1:1)*(18+Math.random()*46))+'px');
+        f.style.setProperty('--fy',(30+Math.random()*70)+'px');
+        f.style.setProperty('--fr',((Math.random()*90-45))+'deg');
+        var clone=inner.cloneNode(true);
+        clone.style.position='absolute';
+        clone.style.inset='0';
+        f.appendChild(clone);
+        el.appendChild(f);
+      }
+    }
+    el.classList.add('ko');
+    setTimeout(function(){ el.querySelectorAll('.mpfs-frag').forEach(function(x){ x.remove(); }); },1150);
+  }
+
+  function synergyMoment(cardEl,syn,who,log){
+    if(!cardEl||!syn||!syn.name) return;
+    var rar=(syn.rarity==='epic'||syn.rarity==='legendary')?syn.rarity:'rare';
+    var pop=document.createElement('div');
+    pop.className='mpfs-syn-pop '+rar;
+    pop.textContent=(rar==='legendary'?'👑 ':'⚡ ')+syn.name;
+    cardEl.appendChild(pop);
+    setTimeout(function(){ pop.remove(); },2600);
+    cardEl.classList.remove('syn-flash-rare','syn-flash-epic','syn-flash-legendary');
+    void cardEl.offsetWidth;
+    cardEl.classList.add('syn-flash-'+rar);
+    if(log){
+      var d=document.createElement('div');
+      d.className='mp-hl-syn '+rar;
+      d.textContent='✦ SYNERGY — '+syn.name+' kicks in for '+who+'!';
+      log.appendChild(d);
+    }
+    try{ if(typeof playSynergy==='function') playSynergy(); }catch(e){}
+  }
+
+  // i-th synergy activates on the i-th round that player wins — deterministic
+  // from the shared highlight data, so both clients see identical moments.
+  function synSchedule(highlights,uid,count){
+    var rounds=[]; if(!count) return rounds;
+    for(var i=0;i<highlights.length&&rounds.length<count;i++){
+      if(highlights[i].roundWinnerUid===uid) rounds.push(highlights[i].round);
+    }
+    return rounds;
+  }
+
+  function stageSetup(data){
+    var e=els(); if(!e.stage||!data) return;
+    var myUid=(typeof currentUser!=='undefined'&&currentUser)?currentUser.uid:null;
+    var oppUid=data.playerOrder&&data.playerOrder.find(function(u){ return u!==myUid; });
+    var myPD=(data.players&&data.players[myUid])||{};
+    var oppPD=(data.players&&data.players[oppUid])||{};
+    e.stage.classList.remove('hidden');
+    buildCard(e.my,myPD.equippedCardId);
+    buildCard(e.opp,oppPD.equippedCardId);
+    var hl=data.fightHighlights||[];
+    var mySyn=(myPD.finalBuild&&myPD.finalBuild.synergies)||[];
+    var oppSyn=(oppPD.finalBuild&&oppPD.finalBuild.synergies)||[];
+    MP._stageSyn={
+      my:{list:mySyn,rounds:synSchedule(hl,myUid,mySyn.length)},
+      opp:{list:oppSyn,rounds:synSchedule(hl,oppUid,oppSyn.length)}
+    };
+  }
+
+  function stageRound(data,idx){
+    var e=els(); if(!e.stage||e.stage.classList.contains('hidden')) return;
+    var hl=data.fightHighlights||[]; var rnd=hl[idx]; if(!rnd) return;
+    var myUid=(typeof currentUser!=='undefined'&&currentUser)?currentUser.uid:null;
+    var total=hl.length, progress=(idx+1)/total;
+    var iWon=data.result.winnerUid===myUid, isDraw=data.result.winnerUid==='draw';
+    var myFinal=isDraw?40:iWon?60:15, oppFinal=isDraw?40:iWon?15:60;
+    var myW=Math.round(100-(100-myFinal)*progress), oppW=Math.round(100-(100-oppFinal)*progress);
+    var meWonRound=rnd.roundWinnerUid===myUid, evenRound=rnd.roundWinnerUid==='draw';
+    ['atk-l','atk-r','hit'].forEach(function(c){ e.my.classList.remove(c); e.opp.classList.remove(c); });
+    void e.my.offsetWidth;
+    if(!RM){
+      if(evenRound){ e.my.classList.add('atk-r'); e.opp.classList.add('atk-l'); }
+      else if(meWonRound){ e.my.classList.add('atk-r'); e.opp.classList.add('hit'); }
+      else { e.opp.classList.add('atk-l'); e.my.classList.add('hit'); }
+      if(e.imp){ e.imp.classList.remove('pop'); void e.imp.offsetWidth; e.imp.classList.add('pop'); }
+    }
+    try{ var f=fx(); if(f.punch) f.punch(!evenRound); }catch(err){}
+    setTimeout(function(){ setDamage(e.my,myW); setDamage(e.opp,oppW); },260);
+    var sch=MP._stageSyn||{my:{list:[],rounds:[]},opp:{list:[],rounds:[]}};
+    sch.my.rounds.forEach(function(rr,i){
+      if(rr===rnd.round&&sch.my.list[i]) setTimeout(function(){ synergyMoment(e.my,sch.my.list[i],'You',e.log); },520+i*260);
+    });
+    sch.opp.rounds.forEach(function(rr,i){
+      if(rr===rnd.round&&sch.opp.list[i]) setTimeout(function(){ synergyMoment(e.opp,sch.opp.list[i],'your rival',e.log); },680+i*260);
+    });
+    var isLast=idx+1>=hl.length;
+    if(isLast){
+      var method=data.result.method, stoppage=(method==='KO'||method==='TKO');
+      setTimeout(function(){
+        if(isDraw){ return; }
+        var loser=iWon?e.opp:e.my, winner=iWon?e.my:e.opp;
+        if(stoppage){
+          shatter(loser);
+          try{ var f2=fx(); if(f2.kd) f2.kd(); if(f2.shake) f2.shake(); if(f2.flash) f2.flash(); }catch(err){}
+        } else {
+          loser.classList.remove('dmg1','dmg2');
+          loser.classList.add('dmg3');
+        }
+        winner.classList.remove('dmg3');
+        winner.classList.add('winner');
+        if(iWon&&typeof window.ubConfetti==='function') window.ubConfetti(26);
+      },680);
+    }
+  }
+
+  if(typeof window.mpShowFightResult==='function'){
+    var _origResult=window.mpShowFightResult;
+    window.mpShowFightResult=function(data){
+      _origResult.apply(this,arguments);
+      try{ stageSetup(data); }catch(e){}
+    };
+  }
+  if(typeof window.mpShowNextFightRound==='function'){
+    var _origNext=window.mpShowNextFightRound;
+    window.mpShowNextFightRound=function(){
+      var data=(typeof MP!=='undefined'&&MP)?MP._fightData:null;
+      var idx=(typeof MP!=='undefined'&&MP&&MP._fightRoundIdx)||0;
+      _origNext.apply(this,arguments);
+      try{ if(data&&(data.fightHighlights||[])[idx]) stageRound(data,idx); }catch(e){}
+    };
+  }
+  if(typeof window.mpShowFightWaiting==='function'){
+    var _origWait=window.mpShowFightWaiting;
+    window.mpShowFightWaiting=function(){
+      _origWait.apply(this,arguments);
+      try{
+        var e=els();
+        if(e.stage) e.stage.classList.add('hidden');
+        if(e.my) e.my.innerHTML='';
+        if(e.opp) e.opp.innerHTML='';
+      }catch(err){}
     };
   }
 }());
