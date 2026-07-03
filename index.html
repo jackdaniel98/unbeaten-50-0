@@ -3671,6 +3671,30 @@ h2::before{
   100%{transform:translateY(112vh) rotate(680deg);opacity:0}
 }
 
+/* ---------- PvP defeat roast — split-second red flash ---------- */
+.cooked-flash{
+  position:fixed;inset:0;z-index:4650;pointer-events:none;
+  background:radial-gradient(72% 72% at 50% 45%, rgba(229,40,50,.3), transparent 75%);
+  animation:fxFlash .65s ease-out forwards;
+}
+.cooked-pop{
+  position:fixed;left:50%;top:42%;z-index:4700;
+  transform:translate(-50%,-50%) rotate(-6deg);
+  font-family:'Bebas Neue',Impact,sans-serif;
+  font-size:clamp(2.4rem,11vw,4.4rem);
+  color:#ff2e38;letter-spacing:2px;line-height:1;
+  text-align:center;white-space:nowrap;pointer-events:none;
+  text-shadow:0 4px 0 #5f0509, 0 0 34px rgba(229,40,50,.85), 0 0 90px rgba(229,40,50,.5);
+  animation:cookedIn .28s cubic-bezier(.2,1.6,.3,1);
+  transition:opacity .3s ease, transform .3s ease;
+}
+.cooked-pop.out{opacity:0;transform:translate(-50%,-50%) rotate(-6deg) scale(1.4)}
+@keyframes cookedIn{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(-6deg) scale(2.8)}
+  100%{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){.cooked-pop,.cooked-flash{animation:none}}
+
 /* ---------- Synergy unlock flash pop (~1s, centre screen) ---------- */
 .syn-unlock-pop{
   position:fixed;left:50%;top:38%;z-index:4600;
@@ -16560,10 +16584,18 @@ function mpBotRecord(elo){
   const w=Math.round(fights*rate), l=fights-w;
   return {pvpWins:w,pvpLosses:l,pvpDraws:Math.floor(Math.random()*3),pvpKos:Math.floor(w*0.3)};
 }
-function mpBotStats(elo){
-  const base=Math.min(95,Math.max(60,Math.round(elo/13)));
+function mpBotStats(elo,targetStats){
+  const targetVals=targetStats?mpGetStats().map(function(st){ return Number(targetStats[st]); }).filter(Number.isFinite):[];
+  const targetAvg=targetVals.length?Math.round(targetVals.reduce(function(a,b){return a+b;},0)/targetVals.length):0;
+  const base=targetAvg
+    ? mpClampStat(targetAvg+2+Math.floor(Math.random()*3))
+    : Math.min(95,Math.max(68,Math.round(elo/10)+4));
   const s={};
-  mpGetStats().forEach(function(st){ s[st]=mpClampStat(base+Math.floor(Math.random()*14)-5); });
+  mpGetStats().forEach(function(st){
+    const targetVal=Number(targetStats&&targetStats[st]);
+    const anchor=Number.isFinite(targetVal)?Math.max(base,targetVal+1):base;
+    s[st]=mpClampStat(anchor+Math.floor(Math.random()*9)-3);
+  });
   return s;
 }
 function mpBotTraits(){
@@ -16789,20 +16821,20 @@ async function _pvpBotAfterDraft(){
   const botCardObj2=COLLECTIBLE_CARDS.find(function(c){return c.id===botCard;})||COLLECTIBLE_CARDS[0];
   const botCardBoosts2=getCardBoosts(botCardObj2);
   const botRec=mpBotRecord(botElo);
-  const botStats=mpBotStats(botElo);
   const botName=mpBotName();
   const now=firebase.firestore.FieldValue.serverTimestamp();
   const botProfile=Object.assign({uid:botUid,displayName:botName,elo:botElo,equippedCardId:botCard},botRec);
   const doc=mpBuildMatchDoc('bot',MP.profile,botProfile,matchId,now,true);
-  const botBuild={stats:botStats,traits:mpBotTraits(),synergies:mpBotSynergies(),cardId:botCard,cardBoosts:botCardBoosts2,ovr:calcMpOvr(botStats)};
-  doc.players[botUid].draftStatus='submitted';
-  doc.players[botUid].finalBuild=botBuild;
-  doc.players[botUid].submittedAt=now;
   const myCardId=(MP.profile&&MP.profile.equippedCardId)||'cc001';
   const myCard2=COLLECTIBLE_CARDS.find(function(c){return c.id===myCardId;})||COLLECTIBLE_CARDS[0];
   const myCardBoosts2=getCardBoosts(myCard2);
   const statVals={};
   mpGetStats().forEach(function(s){ statVals[s]=typeof stats[s]==='number'?stats[s]:70; });
+  const botStats=mpBotStats(botElo,statVals);
+  const botBuild={stats:botStats,traits:mpBotTraits(),synergies:mpBotSynergies(),cardId:botCard,cardBoosts:botCardBoosts2,ovr:calcMpOvr(botStats)};
+  doc.players[botUid].draftStatus='submitted';
+  doc.players[botUid].finalBuild=botBuild;
+  doc.players[botUid].submittedAt=now;
   const myBuild={stats:statVals,traits:traits,synergies:synergies,cardId:myCardId,cardBoosts:myCardBoosts2,ovr:calcMpBuildOvr(statVals,traits,synergies)};
   doc.players[currentUser.uid].draftStatus='submitted';
   doc.players[currentUser.uid].finalBuild=myBuild;
