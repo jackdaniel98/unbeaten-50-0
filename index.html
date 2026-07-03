@@ -1610,6 +1610,28 @@ h2:first-child{margin-top:6px}
 .career-share-prize-copy strong{color:var(--gold)}
 .career-share-prize-preview{display:flex;justify-content:center;margin:0 auto 12px;max-height:50dvh;overflow:auto}
 .career-share-prize-preview .modular-card{width:min(100%,240px)!important}
+.career-share-showcase-card{
+  width:min(100%,250px);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:10px;
+  border:1px solid rgba(227,178,60,.24);
+  border-radius:12px;
+  background:linear-gradient(155deg,rgba(227,178,60,.08),rgba(5,6,8,.72));
+}
+.career-share-showcase-card img,
+.career-share-showcase-card>div[class*="mcc-rarity"]{
+  width:min(100%,190px)!important;
+  height:auto!important;
+}
+.career-share-showcase-name{
+  color:#fff;
+  font-size:.72rem;font-weight:900;text-align:center;text-transform:uppercase;letter-spacing:.05em;
+  overflow-wrap:anywhere;
+}
+.career-share-showcase-meta{
+  color:var(--gold);
+  font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;
+}
 .career-share-prize-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:12px}
 .career-share-prize-stat{min-width:0;padding:7px 5px;text-align:center;background:#050608;border:1px solid var(--line);border-radius:7px}
 .career-share-prize-stat span{display:block;color:var(--muted);font-size:.5rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
@@ -5123,7 +5145,7 @@ h2::before{
 <!-- ══════ BOTTOM NAVIGATION BAR ══════ -->
 <div class="social-footer" aria-label="UNBEATEN social links">
   <span class="social-footer-label">Follow</span>
-  <a class="social-link" href="https://x.com/50-0boxing" target="_blank" rel="noopener noreferrer" aria-label="Open UNBEATEN on X, @50-0boxing">X @50-0boxing</a>
+  <a class="social-link" href="https://x.com/50_0boxing" target="_blank" rel="noopener noreferrer" aria-label="Open UNBEATEN on X, @50_0boxing">X @50_0boxing</a>
   <a class="social-link" href="https://www.tiktok.com/@500boxing" target="_blank" rel="noopener noreferrer" aria-label="Open UNBEATEN on TikTok, @500boxing">TikTok @500boxing</a>
   <a class="social-link" href="https://www.instagram.com/unbeaten50_0/" target="_blank" rel="noopener noreferrer" aria-label="Open UNBEATEN on Instagram, @unbeaten50_0">Insta @unbeaten50_0</a>
 </div>
@@ -9908,16 +9930,18 @@ function currentCareerShareData(){
   const profile=activeCardProfile();
   data.equippedCardItems=profile.equippedCardItems;
   data.ownedCardItems=profile.ownedCardItems;
+  data.showcaseId=validCollectibleId(profile.myCardsShowcase)?profile.myCardsShowcase:'cc001';
   return data;
 }
 function careerSharePrizeCardMarkup(data){
   if(!data) return '';
-  return modularCardMarkupFrom({
-    name:data.name,
-    nickname:data.nickname,
-    equippedCardItems:data.equippedCardItems||null,
-    ownedCardItems:data.ownedCardItems||null
-  });
+  const card=COLLECTIBLE_CARDS.find(c=>c.id===(data.showcaseId||'cc001'))||COLLECTIBLE_CARDS[0];
+  const cardArt=card?_mccArtHTML(card,190):'';
+  return '<div class="career-share-showcase-card">'+
+    cardArt+
+    '<div class="career-share-showcase-name">'+htmlEscape(card?.name||'Showcase Card')+'</div>'+
+    '<div class="career-share-showcase-meta">'+htmlEscape(data.name||'Fighter')+' / '+htmlEscape(data.record||'0-0')+'</div>'+
+    '</div>';
 }
 function careerSharePrizeStatsMarkup(data){
   if(!data) return '';
@@ -9961,26 +9985,11 @@ function dismissCareerSharePrizePrompt(){
   setCareerSharePrizeCooldown();
   closeCareerSharePrizePrompt();
 }
-async function shareCareerPrizeOnX(){
+function shareCareerPrizeOnX(){
   const data=currentCareerShareData();
   if(!data){ showToast('Share Unavailable','No completed career data is available.'); return; }
   const url=gameStartShareUrl();
   const text=careerSharePrizeText(data);
-  try{
-    const blob=await renderCardShareBlob(activeCardProfile());
-    const file=new File([blob],'unbeaten-career-card.png',{type:'image/png'});
-    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-      await navigator.share({title:'UNBEATEN: 50-0 - Career Complete',text,url,files:[file]});
-      closeCareerSharePrizePrompt();
-      return;
-    }
-    saveSharedCardImage(blob);
-    if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(text+'\n'+url);
-    showToast('Card Image Saved','Your fighter card image was saved. Attach it to your X post if needed.');
-  }catch(error){
-    if(error?.name==='AbortError') return;
-    console.error(error);
-  }
   const xUrl='https://x.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url);
   const opened=window.open(xUrl,'_blank','noopener,noreferrer');
   if(!opened) window.location.href=xUrl;
@@ -11283,22 +11292,36 @@ function drawCoveredCardImage(ctx,img,x,y,width,height){
   ctx.drawImage(img,x+(width-drawWidth)/2,y+(height-drawHeight)/2,drawWidth,drawHeight);
 }
 async function renderCardShareBlob(profile=activeCardProfile()){
-  const assets=equippedCardAssets(profile), data=cardDisplayData(profile);
-  const [character]=await Promise.all([assets.character].map(item=>loadCardCanvasImage(item.asset)));
+  const data=cardDisplayData(profile);
+  const showcase=COLLECTIBLE_CARDS.find(c=>c.id===(profile.myCardsShowcase||'cc001'))||COLLECTIBLE_CARDS[0];
+  const assets=equippedCardAssets(profile);
+  const artSrc=showcase?.image||assets.character.asset;
+  const art=await loadCardCanvasImage(artSrc);
   if(document.fonts?.ready) await document.fonts.ready;
   const canvas=document.createElement('canvas'); canvas.width=1006; canvas.height=1564;
   const ctx=canvas.getContext('2d');
-  drawContainedCardImage(ctx,character,0,110,1006,1080);
+  const grad=ctx.createLinearGradient(0,0,0,1564);
+  grad.addColorStop(0,'#111318');
+  grad.addColorStop(.62,'#050608');
+  grad.addColorStop(1,'#07080b');
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,0,1006,1564);
+  ctx.strokeStyle='rgba(227,178,60,.42)';
+  ctx.lineWidth=12;
+  ctx.strokeRect(42,42,922,1480);
+  drawContainedCardImage(ctx,art,150,95,706,1060);
   ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.shadowColor='rgba(0,0,0,.9)'; ctx.shadowBlur=7;
-  ctx.fillStyle='#f6d768'; ctx.font='72px "Bebas Neue", Impact, sans-serif'; ctx.fillText(String(data.ovr),175,1290);
-  ctx.fillStyle='#fff'; ctx.font='900 20px Inter, sans-serif'; ctx.fillText('OVR',175,1337);
-  ctx.fillStyle='#fff'; ctx.font='42px "Bebas Neue", Impact, sans-serif'; ctx.fillText(data.name.toUpperCase().slice(0,24),615,1275);
-  ctx.fillStyle='#d8b77a'; ctx.font='900 18px Inter, sans-serif'; ctx.fillText(data.nickname.toUpperCase().slice(0,28),615,1320);
+  ctx.fillStyle='#f6d768'; ctx.font='900 22px Inter, sans-serif'; ctx.fillText('SHOWCASE CARD',503,1190);
+  ctx.fillStyle='#fff'; ctx.font='54px "Bebas Neue", Impact, sans-serif'; ctx.fillText((showcase?.name||'UNBEATEN').toUpperCase().slice(0,26),503,1244);
+  ctx.fillStyle='#f6d768'; ctx.font='72px "Bebas Neue", Impact, sans-serif'; ctx.fillText(String(data.ovr),175,1336);
+  ctx.fillStyle='#fff'; ctx.font='900 20px Inter, sans-serif'; ctx.fillText('OVR',175,1383);
+  ctx.fillStyle='#fff'; ctx.font='42px "Bebas Neue", Impact, sans-serif'; ctx.fillText(data.name.toUpperCase().slice(0,24),615,1320);
+  ctx.fillStyle='#d8b77a'; ctx.font='900 18px Inter, sans-serif'; ctx.fillText(data.nickname.toUpperCase().slice(0,28),615,1365);
   const startX=350, step=102;
   data.stats.forEach((stat,index)=>{
     const x=startX+(step*index);
-    ctx.fillStyle='#fff'; ctx.font='900 19px Inter, sans-serif'; ctx.fillText(String(stat.value).slice(0,8),x,1421);
-    ctx.fillStyle='#d6b56f'; ctx.font='900 11px Inter, sans-serif'; ctx.fillText(stat.label.toUpperCase(),x,1452);
+    ctx.fillStyle='#fff'; ctx.font='900 19px Inter, sans-serif'; ctx.fillText(String(stat.value).slice(0,8),x,1442);
+    ctx.fillStyle='#d6b56f'; ctx.font='900 11px Inter, sans-serif'; ctx.fillText(stat.label.toUpperCase(),x,1473);
   });
   return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Card image could not be created.')),'image/png'));
 }
