@@ -3693,6 +3693,94 @@ h2::before{
 .syn-card-vs::before,.synergy-vs::before{content:'🥊 ';font-size:.62rem}
 
 /* ============================================================
+   💰 PACK STORE — premium facelift
+   Real pack art with tier glows, a glaze sweep masked to the
+   pack silhouette, and value ribbons. Falls back to the orb
+   if an image is missing.
+============================================================ */
+.pack-progress-line{
+  text-align:center;font-size:.68rem;color:var(--text-dim);
+  padding:2px 0 10px;letter-spacing:.02em;
+}
+.pack-progress-line strong{color:var(--gold);font-weight:800}
+.card-pack{align-items:center;padding:15px 14px}
+.card-pack+.card-pack{margin-top:12px}
+.card-pack.tier-starter{
+  border-color:rgba(168,85,247,.4);
+  background:linear-gradient(135deg,rgba(168,85,247,.1) 0%,var(--panel) 62%);
+  box-shadow:var(--shadow-card),0 0 26px -14px rgba(168,85,247,.5);
+}
+.card-pack.tier-collector{
+  border-color:rgba(227,178,60,.5);
+  background:linear-gradient(135deg,rgba(227,178,60,.13) 0%,rgba(168,85,247,.05) 40%,var(--panel) 70%);
+  box-shadow:var(--shadow-card),0 0 30px -12px rgba(227,178,60,.55);
+}
+.card-pack.tier-bundle{
+  border-color:rgba(227,178,60,.55);
+  background:linear-gradient(135deg,rgba(227,178,60,.12) 0%,rgba(54,196,126,.07) 45%,var(--panel) 72%);
+  box-shadow:var(--shadow-card),0 0 34px -12px rgba(227,178,60,.65);
+}
+/* art column — portrait pack instead of the little square */
+.card-pack .card-pack-art{
+  flex:0 0 88px;width:88px;height:126px;border-radius:10px;
+}
+.card-pack-art.has-img{
+  background:transparent;border:none;overflow:visible;
+}
+.card-pack-art.has-img .card-pack-orb-mini,
+.card-pack-art.has-img .card-pack-q{display:none}
+.card-pack-img{
+  position:relative;z-index:2;width:100%;height:100%;
+  object-fit:contain;display:block;
+}
+/* tier glow — pulsing halo behind the pack */
+.card-pack-art.has-img::before{
+  content:'';position:absolute;inset:-14%;z-index:0;pointer-events:none;
+  background:radial-gradient(50% 50% at 50% 52%, var(--pk-glow,rgba(227,178,60,.4)), transparent 72%);
+  animation:packPulse 2.9s ease-in-out infinite;
+}
+.tier-starter .card-pack-art{--pk-glow:rgba(168,85,247,.45)}
+.tier-collector .card-pack-art{--pk-glow:rgba(190,120,255,.5)}
+.tier-bundle .card-pack-art{--pk-glow:rgba(227,178,60,.55)}
+.tier-starter .card-pack-img{filter:drop-shadow(0 8px 14px rgba(0,0,0,.65)) drop-shadow(0 0 12px rgba(168,85,247,.45))}
+.tier-collector .card-pack-img{filter:drop-shadow(0 8px 14px rgba(0,0,0,.65)) drop-shadow(0 0 12px rgba(200,130,255,.5))}
+.tier-bundle .card-pack-img{filter:drop-shadow(0 8px 14px rgba(0,0,0,.65)) drop-shadow(0 0 14px rgba(227,178,60,.6))}
+@keyframes packPulse{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+/* glaze — light sweep clipped to the pack shape by its own image mask */
+.pack-glaze{
+  position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-position:center;mask-position:center;
+}
+.pack-glaze::after{
+  content:'';position:absolute;top:-30%;bottom:-30%;left:-90%;width:55%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.45) 50%,transparent);
+  transform:skewX(-18deg);
+  animation:btnShine 4.8s cubic-bezier(.4,0,.2,1) infinite;
+}
+.tier-collector .pack-glaze::after{animation-delay:.9s}
+.tier-bundle .pack-glaze::after{animation-delay:1.8s}
+/* value ribbons */
+.pack-ribbon{
+  position:absolute;top:12px;right:-30px;z-index:4;
+  transform:rotate(35deg);
+  padding:3px 34px;
+  font-size:.5rem;font-weight:900;letter-spacing:.1em;
+  background:linear-gradient(180deg,#f6dd7f,#c8922a);color:#16120a;
+  box-shadow:0 2px 10px rgba(0,0,0,.5);
+  pointer-events:none;
+}
+.tier-bundle .pack-ribbon{background:linear-gradient(180deg,#8ee8b8,#2fae6a);color:#06231a}
+@media(hover:hover) and (pointer:fine){
+  .card-pack{transition:transform .16s var(--ease), box-shadow .2s var(--ease)}
+  .card-pack:hover{transform:translateY(-2px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .card-pack-art.has-img::before,.pack-glaze::after{animation:none !important}
+}
+
+/* ============================================================
    🥊 PVP CARD FIGHT STAGE
    Your card vs their card, live during the round-by-round sim.
    Cards crack and shed pieces as HP drops; synergy moments pop;
@@ -10990,47 +11078,39 @@ function closePackModal(){ const m=$('pack-modal'); if(m) m.classList.add('hidde
 function renderPackPanel(){
   const panel=$('card-pack-panel'); if(!panel) return;
   const profile=activeCardProfile(), bal=safeMoney(profile.playMoney);
-  const canAffordStarter=bal>=COLLECTOR_PACK_STARTER_COST;
-  const canAffordColl=bal>=COLLECTOR_PACK_COST;
-  const canAffordTen=bal>=COLLECTOR_PACK_TEN_COST;
   const ownedCount=collectibleOwnedIdsFromCounts(createMyCardCounts(profile.myCardCounts, profile.myCards)).length;
   const total=COLLECTIBLE_CARDS.length;
-  const starterCostText=COLLECTOR_PACK_STARTER_COST.toLocaleString();
   const oddsHtml=[
     '<span class="pack-odd rarity-common">Low # common</span>',
     '<span class="pack-odd rarity-uncommon">Mid # uncommon</span>',
     '<span class="pack-odd rarity-rare">High # rare</span>',
     '<span class="pack-odd rarity-legendary">Top # chase</span>'
   ].join('');
-  const progressLine='<div class="pack-refund">Collection progress: '+ownedCount+' / '+total+'. Duplicates are tracked for future rewards.</div>';
+  const packs=[
+    {tier:'starter',name:'Starter Pack',desc:'1 collectible card. The cheapest door into the collection.',cost:COLLECTOR_PACK_STARTER_COST,fn:'openCollectorPackStarter()',img:'assets/pack/pack_starter.png',fallback:'&#x1F4B0;',ribbon:'',btnLabel:'Open Pack'},
+    {tier:'collector',name:'Collector Pack',desc:'1 finished collectible card with the full reveal.',cost:COLLECTOR_PACK_COST,fn:'openCollectorPack()',img:'assets/pack/pack_collector.png',fallback:'&#x2605;',ribbon:'MOST POPULAR',btnLabel:'Open Pack'},
+    {tier:'bundle',name:'10&#x2011;Pack Bundle',desc:'Open 10 Collector Packs back to back, each with the full animation.',cost:COLLECTOR_PACK_TEN_COST,fn:'openCollectorPackTen()',img:'assets/pack/pack_bundle.png',fallback:'&#x2605;&#x2605;&#x2605;',ribbon:'BEST VALUE',btnLabel:'Open 10 Packs'}
+  ];
   panel.innerHTML=
-    '<div class="card-pack">'
-    +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">&#x1F4B0;</span></div>'
-    +'<div class="card-pack-info"><strong>Starter Pack</strong><span>1 collectible card for just '+starterCostText+' PM. Great for getting started.</span>'
-    +'<div class="pack-odds">'+oddsHtml+'</div>'
-    +progressLine
-    +'<button class="btn gold" style="margin-top:9px" '+(canAffordStarter?'':'disabled')+' onclick="openCollectorPackStarter()">Open Pack \u2022 '+starterCostText+' PM</button>'
-    +(canAffordStarter?'':'<div class="pack-need-more">Need '+Math.max(0,COLLECTOR_PACK_STARTER_COST-bal).toLocaleString()+' more PM</div>')
-    +'</div></div>'
-    +'<div class="card-pack" style="margin-top:12px">'
-    +'<div class="card-pack-art"><div class="card-pack-orb-mini"></div><span class="card-pack-q">&#x2605;</span></div>'
-    +'<div class="card-pack-info"><strong>Collector Pack</strong><span>1 finished collectible card.</span>'
-    +'<div class="pack-odds">'+oddsHtml+'</div>'
-    +progressLine
-    +'<button class="btn gold" style="margin-top:9px" '+(canAffordColl?'':'disabled')+' onclick="openCollectorPack()">Open Pack \u2022 2,000 PM</button>'
-    +(canAffordColl?'':'<div class="pack-need-more">Need '+(COLLECTOR_PACK_COST-bal).toLocaleString()+' more PM</div>')
-    +'</div></div>'
-    +'<div class="card-pack" style="margin-top:12px">'
-    +'<div class="card-pack-art" style="background:linear-gradient(135deg,#16140e,#201a10)">'
-      +'<div class="card-pack-orb-mini"></div>'
-      +'<span class="card-pack-q" style="font-size:1.6rem;letter-spacing:-2px">&#x2605;&#x2605;&#x2605;</span>'
-    +'</div>'
-    +'<div class="card-pack-info"><strong>10&#x2011;Pack Bundle</strong>'
-    +'<span>Open 10 Collector Packs one by one, each with the full animation. Best value for collectors.</span>'
-    +'<div class="pack-odds">'+oddsHtml+'</div>'
-    +'<button class="btn gold" style="margin-top:9px" '+(canAffordTen?'':'disabled')+' onclick="openCollectorPackTen()">Open 10 Packs \u2022 20,000 PM</button>'
-    +(canAffordTen?'':'<div class="pack-need-more">Need '+(COLLECTOR_PACK_TEN_COST-bal).toLocaleString()+' more PM</div>')
-    +'</div></div>';
+    '<div class="pack-progress-line">Collection <strong>'+ownedCount+' / '+total+'</strong> &middot; duplicates tracked for future rewards</div>'
+    +packs.map(p=>{
+      const afford=bal>=p.cost, costText=p.cost.toLocaleString();
+      return '<div class="card-pack tier-'+p.tier+'">'
+        +(p.ribbon?'<div class="pack-ribbon">'+p.ribbon+'</div>':'')
+        +'<div class="card-pack-art">'
+          +'<div class="card-pack-orb-mini"></div>'
+          +'<span class="card-pack-q">'+p.fallback+'</span>'
+          +'<img class="card-pack-img" src="'+p.img+'" alt="'+p.name.replace(/&#x2011;/g,'-')+'" '
+            +'onload="this.closest(\'.card-pack-art\').classList.add(\'has-img\')" '
+            +'onerror="this.remove()">'
+          +'<div class="pack-glaze" style="-webkit-mask-image:url(\''+p.img+'\');mask-image:url(\''+p.img+'\')"></div>'
+        +'</div>'
+        +'<div class="card-pack-info"><strong>'+p.name+'</strong><span>'+p.desc+'</span>'
+        +'<div class="pack-odds">'+oddsHtml+'</div>'
+        +'<button class="btn gold" style="margin-top:9px" '+(afford?'':'disabled')+' onclick="'+p.fn+'">'+p.btnLabel+' \u2022 '+costText+' PM</button>'
+        +(afford?'':'<div class="pack-need-more">Need '+Math.max(0,p.cost-bal).toLocaleString()+' more PM</div>')
+        +'</div></div>';
+    }).join('');
 }
 try{ if(typeof window!=='undefined'){ window.openArtPack=openArtPack; window.closePackModal=closePackModal; window.rollPackItem=rollPackItem; window.getPackPool=getPackPool; } }catch(e){}
 
