@@ -15334,7 +15334,7 @@ function mpCleanup(){
     else localStorage.removeItem(KEYS.career);
   }
   console.log('[PVP_FLOW] mpCleanup: resetting all MP state');
-  Object.assign(MP,{mode:null,isBot:false,matchId:null,matchData:null,
+  Object.assign(MP,{mode:null,isBot:false,matchId:null,matchData:null,_localMatchRef:null,
     opponent:null,myBuild:null,draftState:null,
     searchInterval:null,draftTimerInterval:null,lobbyCode:null,searchBusy:false,_handledPhase:null,
     pvpBotMode:false,_pvpBotCareerBackup:undefined,
@@ -15853,18 +15853,41 @@ function mpShowReveal(data){
 // ══════════════════════════════════════════════════════════════════════════
 async function startMpFight(){
   if(!MP.matchId||!MP.myBuild||!currentUser) return;
-  const matchRef=db.collection('multiplayer_matches').doc(MP.matchId);
+  const isLocalBot=!!(MP.isBot&&MP._localMatchRef);
+  const matchRef=isLocalBot?MP._localMatchRef:db.collection('multiplayer_matches').doc(MP.matchId);
   let iAmOwner=false;
-  try{
-    iAmOwner=await db.runTransaction(async function(txn){
-      const s=await txn.get(matchRef);
-      if(!s.exists) return false;
-      const d=s.data();
-      if(d.simulationOwnerUid||d.phase==='simulating'||d.phase==='complete') return false;
-      txn.update(matchRef,{phase:'simulating',simulationOwnerUid:currentUser.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-      return true;
-    });
-  }catch(e){ console.warn('[MP] sim claim:',e); }
+  if(isLocalBot){
+    // Bot matches live entirely in memory — no Firestore, no quota, no race
+    const s=await matchRef.get();
+    const d=s.exists?s.data():null;
+    if(d&&!d.simulationOwnerUid&&d.phase!=='simulating'&&d.phase!=='complete'){
+      await matchRef.update({phase:'simulating',simulationOwnerUid:currentUser.uid});
+      iAmOwner=true;
+    }
+  } else {
+    try{
+      iAmOwner=await db.runTransaction(async function(txn){
+        const s=await txn.get(matchRef);
+        if(!s.exists) return false;
+        const d=s.data();
+        if(d.simulationOwnerUid||d.phase==='simulating'||d.phase==='complete') return false;
+        txn.update(matchRef,{phase:'simulating',simulationOwnerUid:currentUser.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+        return true;
+      });
+    }catch(e){
+      // Do NOT fake a "Simulating..." screen on a failed claim — tell the truth.
+      console.warn('[MP] sim claim:',e);
+      const msg=String((e&&(e.code||e.message))||'');
+      const quota=msg.indexOf('resource-exhausted')>=0||msg.indexOf('Quota')>=0;
+      showToast&&showToast(
+        quota?'Server Limit Reached':'Connection Issue',
+        quota?'The game\'s daily server quota is used up — online PvP is paused until the daily reset. Bot fights still work!'
+             :'Could not start the fight. Check your connection and press Sim Fight again.',
+        'warning');
+      screen('mp-reveal');
+      return;
+    }
+  }
   if(!iAmOwner){ mpShowFightWaiting(); return; }
   // Generate fight as owner
   const data=MP.matchData;
@@ -16386,24 +16409,38 @@ function mpRenderResult(data){
 // ══════════════════════════════════════════════════════════════════════════
 async function mpApplyEloAndRewards(data){
   if(!data||!data.result||!currentUser) return;
-  const matchRef=db.collection('multiplayer_matches').doc(data.matchId);
   const myUid=currentUser.uid;
+  const isLocalBot=!!(MP.isBot&&MP._localMatchRef&&MP.matchId===data.matchId);
   let canApply=false;
-  try{
-    canApply=await db.runTransaction(async function(txn){
-      const s=await txn.get(matchRef);
-      if(!s.exists) return false;
-      const d=s.data();
-      const applied=Array.isArray(d.rewardAppliedUids)?d.rewardAppliedUids:[];
-      if(applied.includes(myUid)) return false;
-      txn.update(matchRef,{
-        rewardAppliedUids:firebase.firestore.FieldValue.arrayUnion(myUid),
-        rewardsApplied:true,
-        eloApplied:true,
+  if(isLocalBot){
+    // Local bot match: claim the reward on the in-memory doc (still once-only)
+    try{
+      const s=await MP._localMatchRef.get();
+      const d=s.exists?s.data():null;
+      const applied=(d&&Array.isArray(d.rewardAppliedUids))?d.rewardAppliedUids:[];
+      if(d&&!applied.includes(myUid)){
+        await MP._localMatchRef.update({rewardAppliedUids:applied.concat([myUid]),rewardsApplied:true,eloApplied:true});
+        canApply=true;
+      }
+    }catch(e){ console.warn('[MP] local eloApply claim:',e); }
+  } else {
+    const matchRef=db.collection('multiplayer_matches').doc(data.matchId);
+    try{
+      canApply=await db.runTransaction(async function(txn){
+        const s=await txn.get(matchRef);
+        if(!s.exists) return false;
+        const d=s.data();
+        const applied=Array.isArray(d.rewardAppliedUids)?d.rewardAppliedUids:[];
+        if(applied.includes(myUid)) return false;
+        txn.update(matchRef,{
+          rewardAppliedUids:firebase.firestore.FieldValue.arrayUnion(myUid),
+          rewardsApplied:true,
+          eloApplied:true,
+        });
+        return true;
       });
-      return true;
-    });
-  }catch(e){ console.warn('[MP] eloApply claim:',e); }
+    }catch(e){ console.warn('[MP] eloApply claim:',e); }
+  }
   if(!canApply) return;
   try{ await ensureMpProfile(); }
   catch(e){ console.warn('[MP] ensure profile before reward:',e); }
@@ -16904,6 +16941,25 @@ async function startPvpBotDraft(){
   if(advBtn){ advBtn.textContent='Continue to PvP Match →'; }
 }
 
+// In-memory match document for bot fights — same interface as a Firestore
+// doc ref (set/update/get/onSnapshot) so the whole match pipeline works
+// unchanged, but with zero Firestore traffic. Bot fights work offline and
+// keep working when the daily Firestore quota is exhausted.
+function mpLocalMatchRef(id){
+  let data=null;
+  const listeners=[];
+  function clean(v){ return JSON.parse(JSON.stringify(v,function(k,val){ return (val&&typeof val==='object'&&val._methodName)?Date.now():val; })); }
+  function snap(){ return {exists:!!data,id:id,data:function(){ return clean(data); }}; }
+  function fire(){ setTimeout(function(){ listeners.slice().forEach(function(fn){ try{ fn(snap()); }catch(e){ console.warn('[MP] local snap listener:',e); } }); },0); }
+  return {
+    id:id,
+    set:function(d){ data=clean(d); fire(); return Promise.resolve(); },
+    update:function(p){ data=data||{}; Object.keys(p).forEach(function(k){ data[k]=clean(p[k]); }); fire(); return Promise.resolve(); },
+    get:function(){ return Promise.resolve(snap()); },
+    onSnapshot:function(fn){ listeners.push(fn); if(data) fire(); return function(){ const i=listeners.indexOf(fn); if(i>=0) listeners.splice(i,1); }; }
+  };
+}
+
 async function _pvpBotAfterDraft(){
   const stats=Object.assign({},S.player&&S.player.Stats);
   const traits=((S.player&&S.player.Traits)||[]).map(mpPublicTrait);
@@ -16948,14 +17004,17 @@ async function _pvpBotAfterDraft(){
   MP.myBuild=myBuild;
   MP.mode='bot';
   try{
-    await db.collection('multiplayer_matches').doc(matchId).set(doc);
-    // Set up state and listener directly — skip the extra Firestore read in mpEnterMatch
+    // Bot matches are fully local — no Firestore write, no quota burn,
+    // and they keep working even when the daily quota is exhausted.
+    const localRef=mpLocalMatchRef(matchId);
+    await localRef.set(doc);
     if(MP.matchUnsub){ MP.matchUnsub(); MP.matchUnsub=null; }
     MP.matchId=matchId;
     MP.matchData=doc;
     MP.isBot=true;
+    MP._localMatchRef=localRef;
     mpSetOpponent(doc);
-    MP.matchUnsub=db.collection('multiplayer_matches').doc(matchId).onSnapshot(function(s2){
+    MP.matchUnsub=localRef.onSnapshot(function(s2){
       if(!s2.exists) return;
       MP.matchData=s2.data();
       mpSetOpponent(MP.matchData);
