@@ -3612,6 +3612,71 @@ h2::before{
 }
 .syn-card-vs::before,.synergy-vs::before{content:'🥊 ';font-size:.62rem}
 
+/* ============================================================
+   🖥️ RESPONSIVE PRESENTATION LAYER
+   Mobile keeps the exact current look. Tablets/desktops get a
+   wider stage, roomier grids, arena spotlights and hover feel.
+============================================================ */
+
+/* ── Tablet & up: widen the stage, open up the grids ── */
+@media(min-width:768px){
+  body{padding:28px 24px;align-items:center}
+  .app{
+    max-width:640px;
+    min-height:min(920px, calc(100dvh - 56px));
+    border-radius:28px;
+  }
+  .screen{padding:24px 28px 36px}
+  header{padding:24px 20px 18px}
+  .menu-feature-grid{grid-template-columns:repeat(3,1fr)}
+  .quad{grid-template-columns:repeat(4,1fr)}
+  .mcc-grid{grid-template-columns:repeat(4,1fr)}
+  .card-store-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .retired-grid{grid-template-columns:1fr 1fr}
+  .log{max-height:440px;min-height:320px}
+  .hub-card-hero .modular-card{width:min(100%,320px)!important}
+}
+
+/* ── Desktop: arena spotlights around the stage ── */
+@media(min-width:1100px){
+  .app{
+    max-width:680px;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.55),
+      0 40px 120px -32px rgba(0,0,0,.95),
+      0 0 160px -40px rgba(227,178,60,.28);
+  }
+  body::after{
+    content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      linear-gradient(115deg, transparent 40%, rgba(227,178,60,.045) 50%, transparent 60%),
+      linear-gradient(-115deg, transparent 40%, rgba(227,178,60,.045) 50%, transparent 60%),
+      radial-gradient(55% 30% at 50% 102%, rgba(227,178,60,.07), transparent 70%),
+      radial-gradient(40% 20% at 8% 0%, rgba(91,141,239,.05), transparent 75%),
+      radial-gradient(40% 20% at 92% 0%, rgba(91,141,239,.05), transparent 75%);
+  }
+}
+
+/* ── Pointer-fine devices: real hover feedback ── */
+@media(hover:hover) and (pointer:fine){
+  .mode-card,.draft-btn,.leaderboard-card-button,.mp-draft-option,.syn-pick-card,
+  .stat-card,.mcc-cell,.card-store-item,.trait-pill,.mp-mode-card{
+    transition:transform .16s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s var(--ease);
+  }
+  .mode-card:hover,.leaderboard-card-button:hover,.mp-draft-option:hover,
+  .syn-pick-card:hover,.card-store-item:hover,.mp-mode-card:hover{
+    transform:translateY(-2px);
+    border-color:rgba(227,178,60,.42);
+    box-shadow:0 10px 28px -14px rgba(0,0,0,.7), 0 0 22px -12px rgba(227,178,60,.4);
+  }
+  .draft-btn:not(:disabled):hover{transform:translateY(-2px);border-color:rgba(227,178,60,.42)}
+  .stat-card:hover,.trait-pill:hover{border-color:var(--line-2)}
+  .mcc-cell:hover{transform:translateY(-2px)}
+  .app-nav-item:hover{color:var(--text-dim)}
+  .app-nav-item.active:hover{color:var(--gold)}
+  .belt:hover,.tag:hover{border-color:var(--line-2)}
+}
+
 /* ---------- Reduced motion — calm everything ---------- */
 @media(prefers-reduced-motion:reduce){
   body::before,header::after,#fight-screen .vs,.record-badge.unbeaten,
