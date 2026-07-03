@@ -13,7 +13,7 @@
 // CACHE_NAME only needs bumping to force-flush old storage — regular
 // content deploys are picked up automatically by the strategies above.
 
-const CACHE_NAME = 'unbeaten-50-0-v9';
+const CACHE_NAME = 'unbeaten-50-0-v10';
 
 // Files to pre-cache immediately on install
 const PRECACHE_URLS = [

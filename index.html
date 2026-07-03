@@ -16580,7 +16580,7 @@ async function createMpInviteCode(){
     });
     if(hs){ hs.innerText=''; hs.className='lobby-status-msg muted'; }
     let creatingFriendMatch=false;
-    MP.lobbyUnsub=db.collection('pvp_lobbies').doc(code).onSnapshot(async function(snap){
+    const lobbyWatchUnsub=db.collection('pvp_lobbies').doc(code).onSnapshot(async function(snap){
       if(!snap.exists||MP.matchId) return;
       const lobby=snap.data();
       if(lobby.status==='join_requested'&&lobby.guestUid&&lobby.hostUid===currentUser.uid&&!creatingFriendMatch){
@@ -16600,6 +16600,19 @@ async function createMpInviteCode(){
       console.warn('[MP] lobby listener:',e);
       if(hs){ hs.innerText='Connection issue. Try generating a new code.'; hs.className='lobby-status-msg error'; }
     });
+    const directMatchUnsub=db.collection('multiplayer_matches').doc(_friendlyMatchIdFromCode(code)).onSnapshot(async function(snap){
+      if(!snap.exists||MP.matchId) return;
+      const match=snap.data();
+      if(match&&match.hostUid===currentUser.uid&&match.lobbyCode===code){
+        if(hs){ hs.innerText='Friend joined! Loading match...'; hs.className='lobby-status-msg ok'; }
+        if(MP.lobbyUnsub){ MP.lobbyUnsub(); MP.lobbyUnsub=null; }
+        console.log('[PVP_FLOW] host direct friend match ready. matchId='+snap.id+' uid='+(currentUser&&currentUser.uid));
+        await mpEnterMatch(snap.id);
+      }
+    },function(e){
+      console.warn('[MP] direct friend match listener:',e);
+    });
+    MP.lobbyUnsub=function(){ lobbyWatchUnsub(); directMatchUnsub(); };
   }catch(e){
     console.error('[MP] createLobby:',e);
     const hs=$('lobby-host-status');
@@ -16621,38 +16634,40 @@ async function joinMpByCode(){
     await ensureMpProfile();
     MP.mode='friendly'; MP.isBot=false;
     const now=firebase.firestore.FieldValue.serverTimestamp();
+    const matchId=_friendlyMatchIdFromCode(code);
     const lobbyRef=db.collection('pvp_lobbies').doc(code);
+    const matchRef=db.collection('multiplayer_matches').doc(matchId);
     const result=await db.runTransaction(async function(txn){
       const snap=await txn.get(lobbyRef);
+      const matchSnap=await txn.get(matchRef);
       if(!snap.exists) return 'not_found';
       const lobby=snap.data();
       if(lobby.createdAt){
         try{ if(Date.now()-lobby.createdAt.toMillis()>20*60*1000) return 'expired'; }catch(_){}
       }
+      if(matchSnap.exists){
+        const existingMatch=matchSnap.data();
+        const order=existingMatch&&existingMatch.playerOrder||[];
+        if(order.indexOf(currentUser.uid)!==-1) return matchId;
+        return 'full';
+      }
+      const canReuseJoinRequest=lobby.status==='join_requested'&&lobby.guestUid===currentUser.uid;
       if(lobby.status==='matched'&&lobby.matchId){
         if(lobby.guestUid===currentUser.uid||lobby.hostUid===currentUser.uid) return lobby.matchId;
         return 'full';
       }
-      if(lobby.status==='join_requested') return lobby.guestUid===currentUser.uid?'requested':'full';
+      if(lobby.status==='join_requested'&&lobby.guestUid&&lobby.guestUid!==currentUser.uid) return 'full';
       if(lobby.status==='full') return 'full';
       if(lobby.status==='cancelled'||lobby.status==='expired') return 'expired';
-      if(lobby.status!=='waiting') return 'not_found';
+      if(lobby.status!=='waiting'&&!canReuseJoinRequest) return 'not_found';
       if(lobby.hostUid===currentUser.uid) return 'self';
       const guestEntry={uid:currentUser.uid,displayName:MP.profile.displayName||'Boxer',elo:MP.profile.elo||MP_STARTING_ELO,equippedCardId:MP.profile.equippedCardId||'cc001',pvpWins:MP.profile.pvpWins||0,pvpLosses:MP.profile.pvpLosses||0,pvpDraws:MP.profile.pvpDraws||0,pvpKos:MP.profile.pvpKos||0};
-      txn.update(lobbyRef,{
-        status:'join_requested',
-        guestUid:guestEntry.uid,
-        guestName:guestEntry.displayName,
-        guestCardId:guestEntry.equippedCardId,
-        guestElo:guestEntry.elo,
-        guestWins:guestEntry.pvpWins,
-        guestLosses:guestEntry.pvpLosses,
-        guestDraws:guestEntry.pvpDraws,
-        guestKos:guestEntry.pvpKos,
-        guestJoinedAt:now,
-        updatedAt:now,
-      });
-      return 'requested';
+      const hostEntry=_friendlyLobbyPlayerFromHost(lobby);
+      const friendlyDoc=mpBuildMatchDoc('friendly',hostEntry,guestEntry,matchId,now,false);
+      friendlyDoc.hostUid=lobby.hostUid;
+      friendlyDoc.lobbyCode=code;
+      txn.set(matchRef,friendlyDoc);
+      return matchId;
     });
     if(result==='not_found'){ _jErr('Lobby not found. Check the code and try again.'); return; }
     if(result==='full'){ _jErr('This lobby already has two players.'); return; }
@@ -16661,6 +16676,7 @@ async function joinMpByCode(){
     if(result&&result!=='requested'){
       _jOk('Joined! Loading match...');
       console.log('[PVP_FLOW] joinMpByCode: existing match ready. matchId='+result+' uid='+currentUser.uid);
+      _markFriendlyLobbyMatched(code,result);
       await mpEnterMatch(result);
       return;
     }
@@ -16668,7 +16684,7 @@ async function joinMpByCode(){
     console.log('[PVP_FLOW] joinMpByCode: join requested. code='+code+' uid='+currentUser.uid);
     _watchJoinedFriendlyLobby(code,_jOk,_jErr);
   }catch(e){
-    _jErr('Error joining lobby. Try again.');
+    _jErr(_friendlyJoinErrorMessage(e));
     console.error('[PVP_FLOW] joinByCode error:',e);
   }
 }
@@ -16676,6 +16692,34 @@ async function joinMpByCode(){
 // ══════════════════════════════════════════════════════════════════════════
 // LOBBY / INVITE HELPERS
 // ══════════════════════════════════════════════════════════════════════════
+function _friendlyMatchIdFromCode(code){
+  return 'friend_'+String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,12);
+}
+function _friendlyJoinErrorMessage(e){
+  const code=e&&e.code?String(e.code):'';
+  if(code.indexOf('permission-denied')!==-1) return 'Lobby permissions blocked. Update Firebase rules and try again.';
+  if(code.indexOf('unavailable')!==-1) return 'Connection issue. Try again in a moment.';
+  if(code.indexOf('failed-precondition')!==-1) return 'Lobby setup needs an index/rules update.';
+  return 'Error joining lobby. Try again.';
+}
+function _markFriendlyLobbyMatched(code,matchId){
+  if(!code||!matchId||!currentUser||!MP.profile) return;
+  db.collection('pvp_lobbies').doc(code).update({
+    status:'matched',
+    matchId:matchId,
+    guestUid:currentUser.uid,
+    guestName:MP.profile.displayName||'Boxer',
+    guestCardId:MP.profile.equippedCardId||'cc001',
+    guestElo:MP.profile.elo||MP_STARTING_ELO,
+    guestWins:MP.profile.pvpWins||0,
+    guestLosses:MP.profile.pvpLosses||0,
+    guestDraws:MP.profile.pvpDraws||0,
+    guestKos:MP.profile.pvpKos||0,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+  }).catch(function(e){
+    console.warn('[MP] lobby matched marker failed; direct match listener will continue:',e);
+  });
+}
 function _friendlyLobbyPlayerFromGuest(lobby){
   return {
     uid:lobby.guestUid,
