@@ -3591,6 +3591,27 @@ h2::before{
   100%{transform:translateY(112vh) rotate(680deg);opacity:0}
 }
 
+/* ---------- Fought-pair synergy rarities ---------- */
+.syn-rarity-chip{
+  display:inline-block;font-size:.52rem;font-weight:900;letter-spacing:.1em;
+  text-transform:uppercase;padding:2px 8px;border-radius:999px;
+  border:1px solid var(--line);margin-right:6px;flex-shrink:0;
+}
+.syn-rarity-chip.rare{color:var(--blue);background:rgba(91,141,239,.1);border-color:rgba(91,141,239,.38)}
+.syn-rarity-chip.epic{color:#d5a6ff;background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.42)}
+.syn-rarity-chip.legendary{color:var(--gold);background:var(--gold-soft);border-color:rgba(227,178,60,.5);text-shadow:0 0 8px rgba(227,178,60,.4)}
+.syn-pick-card.syn-rarity-rare{border-color:rgba(91,141,239,.35)}
+.syn-pick-card.syn-rarity-epic{border-color:rgba(168,85,247,.42)}
+.syn-pick-card.syn-rarity-legendary{
+  border-color:rgba(227,178,60,.55);
+  box-shadow:0 0 26px -10px rgba(227,178,60,.5), var(--shadow-card);
+}
+.syn-card-vs,.synergy-vs{
+  font-size:.6rem;font-weight:800;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:.06em;margin:2px 0 4px;
+}
+.syn-card-vs::before,.synergy-vs::before{content:'🥊 ';font-size:.62rem}
+
 /* ---------- Reduced motion — calm everything ---------- */
 @media(prefers-reduced-motion:reduce){
   body::before,header::after,#fight-screen .vs,.record-badge.unbeaten,
@@ -11563,7 +11584,7 @@ function simulateCreationDraftDistribution(count){ count=count||10000; const eli
 try{ if(typeof window!=='undefined'){ window.simulateCreationDraftDistribution=simulateCreationDraftDistribution; window.validateCreationFighterPool=validateCreationFighterPool; window.getEligibleCreationFighterPool=getEligibleCreationFighterPool; } }catch(e){}
 function perfectChance(l){ const avg=avgLegend(l), elite=STATS.filter(st=>l[st]>=97).length; let c=.02; if(avg>=95) c+=.06; if(elite>=3) c+=.05; if((l.Pool||'standard')==='crossover') c+=.03; return Math.random()<clamp(c,.02,.16); }
 function pillHTML(pool){ if(pool==='crossover') return '<span class="legend-pill crossover">Crossover Chaos</span>'; if(pool==='cult') return '<span class="legend-pill cult">Cult Icon</span>'; if(pool==='prospect') return '<span class="legend-pill prospect">Future Star</span>'; if(pool==='gatekeeper') return '<span class="legend-pill gatekeeper">Gatekeeper</span>'; if(pool==='low') return '<span class="legend-pill low">Bad Roll</span>'; if(pool==='spoiler') return '<span class="legend-pill spoiler">Spoiler</span>'; return '<span class="legend-pill standard">Legend Source</span>'; }
-function beginNewCareerDraft(){ fresh(); $('trait-list').innerHTML=''; $('trait-result').innerText='???'; $('trait-spin-btn').disabled=false; $('trait-spin-btn').innerText='Spin Trait #1'; $('fighter-name-input').value=getDraftFighterName(); $('draft-archetype').innerText='Undetermined'; $('synergy-panel').innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; $('slot-mid').innerText='???'; $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('spin-btn').disabled=false; $('reroll-btn').disabled=true; buildDraft(); updateDraftTop(); saveCareer(); screen('draft-screen'); }
+function beginNewCareerDraft(){ fresh(); $('trait-list').innerHTML=''; $('trait-result').innerText='???'; $('trait-spin-btn').disabled=false; $('trait-spin-btn').innerText='Spin Trait #1'; $('fighter-name-input').value=getDraftFighterName(); $('draft-archetype').innerText='Undetermined'; $('synergy-panel').innerHTML='<div style="color:var(--muted);text-align:center">No fight synergies unlocked yet.</div>'; $('slot-mid').innerText='???'; $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('spin-btn').disabled=false; $('reroll-btn').disabled=true; buildDraft(); updateDraftTop(); saveCareer(); screen('draft-screen'); }
 function startNewCareer(){ beginNewCareerDraft(); }
 function continueCareer(){ const d=loadCareer(); if(!d){ refreshMenu(); return; } S.mode=normaliseModeId(d.mode||d.career.mode); S.player=d.player; S.career=d.career; S.career.mode=normaliseModeId(S.career.mode||S.mode); S.opponent=d.opponent; S.traitsRolled=d.traitsRolled||0; S.awaiting=false; S.perfect=false; if(!S.opponent&&S.career.currentFight<=50) generateOpponent(); checkAchievements(false); updateSynergyPanel(); updateHub(); screen('hub-screen'); }
 function deleteSave(){ clearCareer(); }
@@ -11592,18 +11613,18 @@ function checkSynergy(){
   });
   S.player.HiddenBonuses=unlocked; updateOverallDisplays();
 }
-function updateSynergyPanel(newIds){ newIds=newIds||new Set(); const p=$('synergy-panel'); const list=S.player.HiddenBonuses||[]; if(!list.length){ p.innerHTML='<div style="color:var(--muted);text-align:center">No hidden bonuses unlocked yet.</div>'; return; } p.innerHTML=''; list.forEach(b=>{ const div=document.createElement('div'); div.className='trait-pill secret synergy-pill'+(newIds.has(b.id)?' synergy-new':''); div.title=b.desc; const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(' \u00b7 '); div.innerHTML='<div class="trait-title"><span class="synergy-spark">\u2726</span> '+b.name+'</div><div>'+b.desc+'</div><div class="synergy-bonus">'+plus+'</div><span class="trait-chip secret">Synergy</span>'; p.appendChild(div); }); }
+function updateSynergyPanel(newIds){ newIds=newIds||new Set(); const p=$('synergy-panel'); const list=S.player.HiddenBonuses||[]; if(!list.length){ p.innerHTML='<div style="color:var(--muted);text-align:center">No fight synergies unlocked yet.</div>'; return; } p.innerHTML=''; list.forEach(b=>{ const rar=(b.rarity||'secret'); const rarLabel=b.rarity?(b.rarity.charAt(0).toUpperCase()+b.rarity.slice(1)+' Synergy'):'Synergy'; const div=document.createElement('div'); div.className='trait-pill '+rar+' synergy-pill'+(newIds.has(b.id)?' synergy-new':''); div.title=b.desc; const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(' \u00b7 '); const vs=Array.isArray(b.fighters)&&b.fighters.length===2?'<div class="synergy-vs">'+htmlEscape(b.fighters[0])+' vs '+htmlEscape(b.fighters[1])+'</div>':''; div.innerHTML='<div class="trait-title"><span class="synergy-spark">\u2726</span> '+b.name+'</div>'+vs+'<div>'+b.desc+'</div><div class="synergy-bonus">'+plus+'</div><span class="trait-chip '+rar+'">'+rarLabel+'</span>'; p.appendChild(div); }); }
 function flashScreen(cls){ try{ const f=document.createElement('div'); f.className='synergy-flash '+(cls||''); document.body.appendChild(f); setTimeout(()=>{ if(f.parentNode) f.parentNode.removeChild(f); },900); }catch(e){} }
-function celebrateSynergies(list){ if(!list||!list.length) return; setTimeout(()=>{ playSynergy(); flashScreen('teal'); list.slice(0,3).forEach((b,i)=>{ const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(', '); setTimeout(()=>showToast('\u26a1 Synergy Unlocked', b.name+' \u2014 '+plus), i*260); }); }, 230); }
+function celebrateSynergies(list){ if(!list||!list.length) return; setTimeout(()=>{ playSynergy(); flashScreen('teal'); list.slice(0,3).forEach((b,i)=>{ const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(', '); const rar=b.rarity?b.rarity.charAt(0).toUpperCase()+b.rarity.slice(1)+' ':''; const emo=b.rarity==='legendary'?'\ud83d\udc51':b.rarity==='epic'?'\ud83d\udc9c':'\u26a1'; setTimeout(()=>showToast(emo+' '+rar+'Synergy Unlocked', b.name+' \u2014 '+plus), i*260); }); }, 230); }
 function lockStat(stat){ if(!S.legend||S.player.Stats[stat]!=null||!S.awaiting) return; let v=S.legend[stat]; if(S.perfect){ v=clamp(v+1,1,99); S.player.PerfectSpinStats[stat]=true; } S.player.Stats[stat]=v; S.player.StatSources[stat]=S.legend.Name; S.awaiting=false; const __prevSyn=new Set((S.player.HiddenBonuses||[]).map(b=>b.id)); checkSynergy(); buildDraft(); const __newSyn=(S.player.HiddenBonuses||[]).filter(b=>!__prevSyn.has(b.id)); updateSynergyPanel(new Set(__newSyn.map(b=>b.id))); playStatSound(v); if(__newSyn.length) celebrateSynergies(__newSyn); $('legend-pill-wrap').innerHTML=''; $('perfect-banner').innerText=''; $('perfect-banner').classList.remove('active'); S.perfect=false; const filled=STATS.filter(st=>S.player.Stats[st]!=null).length; if(filled===10){ $('spin-btn').disabled=true; $('reroll-btn').disabled=true; $('draft-archetype').innerText=archetype(getPerm()).name; saveCareer(); setTimeout(()=>screen('trait-screen'),300); } else { $('spin-btn').disabled=false; updateDraftTop(); saveCareer(); } updateOverallDisplays(); }
 // ---- Central trait rarity colour system (matches rarity tabs) ----
 function getTraitRarityClass(trait){ if(!trait) return 'trait-common'; const type=(trait.type||'').toLowerCase(); const r=(trait.rarity||'common').toLowerCase(); if(type==='negative'||r==='cursed') return 'trait-cursed'; switch(r){ case 'common': return 'trait-common'; case 'uncommon': return 'trait-uncommon'; case 'rare': return 'trait-rare'; case 'luxury': return 'trait-luxury'; case 'epic': return 'trait-epic'; case 'legendary': return 'trait-legendary'; case 'mythic': case 'premium': return 'trait-premium'; case 'secret': return 'trait-secret'; default: return 'trait-common'; } }
 function renderTraitChip(trait){ const label=(trait&&trait.rarity)?trait.rarity:'common'; return '<span class="trait-chip '+getTraitRarityClass(trait)+'">'+htmlEscape(label)+'</span>'; }
 function spinTrait(){ if(S.traitsRolled>=2||S.spinTraitBusy) return; S.spinTraitBusy=true; const btn=$('trait-spin-btn'), reel=$('trait-result'); btn.disabled=true; const available=TRAITS.filter(t=>!(S.player.Traits||[]).some(x=>x.id===t.id)); let i=0; const loop=()=>{ if(i<12){ playTick(); const tease=choice(available); reel.innerText=tease.name+' • '+tease.rarity.toUpperCase(); reel.className='trait-reel '+getTraitRarityClass(tease); i++; setTimeout(loop,60+i*5); } else { playLock(); const pick=weightedPick(available,t=>{ let w=TRAIT_W[t.rarity]||8; if(t.type==='positive') w*=1.12; return w; }); S.player.Traits.push(pick); S.traitsRolled++; reel.innerText=pick.name+' • '+pick.rarity.toUpperCase(); reel.className='trait-reel '+getTraitRarityClass(pick); const box=document.createElement('div'); box.className='trait-pill '+getTraitRarityClass(pick)+(pick.type==='negative'?' trait-negative':''); box.title=traitTooltip(pick); box.innerHTML='<div class="trait-title">'+pick.name+' ('+pick.type.toUpperCase()+' • '+pick.rarity.toUpperCase()+')</div><div>'+pick.desc+'</div>'+renderTraitChip(pick); $('trait-list').appendChild(box); $('draft-archetype').innerText=archetype(getPerm()).name; if(S.traitsRolled===1){ btn.innerText='Spin Trait #2'; btn.disabled=false; } else { btn.innerText='Draft Complete'; btn.disabled=true; } checkSynergy(); saveCareer(); updateOverallDisplays(); S.spinTraitBusy=false; } }; loop(); }
 function getPerm(){ const s=deep(S.player.Stats); if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number')) return s; if(hasTrait('iron_chin')){s.Chin+=4; s.Recovery+=5;} if(hasTrait('glass_cannon')){s.Power+=8; s.Chin-=10;} if(hasTrait('counter_puncher')){s.Defence+=6; s['Ring IQ']+=6;} if(hasTrait('ring_general')){s['Ring IQ']+=4; s.Accuracy+=3;} if(hasTrait('volume_puncher')){s.Accuracy+=2; s.Stamina+=1;} if(hasTrait('generational_talent')) STATS.forEach(st=>s[st]+=3); if(hasTrait('supertank')){s.Chin+=7; s.Heart+=5; s.Recovery+=5;} (S.player.HiddenBonuses||[]).forEach(b=>Object.entries(b.bonuses).forEach(([st,amt])=>s[st]+=amt)); STATS.forEach(st=>s[st]=clamp(Math.round(s[st]),1,99)); return s; }
-function calculateOverall(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null && typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(()=>overall+=2); return clamp(Math.round(overall), 40, 99); }
+function calculateOverall(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null && typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(b=>{ const r=(b&&b.rarity)||''; overall+= r==='legendary'?3 : r==='epic'?2 : r==='rare'?1 : 2; }); return clamp(Math.round(overall), 40, 99); }
 function updateOverallDisplays(){ const ovr=calculateOverall(); if($('overall-rating-draft')) $('overall-rating-draft').innerText=ovr; if($('overall-rating-trait')) $('overall-rating-trait').innerText=ovr; if($('overall-rating-hub')) $('overall-rating-hub').innerText=ovr; if($('hub-rating')) $('hub-rating').innerText='Rating '+ovr; }
-function calculateBuildPower(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null&&typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(()=>overall+=2); return Math.round(overall); }
+function calculateBuildPower(){ const stats=getPerm(); if(!stats) return 50; const filled=STATS.filter(st=>stats[st]!=null&&typeof stats[st]==='number'); if(!filled.length) return 50; let total=0; filled.forEach(st=>total+=stats[st]); let overall=total/filled.length; (S.player.Traits||[]).forEach(t=>{ if(t.type==='positive'){ if(t.rarity==='common') overall+=1; else if(t.rarity==='uncommon') overall+=2; else if(t.rarity==='rare') overall+=3; else if(t.rarity==='epic') overall+=4; else if(t.rarity==='legendary') overall+=5; } else { if(t.rarity==='common') overall-=1; else if(t.rarity==='uncommon') overall-=2; else if(t.rarity==='cursed') overall-=4; } }); (S.player.HiddenBonuses||[]).forEach(b=>{ const r=(b&&b.rarity)||''; overall+= r==='legendary'?3 : r==='epic'?2 : r==='rare'?1 : 2; }); return Math.round(overall); }
 function renderBuildPower(elId){ const el=$(elId); if(!el||!S.player) return; const bp=calculateBuildPower(); const prev=S.player.bestBuildPower||0; const isNewBest=bp>prev; if(isNewBest){ S.player.bestBuildPower=bp; saveProfileFromPlayer(S.player); } const glowClass=bp>=110?'bp-glow-3':bp>=105?'bp-glow-2':bp>=100?'bp-glow-1':''; let suffix=''; if(bp>99){ suffix=isNewBest?'<span class="bp-new-best">★ New best!</span>':prev>99&&prev>bp?'<span class="bp-record">Best '+prev+'</span>':''; } el.style.display='flex'; el.innerHTML='<span class="bp-label">Build Power</span><span class="bp-value'+(glowClass?' '+glowClass:'')+'">'+bp+'</span>'+suffix; }
 function archetype(s){ if(!s||STATS.some(st=>s[st]==null||typeof s[st]!=='number')) return {name:'Undetermined'}; const pressure=s.Power+s.Heart+s.Stamina, box=s.Speed+s.Footwork+s.Defence, tech=s['Ring IQ']+s.Accuracy+s.Defence, tank=s.Chin+s.Heart+s.Recovery; const arr=[{name:'Slugger',score:pressure+10-s.Footwork*.08},{name:'Outboxer',score:box+7-s.Power*.04},{name:'Technician',score:tech+8},{name:'Ironman',score:tank+6},{name:'Balanced Contender',score:(pressure+box+tech+tank)/4}]; arr.sort((a,b)=>b.score-a.score); return arr[0]; }
 function getBuildIdentity(stats){ if(!stats) return 'Balanced Fighter'; if(stats.Power>92 && stats.Heart>90) return 'Explosive Slugger'; if(stats.Defence>90 && stats['Ring IQ']>90 && stats.Accuracy>88) return 'Precision Technician'; if(stats.Chin>90 && stats.Recovery>90) return 'Durable Ironman'; if(stats.Speed>90 && stats.Footwork>90) return 'Elusive Outboxer'; if(hasTrait('body_snatcher')) return 'Body Attack Specialist'; if(hasTrait('counter_puncher')) return 'Counter Fighting Operator'; if((S.player.HiddenBonuses||[]).length>=2) return 'Synergy Monster'; return 'Balanced Fighter'; }
@@ -11706,15 +11727,18 @@ function renderSynergyPick(){
     const plus=Object.entries(syn.bonuses||{}).filter(([,v])=>v!==0).map(([k,v])=>(v>0?'+':'')+v+' '+k).join(' · ');
     const advice=synergyAdviceText(syn);
     const card=document.createElement('div');
-    card.className='syn-pick-card '+tier.cls+(isRec?' synergy-recommended':'');
+    card.className='syn-pick-card '+tier.cls+(isRec?' synergy-recommended':'')+' syn-rarity-'+(syn.rarity||'rare');
     card.dataset.synId=syn.id;
+    const vsLine=Array.isArray(syn.fighters)&&syn.fighters.length===2?'<div class="syn-card-vs">'+htmlEscape(syn.fighters[0])+' vs '+htmlEscape(syn.fighters[1])+'</div>':'';
     card.innerHTML=
       '<div class="syn-card-body">'+
         '<div class="syn-card-top">'+
+          '<span class="syn-rarity-chip '+(syn.rarity||'rare')+'">'+htmlEscape((syn.rarity||'rare').toUpperCase())+'</span>'+
           '<span class="syn-tier-badge">'+htmlEscape(tier.label)+'</span>'+
           (isRec?'<span class="syn-recommended-star">★ Recommended</span>':'')+
         '</div>'+
         '<div class="syn-card-name">'+htmlEscape(syn.name)+'</div>'+
+        vsLine+
         (plus?'<div class="syn-card-bonuses">'+htmlEscape(plus)+'</div>':'')+
         (advice?'<div class="syn-card-advice">'+htmlEscape(advice)+'</div>':'')+
       '</div>'+
@@ -11897,7 +11921,7 @@ function updateHub(){
     const wrap=document.createElement('div');
     wrap.className='chip-wrap';
     (S.player.Traits||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip '+getTraitRarityClass(t); chip.title=traitTooltip(t); chip.innerText=t.name; wrap.appendChild(chip); });
-    (S.player.HiddenBonuses||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip secret'; chip.title=t.desc; chip.innerText=t.name; wrap.appendChild(chip); });
+    (S.player.HiddenBonuses||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip '+(t.rarity||'secret'); chip.title=t.desc; chip.innerText=t.name; wrap.appendChild(chip); });
     tr.appendChild(wrap);
   }
   renderProfileFoundation();
@@ -12122,7 +12146,7 @@ function fighterBuildSnapshot(player, finalStats=null){
     id:String(t.id||'').slice(0,60),name:String(t.name||t.id||'Trait').slice(0,80),type:String(t.type||'').slice(0,20),rarity:String(t.rarity||'').slice(0,20),desc:String(t.desc||'').slice(0,240)
   }));
   const synergies=(Array.isArray(p.HiddenBonuses)?p.HiddenBonuses:[]).slice(0,30).map(s=>({
-    id:String(s.id||'').slice(0,80),name:String(s.name||s.id||'Synergy').slice(0,100),desc:String(s.desc||'').slice(0,240),bonuses:deep(s.bonuses||{})
+    id:String(s.id||'').slice(0,80),name:String(s.name||s.id||'Synergy').slice(0,100),desc:String(s.desc||'').slice(0,240),rarity:String(s.rarity||'').slice(0,20),fighters:Array.isArray(s.fighters)?s.fighters.slice(0,2).map(f=>String(f).slice(0,60)):[],bonuses:deep(s.bonuses||{})
   }));
   return {nickname:profile.nickname||p.Nickname||'The Contender',country:profile.country||p.country||'',stats,finalStats:effective,statSources:sources,traits,synergies};
 }
@@ -13966,7 +13990,7 @@ function mpPublicTrait(t){
   return {id:t.id||t.name||'trait',name:t.name||String(t),type:t.type||'positive',rarity:t.rarity||'common',desc:t.desc||''};
 }
 function mpPublicSynergy(s){
-  return {id:s.id||s.name||'synergy',name:s.name||String(s),desc:s.desc||'',bonuses:{...(s.bonuses||{})}};
+  return {id:s.id||s.name||'synergy',name:s.name||String(s),desc:s.desc||'',rarity:s.rarity||'',fighters:Array.isArray(s.fighters)?s.fighters.slice(0,2):[],bonuses:{...(s.bonuses||{})}};
 }
 function mpTraitOptions(ds){
   const owned=new Set((ds.traits||[]).map(function(t){ return t.id||t.name; }));
