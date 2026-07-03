@@ -2937,6 +2937,42 @@ body.final-card-open{overflow:hidden}
   background:var(--gold);border-radius:0 0 2px 2px;
   box-shadow:0 1px 6px rgba(227,178,60,.4);
 }
+.social-footer{
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+  gap:5px 8px;
+  padding:7px 10px 6px;
+  background:linear-gradient(180deg,#0b0d10 0%,#08090c 100%);
+  border-top:1px solid rgba(255,255,255,.06);
+  position:relative;z-index:9;
+}
+.social-footer::before{
+  content:'';position:absolute;top:0;left:12%;right:12%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(227,178,60,.18),transparent);
+}
+.social-footer-label{
+  color:var(--muted);
+  font-size:.48rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;
+}
+.social-link{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:24px;max-width:100%;
+  padding:4px 7px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;
+  background:rgba(255,255,255,.035);
+  color:var(--text-dim);
+  font-size:.55rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;
+  text-decoration:none;line-height:1;
+  transition:color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),background var(--t-fast) var(--ease),transform var(--t-fast) var(--ease);
+}
+.social-link:hover,.social-link:focus-visible{
+  color:var(--gold);
+  border-color:rgba(227,178,60,.45);
+  background:rgba(227,178,60,.08);
+  outline:none;
+}
+.social-link:active{transform:scale(.97)}
 
 /* ── Menu screen — premium feature grid ── */
 .menu-hero-section{
@@ -5047,6 +5083,13 @@ h2::before{
 </section>
 
 <!-- ══════ BOTTOM NAVIGATION BAR ══════ -->
+<div class="social-footer" aria-label="UNBEATEN social links">
+  <span class="social-footer-label">Follow</span>
+  <a class="social-link" href="https://x.com/50-0boxing" target="_blank" rel="noopener noreferrer" aria-label="Open UNBEATEN on X, @50-0boxing">X @50-0boxing</a>
+  <a class="social-link" href="https://www.tiktok.com/@500boxing" target="_blank" rel="noopener noreferrer" aria-label="Open UNBEATEN on TikTok, @500boxing">TikTok @500boxing</a>
+  <a class="social-link" href="https://www.instagram.com/unbeaten50_0/" target="_blank" rel="noopener noreferrer" aria-label="Open UNBEATEN on Instagram, @unbeaten50_0">Insta @unbeaten50_0</a>
+</div>
+
 <nav class="app-bottom-nav" id="app-bottom-nav" aria-label="Main navigation">
   <button class="app-nav-item active" id="nav-home"       onclick="navTo('menu-screen')"       aria-label="Home">
     <span class="nav-icon">🏠</span>HOME
