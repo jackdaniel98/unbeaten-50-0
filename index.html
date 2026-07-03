@@ -3882,6 +3882,72 @@ h2::before{
 }
 
 /* ============================================================
+   ⚔️ PVP SUITE — premium pass
+   Gold-brand header, tiered mode cards, glowing search state,
+   charged matchup + result screens.
+============================================================ */
+.mp-brand{
+  background:linear-gradient(180deg,#fff8e1 0%,#f5d878 45%,#c8922a 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 1px 8px rgba(227,178,60,.3));
+  font-size:1rem;
+}
+.mp-player-card{
+  background:
+    radial-gradient(80% 60px at 50% 0%, rgba(227,178,60,.08), transparent 75%),
+    linear-gradient(160deg,#15181e 0%,#0f1114 100%);
+  border-color:rgba(227,178,60,.35);
+  box-shadow:var(--shadow-card), 0 0 26px -14px rgba(227,178,60,.5);
+}
+.mp-player-thumb{border-color:rgba(227,178,60,.3)}
+.mp-mode-card{
+  background:linear-gradient(135deg,rgba(227,178,60,.09) 0%,var(--panel) 55%);
+  border-color:rgba(255,255,255,.09);
+  box-shadow:var(--shadow-card);
+  border-radius:var(--radius);
+}
+.mp-mode-card.friendly{background:linear-gradient(135deg,rgba(74,222,128,.08) 0%,var(--panel) 55%)}
+.mp-mode-card.invite{background:linear-gradient(135deg,rgba(56,189,248,.08) 0%,var(--panel) 55%)}
+.mp-mode-icon{filter:drop-shadow(0 0 8px rgba(227,178,60,.45));font-size:1.3rem}
+.mp-mode-card.friendly .mp-mode-icon{filter:drop-shadow(0 0 8px rgba(74,222,128,.5))}
+.mp-mode-card.invite .mp-mode-icon{filter:drop-shadow(0 0 8px rgba(56,189,248,.5))}
+.mp-search-ring{
+  border-width:4px;border-color:rgba(227,178,60,.15);border-top-color:var(--gold);
+  box-shadow:0 0 28px -8px rgba(227,178,60,.55), 0 0 0 1px rgba(227,178,60,.1) inset;
+}
+.mp-search-timer{text-shadow:0 0 22px rgba(227,178,60,.5)}
+.mp-search-label{text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.mp-vs-fighter.me{
+  background:linear-gradient(160deg,rgba(227,178,60,.1) 0%,var(--panel) 60%);
+  border-color:rgba(227,178,60,.35);
+  box-shadow:0 0 20px -12px rgba(227,178,60,.6);
+}
+.mp-vs-fighter.opp{
+  background:linear-gradient(160deg,rgba(56,189,248,.09) 0%,var(--panel) 60%);
+  border-color:rgba(56,189,248,.3);
+  box-shadow:0 0 20px -12px rgba(56,189,248,.55);
+}
+.mp-vs-vs{text-shadow:0 0 16px rgba(227,178,60,.6);animation:vsPulse 2.6s ease-in-out infinite}
+.mp-draft-timer{box-shadow:0 0 18px -8px rgba(227,178,60,.55)}
+.mp-tape-title{text-shadow:0 0 14px rgba(227,178,60,.4)}
+.mp-result-banner{
+  background:
+    radial-gradient(75% 70px at 50% 0%, rgba(227,178,60,.08), transparent 75%),
+    linear-gradient(180deg,#15181e 0%,#0f1114 100%);
+  border-top-color:rgba(227,178,60,.3);
+}
+.mp-result-title.win{text-shadow:0 0 24px rgba(74,222,128,.55)}
+.mp-result-title.loss{text-shadow:0 0 24px rgba(224,82,82,.55)}
+.mp-result-title.draw{text-shadow:0 0 24px rgba(227,178,60,.5)}
+.mp-invite-code-big{
+  box-shadow:0 0 26px -10px rgba(227,178,60,.5), var(--shadow-inset);
+  animation:beltPulse 3.2s var(--ease) infinite;
+}
+.mp-lb-row.me{box-shadow:0 0 18px -10px rgba(227,178,60,.6)}
+.mp-lb-rank.top3{text-shadow:0 0 12px rgba(227,178,60,.55)}
+.mp-fight-header{border-top-color:rgba(227,178,60,.28)}
+
+/* ============================================================
    💰 PACK STORE — premium facelift
    Real pack art with tier glows, a glaze sweep masked to the
    pack silhouette, and value ribbons. Falls back to the orb
@@ -16576,7 +16642,7 @@ function _closeMpInvite(){
 // BOT HELPERS
 // ══════════════════════════════════════════════════════════════════════════
 function mpBotName(){ return MP_BOT_NAMES[Math.floor(Math.random()*MP_BOT_NAMES.length)]; }
-function mpBotElo(myElo){ const sp=150; return Math.round(Math.max(100,myElo-sp)+Math.random()*sp*2); }
+function mpBotElo(myElo){ const sp=150; return Math.round(Math.max(800,(myElo||MP_STARTING_ELO)-sp)+Math.random()*sp*2); }
 function mpBotCard(){ const ids=Object.keys(MP_BOOSTERS); return ids[Math.floor(Math.random()*ids.length)]; }
 function mpBotRecord(elo){
   const fights=Math.floor(Math.random()*30)+5;
@@ -16587,24 +16653,28 @@ function mpBotRecord(elo){
 function mpBotStats(elo,targetStats){
   const targetVals=targetStats?mpGetStats().map(function(st){ return Number(targetStats[st]); }).filter(Number.isFinite):[];
   const targetAvg=targetVals.length?Math.round(targetVals.reduce(function(a,b){return a+b;},0)/targetVals.length):0;
+  // Bots are contenders: every stat floors at 80, scaling up against stronger players
   const base=targetAvg
-    ? mpClampStat(targetAvg+2+Math.floor(Math.random()*3))
-    : Math.min(95,Math.max(68,Math.round(elo/10)+4));
+    ? mpClampStat(Math.max(80,targetAvg+2+Math.floor(Math.random()*3)))
+    : Math.min(95,Math.max(80,Math.round(elo/10)+4));
   const s={};
   mpGetStats().forEach(function(st){
     const targetVal=Number(targetStats&&targetStats[st]);
     const anchor=Number.isFinite(targetVal)?Math.max(base,targetVal+1):base;
-    s[st]=mpClampStat(anchor+Math.floor(Math.random()*9)-3);
+    s[st]=mpClampStat(Math.max(80,anchor+Math.floor(Math.random()*7)-1));
   });
   return s;
 }
 function mpBotTraits(){
   if(typeof TRAITS==='undefined'||!Array.isArray(TRAITS)||!TRAITS.length) return [];
-  return TRAITS.slice().sort(function(){ return Math.random()-.5; }).slice(0,2).map(function(t){ return {name:t.name||t,desc:t.desc||''}; });
+  const pool=TRAITS.filter(function(t){ return t&&t.type==='positive'; });
+  const src=pool.length?pool:TRAITS;
+  return src.slice().sort(function(){ return Math.random()-.5; }).slice(0,2).map(typeof mpPublicTrait==='function'?mpPublicTrait:function(t){ return {name:t.name||t,desc:t.desc||''}; });
 }
 function mpBotSynergies(){
   if(typeof SYNERGY==='undefined'||!Array.isArray(SYNERGY)||!SYNERGY.length) return [];
-  return SYNERGY.slice().sort(function(){ return Math.random()-.5; }).slice(0,1).map(function(s){ return {name:s.name||s,bonus:s.bonus||''}; });
+  const n=1+Math.floor(Math.random()*2); // 1-2, same cap as players — with real stat bonuses
+  return SYNERGY.slice().sort(function(){ return Math.random()-.5; }).slice(0,n).map(mpPublicSynergy);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
