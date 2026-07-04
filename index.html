@@ -2571,6 +2571,19 @@ body.final-card-open{overflow:hidden}
 .synergy-pill .trait-title{display:flex;align-items:center;gap:7px}
 .synergy-spark{color:var(--gold)}
 .synergy-bonus{margin-top:7px;font-size:.78rem;font-weight:700;color:#5fe3d2;letter-spacing:.2px;font-variant-numeric:tabular-nums}
+.synergy-clickable{cursor:pointer}
+.synergy-clickable:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.synergy-clickable:hover{border-color:rgba(227,178,60,.48)}
+.synergy-detail-dialog{width:min(430px,100%)}
+.synergy-detail-content{width:100%;display:grid;gap:12px}
+.synergy-detail-kicker{font-size:.62rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:var(--gold)}
+.synergy-detail-vs{padding:9px 10px;border:1px solid rgba(227,178,60,.22);border-radius:8px;background:rgba(227,178,60,.07);font-size:.78rem;font-weight:800;color:#fff;text-align:center}
+.synergy-detail-desc{color:rgba(255,255,255,.72);font-size:.82rem;line-height:1.55}
+.synergy-detail-boosts{display:grid;gap:7px}
+.synergy-detail-boost-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid var(--line-2);border-radius:8px;background:#08090c}
+.synergy-detail-boost-row span{color:rgba(255,255,255,.62);font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.synergy-detail-boost-row strong{color:#5fe3d2;font-size:.9rem}
+.synergy-detail-empty{color:rgba(255,255,255,.42);font-size:.76rem;text-align:center;padding:8px 0}
 .synergy-pill::after{content:'';position:absolute;top:0;left:-60%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.14),transparent);transform:skewX(-18deg);animation:synergyShine 4.6s var(--ease) infinite;pointer-events:none}
 @keyframes synergyShine{0%,72%{left:-60%}86%{left:130%}100%{left:130%}}
 .synergy-new{animation:synergyPop .6s var(--ease) both}
@@ -4853,6 +4866,16 @@ h2::before{
       <button id="leaderboard-build-close-btn" type="button" class="final-card-close" aria-label="Close fighter build" onclick="closeLeaderboardBuild()">x</button>
     </div>
     <div id="leaderboard-build-content" class="leaderboard-build-content"></div>
+  </div>
+</div>
+
+<div id="synergy-detail-modal" class="final-card-modal hidden" role="dialog" aria-modal="true" aria-labelledby="synergy-detail-title" onclick="if(event.target===this) closeSynergyDetail()">
+  <div class="final-card-dialog synergy-detail-dialog">
+    <div class="final-card-dialog-head">
+      <h2 id="synergy-detail-title">Synergy</h2>
+      <button id="synergy-detail-close-btn" type="button" class="final-card-close" aria-label="Close synergy details" onclick="closeSynergyDetail()">x</button>
+    </div>
+    <div id="synergy-detail-content" class="synergy-detail-content"></div>
   </div>
 </div>
 
@@ -12560,7 +12583,82 @@ function checkSynergy(){
   });
   S.player.HiddenBonuses=unlocked; updateOverallDisplays();
 }
-function updateSynergyPanel(newIds){ newIds=newIds||new Set(); const p=$('synergy-panel'); const list=S.player.HiddenBonuses||[]; if(!list.length){ p.innerHTML='<div style="color:var(--muted);text-align:center">No fight synergies unlocked yet.</div>'; return; } p.innerHTML=''; list.forEach(b=>{ const rar=(b.rarity||'secret'); const rarLabel=b.rarity?(b.rarity.charAt(0).toUpperCase()+b.rarity.slice(1)+' Synergy'):'Synergy'; const div=document.createElement('div'); div.className='trait-pill '+rar+' synergy-pill'+(newIds.has(b.id)?' synergy-new':''); div.title=b.desc; const plus=Object.entries(b.bonuses||{}).map(([k,v])=>'+'+v+' '+k).join(' \u00b7 '); const vs=Array.isArray(b.fighters)&&b.fighters.length===2?'<div class="synergy-vs">'+htmlEscape(b.fighters[0])+' vs '+htmlEscape(b.fighters[1])+'</div>':''; div.innerHTML='<div class="trait-title"><span class="synergy-spark">\u2726</span> '+b.name+'</div>'+vs+'<div>'+b.desc+'</div><div class="synergy-bonus">'+plus+'</div><span class="trait-chip '+rar+'">'+rarLabel+'</span>'; p.appendChild(div); }); }
+function synergyBoostRows(syn){
+  return Object.entries((syn&&syn.bonuses)||{}).filter(function(entry){ return Number(entry[1])!==0; });
+}
+function findSynergyById(id){
+  const sid=String(id||'');
+  const active=(typeof S!=='undefined'&&S.player&&Array.isArray(S.player.HiddenBonuses))?S.player.HiddenBonuses:[];
+  return active.find(function(s){ return String(s.id||s.name)===sid; })
+    || (typeof SYNERGY!=='undefined'&&Array.isArray(SYNERGY)?SYNERGY.find(function(s){ return String(s.id||s.name)===sid; }):null);
+}
+function openSynergyDetailById(id){ openSynergyDetail(findSynergyById(id)); }
+function openSynergyDetail(syn){
+  const modal=$('synergy-detail-modal'), title=$('synergy-detail-title'), content=$('synergy-detail-content');
+  if(!modal||!title||!content||!syn){ showToast&&showToast('Synergy Unavailable','No synergy details found.'); return; }
+  const rarity=String(syn.rarity||'secret');
+  const rarLabel=rarity.charAt(0).toUpperCase()+rarity.slice(1);
+  const fighters=Array.isArray(syn.fighters)?syn.fighters.filter(Boolean):[];
+  const req=syn.requirements&&typeof syn.requirements==='object'?Object.entries(syn.requirements):[];
+  const boostRows=synergyBoostRows(syn);
+  const boostHtml=boostRows.length
+    ? boostRows.map(function(entry){
+        const amt=Number(entry[1])||0;
+        return '<div class="synergy-detail-boost-row"><span>'+htmlEscape(entry[0])+'</span><strong>'+(amt>0?'+':'')+htmlEscape(amt)+' boost</strong></div>';
+      }).join('')
+    : '<div class="synergy-detail-empty">No stat boost listed.</div>';
+  const fightHtml=fighters.length>=2
+    ? '<div class="synergy-detail-vs">'+htmlEscape(fighters[0])+' vs '+htmlEscape(fighters[1])+'</div>'
+    : (req.length?'<div class="synergy-detail-vs">'+req.map(function(entry){ return htmlEscape(entry[1])+' '+htmlEscape(entry[0]); }).join(' + ')+'</div>':'');
+  title.textContent=syn.name||'Synergy';
+  content.innerHTML=
+    '<div class="synergy-detail-kicker">'+htmlEscape(rarLabel)+' Synergy</div>'+
+    fightHtml+
+    '<div class="synergy-detail-desc">'+htmlEscape(syn.desc||'No description saved for this synergy.')+'</div>'+
+    '<div class="synergy-detail-boosts">'+boostHtml+'</div>';
+  modal.classList.remove('hidden');
+  document.body.classList.add('final-card-open');
+  setTimeout(function(){ const btn=$('synergy-detail-close-btn'); if(btn) btn.focus(); },0);
+}
+function closeSynergyDetail(){
+  const modal=$('synergy-detail-modal');
+  if(modal) modal.classList.add('hidden');
+  document.body.classList.remove('final-card-open');
+}
+function bindSynergyDetailTrigger(el,syn){
+  if(!el||!syn) return;
+  el.classList.add('synergy-clickable');
+  el.tabIndex=0;
+  el.setAttribute('role','button');
+  el.setAttribute('aria-label','View '+(syn.name||'synergy')+' details');
+  el.addEventListener('click',function(){ openSynergyDetail(syn); });
+  el.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openSynergyDetail(syn); }
+  });
+}
+function updateSynergyPanel(newIds){
+  newIds=newIds||new Set();
+  const p=$('synergy-panel');
+  const list=S.player.HiddenBonuses||[];
+  if(!list.length){
+    p.innerHTML='<div style="color:var(--muted);text-align:center">No fight synergies unlocked yet.</div>';
+    return;
+  }
+  p.innerHTML='';
+  list.forEach(function(b){
+    const rar=(b.rarity||'secret');
+    const rarLabel=b.rarity?(b.rarity.charAt(0).toUpperCase()+b.rarity.slice(1)+' Synergy'):'Synergy';
+    const div=document.createElement('div');
+    div.className='trait-pill '+rar+' synergy-pill'+(newIds.has(b.id)?' synergy-new':'');
+    div.title=b.desc||'View synergy details';
+    div.dataset.synergyId=b.id||b.name||'';
+    const plus=Object.entries(b.bonuses||{}).map(function(entry){ return (entry[1]>0?'+':'')+entry[1]+' '+entry[0]; }).join(' \u00b7 ');
+    const vs=Array.isArray(b.fighters)&&b.fighters.length===2?'<div class="synergy-vs">'+htmlEscape(b.fighters[0])+' vs '+htmlEscape(b.fighters[1])+'</div>':'';
+    div.innerHTML='<div class="trait-title"><span class="synergy-spark">\u2726</span> '+htmlEscape(b.name||'Synergy')+'</div>'+vs+'<div>'+htmlEscape(b.desc||'')+'</div><div class="synergy-bonus">'+htmlEscape(plus)+'</div><span class="trait-chip '+rar+'">'+htmlEscape(rarLabel)+'</span>';
+    bindSynergyDetailTrigger(div,b);
+    p.appendChild(div);
+  });
+}
 function flashScreen(cls){ try{ const f=document.createElement('div'); f.className='synergy-flash '+(cls||''); document.body.appendChild(f); setTimeout(()=>{ if(f.parentNode) f.parentNode.removeChild(f); },900); }catch(e){} }
 function celebrateSynergies(list){ if(!list||!list.length) return; setTimeout(()=>{ playSynergy(); flashScreen('teal'); list.slice(0,3).forEach((b,i)=>{ setTimeout(()=>synergyUnlockPop(b), i*1350); }); }, 230); }
 function synergyUnlockPop(b){
@@ -12888,7 +12986,7 @@ function updateHub(){
     const wrap=document.createElement('div');
     wrap.className='chip-wrap';
     (S.player.Traits||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip '+getTraitRarityClass(t); chip.title=traitTooltip(t); chip.innerText=t.name; wrap.appendChild(chip); });
-    (S.player.HiddenBonuses||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip '+(t.rarity||'secret'); chip.title=t.desc; chip.innerText=t.name; wrap.appendChild(chip); });
+    (S.player.HiddenBonuses||[]).forEach(t=>{ const chip=document.createElement('div'); chip.className='chip '+(t.rarity||'secret'); chip.title=t.desc||'View synergy details'; chip.innerText=t.name; bindSynergyDetailTrigger(chip,t); wrap.appendChild(chip); });
     tr.appendChild(wrap);
   }
   renderProfileFoundation();
