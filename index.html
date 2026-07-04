@@ -3977,7 +3977,7 @@ h2::before{
 }
 /* art column — portrait pack instead of the little square */
 .card-pack .card-pack-art{
-  flex:0 0 88px;width:88px;height:126px;border-radius:10px;
+  flex:0 0 108px;width:108px;height:108px;border-radius:12px;
 }
 .card-pack-art.has-img{
   background:transparent;border:none;overflow:visible;
@@ -11462,9 +11462,9 @@ function renderPackPanel(){
     '<span class="pack-odd rarity-legendary">Top # chase</span>'
   ].join('');
   const packs=[
-    {tier:'starter',name:'Starter Pack',desc:'1 collectible card. The cheapest door into the collection.',cost:COLLECTOR_PACK_STARTER_COST,fn:'openCollectorPackStarter()',img:'assets/pack/pack_starter.png',fallback:'&#x1F4B0;',ribbon:'',btnLabel:'Open Pack'},
-    {tier:'collector',name:'Collector Pack',desc:'1 finished collectible card with the full reveal.',cost:COLLECTOR_PACK_COST,fn:'openCollectorPack()',img:'assets/pack/pack_collector.png',fallback:'&#x2605;',ribbon:'MOST POPULAR',btnLabel:'Open Pack'},
-    {tier:'bundle',name:'10&#x2011;Pack Bundle',desc:'Open 10 Collector Packs back to back, each with the full animation.',cost:COLLECTOR_PACK_TEN_COST,fn:'openCollectorPackTen()',img:'assets/pack/pack_bundle.png',fallback:'&#x2605;&#x2605;&#x2605;',ribbon:'BEST VALUE',btnLabel:'Open 10 Packs'}
+    {tier:'starter',name:'Starter Pack',desc:'1 collectible card. The cheapest door into the collection.',cost:COLLECTOR_PACK_STARTER_COST,fn:'openCollectorPackStarter()',img:'assets/pack/pack200.png',fallback:'&#x1F4B0;',ribbon:'',btnLabel:'Open Pack'},
+    {tier:'collector',name:'Collector Pack',desc:'1 finished collectible card with the full reveal.',cost:COLLECTOR_PACK_COST,fn:'openCollectorPack()',img:'assets/pack/pack2000.png',fallback:'&#x2605;',ribbon:'MOST POPULAR',btnLabel:'Open Pack'},
+    {tier:'bundle',name:'10&#x2011;Pack Bundle',desc:'Open 10 Collector Packs back to back, each with the full animation.',cost:COLLECTOR_PACK_TEN_COST,fn:'openCollectorPackTen()',img:'assets/pack/pack20000.png',fallback:'&#x2605;&#x2605;&#x2605;',ribbon:'BEST VALUE',btnLabel:'Open 10 Packs'}
   ];
   panel.innerHTML=
     '<div class="pack-progress-line">Collection <strong>'+ownedCount+' / '+total+'</strong> &middot; duplicates tracked for future rewards</div>'
