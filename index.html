@@ -11829,10 +11829,152 @@ async function renderCardShareBlob(profile=activeCardProfile()){
   });
   return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Card image could not be created.')),'image/png'));
 }
-function saveSharedCardImage(blob){
+function saveSharedCardImage(blob,filename){
   const url=URL.createObjectURL(blob), link=document.createElement('a');
-  link.href=url; link.download='unbeaten-fighter-card.png'; document.body.appendChild(link); link.click(); link.remove();
+  link.href=url; link.download=filename||'unbeaten-fighter-card.png'; document.body.appendChild(link); link.click(); link.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+// Generic share pipeline: render any blob, then Web Share (with file) or
+// download + copy-text fallback. Reused by the career brag card.
+async function shareRenderedImage(renderFn,text,title,filename){
+  try{
+    const blob=await renderFn();
+    const file=new File([blob],filename||'unbeaten.png',{type:'image/png'});
+    const url=window.location.href.split('#')[0];
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({title:title,text:text,url:url,files:[file]});
+      return;
+    }
+    saveSharedCardImage(blob,filename);
+    const fullText=text+'\n'+url;
+    if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(fullText);
+    else prompt('Copy this to share:',fullText);
+    showToast('Card Ready','Image saved and share text copied.');
+  }catch(error){
+    if(error?.name==='AbortError') return;
+    console.error(error);
+    showToast('Share Unavailable','The image could not be shared on this device.');
+  }
+}
+// ── Career achievement "brag card" — a purpose-built share image with the
+//    record, KO%, belts, legacy tier and earnings ON the picture (not just in
+//    the caption). This is the shareable moment that markets the game. ──
+async function renderCareerShareBlob(){
+  const career=S.career||{}, player=S.player||{};
+  const profile=activeCardProfile();
+  const data=cardDisplayData(profile);
+  const showcase=COLLECTIBLE_CARDS.find(c=>c.id===(profile.myCardsShowcase||'cc001'))||COLLECTIBLE_CARDS[0];
+  const assets=equippedCardAssets(profile);
+  const artSrc=showcase?.image||assets.character?.asset;
+  let art=null; try{ art=await loadCardCanvasImage(artSrc); }catch(e){}
+  if(document.fonts?.ready){ try{ await document.fonts.ready; }catch(e){} }
+
+  const W=1006,H=1564;
+  const canvas=document.createElement('canvas'); canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  function rr(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+  const wins=safeMoney(career.wins), losses=safeMoney(career.losses), draws=safeMoney(career.draws);
+  const total=wins+losses+draws;
+  const record=wins+'-'+losses+(draws>0?'-'+draws:'');
+  const is50=wins===50&&losses===0&&draws===0;
+  const koPct=total>0?Math.round(career.kos/total*100):0;
+  const L=(typeof leg==='function')?leg():{score:0,t:'Prospect'};
+  const name=(cleanName(profile.cardName||data.name)||player.Name||'Fighter').toUpperCase();
+  const nick=(cleanName(profile.cardNickname||data.nickname)||'The Contender');
+  const belts=Array.isArray(career.belts)?career.belts:[];
+  const tierText=String(L.t||'').replace(' (50-0 UNDISPUTED)','').toUpperCase();
+
+  // Background
+  const bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#14110a'); bg.addColorStop(.5,'#0a0a0c'); bg.addColorStop(1,'#07080b');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  const vg=ctx.createRadialGradient(W/2,-60,60,W/2,320,760);
+  vg.addColorStop(0,'rgba(227,178,60,.18)'); vg.addColorStop(1,'rgba(227,178,60,0)');
+  ctx.fillStyle=vg; ctx.fillRect(0,0,W,640);
+  ctx.strokeStyle='rgba(227,178,60,.5)'; ctx.lineWidth=10; ctx.strokeRect(34,34,W-68,H-68);
+  ctx.strokeStyle='rgba(227,178,60,.2)'; ctx.lineWidth=2; ctx.strokeRect(52,52,W-104,H-104);
+
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+
+  // Wordmark
+  ctx.fillStyle='#8a7b52'; ctx.font='900 24px Inter, sans-serif';
+  ctx.fillText('U N B E A T E N   ·   5 0 - 0', W/2, 104);
+
+  // Headline
+  ctx.save(); ctx.shadowColor='rgba(227,178,60,.5)'; ctx.shadowBlur=26; ctx.fillStyle='#f6d768';
+  if(is50){
+    ctx.font='150px "Bebas Neue", Impact, sans-serif'; ctx.fillText('50-0', W/2, 206);
+    ctx.restore(); ctx.fillStyle='#fff'; ctx.font='46px "Bebas Neue", Impact, sans-serif';
+    ctx.fillText('UNDEFEATED', W/2, 288);
+  } else {
+    ctx.font='118px "Bebas Neue", Impact, sans-serif'; ctx.fillText(record, W/2, 202);
+    ctx.restore(); ctx.fillStyle='#fff'; ctx.font='34px "Bebas Neue", Impact, sans-serif';
+    ctx.fillText('CAREER COMPLETE', W/2, 278);
+  }
+
+  // Tier ribbon
+  ctx.fillStyle='rgba(227,178,60,.13)'; rr(W/2-270,318,540,54,27); ctx.fill();
+  ctx.strokeStyle='rgba(227,178,60,.55)'; ctx.lineWidth=2; rr(W/2-270,318,540,54,27); ctx.stroke();
+  ctx.fillStyle='#f6d768'; ctx.font='900 27px Inter, sans-serif';
+  ctx.fillText(tierText.slice(0,30), W/2, 346);
+
+  // Card art
+  const ax=W/2-232, ay=398, aw=464, ah=560;
+  if(art){
+    ctx.save(); rr(ax,ay,aw,ah,16); ctx.clip();
+    drawCoveredCardImage(ctx,art,ax,ay,aw,ah);
+    ctx.restore();
+  } else {
+    ctx.fillStyle='#0d0f13'; rr(ax,ay,aw,ah,16); ctx.fill();
+  }
+  ctx.strokeStyle='rgba(227,178,60,.55)'; ctx.lineWidth=4; rr(ax,ay,aw,ah,16); ctx.stroke();
+
+  // Name + nickname
+  ctx.fillStyle='#fff'; ctx.font='52px "Bebas Neue", Impact, sans-serif';
+  ctx.fillText(name.slice(0,24), W/2, 1002);
+  ctx.fillStyle='#d8b77a'; ctx.font='900 22px Inter, sans-serif';
+  ctx.fillText(('"'+nick+'"').toUpperCase().slice(0,30), W/2, 1042);
+
+  // Stat grid (3 × 2)
+  const cells=[
+    {v:String(career.kos||0), l:'KNOCKOUTS'},
+    {v:koPct+'%', l:'KO RATE'},
+    {v:belts.length+'/4', l:'BELTS'},
+    {v:(L.score||0).toLocaleString(), l:'LEGACY'},
+    {v:'#'+(career.bestWorldRank||60), l:'PEAK RANK'},
+    {v:compactCardMoney(career.earnings||0), l:'EARNED'}
+  ];
+  const gx=90, gy=1088, cw=(W-gx*2)/3, chh=98;
+  cells.forEach((c,i)=>{
+    const col=i%3, row=Math.floor(i/3);
+    const cx=gx+cw*col+cw/2, cyy=gy+row*chh;
+    ctx.fillStyle='#f6d768'; ctx.font='44px "Bebas Neue", Impact, sans-serif';
+    ctx.fillText(String(c.v).slice(0,10), cx, cyy+8);
+    ctx.fillStyle='#8a8f9c'; ctx.font='900 15px Inter, sans-serif';
+    ctx.fillText(c.l, cx, cyy+44);
+  });
+
+  // Belt pips
+  const ALLBELTS=['WBC','WBA','IBF','WBO'];
+  const pw=150, pgap=18, prow=ALLBELTS.length, ptot=pw*prow+pgap*(prow-1), px0=W/2-ptot/2, py=1318;
+  ALLBELTS.forEach((b,i)=>{
+    const on=belts.indexOf(b)>=0, x=px0+i*(pw+pgap);
+    ctx.fillStyle=on?'rgba(227,178,60,.18)':'rgba(255,255,255,.03)';
+    rr(x,py,pw,52,10); ctx.fill();
+    ctx.strokeStyle=on?'rgba(227,178,60,.7)':'rgba(255,255,255,.09)'; ctx.lineWidth=2;
+    rr(x,py,pw,52,10); ctx.stroke();
+    ctx.fillStyle=on?'#f6d768':'#4a4f5a'; ctx.font='900 24px Inter, sans-serif';
+    ctx.fillText(b, x+pw/2, py+27);
+  });
+
+  // Footer CTA
+  ctx.fillStyle='#f6d768'; ctx.font='40px "Bebas Neue", Impact, sans-serif';
+  ctx.fillText(is50?'CAN YOU GO 50-0?':'CAN YOU BEAT MY RUN?', W/2, 1432);
+  ctx.fillStyle='#8a7b52'; ctx.font='900 20px Inter, sans-serif';
+  ctx.fillText('PLAY  ·  UNBEATEN50-0.COM', W/2, 1474);
+
+  return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Career card image could not be created.')),'image/png'));
 }
 async function shareCardWithText(text,title='UNBEATEN: 50-0 - My Fighter Card'){
   try{
@@ -14520,7 +14662,7 @@ function shareCareer(){
   } else {
     txt=`🥊 UNBEATEN: 50-0\n\n${fighterName} — "${nick}"\nRecord: ${record}\n\n💥 KOs: ${S.career.kos}\n${beltLine}\n🏅 Legacy: ${l.score.toLocaleString()} (${l.t})\n💰 Earned: ${cash(S.career.earnings)}${cardLine}\n\nCan you beat my run?`;
   }
-  shareCardWithText(txt,'UNBEATEN: 50-0 — '+fighterName+' '+record);
+  shareRenderedImage(renderCareerShareBlob,txt,'UNBEATEN: 50-0 — '+fighterName+' '+record,'unbeaten-'+record+'.png');
 }
 function getProfileDisplayName(){
   if(S.player&&S.player.username&&S.player.username!=='Custom Contender') return S.player.username;
