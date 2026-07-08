@@ -17521,8 +17521,51 @@ function _showReferralWelcome(cards){
     if(!isMuted) sfxClick(1);
   };
 
-  function ac(){ try{ initAudio(); }catch(e){} return (typeof audioCtx!=='undefined')?audioCtx:null; }
+  var _samplesKicked=false;
+  function ac(){
+    try{ initAudio(); }catch(e){}
+    var c=(typeof audioCtx!=='undefined')?audioCtx:null;
+    if(c&&!_samplesKicked){ _samplesKicked=true; loadAllSamples(); }
+    return c;
+  }
   function canPlay(){ return !isMuted && !!ac(); }
+
+  /* ── Real fight-audio sample bank (decoded once) with synth fallback ──
+     Original WAVs synthesised offline; if any fail to load we transparently
+     fall back to the Web Audio synth below, so sound never breaks. ── */
+  var _samples={}, _samplesReq={};
+  var SAMPLE_FILES={
+    bell:'assets/audio/bell.wav',
+    punch1:'assets/audio/punch1.wav', punch2:'assets/audio/punch2.wav', punch3:'assets/audio/punch3.wav',
+    punchHeavy:'assets/audio/punch_heavy.wav',
+    crowd:'assets/audio/crowd.wav', cheer:'assets/audio/cheer.wav'
+  };
+  function _loadSample(key){
+    var ctx=(typeof audioCtx!=='undefined')?audioCtx:null;
+    if(!ctx||_samples[key]!==undefined||_samplesReq[key]) return;
+    _samplesReq[key]=true;
+    fetch(SAMPLE_FILES[key]).then(function(r){ return r.ok?r.arrayBuffer():Promise.reject(); })
+      .then(function(buf){
+        return new Promise(function(res,rej){
+          var p=ctx.decodeAudioData(buf,function(d){res(d);},function(e){rej(e);}); // callback form
+          if(p&&p.then) p.then(res,rej); // promise form (modern browsers)
+        });
+      })
+      .then(function(audio){ _samples[key]=audio; })
+      .catch(function(){ _samples[key]=null; }); // null = failed → synth fallback
+  }
+  function loadAllSamples(){ Object.keys(SAMPLE_FILES).forEach(_loadSample); }
+  function playSample(key,vol,rate){
+    var ctx=ac(); if(!ctx||isMuted) return false;
+    var b=_samples[key]; if(!b) return false;
+    try{
+      var src=ctx.createBufferSource(); src.buffer=b;
+      if(rate) src.playbackRate.value=rate;
+      var g=ctx.createGain(); g.gain.value=(vol==null?1:vol);
+      src.connect(g); g.connect(ctx.destination); src.start();
+      return true;
+    }catch(e){ return false; }
+  }
 
   /* ── Core synth helpers (scheduled, layerable) ── */
   function tone(freq,type,dur,vol,when,slideTo){
@@ -17565,24 +17608,30 @@ function _showReferralWelcome(cards){
   function sfxCoin(){ if(!canPlay()) return; tone(1318.5,'square',.09,.045); tone(1760,'square',.22,.045,.08); }
   function sfxPunch(heavy){
     if(!canPlay()) return;
+    if(heavy){ if(playSample('punchHeavy',.95)) return; }
+    else { if(playSample('punch'+(1+Math.floor(Math.random()*3)),.85,0.93+Math.random()*0.14)) return; }
+    // synth fallback
     noiseHit(heavy?.22:.12, heavy?.2:.09, 0, heavy?520:900, 1.2);
     tone(heavy?150:180,'sine',heavy?.22:.12,heavy?.2:.09,0,heavy?45:70);
   }
   function sfxKD(){
     if(!canPlay()) return;
-    sfxPunch(true);
-    tone(80,'sine',.5,.22,.03,32);
-    noiseHit(.4,.11,.05,300);
+    var sampled=playSample('punchHeavy',1);
+    tone(80,'sine',.5,.2,.03,32);           // deep sub layers under either path
+    if(!sampled){ sfxPunch(true); noiseHit(.4,.11,.05,300); }
   }
   function sfxBell(count){
     if(!canPlay()) return;
     count=count||1;
     for(var i=0;i<count;i++){
-      var off=i*0.45;
-      tone(1568,'triangle',1.1,.08,off);
-      tone(2093,'sine',.9,.045,off);
-      tone(1046.5,'sine',1.3,.055,off);
-      noiseHit(.03,.08,off,4000,2);
+      (function(off){
+        setTimeout(function(){
+          if(playSample('bell',.85)) return;
+          // synth fallback
+          tone(1568,'triangle',1.1,.08); tone(2093,'sine',.9,.045);
+          tone(1046.5,'sine',1.3,.055); noiseHit(.03,.08,0,4000,2);
+        }, off*1000);
+      })(i*0.5);
     }
   }
   function sfxWin(){
@@ -17607,6 +17656,17 @@ function _showReferralWelcome(cards){
   var _crowd=null;
   function crowdStart(){
     var ctx=ac(); if(!ctx||isMuted||_crowd) return;
+    // Prefer the real crowd loop
+    if(_samples.crowd){
+      try{
+        var s=ctx.createBufferSource(); s.buffer=_samples.crowd; s.loop=true;
+        var cg=ctx.createGain(); cg.gain.setValueAtTime(0.0001,ctx.currentTime);
+        cg.gain.exponentialRampToValueAtTime(.16,ctx.currentTime+1.2);
+        s.connect(cg); cg.connect(ctx.destination); s.start();
+        _crowd={src:s,gain:cg}; return;
+      }catch(e){}
+    }
+    // synth fallback
     try{
       var len=ctx.sampleRate*2, buf=ctx.createBuffer(1,len,ctx.sampleRate), d=buf.getChannelData(0), last=0;
       for(var i=0;i<len;i++){ var w=Math.random()*2-1; last=(last+.02*w)/1.02; d[i]=last*3.2; }
@@ -17627,7 +17687,7 @@ function _showReferralWelcome(cards){
     }catch(e){}
     _crowd=null;
   }
-  function crowdPop(){ if(!canPlay()) return; noiseHit(.7,.085,0,600); }
+  function crowdPop(){ if(!canPlay()) return; if(!playSample('cheer',.6)) noiseHit(.7,.085,0,600); }
 
   /* ── Visual impact helpers ── */
   function shake(){
